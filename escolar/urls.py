@@ -17,7 +17,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from escolar.core.views import home
+
 urlpatterns = [
-    url(r'^$', 'escolar.core.views.home'),
+    url(r'^$', home),
     url(r'^admin/', admin.site.urls),
 ]
