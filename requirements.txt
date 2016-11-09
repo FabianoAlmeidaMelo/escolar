@@ -1,4 +1,7 @@
+dj-database-url==0.4.1
 dj-static==0.0.6
 Django==1.9
+#sudo apt-get install python3.5-dev
+psycopg2==2.6.2
 python-decouple==3.0
 static3==0.7.0

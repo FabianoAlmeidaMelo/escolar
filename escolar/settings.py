@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from decouple import config
+from dj_database_url import parse as dburl
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -75,13 +76,24 @@ WSGI_APPLICATION = 'escolar.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+#  ######### DATABASE CONFIGURATION
+DATABASE_NAME = config('DATABASE_NAME', default='')
+DATABASE_USER = config('DATABASE_USER', default='')
+DATABASE_PASS = config('DATABASE_PASS', default='')
+DATABASE_HOST = config('DATABASE_HOST', default='localhost')
+DATABASE_PORT = config('DATABASE_PORT', default='5432')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASS,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
     }
 }
-
+#  ######### END DATABASE CONFIGURATION
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
