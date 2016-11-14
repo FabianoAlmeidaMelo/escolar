@@ -13,7 +13,6 @@ class HomeTest(TestCase):
 
     def test_template(self):
         """Must use index.html"""
-        # response = self.client.get('/')
         self.assertTemplateUsed(self.response, 'index.html')
 
 
