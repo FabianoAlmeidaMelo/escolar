@@ -86,7 +86,8 @@ DATABASE_PORT = config('DATABASE_PORT', default='5432')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': DATABASE_NAME,
         'USER': DATABASE_USER,
         'PASSWORD': DATABASE_PASS,
@@ -94,6 +95,7 @@ DATABASES = {
         'PORT': DATABASE_PORT,
     }
 }
+
 #  ######### END DATABASE CONFIGURATION
 
 # Password validation
