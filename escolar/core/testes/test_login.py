@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url
 
-class HomeTest(TestCase):
-    # fixtures = ['keynotes.json']
+class LoginTest(TestCase):
+
     def setUp(self):
-        self.response = self.client.get(resolve_url('home'))
+        self.response = self.client.get(resolve_url('login'))
 
     def test_get(self):
         """GET / must return status code 200"""
@@ -12,9 +12,9 @@ class HomeTest(TestCase):
         self.assertEqual(200, self.response.status_code)
 
     def test_template(self):
-        """Must use index.html"""
+        """Must use login.html"""
         # response = self.client.get('/')
-        self.assertTemplateUsed(self.response, 'index.html')
+        self.assertTemplateUsed(self.response, 'login.html')
 
 
     # def test_speackers_link(self):

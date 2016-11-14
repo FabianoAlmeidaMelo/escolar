@@ -1,25 +1,42 @@
-"""escolar URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.9/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Add an import:  from blog import urls as blog_urls
-    2. Import the include() function: from django.conf.urls import url, include
-    3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
-"""
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import logout, login
+from escolar.core.forms import AuthenticationForm
 
 from escolar.core.views import home
 
 urlpatterns = [
-    url(r'^$', home),
+    url(r'^$', home, name='home'),
+    # Logins
+    url(r'^logout/$', logout, {"next_page": "/"}, name="logout"),
+    url(r'^login/$',
+        login,
+        {
+         'template_name': 'login.html',
+         'authentication_form': AuthenticationForm,
+        },
+        name="login"),
+
+    # password Reset
+    url(
+        r'^user/password/reset/$',
+        'django.contrib.auth.views.password_reset',
+        {'post_reset_redirect': '/user/password/reset/done/'},
+        name="password_reset"
+    ),
+    url(
+        r'^user/password/reset/done/$',
+        'django.contrib.auth.views.password_reset_done'
+    ),
+    url(
+        r'^user/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$',
+        'django.contrib.auth.views.password_reset_confirm',
+        {'post_reset_redirect': '/user/password/done/'}
+    ),
+    url(
+        r'^user/password/done/$',
+        'django.contrib.auth.views.password_reset_complete'
+    ),
     url(r'^admin/', admin.site.urls),
 ]
