@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'municipios',
     'escolar.core',
+    'escolar.escolas',
 ]
 
 MIDDLEWARE_CLASSES = [
