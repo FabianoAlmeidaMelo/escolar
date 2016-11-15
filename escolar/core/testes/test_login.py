@@ -19,10 +19,14 @@ class LoginTest(TestCase):
 
     def test_html(self):
         """Must conatain input tags"""
-        self.assertContains(self.response, '<form')
-        self.assertContains(self.response, '<input', 4)
-        self.assertContains(self.response, 'type="text"', 2)
-        self.assertContains(self.response, 'type="submit"', 1)
+        tags = (('<form', 1),
+                ('<input', 4),
+                ('type="text"', 2),
+                ('type="submit"', 1),
+            )
+        for txt, count in tags:
+            with self.subTest():
+                self.assertContains(self.response, txt, count)
 
     def test_crsf(self):
         """Html must coantain csrf"""
