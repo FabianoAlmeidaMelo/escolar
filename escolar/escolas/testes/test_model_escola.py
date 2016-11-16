@@ -31,3 +31,6 @@ class EscolaModelTest(TestCase):
         """TESTE 01 test_model_escola"""
         self.assertTrue(Escola.objects.exists())
 
+    def test_created_at(self):
+        """Escola must have an auto created_at attr"""
+        self.assertIsInstance(self.obj.created_at, datetime)
