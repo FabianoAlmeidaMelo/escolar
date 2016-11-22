@@ -50,7 +50,8 @@ class User(AbstractBaseUser):
     sexo = models.IntegerField(u'Sexo', choices=SEXO, null=True, blank=True)
 
     objects = UserManager()
-
+    # email só pode p aluno, outros: cpf
+    # validar no form, se o username for email, só tem opção de aluno
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('nome', )
 
@@ -60,10 +61,3 @@ class User(AbstractBaseUser):
 
     def __unicode__(self):
         return self.email
-
-# class Escola(models.Model):
-#     nome=models.CharField(max_length=200)
-#     endereco=models.CharField(max_length=200)
-#     numero=models.CharField(max_length=10)
-#     telefone=models.CharField(max_length=12)
-
