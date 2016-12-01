@@ -27,20 +27,26 @@ ANO = (
 class Escola(models.Model):
     '''
     se fosse o bitbucket seria um 'Projeto'!?
-    só que aqui no Bolt, nós adicionamos as escolas
+    só que aqui no *, nós adicionamos as escolas
     no futuro pode ser "auto adicionada"
     '''
-    nome = models.CharField(max_length=200)
-    endereco = models.CharField(max_length=200)
-    numero = models.CharField(max_length=10)
-    telefone = models.CharField(max_length=14, null=True, blank=True)
-    complemento = models.CharField(max_length=100, null=True, blank=True)
-    bairro = models.CharField(max_length=100)
+    nome = models.CharField('nome', max_length=200)
+    endereco = models.CharField('endereço', max_length=200)
+    numero = models.CharField('número', max_length=10)
+    telefone = models.CharField('telefone', max_length=14, null=True, blank=True)
+    complemento = models.CharField('comnplemento', max_length=100, null=True, blank=True)
+    bairro = models.CharField('bairro', max_length=100)
     # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'escola'
+        verbose_name_plural = 'escolas'
+        ordering = ('nome',)
+
     def __str__(self):
         return self.nome
+
 
 # class Equipe(models.Model):
 #     '''

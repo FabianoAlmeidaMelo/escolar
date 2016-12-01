@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'municipios',
     'escolar.core',
-    'escolar.escolas',
+    'escolar.escolas.apps.EscolasConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -81,6 +81,7 @@ WSGI_APPLICATION = 'escolar.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 #  ######### DATABASE CONFIGURATION
+DATABASE_ENGINE = config('DATABASE_ENGINE', default='')
 DATABASE_NAME = config('DATABASE_NAME', default='')
 DATABASE_USER = config('DATABASE_USER', default='')
 DATABASE_PASS = config('DATABASE_PASS', default='')
@@ -89,8 +90,7 @@ DATABASE_PORT = config('DATABASE_PORT', default='5432')
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': DATABASE_USER,
         'PASSWORD': DATABASE_PASS,
@@ -98,7 +98,6 @@ DATABASES = {
         'PORT': DATABASE_PORT,
     }
 }
-
 #  ######### END DATABASE CONFIGURATION
 
 # Password validation
