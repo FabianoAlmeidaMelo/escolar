@@ -27,7 +27,7 @@ ANO = (
 class Escola(models.Model):
     '''
     se fosse o bitbucket seria um 'Projeto'!?
-    só que aqui no Bolt, nós adiconamos as escolas
+    só que aqui no Bolt, nós adicionamos as escolas
     no futuro pode ser "auto adicionada"
     '''
     nome = models.CharField(max_length=200)
@@ -36,9 +36,11 @@ class Escola(models.Model):
     telefone = models.CharField(max_length=14, null=True, blank=True)
     complemento = models.CharField(max_length=100, null=True, blank=True)
     bairro = models.CharField(max_length=100)
-    municipio = models.ForeignKey(Municipio)
+    # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
 
+    def __str__(self):
+        return self.nome
 
 # class Equipe(models.Model):
 #     '''
@@ -54,38 +56,38 @@ class Escola(models.Model):
 #     ativo = models.BooleanField('Ativo', default=True) # Não remove da equipe, ativa ou inativa
 
 
-class Aluno(models.Model):
-    usuario = models.ForeignKey(User)
+# class Aluno(models.Model):
+#     usuario = models.ForeignKey(User)
 
-    def __unicode__(self):
-        return self.uers.nome
+#     def __unicode__(self):
+#         return self.uers.nome
 
-class Responsavel(models.Model):
-    user = models.ForeignKey(User)
-    aluno = models.ManyToManyField(Aluno)
+# class Responsavel(models.Model):
+#     user = models.ForeignKey(User)
+#     aluno = models.ManyToManyField(Aluno)
 
-    def __unicode__(self):
-        return self.uers.nome
+#     def __unicode__(self):
+#         return self.uers.nome
 
-class Professor(models.Model):
-    user = models.ForeignKey(User)
+# class Professor(models.Model):
+#     user = models.ForeignKey(User)
 
-    def __unicode__(self):
-        return self.uers.nome
+#     def __unicode__(self):
+#         return self.uers.nome
 
-class Classe(models.Model):
-    escola = models.ForeignKey(Escola)
-    ano = models.SmallIntegerField('Ano', choices=ANO)  # 2017
-    curso = models.CharField(max_length=20) # ex: 5º ano A
-    professor = models.ManyToManyField(Professor, related_name='professor')  # m2m ?? embora até o 5º ano seja 1 prof
-    turma = models.ManyToManyField(Aluno, related_name='turma')
-    periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
+# class Classe(models.Model):
+#     escola = models.ForeignKey(Escola)
+#     ano = models.SmallIntegerField('Ano', choices=ANO)  # 2017
+#     curso = models.CharField(max_length=20) # ex: 5º ano A
+#     professor = models.ManyToManyField(Professor, related_name='professor')  # m2m ?? embora até o 5º ano seja 1 prof
+#     turma = models.ManyToManyField(Aluno, related_name='turma')
+#     periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
 
-    def __unicode__(self):
-        return "%s - %s "% (self.curso, str(self.ano))
+    # def __unicode__(self):
+    #     return "%s - %s "% (self.curso, str(self.ano))
 
-class Agenda(models.Model):
-    aluno = models.ForeignKey(Aluno)
+# class Agenda(models.Model):
+#     aluno = models.ForeignKey(Aluno)
 
 
 
