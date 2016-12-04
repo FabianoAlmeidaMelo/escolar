@@ -1,27 +1,37 @@
 {% extends 'base.html'%}
+
 {% block title %}Escolas{% endblock title %}
+
 {% block content %}
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+<section class="featured">
+    <div class="container"> 
+        <div class="row mar-bot40">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="align-center">
+                <table class="striped">
+                    <thead>
+                      <tr>
+                          <th data-field="id">Escola</th>
+                          <th data-field="name">Endereço</th>
+                          <th data-field="price">Telefone</th>
+                          <th data-field="price">Status</th>
+                      </tr>
+                    </thead>
 
-<table>
-        <thead>
-          <tr>
-              <th data-field="id">Escola</th>
-              <th data-field="name">Endereço</th>
-              <th data-field="price">Telefone</th>
-              <th data-field="price">Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-        {% for escola in escolas %}
-          <tr>
-            <td>{{ escola.nome }}</td>
-            <td>{{ escola.endereco }}</td>
-            <td>{{ escola.telefone }}</td>
-            <td>{{ escola.status|default:"--" }}</td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+                    <tbody>
+                    {% for escola in escolas %}
+                      <tr>
+                        <td>{{ escola.nome }}</td>
+                        <td>{{ escola.endereco }}</td>
+                        <td>{{ escola.telefone }}</td>
+                        <td>{{ escola.status|default:"--" }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
