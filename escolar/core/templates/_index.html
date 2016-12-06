@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- BASICS -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Bolt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="static/css/isotope.css" media="screen" /> 
+        <link rel="stylesheet" href="static/js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="static/css/bootstrap.css">
+        <link rel="stylesheet" href="static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="static/css/style.css">
+        <!-- skin -->
+        <link rel="stylesheet" href="static/skin/default.css">
+    </head>
+     
+    <body>
+        <section id="header" class="appear"></section>
+        <div class="navbar navbar-fixed-top" role="navigation" data-0="line-height:100px; height:100px; background-color:rgba(0,0,0,0.3);" data-300="line-height:60px; height:60px; background-color:rgba(0,0,0,1);">
+             <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="fa fa-bars color-white"></span>
+                    </button>
+                    <h1><a class="navbar-brand" 
+                           href="."
+                           data-0="line-height:90px;"
+                           data-300="line-height:50px;">Bolt</a></h1>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav" data-0="margin-top:20px;" data-300="margin-top:5px;">
+                        <li class="active"><a href=".">Home</a></li>
+                        <li><a href="#section-services">Serviços</a></li>
+                        <li><a href="#section-team">Equipe</a></li>
+                        <li><a href="#section-works">Parceiros</a></li>
+                        <li><a href="#section-contact">Contact</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                    </ul>
+                </div><!--/.navbar-collapse -->
+            </div>
+        </div>
+
+        <section class="featured">
+            <div class="container"> 
+                <div class="row mar-bot40">
+                    <div class="col-md-6 col-md-offset-3">
+                        
+                        <div class="align-center">
+                            <!-- <i class="fa fa-flask fa-5x mar-bot20"></i> -->
+                            <i class="fa fa-bolt fa-5x mar-bot20"></i>
+                            <h2 class="slogan">Bolt</h2>
+                            <p>
+                            Ferramenta de auxílio na gestão escolar, democratizando o uso de tecnologia para modernização de escolas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- services -->
+        <section id="section-services" class="section pad-bot30 bg-white">
+        <div class="container"> 
+        
+            <div class="row mar-bot40">
+                <div class="col-lg-4" >
+                    <div class="align-center">
+                        <i class="fa fa-book fa-5x mar-bot20"></i>
+                        <h4 class="text-bold">Agenda do Aluno</h4>
+                        <p>Comunicação rápida, direta, multiusuário</p>
+                    </div>
+                        <ul>
+                            <li>Mensagem simultânea para todos os alunos</li>
+                            <li>Mensagem para grupos de alunos</li>
+                            <li>Mensagem simultânea para todos responsáveis de alunos</li>
+                            <li>Mensagem para grupos de responsáveis por alunos</li>
+                        </ul>
+                </div>
+                    
+                <div class="col-lg-4" >
+                    <div class="align-center">
+                        <i class="fa fa-calendar fa-5x mar-bot20"></i>
+                        <h4 class="text-bold">Gestão do Calendário</h4>
+                        <p>Gestão do calendário on line, acesso de qualquer lugar</p>
+                    </div>
+                        <ul>
+                            <li>Calendário de aulas</li>
+                            <li>Datas das provas por sala de aula</li>
+                            <li>Datas dos compromissos financeiros dos Responsáveis dos alunos</li>
+                            <li>Envios de alertas para os responsáveis</li>
+                        </ul>
+                </div>
+            
+                <div class="col-lg-4" >
+                    <div class="align-center">
+                        <i class="fa fa-file fa-5x mar-bot20"></i>
+                        <h4 class="text-bold">Arquivos</h4>
+                        <p>Acesso aos dados de onde você estiver</p>
+                    </div>
+                        <ul>
+                            <li>Exercícios</li>
+                            <li>Cadastro de alunos</li>
+                        </ul>
+                </div>
+            
+            </div>  
+
+        </div>
+        </section>
+            
+        <!-- spacer section:testimonial -->
+        <section id="testimonials" class="section" data-stellar-background-ratio="0.5">
+        <div class="container">
+            <div class="row">               
+                    <div class="col-lg-12">
+                            <div class="align-center">
+                                        <div class="testimonial pad-top40 pad-bot40 clearfix">
+                                            <h5>
+                                                Escola moderna, mais produtividade na gestão.
+                                            </h5>
+                                            <br/>
+                                            <!-- <span class="author">&mdash; MIKE DOE <a href="#">www.siteurl.com</a></span> -->
+                                        </div>
+
+                                </div>
+                            </div>
+                    </div>
+                
+            </div>  
+        </div>  
+        </section>
+            
+        <!-- team -->
+        <section id="section-team" class="section appear clearfix">
+        <div class="container">
+
+                <div class="row mar-bot40">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div class="section-header">
+                            <h2 class="section-heading animated" data-animation="bounceInUp">Our Team</h2>
+                            <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet consectetur, adipisci velit, sed quia non numquam.</p>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="row align-center mar-bot40">
+                        <div class="col-md-3">
+                            <div class="team-member">
+                                <figure class="member-photo"><img src="static/img/team/member1.jpg" alt="" /></figure>
+                                <div class="team-detail">
+                                    <h4>Jason Doe</h4>
+                                    <span>User experiences</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="team-member">
+                                <figure class="member-photo"><img src="static/img/team/member2.jpg" alt="" /></figure>
+                                <div class="team-detail">
+                                    <h4>Timothy Clark</h4>
+                                    <span>Web developer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="team-member">
+                                <figure class="member-photo"><img src="static/img/team/member3.jpg" alt="" /></figure>
+                                <div class="team-detail">
+                                <h4>Vicky Tan</h4>
+                                    <span>Web designer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="team-member">
+                                <figure class="member-photo"><img src="static/img/team/member4.jpg" alt="" /></figure>
+                                <div class="team-detail">
+                                <h4>Kevin Peterson</h4>
+                                    <span>UI designer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+        </div>
+        </section>
+        <!-- /team -->
+        
+        <!-- spacer section:stats -->
+        <section id="parallax1" class="section pad-top40 pad-bot40" data-stellar-background-ratio="0.5">
+            <div class="container">
+            <div class="align-center pad-top40 pad-bot40">
+                <blockquote class="bigquote color-white">"A mente que se abre a uma nova idéia, jamais voltará a seu tamanho original"</blockquote>
+                <p class="color-white">Einstein</p>
+            </div>
+            </div>  
+        </section>
+        
+        <!-- section works -->
+        <section id="section-works" class="section appear clearfix">
+            <div class="container">
+                
+                <div class="row mar-bot40">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div class="section-header">
+                            <h2 class="section-heading animated" data-animation="bounceInUp">Parceiros</h2>
+                            <p>Escolas parceiras que ajudam a desenvolver e já utilizam o Bolt em suas atividades</p>
+                        </div>
+                    </div>
+                </div>
+                    
+                       <!--  <div class="row">
+                          <nav id="filter" class="col-md-12 text-center">
+                            <ul>
+                              <li><a href="#" class="current btn-theme btn-small" data-filter="*">All</a></li>
+                              <li><a href="#"  class="btn-theme btn-small" data-filter=".webdesign" >Web Design</a></li>
+                              <li><a href="#"  class="btn-theme btn-small" data-filter=".photography">Photography</a></li>
+                              <li ><a href="#" class="btn-theme btn-small" data-filter=".print">Print</a></li>
+                            </ul>
+                          </nav> -->
+                          <div class="col-md-12">
+                            <div class="row">
+                              <div class="portfolio-items isotopeWrapper clearfix" id="3">
+                              
+                                <article class="col-md-4 isotopeItem webdesign">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/padrejulio.png" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="http://blogpadrejulio.blogspot.com.br/">Escola Padre Julio Maria</a></h5>
+                                                <a href="img/portfolio/padrejulio.png" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem photography">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img2.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img2.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+                                
+
+                                <article class="col-md-4 isotopeItem photography">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img3.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img3.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem print">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img4.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img4.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem photography">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img5.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img5.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem webdesign">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img6.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img6.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem print">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img7.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img7.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem photography">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img8.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img8.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+
+                                <article class="col-md-4 isotopeItem print">
+                                    <div class="portfolio-item">
+                                        <img src="static/img/portfolio/img9.jpg" alt="" />
+                                         <div class="portfolio-desc align-center">
+                                            <div class="folio-info">
+                                                <h5><a href="#">Portfolio name</a></h5>
+                                                <a href="img/portfolio/img9.jpg" class="fancybox"><i class="fa fa-plus fa-2x"></i></a>
+                                             </div>                                        
+                                         </div>
+                                    </div>
+                                </article>
+                                </div>
+                                        
+                            </div>
+                                     
+
+                            </div>
+                        </div>
+                
+            </div>
+        </section>
+        <section id="parallax2" class="section parallax" data-stellar-background-ratio="0.5">   
+            <div class="align-center pad-top40 pad-bot40">
+                <blockquote class="bigquote color-white"></blockquote>
+                <p class="color-white"></p>
+            </div>
+        </section>
+
+        <!-- contact -->
+        <section id="section-contact" class="section appear clearfix">
+            <div class="container">
+                
+                <div class="row mar-bot40">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div class="section-header">
+                            <h2 class="section-heading animated" data-animation="bounceInUp">Contato</h2>
+                            <p>Para verificar a disponibilidade para novos parceiros, entre em contato</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="cform" id="contact-form">
+                            <div id="sendmessage">
+                                 Your message has been sent. Thank you!
+                            </div>
+                            <form action="contact/contact.php" method="post" role="form" class="contactForm">
+                              <div class="form-group">
+                                <label for="name">Seu Nome</label>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Seu Nome" data-rule="maxlen:4" data-msg="Please enter at least 4 chars" />
+                                <div class="validation"></div>
+                              </div>
+                              <div class="form-group">
+                                <label for="email">Seu email</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Seu email" data-rule="email" data-msg="Please enter a valid email" />
+                                <div class="validation"></div>
+                              </div>
+                              <div class="form-group">
+                                <label for="subject">Assunto</label>
+                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Assunto" data-rule="maxlen:4" data-msg="Please enter at least 8 chars of subject" />
+                                <div class="validation"></div>
+                              </div>
+                              <div class="form-group">
+                                <label for="message">Mensagem</label>
+                                <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us"></textarea>
+                                <div class="validation"></div>
+                              </div>
+                              
+                              <button type="submit" class="btn btn-theme pull-left">ENVIAR</button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- ./span12 -->
+                </div>
+                
+            </div>
+        </section>
+        <!-- contact -->
+        <section id="section-login" class="section appear clearfix">
+            <div class="container">
+                
+                <div class="row mar-bot40">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div class="section-header">
+                            <h2 class="section-heading animated" data-animation="bounceInUp">Login</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="cform" id="contact-form">
+                            <div id="sendmessage">
+                                 Your message has been sent. Thank you!
+                            </div>
+                            <form action="contact/contact.php" method="post" role="form" class="contactForm">
+                              <div class="form-group">
+                                <label for="name">Username</label>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Username" data-rule="maxlen:4" data-msg="Please enter at least 4 chars" />
+                                <div class="validation"></div>
+                              </div>
+                              <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="********" data-rule="email" data-msg="Please enter a valid email" />
+                                <div class="validation"></div>
+                              </div>
+                              <button type="submit" class="btn btn-theme pull-left">ENTRAR</button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- ./span12 -->
+                </div>
+                
+            </div>
+        </section>
+        
+    <section id="footer" class="section footer">
+        <div class="container">
+            <div class="row animated opacity mar-bot20" data-andown="fadeIn" data-animation="animation">
+                <div class="col-sm-12 align-center">
+                    <ul class="social-network social-circle">
+                        <li><a href="#" class="icoRss" title="Rss"><i class="fa fa-rss"></i></a></li>
+                        <li><a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#" class="icoGoogle" title="Google +"><i class="fa fa-google-plus"></i></a></li>
+                        <li><a href="#" class="icoLinkedin" title="Linkedin"><i class="fa fa-linkedin"></i></a></li>
+                    </ul>               
+                </div>
+            </div>
+
+            <div class="row align-center copyright">
+                    <div class="col-sm-12"><p>Copyright &copy; 2014 Amoeba - by <a href="http://bootstraptaste.com">Bootstraptaste</a></p></div>
+            </div>
+        </div>
+
+    </section>
+
+    </body>
+</html>

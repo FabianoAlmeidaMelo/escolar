@@ -19,8 +19,8 @@ class LoginTest(TestCase):
 
     def test_html(self):
         """Must conatain input tags"""
-        tags = (('<form', 1),
-                ('<input', 4),
+        tags = (('<form', 2),
+                ('<input', 7),
                 ('type="text"', 2),
                 ('type="submit"', 1),
             )

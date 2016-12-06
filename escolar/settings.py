@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'municipios',
     'escolar.core',
-    'escolar.escolas',
+    'escolar.escolas.apps.EscolasConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -76,11 +76,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'escolar.wsgi.application'
 
+# ######### CUSTOM USER CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
+AUTH_USER_MODEL = 'core.User'
+# ######### END CUSTOM USER CONFIGURATION
 
+# ######### CUSTOM LOGIN URL CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+LOGIN_URL = '/login/'
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+LOGIN_REDIRECT_URL = '/'
+# ######### END CUSTOM LOGIN URL CONFIGURATION
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 #  ######### DATABASE CONFIGURATION
+DATABASE_ENGINE = config('DATABASE_ENGINE', default='')
 DATABASE_NAME = config('DATABASE_NAME', default='')
 DATABASE_USER = config('DATABASE_USER', default='')
 DATABASE_PASS = config('DATABASE_PASS', default='')
@@ -89,8 +100,7 @@ DATABASE_PORT = config('DATABASE_PORT', default='5432')
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': DATABASE_ENGINE,
         'NAME': DATABASE_NAME,
         'USER': DATABASE_USER,
         'PASSWORD': DATABASE_PASS,
@@ -98,7 +108,6 @@ DATABASES = {
         'PORT': DATABASE_PORT,
     }
 }
-
 #  ######### END DATABASE CONFIGURATION
 
 # Password validation
