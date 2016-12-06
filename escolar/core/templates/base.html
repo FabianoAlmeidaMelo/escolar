@@ -13,34 +13,47 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 </head>
      
     <body>
       <nav class="white" role="navigation">
-    <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo green-text"><i class="material-icons">flash_on</i>DK</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="#section-services">Serviços</a></li>
-        <li><a href="#section-team">Equipe</a></li>
-        <li><a href="#section-works">Parceiros</a></li>
-        <li><a href="#section-contact">Contact</a></li>
-        <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">Login</a></li>
-      </ul>
+        <div class="nav-wrapper container">
+          <a id="logo-container" href="#" class="brand-logo green-text"><i class="material-icons">flash_on</i>DK</a>
+          <ul class="right hide-on-med-and-down">
+            {% if request.user.is_anonymous %}
+            <li><a href="#section-services"><font color='grey'>Serviços</font></a></li>
+            <li><a href="#section-team"><font color='grey'>Equipe</a></font></li>
+            <li><a href="#section-works"><font color='grey'>Parceiros</font></a></li>
+            <li><a href="#section-contact"><font color='grey'>Contato</font></a></li>
+              <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">LogIn</a></li>
+            {% else %}
+              <li><a href="{% url 'escolas_list' %}"><font color='grey'>Escolas</font></a></li>
+              <li><a href="#"><font color='grey'>{{ request.user }}</font></a></li>
+              <li><a href="{% url 'logout' %}" class="waves-effect waves-light btn">LogOut</a></li>
+            {% endif %}
+          </ul>
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="#section-services">Serviços</a></li>
-        <li><a href="#section-team">Equipe</a></li>
-        <li><a href="#section-works">Parceiros</a></li>
-        <li><a href="#section-contact">Contact</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
+          <ul id="nav-mobile" class="side-nav">
+            <li><a href="#section-services"><font color='grey'>Serviços</font></a></li>
+            <li><a href="#section-team"><font color='grey'>Equipe</a></font></li>
+            <li><a href="#section-works"><font color='grey'>Parceiros</font></a></li>
+            <li><a href="#section-contact"><font color='grey'>Contato</font></a></li>
+            {% if request.user.is_anonymous %}
+              <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">LogIn</a></li>
+            {% else %}
+              <li><a href="{% url 'escolas_list' %}"><font color='grey'>Escolas</font></a></li>
+              <li><a href="{% url 'logout' %}" class="waves-effect waves-light btn">LogOut</a></li>
+            {% endif %}
+          </ul>
+          <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+      </nav>
   
-{% block extra_css %}{% endblock extra_css %}
-{% block content %}
-{% endblock content %}
+      {% block extra_css %}{% endblock extra_css %}
+      {% block content %}
+      {% endblock content %}
 
     </body>
 </html>

@@ -76,7 +76,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'escolar.wsgi.application'
 
+# ######### CUSTOM USER CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
+AUTH_USER_MODEL = 'core.User'
+# ######### END CUSTOM USER CONFIGURATION
 
+# ######### CUSTOM LOGIN URL CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+LOGIN_URL = '/login/'
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+LOGIN_REDIRECT_URL = '/'
+# ######### END CUSTOM LOGIN URL CONFIGURATION
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
