@@ -15,9 +15,18 @@
   <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  <script type="text/javascript">
+    $(".dropdown-button").dropdown();
+  </script>
 </head>
      
     <body>
+      <ul id="dropdown1" class="dropdown-content">
+        <li><a href="{% url 'escolas_list' %}"><font color='grey'>Escolas</font></a></li>
+        <li><a href="#!">two</a></li>
+        <li class="divider"></li>
+        <li><a href="#!">three</a></li>
+      </ul>
       <nav class="white" role="navigation">
         <div class="nav-wrapper container">
           <a id="logo-container" href="{% url 'home' %}" class="brand-logo green-text"><i class="material-icons">flash_on</i>DK</a>
@@ -29,7 +38,9 @@
             <li><a href="#section-contact"><font color='grey'>Contato</font></a></li>
               <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">LogIn</a></li>
             {% else %}
-              <li><a href="{% url 'escolas_list' %}"><font color='grey'>Administração</font></a></li>
+            <!-- Dropdown Trigger -->
+            <li>
+              <a class="dropdown-button" href="#!" data-activates="dropdown1"><font color='grey'>Administração</font><i class="material-icons right">arrow_drop_down</i></a></li>
               <li><a href="#"><font color='grey'>Comunicação</font></a></li>
               <li><a href="#"><font color='grey'>Conteúdo</font></a></li>
               <li><a href="#"><font color='grey'><i class="material-icons">perm_identity</i></font></a></li>
