@@ -29,6 +29,8 @@
                       <td>{{ escola.telefone }}</td>
                       <td>{{ escola.status|default:"--" }}</td>
                     </tr>
+                  {% empty %}
+                  Nenhuma escola encontrada.
                   {% endfor %}
                   </tbody>
               </table>

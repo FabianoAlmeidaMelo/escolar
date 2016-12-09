@@ -13,11 +13,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-  <script type="text/javascript">
-    $(".dropdown-button").dropdown();
-  </script>
 </head>
      
     <body>
@@ -40,7 +35,7 @@
             {% else %}
             <!-- Dropdown Trigger -->
             <li>
-              <a class="dropdown-button" href="#!" data-activates="dropdown1"><font color='grey'>Administração</font><i class="material-icons right">arrow_drop_down</i></a></li>
+              <a href="{% url 'escolas_list' %}"><font color='grey'>Administração</font></a></li>
               <li><a href="#"><font color='grey'>Comunicação</font></a></li>
               <li><a href="#"><font color='grey'>Conteúdo</font></a></li>
               <li><a href="#"><font color='grey'><i class="material-icons">perm_identity</i></font></a></li>
