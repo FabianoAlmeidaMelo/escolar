@@ -1,7 +1,7 @@
 from django.db import models
 from municipios.models import Municipio
 from escolar.core.models import User
-
+from django.conf import settings
 
 PERIODO = (
     (1, 'Manhã'),
@@ -26,9 +26,6 @@ ANO = (
 
 class Escola(models.Model):
     '''
-    se fosse o bitbucket seria um 'Projeto'!?
-    só que aqui no *, nós adicionamos as escolas
-    no futuro pode ser "auto adicionada"
     '''
     nome = models.CharField('nome', max_length=200)
     endereco = models.CharField('endereço', max_length=200)
@@ -38,6 +35,10 @@ class Escola(models.Model):
     bairro = models.CharField('bairro', max_length=100)
     # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
+    slug = models.CharField('slug', max_length=50, null=True)
+    # logo = models.URLField(upload_to='%s/escolas/logotipo/' % (settings.UPLOAD_PATH), max_length=300,  blank=True, null=True)
+    site = models.URLField('website', blank=True, null=True)
+    description = models.TextField('descrição', blank=True, null=True)
 
     class Meta:
         verbose_name = 'escola'
