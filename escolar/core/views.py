@@ -3,4 +3,7 @@ from django.shortcuts import render
 
 # @login_required
 def home(request):
-    return render(request, 'index.html')
+    user = request.user
+    context = {}
+    context['user'] = user
+    return render(request, 'index.html', context)
