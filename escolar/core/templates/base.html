@@ -21,6 +21,8 @@
     <!--[if lt IE 9]>
       <script src="static/js/html5shiv.js"></script>
     <![endif]-->
+    <!-- This file store project specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
 
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'ico/apple-touch-icon-144-precomposed.png'%}">
@@ -114,7 +116,6 @@
     <script src="{% static 'js/bootstrap-collapse.js' %}"></script>
     <script src="{% static 'js/bootstrap-carousel.js' %}"></script>
     <script src="{% static 'js/bootstrap-typeahead.js' %}"></script>
-    {% block extra_js %}
-    {% endblock extra_js%}
+    {% block extra_js %} {% endblock extra_js%}
     </body>
 </html>

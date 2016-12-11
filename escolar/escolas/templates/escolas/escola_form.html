@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load bootstrap_toolkit %}
+
+{% block content %}
+
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li><a href="{% url 'escolas_list' %}" id='escola' data-toggle="tab">Escola</a></li>
+    <li><a href="#classes" data-toggle="tab">Classes</a></li>
+    <li><a href="#professores" data-toggle="tab">Professores</a></li>
+    <li><a href="#alunos" data-toggle="tab">Alunos</a></li>
+  </ul>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <div class="controls cwell">
+            <div class="row-fluid">
+                {{ form.nome|as_bootstrap }}
+                {{ form.endereco|as_bootstrap }}
+                {{ form.numero|as_bootstrap }}
+            </div>
+            <div class="row-fluid">
+                {{ form.telefone|as_bootstrap }}
+                {{ form.complemento|as_bootstrap }}
+                {{ form.bairro|as_bootstrap }}
+            </div>
+            <div class="row-fluid">
+                {{ form.slug|as_bootstrap }}
+                {{ form.site|as_bootstrap }}
+            </div>
+            <div class="row-fluid">
+                {{ form.description|as_bootstrap }}
+            </div>
+        </div>
+        <div class="form-actions">
+            <input type="submit" value="Salvar" class="btn btn-primary">
+            <a href="{% url 'escolas_list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </div>
+</form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

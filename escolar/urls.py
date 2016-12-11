@@ -27,7 +27,7 @@ urlpatterns = patterns(
     '',
     url(r'^$', home, name='home'),
     # url(r'^core/', include('escolar.core.urls')),
-    url(r'^escolas/', include('escolar.escolas.urls')),
+    url(r'^administracao/', include('escolar.escolas.urls')),
 
     # url(r'^escolas/', include('escolar.escolas.urls',
     #                           namespace='escolas')),
