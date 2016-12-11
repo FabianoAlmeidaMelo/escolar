@@ -5,6 +5,13 @@
 {% block content %}
 
 <div class="container">
+  <ul class="nav nav-tabs">
+    <li><a href="{% url 'escolas_list' %}" id='escola' data-toggle="tab">Escola</a></li>
+    <li><a href="#classes" data-toggle="tab">Classes</a></li>
+    <li><a href="#professores" data-toggle="tab">Professores</a></li>
+    <li><a href="#alunos" data-toggle="tab">Alunos</a></li>
+  </ul>
+
   <table class="table table-striped">
       <thead>
         <tr>
@@ -12,6 +19,9 @@
             <th>Endereço</th>
             <th>Telefone</th>
             <th>Status</th>
+            <th>slug</th>
+            <th>site</th>
+
         </tr>
       </thead>
 
@@ -20,14 +30,24 @@
         <tr>
           <td>{{ escola.nome }}</td>
           <td>{{ escola.endereco }}</td>
-          <td>{{ escola.telefone }}</td>
-          <td>{{ escola.status|default:"--" }}</td>
+          <td>{{ escola.telefone|default:"--" }}</td>
+          <td>{{ escola.get_status|yesno:'ativo,inativo' }}</td>
+          <td>{{ escola.slug|default:"--" }}</td>
+          <td>{{ escola.site|default:"--" }}</td>
         </tr>
       {% empty %}
-         Nenhuma escola encontrada.
+            Nenhuma escola encontrada
       {% endfor %}
       </tbody>
   </table>
 </div>
 
 {% endblock content %}
+
+    {% block extra_js %}
+    <script type="text/javascript">
+      $('.nav-tabs a').click(function(){
+        $(this).tab('show');
+})
+  </script>
+    {% endblock extra_js%}

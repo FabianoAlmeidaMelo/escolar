@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap_toolkit %}
 
 {% block extra_css %}
 <style type="text/css">
@@ -57,7 +58,7 @@
 
     <form class="form-signin" method="POST" action="{% if not next %}?next={% url 'escolas_list'%}{% endif %}">
         {% csrf_token %}
-        {{ form }}
+        {{ form|as_bootstrap }}
         <button class="btn btn-large btn-small btn-primary" type="submit">Login</button>
         <a href="{% url 'password_reset' %}" class="btn btn-small btn-inverse ">
             Esqueci minha Senha

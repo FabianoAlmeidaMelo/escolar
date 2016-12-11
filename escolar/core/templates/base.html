@@ -54,7 +54,6 @@
                 </form>
               {% else %}
                 <li><a href="{% url 'escolas_list' %}">Administração</a></li>
-                <li><a href="#contact">Perfil</a></li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Serviços <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -68,9 +67,19 @@
                     </ul>
                   </li>
                 </ul>
-                <form class="navbar-form pull-right">
-                  <a href="{% url 'logout' %}" class="btn">LogOut</a>
-                </form>
+                <ul class="nav pull-right">
+                  {% if user.is_authenticated %}
+                      <li{% if active_perfil %} class="active"{% endif %}>
+                          <a href="#">
+                              <i class="icon-user"></i> {{ user.email }}
+                          </a>
+                      </li>
+                      <li><a href="{% url 'logout' %}"><i class="icon-off"></i> Sair </a></li>
+                  {% else %}
+                      <li><a href="{% url 'login' %}"><i class="icon-arrow-up"></i> Entrar </a></li>
+
+                  {% endif %}
+              </ul>
             {% endif %}
           </div><!--/.nav-collapse -->
         </div>

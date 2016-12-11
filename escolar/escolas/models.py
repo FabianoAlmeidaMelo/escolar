@@ -49,6 +49,14 @@ class Escola(models.Model):
         return self.nome
 
 
+    def get_status(self):
+        '''
+        TODO:
+        será analizado por período da assinatura
+        se estiver válido, retorna True
+        '''
+        return True
+
 # class Equipe(models.Model):
 #     '''
 #     m2m EscolaUser
