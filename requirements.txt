@@ -7,4 +7,5 @@ python-decouple==3.0
 static3==0.7.0
 django-test-without-migrations==0.4
 django-municipios==0.8.1
+django-bootstrap-toolkit==2.15.0
 pytz
