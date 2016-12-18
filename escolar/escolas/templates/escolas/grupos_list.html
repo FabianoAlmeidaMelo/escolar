@@ -1,0 +1,46 @@
+{% extends 'base.html'%}
+
+{% block title %}Grupos{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+
+  {% include "base_adm.html" %}
+
+  <table class="table table-striped">
+      <caption>
+         <div style="float:right; margin-right:10px">
+            <a href="{% url 'grupo_form' escola.pk %}" class="btn btn-mini btn-success">Novo Grupo</a>
+         </div>
+
+      </caption>
+      <thead>
+        <tr>
+            <th>Grupo</th>
+            <th>Escola</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for grupo in grupos %}
+        <tr>
+          <td> <a href="{% url 'grupo_form' grupo.escola.pk grupo.pk %}">{{ grupo.grupo.nome }}</a></td>
+          <td>{{ grupo.grupo.escola.nome }}</td>
+        </tr>
+      {% empty %}
+            Nenhum grupo encontrado
+      {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+{% endblock content %}
+
+    {% block extra_js %}
+    <script type="text/javascript">
+      $('.nav-tabs a').click(function(){
+        $(this).tab('show');
+})
+  </script>
+    {% endblock extra_js%}

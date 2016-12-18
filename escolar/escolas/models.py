@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Group
 from municipios.models import Municipio
 from escolar.core.models import User
 from django.conf import settings
@@ -56,6 +57,37 @@ class Escola(models.Model):
         se estiver válido, retorna True
         '''
         return True
+
+class Grupo(Group):
+    nome = models.CharField('Nome', max_length=80)
+    escola = models.ForeignKey(Escola)
+
+    class Meta:
+        unique_together = ('nome', 'escola')
+        verbose_name = 'grupo'
+        verbose_name_plural = 'grupos'
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.name = '%s_%s' % (self.nome, self.escola.nome)
+        super(Grupo, self).save(*args, **kwargs)
+
+
+class GrupoUser(models.Model):
+    grupo = models.ForeignKey(Grupo)
+    user = models.ForeignKey(User)
+
+
+    def __str__(self):
+        return '%s , %s' % (self.user.nome, self.grupo.name,)
+
+# class EscolaGrupoUser(models.Model):
+#     grupo = models.ForeignKey(Grupo)
+#     user = models,ForeignKey(User)
+
 
 # class Equipe(models.Model):
 #     '''

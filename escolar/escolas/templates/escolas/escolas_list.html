@@ -5,14 +5,15 @@
 {% block content %}
 
 <div class="container">
-  <ul class="nav nav-tabs">
-    <li><a href="{% url 'escolas_list' %}" id='escola' data-toggle="tab">Escola</a></li>
-    <li><a href="#classes" data-toggle="tab">Classes</a></li>
-    <li><a href="#professores" data-toggle="tab">Professores</a></li>
-    <li><a href="#alunos" data-toggle="tab">Alunos</a></li>
-  </ul>
+
+  {% include "base_adm.html" %}
 
   <table class="table table-striped">
+     <caption>
+         <div style="float:right; margin-right:10px">
+            <a href="{% url 'escola_form' %}" class="btn btn-mini btn-success">Nova Escola</a>
+         </div>
+    </caption>
       <thead>
         <tr>
             <th>Escola</th>

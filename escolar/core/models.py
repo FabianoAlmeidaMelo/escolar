@@ -61,3 +61,6 @@ class User(AbstractBaseUser):
 
     def __unicode__(self):
         return self.email
+
+    def get_groups_list_ids(self):
+        return self.grupouser_set.all().values_list('grupo__id', flat=True)
