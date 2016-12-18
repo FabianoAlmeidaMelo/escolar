@@ -11,24 +11,28 @@
   <table class="table table-striped">
       <caption>
          <div style="float:right; margin-right:10px">
-            <a href="{% url 'grupo_form' escola.pk %}" class="btn btn-mini btn-success">Novo Grupo</a>
+            <a href="#" class="btn btn-mini btn-success">Novo Professor</a>
          </div>
       </caption>
       <thead>
         <tr>
-            <th>Grupo</th>
+            <th>Nome</th>
             <th>Escola</th>
+            <th>Turmas</th>
+            <th>Status</th>
         </tr>
       </thead>
 
       <tbody>
-      {% for grupo in grupos %}
+      {% for professor in professores %}
         <tr>
-          <td> <a href="{% url 'grupo_form' grupo.escola.pk grupo.pk %}">{{ grupo.grupo.nome }}</a></td>
-          <td>{{ grupo.grupo.escola.nome }}</td>
+          <td><a href="#">{{ professor.nome }}</a></td>
+          <td>{{ escola.nome }}</td>
+          <td>++</td>
+          <td>++</td>
         </tr>
       {% empty %}
-            Nenhum grupo encontrado
+            Nenhum professor encontrado
       {% endfor %}
       </tbody>
   </table>

@@ -6,6 +6,7 @@ from escolar.escolas.views import (
     escola_form,
     grupos_list,
     grupo_form,
+    professores_list,
     )
 
 urlpatterns = patterns(
@@ -18,4 +19,8 @@ urlpatterns = patterns(
     url(r'^escolas/(?P<pk_escola>\d+)/grupo_form/$', grupo_form, name='grupo_form'),
     url(r'^escolas/(?P<pk_escola>\d+)/grupo_form/(?P<pk_grupo>\d+)/$', grupo_form, name='grupo_form'),
     url(r'^escolas/grupos_list/$', grupos_list, name='grupos_list'),
+    # Professores
+    # url(r'^escolas/(?P<pk_escola>\d+)/grupo_form/$', grupo_form, name='grupo_form'),
+    # url(r'^escolas/(?P<pk_escola>\d+)/grupo_form/(?P<pk_grupo>\d+)/$', grupo_form, name='grupo_form'),
+    url(r'^escolas/(?P<escola_pk>\d+)/professores_list/$', professores_list, name='professores_list'),
 )

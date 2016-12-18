@@ -8,12 +8,14 @@ from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.escolas.models import (
     Escola,
     Grupo,
+    GrupoUser,
     )
 from escolar.escolas.forms import (
     EscolaForm,
     GrupoForm,
     )
 
+from escolar.core.models import User
 
 @login_required
 def escolas_list(request):
@@ -87,3 +89,44 @@ def grupo_form(request, pk_escola, pk_grupo=None):
     context['escola'] = escola
 
     return render(request, 'escolas/grupo_form.html', context)
+
+
+@login_required
+def professores_list(request, escola_pk=1):
+    escola = Escola.objects.get(id=escola_pk)
+    grupo_professor = Grupo.objects.filter(escola=escola, nome='Professores')
+    professores_ids = GrupoUser.objects.filter(grupo=grupo_professor).values_list('user__id', flat=True)
+    professores = User.objects.filter(id__in=professores_ids)
+    context = {}
+    context['professores'] = professores
+    context['escola'] = escola
+    return render(request, 'escolas/professores_list.html', context)
+
+
+# @login_required
+# def grupo_form(request, pk_escola, pk_grupo=None):
+#     escola = Escola.objects.get(id=pk_escola)
+#     if pk_grupo:
+#         grupo = get_object_or_404(Grupo, pk=pk_grupo)
+#         msg = u'Grupo alterado com sucesso.'
+#     else:
+#         grupo = None
+#         msg = u'Grupo criado.'
+
+#     form = GrupoForm(request.POST or None, instance=grupo, escola=escola)
+
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             grupo = form.save(commit=False)
+#             grupo.escola = escola
+#             grupo.save()
+#             messages.success(request, msg)
+#             return redirect(reverse('grupos_list'))
+#         else:
+#             messages.warning(request, u'Falha no cadastro do grupo')
+
+#     context = {}
+#     context['form'] = form
+#     context['escola'] = escola
+
+#     return render(request, 'escolas/grupo_form.html', context)

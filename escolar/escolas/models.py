@@ -79,48 +79,18 @@ class Grupo(Group):
 class GrupoUser(models.Model):
     grupo = models.ForeignKey(Grupo)
     user = models.ForeignKey(User)
+    # ativo = models.BooleanField()
 
 
     def __str__(self):
         return '%s , %s' % (self.user.nome, self.grupo.name,)
 
-# class EscolaGrupoUser(models.Model):
-#     grupo = models.ForeignKey(Grupo)
-#     user = models,ForeignKey(User)
 
+# class Turma(models.Model):
+#     ano = models.DateField('Ano')
+#     professor = models.ManyToManyField(User, related_name='professor')
+#     aluno = models.ManyToManyField()
 
-# class Equipe(models.Model):
-#     '''
-#     m2m EscolaUser
-#     Imagino um user diretor, adicionando outros users
-#     do time da escola: professores, secretários, ...
-#     mas os Alunos e responsáveis, creio que entrarão no
-#     sistema por Upload de planilha
-#     '''
-#     escola = models.ForeignKey(Escola)
-#     user = models.ForeignKey(User)
-#     grupo = models.SmallIntegerField('Grupo', choices=GRUPO) # like a User Group / bitibucket
-#     ativo = models.BooleanField('Ativo', default=True) # Não remove da equipe, ativa ou inativa
-
-
-# class Aluno(models.Model):
-#     usuario = models.ForeignKey(User)
-
-#     def __unicode__(self):
-#         return self.uers.nome
-
-# class Responsavel(models.Model):
-#     user = models.ForeignKey(User)
-#     aluno = models.ManyToManyField(Aluno)
-
-#     def __unicode__(self):
-#         return self.uers.nome
-
-# class Professor(models.Model):
-#     user = models.ForeignKey(User)
-
-#     def __unicode__(self):
-#         return self.uers.nome
 
 # class Classe(models.Model):
 #     escola = models.ForeignKey(Escola)
