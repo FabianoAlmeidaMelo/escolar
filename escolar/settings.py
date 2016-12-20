@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'escolar.wsgi.application'
 
 # ######### CUSTOM USER CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-AUTH_USER_MODEL = 'core.User'
+# AUTH_USER_MODEL = 'core.User'
 # ######### END CUSTOM USER CONFIGURATION
 
 # ######### CUSTOM LOGIN URL CONFIGURATION
@@ -150,7 +150,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-UPLOAD_PATH = '/media/'
+MEDIA_URL = '/media/'
 # Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_HOST = config('EMAIL_HOST')
