@@ -87,9 +87,11 @@ class GrupoUser(models.Model):
 
 
 # class Turma(models.Model):
+#     escola = models.ForeignKey(Escola)
 #     ano = models.DateField('Ano')
+#     curso = models.ForeignKey('Cusro')
 #     professor = models.ManyToManyField(User, related_name='professor')
-#     aluno = models.ManyToManyField()
+#     aluno = models.ManyToManyField(Aluno)
 
 
 # class Classe(models.Model):

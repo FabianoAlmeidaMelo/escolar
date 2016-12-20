@@ -63,10 +63,10 @@ def grupos_list(request):
 
 
 @login_required
-def grupo_form(request, pk_escola, pk_grupo=None):
-    escola = Escola.objects.get(id=pk_escola)
-    if pk_grupo:
-        grupo = get_object_or_404(Grupo, pk=pk_grupo)
+def grupo_form(request, escola_pk, grupo_pk=None):
+    escola = Escola.objects.get(id=escola_pk)
+    if grupo_pk:
+        grupo = get_object_or_404(Grupo, pk=grupo_pk)
         msg = u'Grupo alterado com sucesso.'
     else:
         grupo = None
@@ -103,30 +103,33 @@ def professores_list(request, escola_pk=1):
     return render(request, 'escolas/professores_list.html', context)
 
 
-# @login_required
-# def grupo_form(request, pk_escola, pk_grupo=None):
-#     escola = Escola.objects.get(id=pk_escola)
-#     if pk_grupo:
-#         grupo = get_object_or_404(Grupo, pk=pk_grupo)
-#         msg = u'Grupo alterado com sucesso.'
-#     else:
-#         grupo = None
-#         msg = u'Grupo criado.'
+@login_required
+def professor_form(request, escola_pk, grupo_user_pk=None):
+    escola = Escola.objects.get(id=escola_pk)
+    grupo = Grupo.objects.filter(escola=escola, nome='Professores')
 
-#     form = GrupoForm(request.POST or None, instance=grupo, escola=escola)
+    if grupo_user_pk:
+        grupo_user = get_object_or_404(GrupoUser, pk=grupo_user_pk)
+        msg = u'Professor alterado com sucesso.'
+    else:
+        grupo_user = None
+        msg = u'Professor criado.'
 
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             grupo = form.save(commit=False)
-#             grupo.escola = escola
-#             grupo.save()
-#             messages.success(request, msg)
-#             return redirect(reverse('grupos_list'))
-#         else:
-#             messages.warning(request, u'Falha no cadastro do grupo')
+    form = GrupoUserForm(request.POST or None, instance=grupo_user, escola=escola)
 
-#     context = {}
-#     context['form'] = form
-#     context['escola'] = escola
+    if request.method == 'POST':
+        if form.is_valid():
+            grupo_user = form.save(commit=False)
+            grupo_user.escola = escola
+            grupo_user.save()
+            messages.success(request, msg)
+            return redirect(reverse('professores_list'))
+        else:
+            messages.warning(request, u'Falha no cadastro do Professor')
 
-#     return render(request, 'escolas/grupo_form.html', context)
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['grupo_user'] = grupo_user
+
+    return render(request, 'escolas/grupo_form.html', context)

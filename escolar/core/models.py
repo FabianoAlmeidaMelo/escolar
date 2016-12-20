@@ -64,3 +64,6 @@ class User(AbstractBaseUser):
 
     def get_groups_list_ids(self):
         return self.grupouser_set.all().values_list('grupo__id', flat=True)
+
+    def get_professor(self, escola):
+        return self.grupouser_set.filter(grupo__nome='Professores',grupo__escola=escola).last()
