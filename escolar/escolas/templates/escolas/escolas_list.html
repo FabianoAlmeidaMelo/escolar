@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title %}Escolas{% endblock title %}
+{% block page_title %}Escolas{% endblock page_title %}
 
 {% block content %}
 
@@ -46,9 +46,5 @@
 {% endblock content %}
 
     {% block extra_js %}
-    <script type="text/javascript">
-      $('.nav-tabs a').click(function(){
-        $(this).tab('show');
-})
-  </script>
+
     {% endblock extra_js%}

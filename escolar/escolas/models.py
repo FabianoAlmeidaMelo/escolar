@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from municipios.models import Municipio
 
 from django.conf import settings
@@ -10,13 +10,6 @@ PERIODO = (
     (3, 'Noite'),
 )
 
-
-GRUPO = (
-    (1, 'Direção'),
-    (2, 'Professor'),
-    (3, 'Aluno'),
-    (4, 'Responsável'),
-)
 
 ANO = (
     (2016, 2016),
@@ -59,6 +52,38 @@ class Escola(models.Model):
         '''
         return True
 
+# class Diretor(models.Model):
+#     owner = models.BooleanField('Diretor', default=False)
+#     status = models.BooleanField('status',)
+#     escola = models.ForeignKey(Escola)
+#     user = models.ForeignKey(User)
+
+#     def __str__ (self):
+#         return self.user.get_full_name()
+
+# class Professor(models.Model):
+#     status = models.BooleanField('status',)
+#     escola = models.ForeignKey(Escola)
+#     user = models.ForeignKey(User)
+
+#     def __str__ (self):
+#         return self.user.get_full_name()
+
+
+# class Autorizados(models.Model):
+#     '''
+#     pessoas autorizadas a buscar alunos na escola
+#     '''
+#     nome = models.CharField('Nome', max_length=200)
+#     email = models.EmailField('email', max_length=200)
+#     celular = models.CharField('celular', max_length=14)
+#     # alunos = models.ManyToManyField(Aluno)
+#     escola = models.ForeignKey(Escola)
+#     foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
+#     status = models.BooleanField('Ativo' )
+
+#     def __str__ (self):
+#         return self.nome
 
 # class Turma(models.Model):
 #     escola = models.ForeignKey(Escola)

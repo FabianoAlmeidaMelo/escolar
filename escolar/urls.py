@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls import url, include, patterns
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth.views import (
             logout,
@@ -14,8 +14,7 @@ from escolar.core.forms import AuthenticationForm
 
 from escolar.core.views import home
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', home, name='home'),
     # url(r'^core/', include('escolar.core.urls')),
     url(r'^administracao/', include('escolar.escolas.urls')),
@@ -42,5 +41,5 @@ urlpatterns = patterns(
     ),
     url(r'^user/password/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
