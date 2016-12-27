@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title %}Grupos{% endblock title %}
+{% block page_title %}Professores{% endblock page_title %}
 
 {% block content %}
 
@@ -27,12 +27,20 @@
       {% for professor in professores %}
         <tr>
           <td><a href="#">{{ professor.nome }}</a></td>
-          <td>{{ escola.nome }}</td>
+          <td>
+            {% for escola in professor.get_professor_escolas %}
+              {{ escola }}
+            {% endfor %}
+          </td>
           <td>++</td>
           <td>++</td>
         </tr>
       {% empty %}
+      <tr>
+        <td>
             Nenhum professor encontrado
+        </td>
+      </tr>
       {% endfor %}
       </tbody>
   </table>
