@@ -1,0 +1,70 @@
+[
+{
+    "model": "core.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$24000$Jp6CsXx2KwGj$hlug6weXMUor+7O1OYRbI5UzVWaYTRRMfWqIAlmBTD0=",
+        "last_login": "2016-12-27T01:09:01.947Z",
+        "email": "fabiano@znc.com.br",
+        "nome": "Fabiano",
+        "is_active": true,
+        "is_superuser": true, 
+        "is_staff": true,
+        "date_joined": "2016-12-26T22:38:02.739Z",
+        "nascimento": null,
+        "profissao": null,
+        "sexo": null
+    }
+},
+{
+    "model": "core.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$24000$tOh1lgKTJNHn$SlcAi5L+hygziaMcE9avylckcrX/D738UCTv8GDRCTE=",
+        "last_login": null,
+        "email": "juliana@padre_julio.com.br",
+        "nome": "Juliana Maria Silva",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2016-12-26T22:55:35.418Z",
+        "nascimento": null,
+        "profissao": null,
+        "sexo": null
+    }
+},
+{
+    "model": "core.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$24000$zCUoZnP6kXVW$lU1AaZpdBfX4stNxPqDU8HflGgmmUZUvmXyp7ov0nlE=",
+        "last_login": "2016-12-27T01:11:27.486Z",
+        "email": "bianca@padre_julio.com.br",
+        "nome": "Bianca Corr\u00e1",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2016-12-26T23:03:26.723Z",
+        "nascimento": null,
+        "profissao": null,
+        "sexo": null
+    }
+},
+{
+    "model": "core.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$24000$xsE48iPB9f8s$IzFC8SuRCv01nlwTqC9B5K7gw3wjiR2GVTmhR/MYQNQ=",
+        "last_login": null,
+        "email": "julia@gmail.com",
+        "nome": "J\u00falia Sales de Almeida Melo",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "date_joined": "2016-12-27T01:45:29.054Z",
+        "nascimento": null,
+        "profissao": null,
+        "sexo": null
+    }
+}
+]
