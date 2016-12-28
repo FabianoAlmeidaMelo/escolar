@@ -19,7 +19,7 @@ from escolar.escolas.forms import (
 def escolas_list(request):
     user = request.user
     escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
-    if user.is_superuser:
+    if user.grupos.count() == 0:
         escolas = Escola.objects.all()
     else:
         escolas =  Escola.objects.filter(id__in=escolas_ids)
