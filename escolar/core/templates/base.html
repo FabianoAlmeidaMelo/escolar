@@ -1,110 +1,115 @@
-{% load static %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>DK</title>
-  <!-- Favicon -->
-  <!-- <link rel="shortcut icon" href="static/img/favicon.ico"> -->
+  <head>
+    <meta charset="utf-8">
+    <title>DK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Fabiano Almeida">
 
-  <!-- CSS  -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  {% block extra_css %}{% endblock extra_css %}
-  {% block javascript %}{% endblock javascript %}
-</head>
-     
-    <body>
-      <ul id="dropdown1" class="dropdown-content">
-        <li><a href="{% url 'escolas_list' %}"><font color='grey'>Escolas</font></a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li>
-      </ul>
-      <nav class="white" role="navigation">
-        <div class="nav-wrapper container">
-          <a id="logo-container" href="{% url 'home' %}" class="brand-logo green-text"><i class="material-icons">flash_on</i>DK</a>
-          <ul class="right hide-on-med-and-down">
-            {% if request.user.is_anonymous %}
-            <li><a href="#section-services"><font color='grey'>Serviços</font></a></li>
-            <li><a href="#section-team"><font color='grey'>Equipe</a></font></li>
-            <li><a href="#section-works"><font color='grey'>Parceiros</font></a></li>
-            <li><a href="#section-contact"><font color='grey'>Contato</font></a></li>
-              <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">LogIn</a></li>
-            {% else %}
-            <!-- Dropdown Trigger -->
-            <li>
-              <a href="{% url 'escolas_list' %}"><font color='grey'>Administração</font></a></li>
-              <li><a href="#"><font color='grey'>Comunicação</font></a></li>
-              <li><a href="#"><font color='grey'>Conteúdo</font></a></li>
-              <li><a href="#"><font color='grey'><i class="material-icons">perm_identity</i></font></a></li>
-              <li><a href="{% url 'logout' %}" class="waves-effect waves-light btn">LogOut</a></li>
+    <!-- Le styles -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="{% static 'css/bootstrap-responsive.min.css' %}" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="static/js/html5shiv.js"></script>
+    <![endif]-->
+    <!-- This file store project specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'ico/apple-touch-icon-144-precomposed.png'%}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'ico/apple-touch-icon-114-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'ico/apple-touch-icon-72-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'ico/apple-touch-icon-57-precomposed.png' %}">
+    <link rel="shortcut icon" href="{% static 'ico/favicon.png' %}">
+    {% block extra_css %}{% endblock extra_css %}
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">DK</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="{% url 'home' %}">Home</a></li>
+              {% if user.is_anonymous %}
+                  <li><a href="#about">Parceiros</a></li>
+                  <li><a href="#contact">Equipe</a></li>
+                </ul>
+                <form class="navbar-form pull-right">
+                  <a href="{% url 'login' %}" class="btn">LogIn</a>
+                </form>
+              {% else %}
+                <li><a href="{% url 'escolas_list' %}">Administração</a></li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Serviços <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Action</a></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                      <li class="divider"></li>
+                      <li class="nav-header">Nav header</li>
+                      <li><a href="#">Separated link</a></li>
+                      <li><a href="#">One more separated link</a></li>
+                    </ul>
+                  </li>
+                </ul>
+                <ul class="nav pull-right">
+                  {% if user.is_authenticated %}
+                      <li{% if active_perfil %} class="active"{% endif %}>
+                          <a href="#">
+                              <i class="icon-user"></i> {{ user.email }}
+                          </a>
+                      </li>
+                      <li><a href="{% url 'logout' %}"><i class="icon-off"></i> Sair </a></li>
+                  {% else %}
+                      <li><a href="{% url 'login' %}"><i class="icon-arrow-up"></i> Entrar </a></li>
+
+                  {% endif %}
+              </ul>
             {% endif %}
-          </ul>
-
-          <ul id="nav-mobile" class="side-nav">
-            {% if request.user.is_anonymous %}
-              <li><a href="#section-services"><font color='grey'>Serviços</font></a></li>
-              <li><a href="#section-team"><font color='grey'>Equipe</a></font></li>
-              <li><a href="#section-works"><font color='grey'>Parceiros</font></a></li>
-              <li><a href="#section-contact"><font color='grey'>Contato</font></a></li>
-              <li><a href="{% url 'login' %}" class="waves-effect waves-light btn">LogIn</a></li>
-            {% else %}
-              <li><a href="{% url 'escolas_list' %}"><font color='grey'>Administração</font></a></li>
-              <li><a href="#"><font color='grey'>Comunicação</font></a></li>
-              <li><a href="#"><font color='grey'>Conteúdo</font></a></li>
-              <li><a href="#"><font color='grey'><i class="material-icons">perm_identity</i></font></a></li>
-              <li><a href="{% url 'logout' %}" class="waves-effect waves-light btn">LogOut</a></li>
-            {% endif %}
-          </ul>
-          <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-        </div>
-      </nav>
-
-      {% block content %}
-      {% endblock content %}
-        <footer class="page-footer teal">
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
+          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Fabiano Almeida</a>
-      </div>
-    </div>
-  </footer>
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="static/js/materialize.js"></script>
-  <script src="static/js/init.js"></script>
+    <div class="span1{% if subsections %}0{% else %}2{% endif %}">
+        <h2>
+            {% block page_title %}
+            {% endblock page_title %}
+        </h2>
+    {% block content %}
+    {% endblock content %}
 
+    {% block footer %}
+<!--     <div class="container">
+      <footer>
+        <p>&copy; Company 2016.</p>
+      </footer>
+    </div> -->
+    {% endblock footer %}
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/jquery.js" type="text/javascript"></script>
+
+    <script src="{% static 'js/bootstrap-collapse.js' %}"></script>
+
+    {% block extra_js %} {% endblock extra_js%}
     </body>
 </html>

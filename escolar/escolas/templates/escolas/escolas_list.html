@@ -1,60 +1,50 @@
 {% extends 'base.html'%}
 
-{% block title %}Escolas{% endblock title %}
+{% block page_title %}Escolas{% endblock page_title %}
 
 {% block content %}
 
-<section class="featured">
-  <div class="container">
-    <div class="col s12">
-      <ul class="tabs">
-        <li class="tab col s3"><a href="#test1">Test 1</a></li>
-        <li class="tab col s3"><a class="active" href="#test2">Test 2</a></li>
-        <li class="tab col s3 disabled"><a href="#test3">Disabled Tab</a></li>
-        <li class="tab col s3"><a href="#test4">Test 4</a></li>
-      </ul>
-    </div>
-  </div>
+<div class="container">
 
+  {% include "base_adm.html" %}
 
-  <div class="container"> 
-      <div class="col s12">
-      <ul class="tabs">
-        <li class="tab col s3"><a href="#test1">Test 1</a></li>
-        <li class="tab col s3"><a class="active" href="#test2">Test 2</a></li>
-        <li class="tab col s3 disabled"><a href="#test3">Disabled Tab</a></li>
-        <li class="tab col s3"><a href="#test4">Test 4</a></li>
-      </ul>
-    </div>
-      <div class="row mar-bot40">
-          <div class="col-md-6 col-md-offset-3">
-              <div class="align-center">
-              <table class="striped">
-                  <thead>
-                    <tr>
-                        <th data-field="id">Escola</th>
-                        <th data-field="name">Endereço</th>
-                        <th data-field="price">Telefone</th>
-                        <th data-field="price">Status</th>
-                    </tr>
-                  </thead>
+  <table class="table table-striped">
+     <caption>
+         <div style="float:right; margin-right:10px">
+            <a href="{% url 'escola_form' %}" class="btn btn-mini btn-success">Nova Escola</a>
+         </div>
+    </caption>
+      <thead>
+        <tr>
+            <th>Escola</th>
+            <th>Endereço</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th>slug</th>
+            <th>site</th>
 
-                  <tbody>
-                  {% for escola in escolas %}
-                    <tr>
-                      <td>{{ escola.nome }}</td>
-                      <td>{{ escola.endereco }}</td>
-                      <td>{{ escola.telefone }}</td>
-                      <td>{{ escola.status|default:"--" }}</td>
-                    </tr>
-                  {% empty %}
-                  Nenhuma escola encontrada.
-                  {% endfor %}
-                  </tbody>
-              </table>
-              </div>
-          </div>
-      </div>
-  </div>
-</section>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for escola in escolas %}
+        <tr>
+          <td> <a href="{% url 'escola_form' escola.pk %}">{{ escola.nome }}</a></td>
+          <td>{{ escola.endereco }}</td>
+          <td>{{ escola.telefone|default:"--" }}</td>
+          <td>{{ escola.get_status|yesno:'ativo,inativo' }}</td>
+          <td>{{ escola.slug|default:"--" }}</td>
+          <td>{{ escola.site|default:"--" }}</td>
+        </tr>
+      {% empty %}
+            Nenhuma escola encontrada
+      {% endfor %}
+      </tbody>
+  </table>
+</div>
+
 {% endblock content %}
+
+    {% block extra_js %}
+
+    {% endblock extra_js%}

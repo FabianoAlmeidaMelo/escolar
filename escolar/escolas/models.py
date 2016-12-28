@@ -1,6 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
 from municipios.models import Municipio
-from escolar.core.models import User
+
 from django.conf import settings
 
 PERIODO = (
@@ -9,13 +10,6 @@ PERIODO = (
     (3, 'Noite'),
 )
 
-
-GRUPO = (
-    (1, 'Direção'),
-    (2, 'Professor'),
-    (3, 'Aluno'),
-    (4, 'Responsável'),
-)
 
 ANO = (
     (2016, 2016),
@@ -31,12 +25,13 @@ class Escola(models.Model):
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
     telefone = models.CharField('telefone', max_length=14, null=True, blank=True)
+    celular = models.CharField('celular', max_length=14, null=True, blank=True)
     complemento = models.CharField('comnplemento', max_length=100, null=True, blank=True)
     bairro = models.CharField('bairro', max_length=100)
     # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
     slug = models.CharField('slug', max_length=50, null=True)
-    # logo = models.URLField(upload_to='%s/escolas/logotipo/' % (settings.UPLOAD_PATH), max_length=300,  blank=True, null=True)
+    logo = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
 
@@ -49,38 +44,54 @@ class Escola(models.Model):
         return self.nome
 
 
-# class Equipe(models.Model):
-#     '''
-#     m2m EscolaUser
-#     Imagino um user diretor, adicionando outros users
-#     do time da escola: professores, secretários, ...
-#     mas os Alunos e responsáveis, creio que entrarão no
-#     sistema por Upload de planilha
-#     '''
+    def get_status(self):
+        '''
+        TODO:
+        será analizado por período da assinatura
+        se estiver válido, retorna True
+        '''
+        return True
+
+# class Diretor(models.Model):
+#     owner = models.BooleanField('Diretor', default=False)
+#     status = models.BooleanField('status',)
 #     escola = models.ForeignKey(Escola)
 #     user = models.ForeignKey(User)
-#     grupo = models.SmallIntegerField('Grupo', choices=GRUPO) # like a User Group / bitibucket
-#     ativo = models.BooleanField('Ativo', default=True) # Não remove da equipe, ativa ou inativa
 
-
-# class Aluno(models.Model):
-#     usuario = models.ForeignKey(User)
-
-#     def __unicode__(self):
-#         return self.uers.nome
-
-# class Responsavel(models.Model):
-#     user = models.ForeignKey(User)
-#     aluno = models.ManyToManyField(Aluno)
-
-#     def __unicode__(self):
-#         return self.uers.nome
+#     def __str__ (self):
+#         return self.user.get_full_name()
 
 # class Professor(models.Model):
+#     status = models.BooleanField('status',)
+#     escola = models.ForeignKey(Escola)
 #     user = models.ForeignKey(User)
 
-#     def __unicode__(self):
-#         return self.uers.nome
+#     def __str__ (self):
+#         return self.user.get_full_name()
+
+
+# class Autorizados(models.Model):
+#     '''
+#     pessoas autorizadas a buscar alunos na escola
+#     '''
+#     nome = models.CharField('Nome', max_length=200)
+#     email = models.EmailField('email', max_length=200)
+#     celular = models.CharField('celular', max_length=14)
+#     # alunos = models.ManyToManyField(Aluno)
+#     escola = models.ForeignKey(Escola)
+#     foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
+#     status = models.BooleanField('Ativo' )
+
+#     def __str__ (self):
+#         return self.nome
+
+# class Turma(models.Model):
+#     escola = models.ForeignKey(Escola)
+#     ano = models.DateField('Ano')
+#     curso = models.ForeignKey('Cusro')
+#     professor = models.ManyToManyField(User, related_name='professor')
+#     aluno = models.ManyToManyField(Aluno)
+
 
 # class Classe(models.Model):
 #     escola = models.ForeignKey(Escola)

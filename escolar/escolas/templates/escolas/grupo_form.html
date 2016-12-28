@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load bootstrap_toolkit %}
+
+{% block content %}
+
+<div class="container">
+   {% include "base_adm.html" %}
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <div class="controls cwell">
+            <div class="row-fluid">
+                {{ form.name|as_bootstrap }}
+            </div>
+        </div>
+        <div class="form-actions">
+            <input type="submit" value="Salvar" class="btn btn-primary">
+            <a href="{% url 'grupos_list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </div>
+</form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

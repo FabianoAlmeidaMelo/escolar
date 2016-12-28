@@ -1,0 +1,35 @@
+[
+{
+    "model": "core.usergrupos",
+    "pk": 2,
+    "fields": {
+        "escola": 1,
+        "user": 2,
+        "grupo": 2,
+        "date_joined": "2016-12-26T22:58:26.637Z",
+        "ativo": true
+    }
+},
+{
+    "model": "core.usergrupos",
+    "pk": 4,
+    "fields": {
+        "escola": 1,
+        "user": 3,
+        "grupo": 1,
+        "date_joined": "2016-12-26T23:05:32.629Z",
+        "ativo": true
+    }
+},
+{
+    "model": "core.usergrupos",
+    "pk": 5,
+    "fields": {
+        "escola": 1,
+        "user": 4,
+        "grupo": 3,
+        "date_joined": "2016-12-27T01:48:20.440Z",
+        "ativo": true
+    }
+}
+]

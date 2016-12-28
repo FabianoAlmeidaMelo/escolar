@@ -1,108 +1,53 @@
-{% extends 'base.html'%}
+{% extends "base.html" %}
+{% load bootstrap_toolkit %}
+
 {% block extra_css %}
-  <style>
+<style type="text/css">
     body {
-      display: flex;
-      min-height: 100vh;
-      flex-direction: column;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
     }
 
-    main {
-      flex: 1 0 auto;
+    .form-signin {
+        max-width: 250px;
+        padding: 15px 20px 15px;
+        margin: 10px auto;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        box-shadow: 0 1px 2px rgba(0,0,0,.05);
     }
-
-    body {
-      background: #fff;
+    .form-signin .form-signin-heading,
+    .form-signin .checkbox {
+        margin-bottom: 10px;
     }
-
-    .input-field input[type=date]:focus + label,
-    .input-field input[type=text]:focus + label,
-    .input-field input[type=email]:focus + label,
-    .input-field input[type=password]:focus + label {
-      color: #e91e63;
+    .form-signin input[type="text"],
+    .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
     }
-
-    .input-field input[type=date]:focus,
-    .input-field input[type=text]:focus,
-    .input-field input[type=email]:focus,
-    .input-field input[type=password]:focus {
-      border-bottom: 2px solid #e91e63;
-      box-shadow: none;
+    h1{
+        max-width: 300px;
+        padding: 5px 1px 1px 10px;
+        margin: 10px auto;
     }
-  </style>
-{% endblock extra_css %} 
+    label{
+        min-width: 200px;
+    }
+</style>
+{% endblock extra_css %}
 
 {% block page_title %}Login{% endblock page_title %}
 
 {% block content %}
 
-<head>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
-
-</head>
-
-<body>
-  <div class="section"></div>
-  <main>
-    <center>
-      <div class="section"></div>
-      <div class="section"></div>
-      <div class="container">
-        <div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
-
-            {% if form.errors %}
-                <label style='float: right;'>
-                    <p>Senha ou usuário incorretos</p>
-                    <p>O sistema diferencia maiuśculas de minúsculas.</p>
-                    <a class='pink-text' href='#'><b>Esqueceu a senha?</b></a>
-              </label>
-            {% endif %}
-          <form class="col s12" method="post" action="{% if next %}?next={% url 'escolas_list'%}{% endif %}">
-            {% csrf_token %}
-            <div class='row'>
-              <div class='col s12'>
-              </div>
-            </div>
-            <div class='row'>
-              <div class='input-field col s12'>
-               {{ form.username }}
-                <label for='email'>username</label>
-              </div>
-            </div>
-
-            <div class='row'>
-              <div class='input-field col s12'>
-                {{ form.password }}
-                <label for='password'>password</label>
-              </div>
-             <!--  <label style='float: right;'>
-                    <a class='pink-text' href='#'><b>Esqueceu a senha?</b></a>
-              </label> -->
-            </div>
-
-            <br />
-            <center>
-              <div class='row'>
-                <button type='submit' name='btn_login' class='col s12 btn btn-large waves-light'>Login</button>
-              </div>
-            </center>
-          </form>
-        </div>
-      </div>
-      <a href="#!">Criar conta</a>
-    </center>
-
-    <div class="section"></div>
-    <div class="section"></div>
-  </main>
-
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-</body>
-
-</html>
-    <!-- {% if messages %}
+    {% if messages %}
         {% for message in messages %}
             <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -111,12 +56,15 @@
         {% endfor %}
     {% endif %}
 
-    <form class="form-signin" method="POST" action="{% if next %}?next={{ next }}{% endif %}">
+    <form class="form-signin" method="POST" action="{% if not next %}?next={% url 'escolas_list'%}{% endif %}">
         {% csrf_token %}
-        {{ form }}
+        {{ form|as_bootstrap }}
         <button class="btn btn-large btn-small btn-primary" type="submit">Login</button>
         <a href="{% url 'password_reset' %}" class="btn btn-small btn-inverse ">
             Esqueci minha Senha
         </a>
-    </form> -->
+    </form>
 {% endblock content %}
+
+{% block estra_js %}
+{% endblock estra_js %}
