@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
-from escolar.core.models import User
+from escolar.core.models import User, UserGrupos
 from escolar.core.forms import UserForm
 
 def home(request):
@@ -38,14 +38,14 @@ def usuario_form(request, pk=None):
     form = UserForm(request.POST or None, instance=usuario)
 
     if request.method == 'POST':
+        print("\n\nPOST")
         if form.is_valid():
-            # grupo_user = form.save(commit=False)
-            # grupo_user.escola = escola
-            # grupo_user.save()
+            user = form.save()
+            msg += user.nome
             messages.success(request, msg)
-            return redirect(reverse('usuarios_list'))
         else:
             messages.warning(request, u'Falha no cadastro do Aluno')
+        return redirect(reverse('usuarios_list'))
 
     context = {}
     context['form'] = form

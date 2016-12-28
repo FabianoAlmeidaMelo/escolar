@@ -30,5 +30,13 @@
         "name": "Respons\u00e1vel",
         "permissions": []
     }
+},
+{
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+        "name": "Admin",
+        "permissions": []
+    }
 }
 ]
