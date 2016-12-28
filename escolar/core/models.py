@@ -42,22 +42,20 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     '''
-        Usuário do sistema
-        is_superuser == usuário Administrador
     '''
     email = models.EmailField('e-mail', unique=True)
     nome = models.CharField(verbose_name=u'Nome', max_length=100)
     is_active = models.BooleanField('ativo', default=True,)
-    is_superuser = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
+    # is_superuser = models.BooleanField(default=False)
+    # is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(
         'data de cadastro', default=timezone.now
         )
-    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-    profissao = models.CharField(
-        u'Profissão', max_length=100, null=True, blank=True
-        )
-    sexo = models.IntegerField(u'Sexo', choices=SEXO, null=True, blank=True)
+    # nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    # profissao = models.CharField(
+        # u'Profissão', max_length=100, null=True, blank=True
+        # )
+    # sexo = models.IntegerField(u'Sexo', choices=SEXO, null=True, blank=True)
     grupos = models.ManyToManyField(Group, through='UserGrupos', related_name='grupos', blank=True)
 
     objects = UserManager()
