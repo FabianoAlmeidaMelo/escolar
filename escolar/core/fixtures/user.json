@@ -8,12 +8,7 @@
         "email": "fabiano@znc.com.br",
         "nome": "Fabiano",
         "is_active": true,
-        "is_superuser": true, 
-        "is_staff": true,
-        "date_joined": "2016-12-26T22:38:02.739Z",
-        "nascimento": null,
-        "profissao": null,
-        "sexo": null
+        "date_joined": "2016-12-26T22:38:02.739Z"
     }
 },
 {
@@ -25,12 +20,7 @@
         "email": "juliana@padre_julio.com.br",
         "nome": "Juliana Maria Silva",
         "is_active": true,
-        "is_superuser": false,
-        "is_staff": false,
-        "date_joined": "2016-12-26T22:55:35.418Z",
-        "nascimento": null,
-        "profissao": null,
-        "sexo": null
+        "date_joined": "2016-12-26T22:55:35.418Z"
     }
 },
 {
@@ -42,12 +32,7 @@
         "email": "bianca@padre_julio.com.br",
         "nome": "Bianca Corr\u00e1",
         "is_active": true,
-        "is_superuser": false,
-        "is_staff": false,
-        "date_joined": "2016-12-26T23:03:26.723Z",
-        "nascimento": null,
-        "profissao": null,
-        "sexo": null
+        "date_joined": "2016-12-26T23:03:26.723Z"
     }
 },
 {
@@ -59,12 +44,7 @@
         "email": "julia@gmail.com",
         "nome": "J\u00falia Sales de Almeida Melo",
         "is_active": true,
-        "is_superuser": false,
-        "is_staff": false,
-        "date_joined": "2016-12-27T01:45:29.054Z",
-        "nascimento": null,
-        "profissao": null,
-        "sexo": null
+        "date_joined": "2016-12-27T01:45:29.054Z"
     }
 }
 ]
