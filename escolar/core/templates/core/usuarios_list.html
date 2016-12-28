@@ -1,0 +1,52 @@
+{% extends 'base.html'%}
+
+{% block page_title %}Usuários{% endblock page_title %}
+
+{% block content %}
+
+<div class="container">
+
+  {% include "base_adm.html" %}
+
+  <table class="table table-striped">
+      <caption>
+         <div style="float:right; margin-right:10px">
+            <a href="{% url 'usuario_form' %}" class="btn btn-mini btn-success">Novo Usuário</a>
+         </div>
+      </caption>
+      <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for usuario in usuarios %}
+        <tr>
+          <td><a href="#">{{ usuario.nome }}</a></td>
+          <td>
+            {{ usuario.email }}
+          </td>
+
+        </tr>
+      {% empty %}
+      <tr>
+        <td>
+            Nenhum usuário encontrado
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+{% endblock content %}
+
+    {% block extra_js %}
+    <script type="text/javascript">
+      $('.nav-tabs a').click(function(){
+        $(this).tab('show');
+})
+  </script>
+    {% endblock extra_js%}
