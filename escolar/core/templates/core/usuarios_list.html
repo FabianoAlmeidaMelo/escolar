@@ -24,7 +24,7 @@
       <tbody>
       {% for usuario in usuarios %}
         <tr>
-          <td><a href="#">{{ usuario.nome }}</a></td>
+          <td><a href="{% url 'usuario_form' usuario.id %}">{{ usuario.nome }}</a></td>
           <td>
             {{ usuario.email }}
           </td>

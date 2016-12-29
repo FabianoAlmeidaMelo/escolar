@@ -16,7 +16,7 @@ from escolar.core.views import home
 
 urlpatterns = [
     url(r'^$', home, name='home'),
-    # url(r'^core/', include('escolar.core.urls')),
+    url(r'^core/', include('escolar.core.urls')),
     url(r'^administracao/', include('escolar.escolas.urls')),
 
     # url(r'^escolas/', include('escolar.escolas.urls',

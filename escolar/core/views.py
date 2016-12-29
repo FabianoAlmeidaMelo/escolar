@@ -38,7 +38,6 @@ def usuario_form(request, pk=None):
     form = UserForm(request.POST or None, instance=usuario)
 
     if request.method == 'POST':
-        print("\n\nPOST")
         if form.is_valid():
             user = form.save()
             msg += user.nome

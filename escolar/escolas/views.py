@@ -11,6 +11,7 @@ from escolar.escolas.models import (
     Escola,
 )
 from escolar.escolas.forms import (
+    AlunoForm,
     EscolaForm,
     GrupoForm,
     )
@@ -137,3 +138,38 @@ def alunos_list(request):
     context['alunos'] = User.objects.filter(id__in=alunos_ids)
 
     return render(request, 'escolas/alunos_list.html', context)
+
+
+@login_required
+def aluno_form(request, escola_pk, aluno_pk=None):
+    '''
+    aluno é user
+    '''
+    escola = Escola.objects.get(id=escola_pk)
+    grupo = Group.objects.filter(nome='Aluno')
+
+    if aluno_pk:
+        aluno = get_object_or_404(GrupoUser, pk=aluno_pk)
+        msg = u'Aluno alterado com sucesso.'
+    else:
+        aluno = None
+        msg = u'Aluno cadastrado.'
+
+    form = AlunoForm(request.POST or None, instance=aluno, escola=escola)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            # grupo_user = form.save(commit=False)
+            # grupo_user.escola = escola
+            # grupo_user.save()
+            messages.success(request, msg)
+            return redirect(reverse('alunos_list'))
+        else:
+            messages.warning(request, u'Falha no cadastro do Aluno')
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['grupo_user'] = grupo_user
+
+    return render(request, 'escolas/aluno_form.html', context)
