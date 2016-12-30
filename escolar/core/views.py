@@ -9,21 +9,24 @@ from escolar.core.models import User, UserGrupos
 from escolar.core.forms import UserForm
 
 def home(request):
-    return render(request, 'index.html') #, context)
+    return render(request, 'index.html')
 
 @login_required
 def usuarios_list(request):
     '''
-    listagem vazia, mostrando somente o que aparece no filtro? OU
-    lista todos os usuários da escola?
+    Admin: todos
+    Diretor: users da escola dele
+    Outros: os próprios
     '''
     user = request.user
+    escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
     if user.is_admin():
         usuarios = User.objects.all()
-    else:
-        escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
+    elif escolas_ids:
         usuarios_ids = UserGrupos.objects.filter(escola__pk__in=escolas_ids).values_list('user__id', flat=True)
         usuarios = User.objects.filter(id__in=usuarios_ids)
+    else:
+        usuarios = User.objects.filter(id=user.id)
     context = {}
     context['usuarios'] = usuarios
 
@@ -33,7 +36,11 @@ def usuarios_list(request):
 @login_required
 def usuario_form(request, pk=None):
     '''
+    Admin: cria, seta senha, vincula a Escola e Group
+    Diretor: cria e ou vincula a Escola (dele) e Grupo
+    Outros: edita email, nome e troca senha
     '''
+    user = request.user
     if pk:
         usuario = get_object_or_404(User, pk=pk)
         msg = u'Usuário alterado com sucesso.'
@@ -41,7 +48,7 @@ def usuario_form(request, pk=None):
         usuario = None
         msg = u'Usuário cadastrado.'
 
-    form = UserForm(request.POST or None, instance=usuario)
+    form = UserForm(request.POST or None, instance=usuario, user=user)
 
     if request.method == 'POST':
         if form.is_valid():

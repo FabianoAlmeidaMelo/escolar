@@ -25,8 +25,9 @@ class UserForm(forms.ModelForm):
         model = User
         exclude = ('date_joined', 'is_active', 'password', 'grupos')
 
-    # def __init__(self, *args, **kwargs):
-    #     super(UserForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(UserForm, self).__init__(*args, **kwargs)
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
