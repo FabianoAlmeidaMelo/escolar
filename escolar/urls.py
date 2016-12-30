@@ -19,8 +19,6 @@ urlpatterns = [
     url(r'^core/', include('escolar.core.urls')),
     url(r'^administracao/', include('escolar.escolas.urls')),
 
-    # url(r'^escolas/', include('escolar.escolas.urls',
-    #                           namespace='escolas')),
     # Logins
     url(r'^logout/$', logout, {"next_page": "/"}, name="logout"),
     url(r'^login/$', login,

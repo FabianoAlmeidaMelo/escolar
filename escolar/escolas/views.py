@@ -18,7 +18,7 @@ from escolar.escolas.forms import (
 @login_required
 def escolas_list(request):
     user = request.user
-    escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
+    escolas_ids = user.usergrupos_set.all().values_list('escola__id', flat=True)
     if user.is_admin():
         escolas = Escola.objects.all()
     else:
