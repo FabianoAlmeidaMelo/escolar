@@ -13,7 +13,6 @@ from escolar.escolas.models import (
 from escolar.escolas.forms import (
     AlunoForm,
     EscolaForm,
-    GrupoForm,
     )
 
 @login_required
@@ -53,11 +52,12 @@ def escola_form(request, pk=None):
 
 
 @login_required
-def professores_list(request):
+def professores_list(request, escola_pk):
     user = request.user
-    escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
-    professores_ids = UserGrupos.objects.filter(grupo__name='Professor',escola__pk__in=escolas_ids).values_list('user__id', flat=True)
+    escola = Escola.objects.get(id=escola_pk)
+    professores_ids = UserGrupos.objects.filter(grupo__name='Professor',escola__pk=escola_pk).values_list('user__id', flat=True)
     context = {}
+    context['escola'] = escola
     context['professores'] = User.objects.filter(id__in=professores_ids)
 
     return render(request, 'escolas/professores_list.html', context)
@@ -96,12 +96,13 @@ def professor_form(request, escola_pk, grupo_user_pk=None):
 
 
 @login_required
-def alunos_list(request):
+def alunos_list(request, escola_pk):
     user = request.user
-    escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
-    alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk__in=escolas_ids).values_list('user__id', flat=True)
+    # escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
+    alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk=escola_pk).values_list('user__id', flat=True)
     context = {}
     context['alunos'] = User.objects.filter(id__in=alunos_ids)
+    context['escola'] = Escola.objects.get(id=escola_pk)
 
     return render(request, 'escolas/alunos_list.html', context)
 

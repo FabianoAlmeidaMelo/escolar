@@ -16,7 +16,7 @@ urlpatterns = [
 #     # Escola
 #     url(r'^escolas/(?P<escola_pk>\d+)/grupo_form/$', grupo_form, name='grupo_form'),
 #     url(r'^escolas/(?P<escola_pk>\d+)/grupo_form/(?P<grupo_pk>\d+)/$', grupo_form, name='grupo_form'),
-    url(r'^escolas/professores_list/$', professores_list, name='professores_list'),
+    url(r'^escolas/(?P<escola_pk>\d+)/professores_list/$', professores_list, name='professores_list'),
     #  Alunos
-    url(r'^escolas/alunos_list/$', alunos_list, name='alunos_list'),
+    url(r'^escolas/(?P<escola_pk>\d+)/alunos_list/$', alunos_list, name='alunos_list'),
 ]
