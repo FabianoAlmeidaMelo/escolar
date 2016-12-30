@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs">
-    <li><a href="#" id='id_escola' data-toggle="tab">Escola</a></li> 
+    <li><a href="{% url 'escola_form' escola.pk %}" id='id_escola' data-toggle="tab">Escola</a></li>
     <li><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios' data-toggle="tab">Usuários</a></li>
     <li><a href="#" id='id_classes' data-toggle="tab">Classes</a></li>
     <li><a href="{% url 'professores_list' escola.pk %}" data-toggle="tab">Professores</a></li>

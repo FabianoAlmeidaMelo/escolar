@@ -1,6 +1,11 @@
 {% extends 'base.html'%}
-
-{% block page_title %}Professores{% endblock page_title %}
+{% block page_title %}
+    {% if escola %}
+        Professores / Escola: {{ escola.nome }}
+    {% else %}
+       Professores
+    {% endif %}
+{% endblock page_title %}
 
 {% block content %}
 
@@ -17,7 +22,6 @@
       <thead>
         <tr>
             <th>Nome</th>
-            <th>Escola</th>
             <th>Turmas</th>
             <th>Status</th>
         </tr>
@@ -27,11 +31,6 @@
       {% for professor in professores %}
         <tr>
           <td><a href="#">{{ professor.nome }}</a></td>
-          <td>
-            {% for escola in professor.get_professor_escolas %}
-              {{ escola }}
-            {% endfor %}
-          </td>
           <td>++</td>
           <td>++</td>
         </tr>
