@@ -43,9 +43,9 @@ class UserForm(forms.ModelForm):
         user, created = User.objects.get_or_create(email=email, defaults={'nome': nome})
         group = self.cleaned_data["grupo"]
         escola = self.cleaned_data["escola"]
-        # user = super(UserForm, self).save(commit=False)
+
         password2 = self.cleaned_data.get("password2", False)
-        if password2:
+        if password2 and created:
             user.set_password(password2)
         if commit:
             user.save()
