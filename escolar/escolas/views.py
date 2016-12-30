@@ -37,6 +37,9 @@ def escola_form(request, pk=None):
         msg = u'Escola criada.'
 
     form = EscolaForm(request.POST or None, instance=escola)
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
 
     if request.method == 'POST':
         if form.is_valid():
@@ -46,9 +49,7 @@ def escola_form(request, pk=None):
         else:
             messages.warning(request, u'Falha no cadastro de escola')
 
-    return render(request,
-                        'escolas/escola_form.html', {
-                        'form': form})
+    return render(request, 'escolas/escola_form.html', context)
 
 
 @login_required

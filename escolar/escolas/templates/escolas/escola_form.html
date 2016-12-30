@@ -2,6 +2,16 @@
 
 {% load bootstrap_toolkit %}
 
+{% block page_title %}
+    {% if escola %}
+        Escola: {{ escola.nome }}
+    {% else %}
+        Cadastro de Escola
+    {% endif %}
+
+{% endblock page_title %}
+
+
 {% block content %}
 
 <div class="container">
