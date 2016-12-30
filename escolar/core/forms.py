@@ -11,6 +11,11 @@ class AuthenticationForm(AuthAuthenticationForm):
                                             required=False
                                         )
 
+class GrupoForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ('name', )
+
 class UserForm(forms.ModelForm):
     email = forms.EmailField(label='email', required=True)
     nome = forms.CharField(label='nome', required=True)

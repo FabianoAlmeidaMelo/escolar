@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% load bootstrap_toolkit %}
+{% block page_title %}Cadastro /Grupo{% endblock page_title %}
 
 {% block content %}
 
 <div class="container">
-   {% include "base_adm.html" %}
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}

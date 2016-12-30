@@ -53,41 +53,6 @@ def escola_form(request, pk=None):
 
 
 @login_required
-def grupos_list(request):
-
-    grupos = Group.objects.all()
-    context = {}
-    context['grupos'] = grupos
-    return render(request, 'escolas/grupos_list.html', context)
-
-
-@login_required
-def grupo_form(request, grupo_pk=None):
-    if grupo_pk:
-        grupo = get_object_or_404(Grupo, pk=grupo_pk)
-        msg = u'Grupo alterado com sucesso.'
-    else:
-        grupo = None
-        msg = u'Grupo criado.'
-
-    form = GrupoForm(request.POST or None, instance=grupo)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            grupo = form.save(commit=False)
-            grupo.save()
-            messages.success(request, msg)
-            return redirect(reverse('grupos_list'))
-        else:
-            messages.warning(request, u'Falha no cadastro do grupo')
-
-    context = {}
-    context['form'] = form
-
-    return render(request, 'escolas/grupo_form.html', context)
-
-
-@login_required
 def professores_list(request):
     user = request.user
     escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)

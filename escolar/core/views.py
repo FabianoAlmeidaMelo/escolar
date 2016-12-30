@@ -1,17 +1,19 @@
 # coding: utf-8
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
 from escolar.core.models import User, UserGrupos
-from escolar.core.forms import UserForm
+from escolar.core.forms import UserForm, GrupoForm
 
 from escolar.escolas.models import Escola
 
 def home(request):
     return render(request, 'index.html')
+
 
 @login_required
 def usuarios_list(request, escola_pk):
@@ -68,3 +70,38 @@ def usuario_form(request, escola_pk, pk=None):
     context['escola'] = escola
 
     return render(request, 'core/usuario_form.html', context)
+
+
+@login_required
+def grupos_list(request):
+
+    grupos = Group.objects.all()
+    context = {}
+    context['grupos'] = grupos
+    return render(request, 'core/grupos_list.html', context)
+
+
+@login_required
+def grupo_form(request, grupo_pk=None):
+    if grupo_pk:
+        grupo = get_object_or_404(Group, pk=grupo_pk)
+        msg = u'Grupo alterado com sucesso.'
+    else:
+        grupo = None
+        msg = u'Grupo criado.'
+
+    form = GrupoForm(request.POST or None, instance=grupo)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            grupo = form.save(commit=False)
+            grupo.save()
+            messages.success(request, msg)
+            return redirect(reverse('grupos_list'))
+        else:
+            messages.warning(request, u'Falha no cadastro do grupo')
+
+    context = {}
+    context['form'] = form
+
+    return render(request, 'core/grupo_form.html', context)

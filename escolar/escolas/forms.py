@@ -3,20 +3,13 @@ from django import forms
 from escolar.escolas.models import (
     Escola,
     )
-
-from django.contrib.auth.models import Group
 from escolar.core.models import User
+
 
 class EscolaForm(forms.ModelForm):
     class Meta:
         model = Escola
         exclude = ('created_at', )
-
-
-class GrupoForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        fields = ('name', )
 
 
 class AlunoForm(forms.ModelForm):
