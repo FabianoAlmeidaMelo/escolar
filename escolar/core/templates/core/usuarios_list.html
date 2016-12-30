@@ -1,6 +1,11 @@
 {% extends 'base.html'%}
-
-{% block page_title %}Usuários{% endblock page_title %}
+{% block page_title %}
+    {% if escola %}
+        Usuários / Escola: {{ escola.nome }}
+    {% else %}
+       Usuários
+    {% endif %}
+{% endblock page_title %}
 
 {% block content %}
 
@@ -11,7 +16,7 @@
   <table class="table table-striped">
       <caption>
          <div style="float:right; margin-right:10px">
-            <a href="{% url 'usuario_form' %}" class="btn btn-mini btn-success">Novo Usuário</a>
+            <a href="{% url 'usuario_form' escola.pk %}" class="btn btn-mini btn-success">Novo Usuário</a>
          </div>
       </caption>
       <thead>
@@ -24,7 +29,7 @@
       <tbody>
       {% for usuario in usuarios %}
         <tr>
-          <td><a href="{% url 'usuario_form' usuario.id %}">{{ usuario.nome }}</a></td>
+          <td><a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a></td>
           <td>
             {{ usuario.email }}
           </td>

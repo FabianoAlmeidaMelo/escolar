@@ -10,8 +10,8 @@ from escolar.core.views import (
 
 urlpatterns = [
     # User
-    url(r'^usuario_form/$', usuario_form, name='usuario_form'),
-    url(r'^usuario_form/(?P<pk>\d+)/$',usuario_form, name='usuario_form'),
-    url(r'^usuarios_list/$', usuarios_list, name='usuarios_list'),
+    url(r'^escola/(?P<escola_pk>\d+)usuario_form/$', usuario_form, name='usuario_form'),
+    url(r'^escola/(?P<escola_pk>\d+)usuario_form/(?P<pk>\d+)/$',usuario_form, name='usuario_form'),
+    url(r'^escola/(?P<escola_pk>\d+)/usuarios_list/$', usuarios_list, name='usuarios_list'),
 
 ]
