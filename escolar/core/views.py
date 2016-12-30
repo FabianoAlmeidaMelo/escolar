@@ -17,8 +17,14 @@ def usuarios_list(request):
     listagem vazia, mostrando somente o que aparece no filtro? OU
     lista todos os usuários da escola?
     '''
+    user = request.user
+    if user.is_admin():
+        usuarios = User.objects.all()
+    else:
+        escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
+        usuarios_ids = UserGrupos.objects.filter(escola__pk__in=escolas_ids).values_list('user__id', flat=True)
+        usuarios = User.objects.filter(id__in=usuarios_ids)
     context = {}
-    usuarios = User.objects.all()
     context['usuarios'] = usuarios
 
     return render(request, 'core/usuarios_list.html', context)

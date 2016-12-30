@@ -70,6 +70,9 @@ class User(AbstractBaseUser):
     def __unicode__(self):
         return self.email
 
+    def is_admin(self):
+        return self.grupos.filter(name='Admin').count() == 1
+
     def get_professor_escolas(self):
         '''
         retornar um queryset
