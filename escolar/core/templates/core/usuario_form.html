@@ -16,6 +16,7 @@
    {% include "base_adm.html" %}
 
 <form method="POST" enctype="multipart/form-data">
+    {{ form.errors }}
     {% csrf_token %}
     <div class="row-fluid">
         <div class="controls cwell">

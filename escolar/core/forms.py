@@ -23,8 +23,8 @@ class UserForm(forms.ModelForm):
                                    queryset=Group.objects.exclude(name='Admin'))
     escola = forms.ModelChoiceField(required=False,
                                     queryset=Escola.objects.all())
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label=u'Confirmação', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput, required=False)
+    password2 = forms.CharField(label=u'Confirmação', widget=forms.PasswordInput, required=False)
 
     class Meta:
         model = User
@@ -33,27 +33,36 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(UserForm, self).__init__(*args, **kwargs)
+        self.auto_edicao = self.instance == self.user
+        if self.auto_edicao:
+            self.fields['grupo'].widget = forms.HiddenInput()
+            self.fields['escola'].widget = forms.HiddenInput()
+            self.fields['grupo'].required = False
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords diferentes")
-        elif not password2:
+        elif password1 and not password2:
             raise forms.ValidationError("Confirme a senha")
         return password2
 
     def save(self, commit=True):
+        created = False
         email = self.cleaned_data['email']
+        group = self.cleaned_data["grupo"] or None
+        escola = self.cleaned_data["escola"] or None
         nome = self.cleaned_data['nome']
-        user, created = User.objects.get_or_create(email=email, defaults={'nome': nome})
-        group = self.cleaned_data["grupo"]
-        escola = self.cleaned_data["escola"]
+        if not self.auto_edicao:
+            user, created = User.objects.get_or_create(email=email, defaults={'nome': nome})
 
         password2 = self.cleaned_data.get("password2", False)
-        if password2 and created:
-            user.set_password(password2)
+        if password2 and created or self.auto_edicao:
+            self.instance.set_password(password2)
         if commit:
-            user.save()
-        UserGrupos.objects.get_or_create(escola=escola, grupo=group, user=user, ativo=True)
-        return user
+            self.instance.save()
+            if all([self.auto_edicao is False, group, escola]):
+                UserGrupos.objects.get_or_create(escola=escola, grupo=group, user=user, ativo=True)
+        return self.instance

@@ -55,6 +55,9 @@ def usuario_form(request, escola_pk, pk=None):
         msg = u'Usuário cadastrado.'
 
     form = UserForm(request.POST or None, instance=usuario, user=user)
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
 
     if request.method == 'POST':
         if form.is_valid():
@@ -63,11 +66,9 @@ def usuario_form(request, escola_pk, pk=None):
             messages.success(request, msg)
         else:
             messages.warning(request, u'Falha no cadastro do Aluno')
-        return redirect(reverse('usuarios_list'))
+            return render(request, 'core/usuario_form.html', context)
+        return redirect(reverse('usuarios_list', kwargs={'escola_pk': escola.pk}))
 
-    context = {}
-    context['form'] = form
-    context['escola'] = escola
 
     return render(request, 'core/usuario_form.html', context)
 
