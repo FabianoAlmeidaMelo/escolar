@@ -27,7 +27,7 @@
       <tbody>
       {% for escola in escolas %}
         <tr>
-          <td> <a href="{% url 'escola_form' escola.pk %}">{{ escola.nome }}</a></td>
+          <td> <a href="{% url 'escola_cadastro' escola.pk %}">{{ escola.nome }}</a></td>
           <td>{{ escola.endereco }}</td>
           <td>{{ escola.telefone|default:"--" }}</td>
           <td>{{ escola.get_status|yesno:'ativo,inativo' }}</td>

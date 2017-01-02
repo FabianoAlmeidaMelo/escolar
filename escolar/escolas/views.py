@@ -2,7 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
@@ -25,12 +25,23 @@ def escolas_list(request):
         escolas =  Escola.objects.filter(id__in=escolas_ids)
     return render(request, 'escolas/escolas_list.html', {'escolas': escolas})
 
+@login_required
+def escola_cadastro(request, pk):
+    user = request.user
+    escola =  Escola.objects.get(id=pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    return render(request, 'escolas/escola_cadastro.html', {'escola': escola, 'can_edit': can_edit})
 
 @login_required
 def escola_form(request, pk=None):
+    user = request.user
+    admin = can_edit = user.is_admin()
     if pk:
         escola = get_object_or_404(Escola, pk=pk)
         msg = u'Escola alterada com sucesso.'
+        can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+        if not can_edit:
+            raise Http404
     else:
         escola = None
         msg = u'Escola criada.'
@@ -39,6 +50,7 @@ def escola_form(request, pk=None):
     context = {}
     context['form'] = form
     context['escola'] = escola
+    context['admin'] = admin
 
     if request.method == 'POST':
         if form.is_valid():

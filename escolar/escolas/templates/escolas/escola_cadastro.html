@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load bootstrap_toolkit %}
+
+{% block page_title %}
+    {% if escola %}
+        Escola: {{ escola.nome }}
+    {% else %}
+        Cadastro de Escola
+    {% endif %}
+{% endblock page_title %}
+
+
+{% block content %}
+
+<div class="container">
+   {% include "base_adm.html" %}
+
+
+        Nome: <b>{{ escola.nome }}</b><br> 
+        Endereço: <b>{{ escola.endereco }}</b><br> 
+        Número: <b>{{ escola.numero }}</b><br> 
+        complemento: <b>{{ escola.complemento }}</b><br> 
+        Telefone: <b>{{ escola.telefone }}</b><br> 
+        Bairro: <b>{{ escola.bairro }}</b><br> 
+        Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
+        Observaçoes: <b>{{ escola.description }}</b><br> 
+
+        {% if can_edit %}
+        <div class="form-actions">
+            <a href="{% url 'escola_form' escola.pk %}" class="btn btn-secondary">Editar</a>
+        </div>
+        {% endif %}
+
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

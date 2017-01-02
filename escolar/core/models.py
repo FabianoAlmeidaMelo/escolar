@@ -73,6 +73,10 @@ class User(AbstractBaseUser):
     def is_admin(self):
         return self.grupos.filter(name='Admin').count() == 1
 
+    def is_diretor(self, escola_pk):
+        return self.usergrupos_set.filter(grupo__name='Diretor', escola__id=escola_pk).count() == 1
+
+
     def get_professor_escolas(self):
         '''
         retornar um queryset
