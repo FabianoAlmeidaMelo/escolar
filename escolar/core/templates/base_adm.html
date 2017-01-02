@@ -1,8 +1,24 @@
+<!-- 
 <ul class="nav nav-tabs">
-    <li><a href="{% url 'escola_form' escola.pk %}" id='id_escola' data-toggle="tab">Escola</a></li>
-    <li><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios' data-toggle="tab">Usuários</a></li>
+    <li><a href="#" id='id_escola' data-toggle="tab">Escola</a></li>
+    <li><a href="#" id='id_usuarios' data-toggle="tab">Usuários</a></li>
     <li><a href="#" id='id_classes' data-toggle="tab">Classes</a></li>
-    <li><a href="{% url 'professores_list' escola.pk %}" data-toggle="tab">Professores</a></li>
-    <li><a href="{% url 'alunos_list' escola.id %}" data-toggle="tab">Alunos</a></li>
-    <li><a href="{% url 'alunos_list' escola.id %}" data-toggle="tab">Responsáveis</a></li>
+    <li><a href="#" id='id_professores' data-toggle="tab">Professores</a></li>
+    <li><a href="#" id='id_alunos' data-toggle="tab">Alunos</a></li>
+    <li><a href="#" data-toggle="tab">Responsáveis</a></li>
+</ul>  -->
+
+<ul class="nav nav-tabs">
+    <li><a href="{% url 'escola_form' escola.pk %}" id='id_escola'>Escola</a></li>
+    <li><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
+    <li><a href="#" id='id_classes'>Classes</a></li>
+    <li><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
+    <li><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
+    <li><a href="{% url 'alunos_list' escola.id %}">Responsáveis</a></li>
 </ul>
+
+<script>
+  $(function () {
+    $('#myTab a:last').tab('show');
+  })
+</script>
