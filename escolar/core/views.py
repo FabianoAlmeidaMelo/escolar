@@ -24,7 +24,8 @@ def usuarios_list(request, escola_pk):
     '''
     user = request.user
     context = {}
-    diretor = user.usergrupos_set.filter(grupo__name='Diretor').count()
+    diretor = user.is_diretor(escola_pk)
+    admin = user.is_admin()
     if user.is_admin():
         usuarios = User.objects.all()
     elif diretor:
@@ -34,6 +35,7 @@ def usuarios_list(request, escola_pk):
         usuarios = User.objects.filter(id=user.id)
     context['usuarios'] = usuarios
     context['escola'] = Escola.objects.get(id=escola_pk)
+    context['can_edit'] = diretor or admin
 
     return render(request, 'core/usuarios_list.html', context)
 

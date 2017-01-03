@@ -23,14 +23,11 @@ def escolas_list(request):
         escolas = Escola.objects.all()
     else:
         escolas =  Escola.objects.filter(id__in=escolas_ids)
-    return render(request, 'escolas/escolas_list.html', {'escolas': escolas})
+    context = {}
+    context['can_create'] = user.is_admin()
+    context['escolas'] = escolas
+    return render(request, 'escolas/escolas_list.html', context)
 
-@login_required
-def escola_cadastro(request, pk):
-    user = request.user
-    escola =  Escola.objects.get(id=pk)
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    return render(request, 'escolas/escola_cadastro.html', {'escola': escola, 'can_edit': can_edit})
 
 @login_required
 def escola_form(request, pk=None):
@@ -64,6 +61,14 @@ def escola_form(request, pk=None):
 
 
 @login_required
+def escola_cadastro(request, pk):
+    user = request.user
+    escola =  Escola.objects.get(id=pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    return render(request, 'escolas/escola_cadastro.html', {'escola': escola, 'can_edit': can_edit})
+
+
+@login_required
 def professores_list(request, escola_pk):
     user = request.user
     escola = Escola.objects.get(id=escola_pk)
@@ -71,6 +76,8 @@ def professores_list(request, escola_pk):
     context = {}
     context['escola'] = escola
     context['professores'] = User.objects.filter(id__in=professores_ids)
+    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['user'] = user
 
     return render(request, 'escolas/professores_list.html', context)
 
@@ -110,11 +117,12 @@ def professor_form(request, escola_pk, grupo_user_pk=None):
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
-    # escolas_ids = user.usergrupos_set.filter(grupo__name='Diretor').values_list('escola__id', flat=True)
     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk=escola_pk).values_list('user__id', flat=True)
     context = {}
     context['alunos'] = User.objects.filter(id__in=alunos_ids)
     context['escola'] = Escola.objects.get(id=escola_pk)
+    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['user'] = user
 
     return render(request, 'escolas/alunos_list.html', context)
 

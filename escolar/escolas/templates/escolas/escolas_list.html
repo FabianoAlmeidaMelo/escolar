@@ -7,11 +7,13 @@
 <div class="container">
 
   <table class="table table-striped">
+    {% if can_create %}
      <caption>
          <div style="float:right; margin-right:10px">
             <a href="{% url 'escola_form' %}" class="btn btn-mini btn-success">Nova Escola</a>
          </div>
     </caption>
+    {% endif %}
       <thead>
         <tr>
             <th>Escola</th>

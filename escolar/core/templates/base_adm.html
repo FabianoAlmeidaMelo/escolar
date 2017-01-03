@@ -9,12 +9,14 @@
 </ul>  -->
 
 <ul class="nav nav-tabs">
+    {% if escola.id %}
     <li><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
     <li><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
     <li><a href="#" id='id_classes'>Classes</a></li>
     <li><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
     <li><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
     <li><a href="{% url 'alunos_list' escola.id %}">Responsáveis</a></li>
+    {% endif %}
 </ul>
 
 <script>

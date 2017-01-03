@@ -40,7 +40,11 @@
         </div>
         <div class="form-actions">
             <input type="submit" value="Salvar" class="btn btn-primary">
-            <a href="{% url 'escolas_list' %}" class="btn btn-secondary">Cancelar</a>
+            {% if escola %}
+                <a href="{% url 'escola_cadastro' escola.id %}" class="btn btn-secondary">Cancelar</a>
+            {% else %}
+                <a href="{% url 'escolas_list' %}" class="btn btn-secondary">Cancelar</a>
+            {% endif%}
         </div>
     </div>
 </form>
