@@ -36,6 +36,7 @@ def usuarios_list(request, escola_pk):
     context['usuarios'] = usuarios
     context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = diretor or admin
+    context['tab_usuarios'] = "active"
 
     return render(request, 'core/usuarios_list.html', context)
 
@@ -60,6 +61,7 @@ def usuario_form(request, escola_pk, pk=None):
     context = {}
     context['form'] = form
     context['escola'] = escola
+    context['tab_usuarios'] = "active"
 
     if request.method == 'POST':
         if form.is_valid():

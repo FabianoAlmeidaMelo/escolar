@@ -1,23 +1,18 @@
-<!-- 
-<ul class="nav nav-tabs">
-    <li><a href="#" id='id_escola' data-toggle="tab">Escola</a></li>
-    <li><a href="#" id='id_usuarios' data-toggle="tab">Usuários</a></li>
-    <li><a href="#" id='id_classes' data-toggle="tab">Classes</a></li>
-    <li><a href="#" id='id_professores' data-toggle="tab">Professores</a></li>
-    <li><a href="#" id='id_alunos' data-toggle="tab">Alunos</a></li>
-    <li><a href="#" data-toggle="tab">Responsáveis</a></li>
-</ul>  -->
+
 
 <ul class="nav nav-tabs">
     {% if escola.id %}
-    <li><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
-    <li><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
-    <li><a href="#" id='id_classes'>Classes</a></li>
-    <li><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
-    <li><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
-    <li><a href="{% url 'alunos_list' escola.id %}">Responsáveis</a></li>
+    <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
+    <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
+    <li class="{{ tab_classes }}"><a href="#" id='id_classes'>Classes</a></li>
+    <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
+    <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
+    <li class="{{ tab_responsaveis }}"><a href="{% url 'alunos_list' escola.id %}">Responsáveis</a></li>
     {% endif %}
 </ul>
+
+
+
 
 <script>
   $(function () {

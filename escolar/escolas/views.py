@@ -26,6 +26,7 @@ def escolas_list(request):
     context = {}
     context['can_create'] = user.is_admin()
     context['escolas'] = escolas
+    context['tab_escola'] = "active"
     return render(request, 'escolas/escolas_list.html', context)
 
 
@@ -41,13 +42,14 @@ def escola_form(request, pk=None):
             raise Http404
     else:
         escola = None
-        msg = u'Escola criada.'
+        msg = u'Escola criada.' 
 
     form = EscolaForm(request.POST or None, instance=escola)
     context = {}
     context['form'] = form
     context['escola'] = escola
     context['admin'] = admin
+    context['tab_escola'] = "active"
 
     if request.method == 'POST':
         if form.is_valid():
@@ -65,7 +67,11 @@ def escola_cadastro(request, pk):
     user = request.user
     escola =  Escola.objects.get(id=pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    return render(request, 'escolas/escola_cadastro.html', {'escola': escola, 'can_edit': can_edit})
+    context = {}
+    context["escola"] = escola
+    context['tab_escola'] = "active"
+    context['can_edit'] = can_edit
+    return render(request, 'escolas/escola_cadastro.html', context)
 
 
 @login_required
@@ -78,7 +84,7 @@ def professores_list(request, escola_pk):
     context['professores'] = User.objects.filter(id__in=professores_ids)
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
     context['user'] = user
-
+    context['tab_professores'] = "active"
     return render(request, 'escolas/professores_list.html', context)
 
 
@@ -110,6 +116,7 @@ def professor_form(request, escola_pk, grupo_user_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['grupo_user'] = grupo_user
+    context['tab_professores'] = "active"
 
     return render(request, 'escolas/grupo_form.html', context)
 
@@ -123,6 +130,7 @@ def alunos_list(request, escola_pk):
     context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
     context['user'] = user
+    context['tab_alunos'] = "active"
 
     return render(request, 'escolas/alunos_list.html', context)
 
@@ -158,5 +166,6 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['grupo_user'] = grupo_user
+    context['tab_alunos'] = "active"
 
     return render(request, 'escolas/aluno_form.html', context)
