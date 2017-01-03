@@ -1,5 +1,3 @@
-
-
 <ul class="nav nav-tabs">
     {% if escola.id %}
     <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
@@ -11,11 +9,3 @@
     {% endif %}
 </ul>
 
-
-
-
-<script>
-  $(function () {
-    $('#myTab a:last').tab('show');
-  })
-</script>
