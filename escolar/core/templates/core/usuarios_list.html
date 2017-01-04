@@ -12,40 +12,41 @@
 <div class="container">
 
   {% include "base_adm.html" %}
+  <div class="row-fluid span10">
+    <table class="table table-striped">
+      {% if can_edit %}
+        <caption>
+           <div style="float:right; margin-right:10px">
+              <a href="{% url 'usuario_form' escola.pk %}" class="btn btn-mini btn-success">Novo Usuário</a>
+           </div>
+        </caption>
+      {% endif %}
+        <thead>
+          <tr>
+              <th>Nome</th>
+              <th>Email</th>
+          </tr>
+        </thead>
 
-  <table class="table table-striped">
-    {% if can_edit %}
-      <caption>
-         <div style="float:right; margin-right:10px">
-            <a href="{% url 'usuario_form' escola.pk %}" class="btn btn-mini btn-success">Novo Usuário</a>
-         </div>
-      </caption>
-    {% endif %}
-      <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Email</th>
-        </tr>
-      </thead>
+        <tbody>
+        {% for usuario in usuarios %}
+          <tr>
+            <td><a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a></td>
+            <td>
+              {{ usuario.email }}
+            </td>
 
-      <tbody>
-      {% for usuario in usuarios %}
+          </tr>
+        {% empty %}
         <tr>
-          <td><a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a></td>
           <td>
-            {{ usuario.email }}
+              Nenhum usuário encontrado
           </td>
-
         </tr>
-      {% empty %}
-      <tr>
-        <td>
-            Nenhum usuário encontrado
-        </td>
-      </tr>
-      {% endfor %}
-      </tbody>
-  </table>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
 </div>
 
 {% endblock content %}

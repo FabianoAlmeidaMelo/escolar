@@ -15,7 +15,7 @@
 
 <div class="container">
    {% include "base_adm.html" %}
-
+    <div class="row-fluid span10">
 
         Nome: <b>{{ escola.nome }}</b><br> 
         Endereço: <b>{{ escola.endereco }}</b><br> 
@@ -31,8 +31,9 @@
             <a href="{% url 'escola_form' escola.pk %}" class="btn btn-secondary">Editar</a>
         </div>
         {% endif %}
-
+    </div>
 </div>
+
 {% endblock content %}
 
 {% block extra_js %}
