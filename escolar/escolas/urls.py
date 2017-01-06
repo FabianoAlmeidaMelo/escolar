@@ -1,5 +1,5 @@
 # coding: utf-8
-from django.conf.urls import include, url
+from django.conf.urls import url
 
 from escolar.escolas.views import (
     alunos_list,

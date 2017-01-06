@@ -14,6 +14,9 @@ from escolar.core.forms import AuthenticationForm
 
 from escolar.core.views import home
 
+# autocomplete_light.autodiscover()  # before admin.autodiscover
+admin.autodiscover()
+
 urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^', include('escolar.core.urls')),
@@ -39,5 +42,7 @@ urlpatterns = [
     ),
     url(r'^user/password/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
+    url(r'^municipios_app/', include('municipios.urls')),
+    # url(r'^childcrud/', include('childcrud.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
