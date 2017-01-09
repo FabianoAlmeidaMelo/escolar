@@ -141,24 +141,23 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     aluno é user
     '''
     escola = Escola.objects.get(id=escola_pk)
-    grupo = Group.objects.filter(nome='Aluno')
+    grupo = Group.objects.filter(name='Aluno')
+    aluno = User.objects.get(pk=aluno_pk)
 
     if aluno_pk:
-        aluno = get_object_or_404(GrupoUser, pk=aluno_pk)
+        grupo_user = get_object_or_404(UserGrupos, escola=escola_pk, user=aluno_pk, grupo=grupo)
         msg = u'Aluno alterado com sucesso.'
     else:
-        aluno = None
+        grupo_user = None
         msg = u'Aluno cadastrado.'
 
-    form = AlunoForm(request.POST or None, instance=aluno, escola=escola)
+    form = AlunoForm(request.POST or None, instance=grupo_user)
 
     if request.method == 'POST':
         if form.is_valid():
-            # grupo_user = form.save(commit=False)
-            # grupo_user.escola = escola
-            # grupo_user.save()
+            grupo_user = form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list'))
+            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Aluno')
 
@@ -167,5 +166,6 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['escola'] = escola
     context['grupo_user'] = grupo_user
     context['tab_alunos'] = "active"
+    context['aluno'] = aluno
 
     return render(request, 'escolas/aluno_form.html', context)

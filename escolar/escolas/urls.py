@@ -2,6 +2,7 @@
 from django.conf.urls import url
 
 from escolar.escolas.views import (
+    aluno_form,
     alunos_list,
     escolas_list,
     escola_cadastro,
@@ -21,6 +22,6 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/professores_list/$', professores_list, name='professores_list'),
     #  Alunos
 #     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/$', aluno_form, name='aluno_form'),
-#     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/(?P<grupo_pk>\d+)/$', aluno_form, name='aluno_form'),
+    url(r'^escola/(?P<escola_pk>\d+)/aluno_form/(?P<aluno_pk>\d+)/$', aluno_form, name='aluno_form'),
     url(r'^escola/(?P<escola_pk>\d+)/alunos_list/$', alunos_list, name='alunos_list'),
 ]
