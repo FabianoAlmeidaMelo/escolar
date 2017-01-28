@@ -13,7 +13,17 @@ class EscolaForm(forms.ModelForm):
 
 
 class AlunoForm(forms.ModelForm):
+    ativo = forms.BooleanField(label='Matriculado', required=False)
 
     class Meta:
         model = UserGrupos
-        exclude = ('user', 'date_joined', 'escola', 'grupo')
+        # exclude = ('date_joined', 'escola', 'grupo')
+        fields = ('ativo',)
+
+class ProfessorForm(forms.ModelForm):
+    ativo = forms.BooleanField(label='Ativo', required=False)
+
+    class Meta:
+        model = UserGrupos
+        # exclude = ('user', 'date_joined', 'escola', 'grupo')
+        fields = ('ativo',)

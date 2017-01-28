@@ -13,6 +13,7 @@ from escolar.escolas.models import (
 from escolar.escolas.forms import (
     AlunoForm,
     EscolaForm,
+    ProfessorForm,
     )
 
 @login_required
@@ -89,26 +90,30 @@ def professores_list(request, escola_pk):
 
 
 @login_required
-def professor_form(request, escola_pk, grupo_user_pk=None):
+def professor_form(request, escola_pk, professor_pk=None):
+    '''
+    professor é user
+    '''
     escola = Escola.objects.get(id=escola_pk)
-    grupo = Group.objects.filter(nome='Professor')
+    grupo = Group.objects.filter(name='Professor')
+    professor = None
+    if professor_pk:
+        professor = User.objects.get(pk=professor_pk)
 
-    if grupo_user_pk:
-        grupo_user = get_object_or_404(GrupoUser, pk=grupo_user_pk)
+    if professor_pk:
+        grupo_user = get_object_or_404(UserGrupos, escola=escola_pk, user=professor_pk, grupo=grupo)
         msg = u'Professor alterado com sucesso.'
     else:
         grupo_user = None
-        msg = u'Professor criado.'
+        msg = u'Professor cadastrado.'
 
-    form = GrupoUserForm(request.POST or None, instance=grupo_user, escola=escola)
+    form = ProfessorForm(request.POST or None, instance=grupo_user)
 
     if request.method == 'POST':
         if form.is_valid():
-            grupo_user = form.save(commit=False)
-            grupo_user.escola = escola
-            grupo_user.save()
+            grupo_user = form.save()
             messages.success(request, msg)
-            return redirect(reverse('professores_list'))
+            return redirect(reverse('professores_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Professor')
 
@@ -117,8 +122,9 @@ def professor_form(request, escola_pk, grupo_user_pk=None):
     context['escola'] = escola
     context['grupo_user'] = grupo_user
     context['tab_professores'] = "active"
+    context['professor'] = professor
 
-    return render(request, 'escolas/grupo_form.html', context)
+    return render(request, 'escolas/professor_form.html', context)
 
 
 @login_required
@@ -142,7 +148,9 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     '''
     escola = Escola.objects.get(id=escola_pk)
     grupo = Group.objects.filter(name='Aluno')
-    aluno = User.objects.get(pk=aluno_pk)
+    aluno = None
+    if aluno_pk:
+        aluno = User.objects.get(pk=aluno_pk)
 
     if aluno_pk:
         grupo_user = get_object_or_404(UserGrupos, escola=escola_pk, user=aluno_pk, grupo=grupo)
