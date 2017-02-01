@@ -94,6 +94,7 @@ def professores_list(request, escola_pk):
 def professor_form(request, escola_pk, professor_pk=None):
     '''
     professor é user
+    Não cria aqui, já foi definido no cadastro do user
     '''
     escola = Escola.objects.get(id=escola_pk)
     grupo = Group.objects.filter(name='Professor')
@@ -146,6 +147,7 @@ def alunos_list(request, escola_pk):
 def aluno_form(request, escola_pk, aluno_pk=None):
     '''
     aluno é user
+    Não cria aqui, já foi definido no cadastro do user
     '''
     escola = Escola.objects.get(id=escola_pk)
     grupo = Group.objects.filter(name='Aluno')
@@ -191,17 +193,19 @@ def classe_form(request, escola_pk, classe_pk=None):
     >>
     professores que dão aula para determinada classe
     alunos que pertencem a uma classe
+
+    user não pode trocar o ID da escola
     '''
     escola = Escola.objects.get(id=escola_pk)
-    grupo_user = None
+
     classe = None
     msg = u'Classe cadastrada.'
 
     if classe_pk:
-        classe = Classe.objects.get(pk=classe_pk)
+        classe = get_object_or_404(Classe, pk=classe_pk)
         msg = u'Classe alterada com sucesso.'
 
-    form = ClasseForm(request.POST or None, instance=classe)
+    form = ClasseForm(request.POST or None, instance=classe, escola=escola)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -218,3 +222,17 @@ def classe_form(request, escola_pk, classe_pk=None):
     context['tab_classes'] = "active"
 
     return render(request, 'escolas/classe_form.html', context)
+
+
+@login_required
+def classes_list(request, escola_pk):
+    user = request.user
+    classes = Classe.objects.filter(escola__pk=escola_pk)
+    context = {}
+    context['classes'] = classes
+    context['escola'] = Escola.objects.get(id=escola_pk)
+    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['user'] = user
+    context['tab_classes'] = "active"
+
+    return render(request, 'escolas/classes_list.html', context)

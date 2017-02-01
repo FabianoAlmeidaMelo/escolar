@@ -2,6 +2,7 @@
 from django import forms
 from escolar.escolas.models import (
     Escola,
+    Classe,
     )
 from escolar.core.models import User, UserGrupos
 
@@ -27,3 +28,13 @@ class ProfessorForm(forms.ModelForm):
         model = UserGrupos
         # exclude = ('user', 'date_joined', 'escola', 'grupo')
         fields = ('ativo',)
+
+
+class ClasseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.escola = kwargs.pop('escola', None)
+        super(ClasseForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Classe
+        exclude = ('escola',)
