@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from municipios.models import Municipio
-
+from datetime import date
 from django.conf import settings
 
 PERIODO = (
@@ -10,11 +10,12 @@ PERIODO = (
     (3, 'Noite'),
 )
 
-
+ano_corrente = date.today().year
+ano_seguinte = ano_corrente + 1
+ 
 ANO = (
-    (2016, 2016),
-    (2017, 2017),
-    (2018, 2018),
+    (ano_corrente, ano_corrente),
+    (ano_seguinte, ano_seguinte),
 )
 
 
@@ -52,22 +53,35 @@ class Escola(models.Model):
         '''
         return True
 
-# class Diretor(models.Model):
-#     owner = models.BooleanField('Diretor', default=False)
-#     status = models.BooleanField('status',)
-#     escola = models.ForeignKey(Escola)
-#     user = models.ForeignKey(User)
+class Classe(models.Model):
+    escola = models.ForeignKey(Escola)
+    ano = models.SmallIntegerField('Ano', choices=ANO)
+    curso = models.CharField(max_length=50) # ex: 5º ano A; 5º ano ensino fundamental B; ...
+    periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
 
-#     def __str__ (self):
-#         return self.user.get_full_name()
+    def __unicode__(self):
+        return "%s - %s "% (self.curso, str(self.ano))
 
-# class Professor(models.Model):
-#     status = models.BooleanField('status',)
-#     escola = models.ForeignKey(Escola)
-#     user = models.ForeignKey(User)
+class ClasseAluno(models.Model):
+    classe = models.ForeignKey(Classe)
+    aluno = models.ForeignKey('core.User')
 
-#     def __str__ (self):
-#         return self.user.get_full_name()
+    class Meta:
+        unique_together = ("classe", "aluno")
+
+    def __str__(self):
+        return '%s-%s' % (clase, aluno)
+
+class ClasseProfessor(models.Model):
+    classe = models.ForeignKey(Classe)
+    professor = models.ForeignKey('core.User')
+    materia = models.CharField(max_length=80)
+
+    class Meta:
+        unique_together = ("classe", "professor", "materia")
+
+    def __str__(self):
+        return '%s-%s: %s' % (clase, professor, materia)
 
 
 # class Autorizados(models.Model):
@@ -84,28 +98,6 @@ class Escola(models.Model):
 
 #     def __str__ (self):
 #         return self.nome
-
-# class Turma(models.Model):
-#     escola = models.ForeignKey(Escola)
-#     ano = models.DateField('Ano')
-#     curso = models.ForeignKey('Cusro')
-#     professor = models.ManyToManyField(User, related_name='professor')
-#     aluno = models.ManyToManyField(Aluno)
-
-
-# class Classe(models.Model):
-#     escola = models.ForeignKey(Escola)
-#     ano = models.SmallIntegerField('Ano', choices=ANO)  # 2017
-#     curso = models.CharField(max_length=20) # ex: 5º ano A
-#     professor = models.ManyToManyField(Professor, related_name='professor')  # m2m ?? embora até o 5º ano seja 1 prof
-#     turma = models.ManyToManyField(Aluno, related_name='turma')
-#     periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
-
-    # def __unicode__(self):
-    #     return "%s - %s "% (self.curso, str(self.ano))
-
-# class Agenda(models.Model):
-#     aluno = models.ForeignKey(Aluno)
 
 
 

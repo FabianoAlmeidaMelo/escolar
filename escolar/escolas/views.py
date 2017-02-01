@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 
 from escolar.escolas.models import (
     Escola,
+    Classe,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -177,3 +178,43 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['aluno'] = aluno
 
     return render(request, 'escolas/aluno_form.html', context)
+
+
+@login_required
+def classe_form(request, escola_pk, classe_pk=None):
+    '''
+    Classes "isolarão":
+    escola;
+    curso, ex: 5º ano ensino fundamental A, 5º ano B, ...
+    ano: 2017, 2018, ...
+    período: manhã, tarde, noite
+    >>
+    professores que dão aula para determinada classe
+    alunos que pertencem a uma classe
+    '''
+    escola = Escola.objects.get(id=escola_pk)
+    grupo_user = None
+    classe = None
+    msg = u'Classe cadastrada.'
+
+    if classe_pk:
+        classe = Classe.objects.get(pk=classe_pk)
+        msg = u'Classe alterada com sucesso.'
+
+    form = ClasseForm(request.POST or None, instance=classe)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            classe = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do Aluno')
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['classe'] = classe
+    context['tab_classes'] = "active"
+
+    return render(request, 'escolas/classe_form.html', context)
