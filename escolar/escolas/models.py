@@ -12,8 +12,10 @@ PERIODO = (
 
 ano_corrente = date.today().year
 ano_seguinte = ano_corrente + 1
+ano_anterior = ano_corrente - 1
  
 ANO = (
+    (ano_anterior, ano_anterior),
     (ano_corrente, ano_corrente),
     (ano_seguinte, ano_seguinte),
 )
