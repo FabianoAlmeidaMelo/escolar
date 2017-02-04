@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
 from escolar.core.models import User, UserGrupos
@@ -79,15 +79,21 @@ def usuario_form(request, escola_pk, pk=None):
 
 @login_required
 def grupos_list(request):
-
+    user = request.user
+    can_edit = user.is_admin()
     grupos = Group.objects.all()
     context = {}
     context['grupos'] = grupos
+    context['can_edit'] = can_edit
     return render(request, 'core/grupos_list.html', context)
 
 
 @login_required
 def grupo_form(request, grupo_pk=None):
+    user = request.user
+    can_edit = user.is_admin()
+    if not can_edit:
+        raise Http404
     if grupo_pk:
         grupo = get_object_or_404(Group, pk=grupo_pk)
         msg = u'Grupo alterado com sucesso.'
