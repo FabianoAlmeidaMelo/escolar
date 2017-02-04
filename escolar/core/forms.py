@@ -34,6 +34,10 @@ class UserForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super(UserForm, self).__init__(*args, **kwargs)
         self.auto_edicao = self.instance == self.user
+        if not self.user.is_admin():
+            escolas_ids = UserGrupos.objects.filter(user=self.user).values_list('escola__id', flat=True)
+            self.fields['escola'].queryset = Escola.objects.filter(id__in=escolas_ids)
+
         if self.auto_edicao:
             self.fields['grupo'].widget = forms.HiddenInput()
             self.fields['escola'].widget = forms.HiddenInput()
@@ -49,7 +53,7 @@ class UserForm(forms.ModelForm):
             raise forms.ValidationError("Confirme a senha")
         return password2
 
-    def save(self, commit=True):
+    def save(self, commit=False):
         created = False
         email = self.cleaned_data['email']
         group = self.cleaned_data["grupo"] or None
@@ -57,12 +61,13 @@ class UserForm(forms.ModelForm):
         nome = self.cleaned_data['nome']
         if not self.auto_edicao:
             user, created = User.objects.get_or_create(email=email, defaults={'nome': nome})
+        else:
+            user = self.user
 
         password2 = self.cleaned_data.get("password2", False)
         if password2 and created or self.auto_edicao:
             self.instance.set_password(password2)
-        if commit:
-            self.instance.save()
-            if all([self.auto_edicao is False, group, escola]):
+        user.save()
+        if all([self.auto_edicao is False, group, escola]):
                 UserGrupos.objects.get_or_create(escola=escola, grupo=group, user=user, ativo=True)
         return self.instance
