@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load bootstrap_toolkit %}
+{% block page_title %}
+    {% if escola %}
+        Cadastro de Classe / Escola: {{ escola.nome }}
+    {% else %}
+       Cadastro de Classe
+    {% endif %}
+{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+   {% include "base_adm.html" %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row-fluid span10">
+            <div class="controls cwell">
+                <div class="row-fluid">
+                    {{ form.curso|as_bootstrap }}
+                    {{ form.periodo|as_bootstrap }}
+                    {{ form.ano|as_bootstrap }}
+                </div>
+
+            </div>
+            <div class="form-actions">
+                <input type="submit" value="Salvar" class="btn btn-primary">
+                {% if classe %}
+                    <a href="{% url 'classe_form' escola.id  %}" class="btn btn-secondary">Cancelar</a>
+                {% else %}
+                    <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
+                {% endif%}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

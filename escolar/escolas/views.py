@@ -13,6 +13,7 @@ from escolar.escolas.models import (
 )
 from escolar.escolas.forms import (
     AlunoForm,
+    ClasseForm,
     EscolaForm,
     ProfessorForm,
     )
@@ -211,9 +212,9 @@ def classe_form(request, escola_pk, classe_pk=None):
         if form.is_valid():
             classe = form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('classes_list', kwargs={'escola_pk': escola.pk}))
         else:
-            messages.warning(request, u'Falha no cadastro do Aluno')
+            messages.warning(request, u'Falha no cadastro do Classe')
 
     context = {}
     context['form'] = form

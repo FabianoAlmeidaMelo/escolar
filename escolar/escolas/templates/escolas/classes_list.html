@@ -33,9 +33,9 @@
             <td>{{ classe.curso }}</td>
           {% endif %}
             <td>{{ classe.ano}}</td>
-            <td>{{ classe.periodo }}</td>
-            <td>{{ classe.count_professroes }}</td>
-            <td>{{ classe.count_professroes }}</td>
+            <td>{{ classe.get_periodo_display }}</td>
+            <td>{{ classe.count_professroes|default:"--" }}</td>
+            <td>{{ classe.count_professroes|default:"--" }}</td>
           </tr>
         {% empty %}
         <tr>
