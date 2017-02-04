@@ -36,8 +36,8 @@ class ClasseForm(forms.ModelForm):
         super(ClasseForm, self).__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
         instance = super(ClasseForm, self).save(*args, **kwargs)
-        instance.escola = self.escola
         instance.save()
         return instance
 

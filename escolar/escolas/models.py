@@ -61,7 +61,10 @@ class Classe(models.Model):
     curso = models.CharField(max_length=50) # ex: 5º ano A; 5º ano ensino fundamental B; ...
     periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
 
-    def __unicode__(self):
+    class Meta:
+        ordering = ['-ano']
+
+    def __str__(self):
         return "%s - %s "% (self.curso, str(self.ano))
 
 class ClasseAluno(models.Model):

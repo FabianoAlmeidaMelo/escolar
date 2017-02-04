@@ -14,6 +14,13 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     <table class="table table-striped">
+          {% if can_edit %}
+        <caption>
+           <div style="float:right; margin-right:10px">
+              <a href="{% url 'classe_form' escola.pk %}" class="btn btn-mini btn-success">Nova Classe</a>
+           </div>
+        </caption>
+      {% endif %}
          <thead>
           <tr>
               <th>Curso</th>
