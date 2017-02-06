@@ -3,6 +3,7 @@ from django import forms
 from escolar.escolas.models import (
     Escola,
     Classe,
+    ClasseAluno,
     )
 from escolar.core.models import User, UserGrupos
 
@@ -44,3 +45,21 @@ class ClasseForm(forms.ModelForm):
     class Meta:
         model = Classe
         exclude = ('escola',)
+
+
+class ClasseAlunoForm(forms.ModelForm):
+    aluno = forms.ModelChoiceField(label="Selecione o aluno:", queryset=User.objects.all())
+
+    class Meta:
+        model = ClasseAluno
+        fields = ('aluno',)
+
+    def __init__(self, *args, **kwargs):
+        self.classe = kwargs.pop('classe', None)
+        super(ClasseAlunoForm, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.instance.classe = self.classe
+        instance = super(ClasseAlunoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance

@@ -75,7 +75,7 @@ class ClasseAluno(models.Model):
         unique_together = ("classe", "aluno")
 
     def __str__(self):
-        return '%s-%s' % (clase, aluno)
+        return '%s-%s' % (self.classe, self.aluno)
 
 class ClasseProfessor(models.Model):
     classe = models.ForeignKey(Classe)
@@ -86,7 +86,7 @@ class ClasseProfessor(models.Model):
         unique_together = ("classe", "professor", "materia")
 
     def __str__(self):
-        return '%s-%s: %s' % (clase, professor, materia)
+        return '%s-%s: %s' % (self.clase, self.professor, self.materia)
 
 
 # class Autorizados(models.Model):

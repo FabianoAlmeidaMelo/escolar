@@ -10,10 +10,12 @@ from django.contrib.auth.models import Group
 from escolar.escolas.models import (
     Escola,
     Classe,
+    ClasseAluno,
 )
 from escolar.escolas.forms import (
     AlunoForm,
     ClasseForm,
+    ClasseAlunoForm,
     EscolaForm,
     ProfessorForm,
     )
@@ -237,3 +239,35 @@ def classes_list(request, escola_pk):
     context['tab_classes'] = "active"
 
     return render(request, 'escolas/classes_list.html', context)
+
+
+
+@login_required
+def classe_aluno_form(request, classe_pk, classe_aluno_pk=None):
+    classe = get_object_or_404(Classe, pk=classe_pk)
+    classe_aluno = None
+    msg = 'Vinculação classe aluno criada'
+
+    escola = Escola.objects.get(id=classe.escola.id)
+    if classe_aluno_pk:
+        classe_aluno = get_object_or_404(ClasseAluno, pk=classe_aluno_pk)
+        msg = 'Vinculação classe aluno editada'
+
+    form = ClasseAlunoForm(request.POST or None, instance=classe_aluno, classe=classe)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            classe_aluno = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('classes_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do Aluno')
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['classe_aluno'] = classe_aluno
+    context['tab_alunos'] = "active"
+    context['classe'] = classe
+
+    return render(request, 'escolas/classe_aluno_form.html', context)

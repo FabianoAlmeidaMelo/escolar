@@ -67,8 +67,8 @@ class User(AbstractBaseUser):
         verbose_name = u'Usuário'
         verbose_name_plural = u'Usuários'
 
-    def __unicode__(self):
-        return self.email
+    def __str__(self):
+        return self.nome
 
     def is_admin(self):
         return self.grupos.filter(name='Admin').count() == 1
