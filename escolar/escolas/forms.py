@@ -57,6 +57,9 @@ class ClasseAlunoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.classe = kwargs.pop('classe', None)
         super(ClasseAlunoForm, self).__init__(*args, **kwargs)
+        escola = Escola.objects.get(id=self.classe.escola.id)
+        alunos_ids = UserGrupos.objects.filter(escola=escola, grupo__name='Aluno').values_list('user__id', flat=True)
+        self.fields['aluno'].queryset = User.objects.filter(id__in=alunos_ids)
 
     def save(self, *args, **kwargs):
         self.instance.classe = self.classe

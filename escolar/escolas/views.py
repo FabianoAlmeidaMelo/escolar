@@ -267,7 +267,7 @@ def classe_aluno_form(request, classe_pk, classe_aluno_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['classe_aluno'] = classe_aluno
-    context['tab_alunos'] = "active"
+    context['tab_classes'] = "active"
     context['classe'] = classe
 
     return render(request, 'escolas/classe_aluno_form.html', context)
