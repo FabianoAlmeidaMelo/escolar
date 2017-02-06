@@ -73,6 +73,7 @@ class ClasseAluno(models.Model):
 
     class Meta:
         unique_together = ("classe", "aluno")
+        ordering = ['aluno__nome']
 
     def __str__(self):
         return '%s-%s' % (self.classe, self.aluno)
