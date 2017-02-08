@@ -29,6 +29,15 @@
                     <input type="submit" value="Salvar" class="btn btn-primary">
                     <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
                 </div>
+        {% if classe %}
+            <h4>Alunos dessa classe:</h4>
+            <ul>
+                {% for aluno in classe.classealuno_set.all %}
+                <li>{{ aluno.aluno }}</li>
+                {% endfor %}
+            </ul>
+            
+        {% endif %}
             </div>
         </form>
     </div>
