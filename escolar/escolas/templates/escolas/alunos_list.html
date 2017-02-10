@@ -18,7 +18,7 @@
         <thead>
           <tr>
               <th>Nome</th>
-              <th>Turmas</th>
+              <th>Classe</th>
               <th>Status</th>
           </tr>
         </thead>
@@ -31,7 +31,7 @@
             {% else %}
               <td>{{ aluno.nome }}</td>
             {% endif %}
-            <td>++</td>
+            <td>{{ aluno.classe|default:'--' }}</td>
             <td>++</td>
           </tr>
         {% empty %}

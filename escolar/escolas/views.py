@@ -137,8 +137,12 @@ def alunos_list(request, escola_pk):
     user = request.user
     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk=escola_pk).values_list('user__id', flat=True)
     context = {}
-    context['alunos'] = User.objects.filter(id__in=alunos_ids)
-    context['escola'] = Escola.objects.get(id=escola_pk)
+    escola = Escola.objects.get(id=escola_pk)
+    alunos = User.objects.filter(id__in=alunos_ids)
+    for aluno in alunos:
+        aluno.classe = aluno.get_classe(escola)
+    context['alunos'] = alunos
+    context['escola'] = escola 
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
     context['user'] = user
     context['tab_alunos'] = "active"
@@ -181,6 +185,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['grupo_user'] = grupo_user
     context['tab_alunos'] = "active"
     context['aluno'] = aluno
+    context['classes'] = aluno.get_all_classe(escola)
 
     return render(request, 'escolas/aluno_form.html', context)
 

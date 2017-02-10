@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.utils import timezone
-
+from datetime import date
 from django.contrib.auth.models import(
     AbstractBaseUser,
     BaseUserManager,
@@ -104,6 +104,16 @@ class User(AbstractBaseUser):
         '''
         escolas_ids = self.usergrupos_set.filter(grupo__name='Responsavel', ativo=True).values_list('escola_id', flat=True)
         return Escola.objects.filter(id__in=escolas_ids)
+
+    def get_classe(self, escola):
+        ano = date.today().year
+        classe_aluno = self.classealuno_set.filter(classe__escola=escola, classe__ano=ano).last()
+        if classe_aluno:
+            return classe_aluno.classe
+        return None
+
+    def get_all_classe(self, escola):
+        return self.classealuno_set.filter(classe__escola=escola).order_by('-classe__ano')
 
 class UserGrupos(models.Model):
     escola = models.ForeignKey(Escola)

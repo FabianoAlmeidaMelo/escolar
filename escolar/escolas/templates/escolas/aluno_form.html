@@ -32,6 +32,15 @@
                 </div>
             </div>
         </form>
+         {% if classes %}
+            <h4>Histórico de classes:</h4>
+            <ul>
+                {% for classe_aluno in classes %}
+                <li>{{ classe_aluno.classe }}</li>
+                {% endfor %}
+            </ul>
+            
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
