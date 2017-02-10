@@ -32,7 +32,7 @@
               <td>{{ aluno.nome }}</td>
             {% endif %}
             <td>{{ aluno.classe|default:'--' }}</td>
-            <td>++</td>
+            <td>{{ aluno.status|yesno:'matriculado,--' }}</td>
           </tr>
         {% empty %}
         <tr>

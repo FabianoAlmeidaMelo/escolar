@@ -106,6 +106,10 @@ class User(AbstractBaseUser):
         return Escola.objects.filter(id__in=escolas_ids)
 
     def get_classe(self, escola):
+        '''
+        ref #20
+        retorna a classe do ano corrente, de uma escola
+        '''
         ano = date.today().year
         classe_aluno = self.classealuno_set.filter(classe__escola=escola, classe__ano=ano).last()
         if classe_aluno:
@@ -113,6 +117,11 @@ class User(AbstractBaseUser):
         return None
 
     def get_all_classe(self, escola):
+        '''
+        ref #20
+        retorna um histórico de classes de uma
+        escola do aluno
+        '''
         return self.classealuno_set.filter(classe__escola=escola).order_by('-classe__ano')
 
 class UserGrupos(models.Model):

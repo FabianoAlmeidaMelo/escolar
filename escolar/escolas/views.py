@@ -141,6 +141,7 @@ def alunos_list(request, escola_pk):
     alunos = User.objects.filter(id__in=alunos_ids)
     for aluno in alunos:
         aluno.classe = aluno.get_classe(escola)
+        aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=1).last().ativo
     context['alunos'] = alunos
     context['escola'] = escola 
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
