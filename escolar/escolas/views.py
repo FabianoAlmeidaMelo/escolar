@@ -16,6 +16,7 @@ from escolar.escolas.forms import (
     AlunoForm,
     ClasseForm,
     ClasseAlunoForm,
+    ClasseProfessorForm,
     EscolaForm,
     ProfessorForm,
     )
@@ -277,3 +278,34 @@ def classe_aluno_form(request, classe_pk, classe_aluno_pk=None):
     context['classe'] = classe
 
     return render(request, 'escolas/classe_aluno_form.html', context)
+
+
+@login_required
+def classe_professor_form(request, classe_pk, classe_professor_pk=None):
+    classe = get_object_or_404(Classe, pk=classe_pk)
+    classe_professor = None
+    msg = 'Vinculação classe professor criada'
+
+    escola = Escola.objects.get(id=classe.escola.id)
+    if classe_professor_pk:
+        classe_professor = get_object_or_404(ClasseAluno, pk=classe_professor_pk)
+        msg = 'Vinculação classe professor editada'
+
+    form = ClasseProfessorForm(request.POST or None, instance=classe_professor, classe=classe)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            classe_professor = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('classes_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do Professor')
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['classe_professor'] = classe_professor
+    context['tab_classes'] = "active"
+    context['classe'] = classe
+
+    return render(request, 'escolas/classe_professor_form.html', context)

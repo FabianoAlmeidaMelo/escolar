@@ -4,6 +4,7 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
+    ClasseProfessor,
     )
 from escolar.core.models import User, UserGrupos
 
@@ -63,15 +64,37 @@ class ClasseAlunoForm(forms.ModelForm):
         classes_concorrentes_ids = Classe.objects.filter(ano=self.classe.ano, escola=escola).values_list('id', flat=True)
         alunos_distribuidos_ids = ClasseAluno.objects.filter(classe__id__in=classes_concorrentes_ids).values_list('aluno__id', flat=True)
         alunos_disponiveis_ids = list(set(alunos_ids)-set(alunos_distribuidos_ids))
-        # print("\n\nEscola", escola )
-        # print("Todos alunos IDS:", alunos_ids)
-        # print("CLASSES conc:", classes_concorrentes_ids)
-        # print("A distr:", alunos_distribuidos_ids)
-        # print("A dispon:", alunos_disponiveis_ids)
+
         self.fields['aluno'].queryset = User.objects.filter(id__in=alunos_disponiveis_ids)
 
     def save(self, *args, **kwargs):
         self.instance.classe = self.classe
         instance = super(ClasseAlunoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+class ClasseProfessorForm(forms.ModelForm):
+    professor = forms.ModelChoiceField(label="Selecione o professor:", queryset=User.objects.all())
+
+    class Meta:
+        model = ClasseProfessor
+        fields = ('professor', 'materia')
+
+    def __init__(self, *args, **kwargs):
+        self.classe = kwargs.pop('classe', None)
+        super(ClasseProfessorForm, self).__init__(*args, **kwargs)
+
+        escola = Escola.objects.get(id=self.classe.escola.id)
+        professors_ids = UserGrupos.objects.filter(escola=escola, grupo__name='Professor').values_list('user__id', flat=True)
+       
+        # classes_concorrentes_ids = Classe.objects.filter(ano=self.classe.ano, escola=escola).values_list('id', flat=True)
+        # professors_distribuidos_ids = ClasseProfessor.objects.filter(classe__id__in=classes_concorrentes_ids).values_list('professor__id', flat=True)
+        # professors_disponiveis_ids = list(set(professors_ids)-set(professors_distribuidos_ids))
+
+        self.fields['professor'].queryset = User.objects.filter(id__in=professors_ids)
+
+    def save(self, *args, **kwargs):
+        self.instance.classe = self.classe
+        instance = super(ClasseProfessorForm, self).save(*args, **kwargs)
         instance.save()
         return instance

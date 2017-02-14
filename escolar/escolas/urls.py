@@ -7,6 +7,7 @@ from escolar.escolas.views import (
     classes_list,
     classe_form,
     classe_aluno_form,
+    classe_professor_form,
     escolas_list,
     escola_cadastro,
     escola_form,
@@ -32,5 +33,6 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/classe_form/$', classe_form, name='classe_form'),
     url(r'^escola/(?P<escola_pk>\d+)/classe_form/(?P<classe_pk>\d+)/$', classe_form, name='classe_form'),
     url(r'^escola/(?P<escola_pk>\d+)/classes_list/$', classes_list, name='classes_list'),
-    url(r'^escola/classe/(?P<classe_pk>\d)/$', classe_aluno_form, name='classe_aluno_form'),
+    url(r'^escola/aluno/classe/(?P<classe_pk>\d)/$', classe_aluno_form, name='classe_aluno_form'),
+    url(r'^escola/professor/classe/(?P<classe_pk>\d)/$', classe_professor_form, name='classe_professor_form'),
 ]

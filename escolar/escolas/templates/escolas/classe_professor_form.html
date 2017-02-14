@@ -22,7 +22,8 @@
             <div class="row-fluid">
                 <div class="controls cwell">
                     <div class="row-fluid">
-                    {{ form.aluno|as_bootstrap }}
+                    {{ form.professor|as_bootstrap }}
+                    {{ form.materia|as_bootstrap }}
                     </div>
                 </div>
                 <div class="form-actions">
@@ -30,12 +31,12 @@
                     <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
                 </div>
         {% if classe %}
-            <h4>Alunos dessa classe:</h4>
+            <h4>Professores dessa classe:</h4>
             <ul>
-                {% for aluno in classe.classealuno_set.all %}
-                <li>{{ aluno.aluno }}</li>
+                {% for professor in classe.classeprofessor_set.all %}
+                <li>{{ professor.professor }} :  {{ professor.materia }}</li>
                 {% empty %}
-                 Nenhum aluno nesta classe
+                 Nenhum professor nesta classe
                 {% endfor %}
             </ul>
             

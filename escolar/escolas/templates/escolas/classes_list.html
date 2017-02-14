@@ -42,7 +42,7 @@
             <td>{{ classe.ano}}</td>
             <td>{{ classe.get_periodo_display }}</td>
             <td>{{ classe.classeprofessor_set.count|default:"--" }}</td>
-            <th><a href="" class="btn btn-mini btn-success">+</a></td>
+            <th><a href="{% url 'classe_professor_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
             <td>{{ classe.classealuno_set.count|default:"--" }}</td>
             <th><a href="{% url 'classe_aluno_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
           </tr>

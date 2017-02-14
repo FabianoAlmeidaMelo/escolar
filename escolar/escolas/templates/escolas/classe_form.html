@@ -34,13 +34,31 @@
                 {% endif%}
             </div>
         {% if classe %}
-            <h4>Alunos dessa classe:</h4>
-            <ul>
-                {% for aluno in classe.classealuno_set.all %}
-                <li>{{ aluno.aluno }}</li>
-                {% endfor %}
-            </ul>
-            
+        <table>
+          <tr>
+            <th>Professores dessa classe:</th> 
+            <th>Alunos dessa classe:</th>
+        </tr>
+        <tr><td>
+                <ul>
+                    {% for professor in classe.classeprofessor_set.all %}
+                    <li>{{ professor.professor }}: {{ professor.materia }}</li>
+                    {% empty %}
+                     Nenhum professor(a) nesta classe
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {% for aluno in classe.classealuno_set.all %}
+                    <li>{{ aluno.aluno }}</li>
+                    {% empty %}
+                     Nenhum aluno nesta classe
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        </table>
         {% endif %}
         </div>
     </form>
