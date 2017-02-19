@@ -24,10 +24,10 @@
               <th>Curso</th>
               <th>Ano</th>
               <th>Período</th>
-              <th>Nr Professores</th>
               <th>Ad. Prof.</th>
-              <th>Nr Alunos</th>
+              <th>Nr Professores</th>
               <th>Ad. Aluno</th>
+              <th>Nr Alunos</th>
           </tr>
         </thead>
 
@@ -41,10 +41,10 @@
           {% endif %}
             <td>{{ classe.ano}}</td>
             <td>{{ classe.get_periodo_display }}</td>
-            <td>{{ classe.classeprofessor_set.count|default:"--" }}</td>
             <th><a href="{% url 'classe_professor_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
-            <td>{{ classe.classealuno_set.count|default:"--" }}</td>
+            <td>{{ classe.classeprofessor_set.count|default:"--" }}</td>
             <th><a href="{% url 'classe_aluno_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
+            <td>{{ classe.classealuno_set.count|default:"--" }}</td>
           </tr>
         {% empty %}
         <tr>

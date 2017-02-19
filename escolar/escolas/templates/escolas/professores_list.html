@@ -30,8 +30,14 @@
           {% else %}
             <td>{{ professor.nome }}</td>
           {% endif %}
-            <td>++</td>
-            <td>++</td>
+            <td>
+              <ul>
+              {% for prof_classe in professor.classes %}
+              <li>{{ prof_classe.classe|default:"--" }}</li>
+              {% endfor %}
+              </ul>
+            </td>
+            <td>{{ professor.status|yesno:'Ativo,--' }}</td>
           </tr>
         {% empty %}
         <tr>

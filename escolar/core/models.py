@@ -108,7 +108,7 @@ class User(AbstractBaseUser):
     def get_classe(self, escola):
         '''
         ref #20
-        retorna a classe do ano corrente, de uma escola
+        retorna a classe do ano corrente, de uma escola, de um Aluno
         '''
         ano = date.today().year
         classe_aluno = self.classealuno_set.filter(classe__escola=escola, classe__ano=ano).last()
@@ -120,9 +120,18 @@ class User(AbstractBaseUser):
         '''
         ref #20
         retorna um histórico de classes de uma
-        escola do aluno
+        escola do Aluno
         '''
         return self.classealuno_set.filter(classe__escola=escola).order_by('-classe__ano')
+
+    def get_professor_classes(self, escola):
+        '''
+        ref #21
+        retorna um histórico de classes de uma
+        escola do Aluno
+        '''
+        ano = date.today().year
+        return self.classeprofessor_set.filter(classe__escola=escola, classe__ano=ano)
 
 class UserGrupos(models.Model):
     escola = models.ForeignKey(Escola)

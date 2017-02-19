@@ -85,9 +85,14 @@ def professores_list(request, escola_pk):
     user = request.user
     escola = Escola.objects.get(id=escola_pk)
     professores_ids = UserGrupos.objects.filter(grupo__name='Professor',escola__pk=escola_pk).values_list('user__id', flat=True)
+    professores = User.objects.filter(id__in=professores_ids)
+    for professor in professores:
+        professor.classes = professor.get_professor_classes(escola)
+        professor.status = professor.usergrupos_set.filter(grupo__name='Professor', escola=escola).last().ativo
     context = {}
     context['escola'] = escola
-    context['professores'] = User.objects.filter(id__in=professores_ids)
+    context['professores'] = professores
+    context['escola'] = escola
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
     context['user'] = user
     context['tab_professores'] = "active"
@@ -142,7 +147,7 @@ def alunos_list(request, escola_pk):
     alunos = User.objects.filter(id__in=alunos_ids)
     for aluno in alunos:
         aluno.classe = aluno.get_classe(escola)
-        aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=1).last().ativo
+        aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
     context['alunos'] = alunos
     context['escola'] = escola 
     context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
