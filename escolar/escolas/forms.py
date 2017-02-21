@@ -1,6 +1,7 @@
 # coding: utf-8
 from django import forms
 from escolar.escolas.models import (
+    Autorizado,
     Escola,
     Classe,
     ClasseAluno,
@@ -8,6 +9,18 @@ from escolar.escolas.models import (
     )
 from escolar.core.models import User, UserGrupos
 
+
+class AutorizadoForm(forms.ModelForm):
+    '''#22'''
+    def __init__(self, *args, **kwargs):
+        self.escola = kwargs.pop('escola', None)
+        self.aluno = kwargs.pop('aluno', None)
+        self.responsavel = kwargs.pop('responsavel', None)
+        super(AutorizadoForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Autorizado
+        fields = ('nome', 'email', 'celular') 
 
 class EscolaForm(forms.ModelForm):
     class Meta:

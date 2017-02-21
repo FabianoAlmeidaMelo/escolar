@@ -19,6 +19,7 @@
             <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
             <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
             <li class="{{ tab_responsaveis }}"><a href="{% url 'alunos_list' escola.id %}">Responsáveis</a></li>
+            <li class="{{ tab_autorizados }}"><a href="">Autorizados</a></li>
             {% endif %}
         </ul>
     </div>

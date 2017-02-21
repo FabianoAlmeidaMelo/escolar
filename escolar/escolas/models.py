@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from municipios.models import Municipio
 from datetime import date
@@ -90,20 +91,31 @@ class ClasseProfessor(models.Model):
         return '%s-%s: %s' % (self.classe, self.professor, self.materia)
 
 
-# class Autorizados(models.Model):
-#     '''
-#     pessoas autorizadas a buscar alunos na escola
-#     '''
-#     nome = models.CharField('Nome', max_length=200)
-#     email = models.EmailField('email', max_length=200)
-#     celular = models.CharField('celular', max_length=14)
-#     # alunos = models.ManyToManyField(Aluno)
-#     escola = models.ForeignKey(Escola)
-#     foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
-#     status = models.BooleanField('Ativo' )
+class Autorizado(models.Model):
+    '''
+    #22
+    pessoas autorizadas a buscar alunos na escola
+    '''
+    nome = models.CharField('Nome', max_length=200)
+    email = models.EmailField('email', max_length=200)
+    celular = models.CharField('celular', max_length=14)
+    # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
 
-#     def __str__ (self):
-#         return self.nome
+    def __str__ (self):
+        return self.nome
 
 
+class AutorizadoAluno(models.Model):
+    '''
+    #22
+    pessoas autorizadas a buscar alunos na escola
+    '''
+    escola = models.ForeignKey(Escola)
+    aluno = models.ForeignKey('core.User', related_name='aluno')
+    autorizado = models.ForeignKey(Autorizado)
+    responsavel = models.ForeignKey('core.User', related_name='responsavel')
+    data = models.DateTimeField('data de cadastro', default=timezone.now)
+    status = models.BooleanField('Ativo', default=False)
 
+    def __str__ (self):
+        return "Aluno: %s; Autorizado %s; Status: %s" % (self.aluno, self.autorizado, self.status)

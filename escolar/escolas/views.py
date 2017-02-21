@@ -8,18 +8,51 @@ from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
 
 from escolar.escolas.models import (
+    Autorizado,
     Escola,
     Classe,
     ClasseAluno,
 )
 from escolar.escolas.forms import (
     AlunoForm,
+    AutorizadoForm,
     ClasseForm,
     ClasseAlunoForm,
     ClasseProfessorForm,
     EscolaForm,
     ProfessorForm,
     )
+
+@login_required
+def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
+    responsavel = request.user  # TODO: deve ser os Pais OU Diretor
+    escola = Escola.objects.get(id=escola__pk)
+    aluno = User.objects.get(id=aluno_pk)
+    autorizado = None
+    msg = u'Autorizado cadastrado.'
+
+    if autorizado_pk:
+        autorizado = get_object_or_404(autorizado, pk=autorizado_pk)
+        msg = u'Autorizado alterado com sucesso.'
+    form = AutorizadoForm(request.POST or None, instance=autorizado, escola=escola, aluno=aluno, responsavel=responsavel)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            autorizado = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do Autorizado')
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['aluno'] = aluno
+    context['autoriazao'] = autorizado
+    context['tab_alunos'] = "active"
+
+
+    return render(request, 'escolas/autorizado_form.html', context)
 
 @login_required
 def escolas_list(request):
