@@ -26,8 +26,12 @@ from escolar.escolas.forms import (
 @login_required
 def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     responsavel = request.user  # TODO: deve ser os Pais OU Diretor
-    escola = Escola.objects.get(id=escola__pk)
+    escola = Escola.objects.get(id=escola_pk)
     aluno = User.objects.get(id=aluno_pk)
+    
+    if not aluno.is_aluno(escola.id):
+        raise Http404
+
     autorizado = None
     msg = u'Autorizado cadastrado.'
 

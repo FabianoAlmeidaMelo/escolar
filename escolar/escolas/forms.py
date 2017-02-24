@@ -2,6 +2,7 @@
 from django import forms
 from escolar.escolas.models import (
     Autorizado,
+    AutorizadoAluno,
     Escola,
     Classe,
     ClasseAluno,
@@ -17,6 +18,15 @@ class AutorizadoForm(forms.ModelForm):
         self.aluno = kwargs.pop('aluno', None)
         self.responsavel = kwargs.pop('responsavel', None)
         super(AutorizadoForm, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        autorizado_aluno, create = Autorizado.objects.get_or_create(email=email,
+                                                                    defaults={'nome': nome, 
+                                                                              'celular': celular})
+        instance = super(AutorizadoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
 
     class Meta:
         model = Autorizado

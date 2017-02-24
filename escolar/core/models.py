@@ -76,6 +76,11 @@ class User(AbstractBaseUser):
     def is_diretor(self, escola_pk):
         return self.usergrupos_set.filter(grupo__name='Diretor', escola__id=escola_pk).count() == 1
 
+    def is_aluno(self, escola_pk):
+        '''
+        ref #22
+        '''
+        return self.usergrupos_set.filter(grupo__name='Aluno', escola__id=escola_pk).count() == 1
 
     def get_professor_escolas(self):
         '''
