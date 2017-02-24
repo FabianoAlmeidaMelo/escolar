@@ -23,7 +23,8 @@ class AutorizadoForm(forms.ModelForm):
         autorizado_aluno, create = Autorizado.objects.get_or_create(email=email,
                                                                     defaults={'nome': nome, 
                                                                               'celular': celular})
-        instance = super(AutorizadoForm, self).save(*args, **kwargs)
+        
+        instance = autorizado_aluno
         instance.save()
         return instance
 

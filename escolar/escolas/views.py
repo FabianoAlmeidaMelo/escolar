@@ -32,6 +32,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     if not aluno.is_aluno(escola.id):
         raise Http404
 
+    classe = aluno.get_classe(escola)
     autorizado = None
     msg = u'Autorizado cadastrado.'
 
@@ -52,6 +53,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['aluno'] = aluno
+    context['classe'] = classe
     context['autoriazao'] = autorizado
     context['tab_alunos'] = "active"
 
