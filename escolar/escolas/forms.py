@@ -20,11 +20,16 @@ class AutorizadoForm(forms.ModelForm):
         super(AutorizadoForm, self).__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        autorizado_aluno, create = Autorizado.objects.get_or_create(email=email,
-                                                                    defaults={'nome': nome, 
-                                                                              'celular': celular})
-        
-        instance = autorizado_aluno
+        autorizado, create = Autorizado.objects.get_or_create(email=self.instance.email,
+                                                              defaults={'nome': self.instance.nome, 
+                                                                        'celular': self.instance.celular})
+
+        autorizado_aluno, created = AutorizadoAluno.objects.get_or_create(escola=self.escola,
+                                                                          aluno=self.aluno,
+                                                                          autorizado=autorizado,
+                                                                          defaults={'responsavel': self.responsavel,
+                                                                                    'status': True})
+        instance = autorizado
         instance.save()
         return instance
 

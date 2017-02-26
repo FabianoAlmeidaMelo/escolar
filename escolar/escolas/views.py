@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 
 from escolar.escolas.models import (
     Autorizado,
+    AutorizadoAluno,
     Escola,
     Classe,
     ClasseAluno,
@@ -59,6 +60,18 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
 
 
     return render(request, 'escolas/autorizado_form.html', context)
+
+@login_required
+def autorizados_list(request, escola_pk):
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    autorizados = AutorizadoAluno.objects.filter(escola_id=escola)
+    # autorizados = AgendaSearchForm(request.POST or None)
+    context = {}
+    context['escola'] = escola
+    context['autorizados'] = autorizados
+    context['tab_autorizados'] = "active"
+
+    return render(request, 'escolas/autorizados_alunos_list.html', context)
 
 @login_required
 def escolas_list(request):
