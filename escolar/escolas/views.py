@@ -63,9 +63,10 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
 
 @login_required
 def autorizados_list(request, escola_pk):
+    '''ref #22'''
     escola = get_object_or_404(Escola, pk=escola_pk)
     autorizados = AutorizadoAluno.objects.filter(escola_id=escola)
-    # autorizados = AgendaSearchForm(request.POST or None)
+
     context = {}
     context['escola'] = escola
     context['autorizados'] = autorizados
