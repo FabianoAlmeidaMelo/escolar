@@ -12,9 +12,12 @@
 
 {% block content %}
 <div class="container">
-   
+
   {% include "base_adm.html" %}
     <div class="row-fluid span10">
+
+        {% include "base_aluno.html" %}
+
         Nome: {{ aluno.nome }}<br>
         Email: {{ aluno.email }}<br>
         Data de ingresso na Escola: {{ form.instance.date_joined|date:"d/m/Y" }}

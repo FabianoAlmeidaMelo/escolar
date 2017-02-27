@@ -63,7 +63,11 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
 
 @login_required
 def autorizados_list(request, escola_pk):
-    '''ref #22'''
+    '''
+    ref #22
+    Todos Autorizados de  
+    todos Alunos
+    '''
     escola = get_object_or_404(Escola, pk=escola_pk)
     autorizados = AutorizadoAluno.objects.filter(escola_id=escola)
 
@@ -73,6 +77,26 @@ def autorizados_list(request, escola_pk):
     context['tab_autorizados'] = "active"
 
     return render(request, 'escolas/autorizados_alunos_list.html', context)
+
+
+@login_required
+def autorizados_aluno_list(request, escola_pk, aluno_pk):
+    '''
+    ref #22
+    Todos Autorizados de Um Aluno
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    aluno = get_object_or_404(User, pk=aluno_pk)
+    autorizados = AutorizadoAluno.objects.filter(escola_id=escola, aluno=aluno)
+
+    context = {}
+    context['escola'] = escola
+    context['aluno'] = aluno
+    context['autorizados'] = autorizados
+    context['tab_alunos'] = "active"
+    context['tab_autorizados_aluno'] = "active"
+
+    return render(request, 'escolas/autorizados_do_aluno_list.html', context)
 
 @login_required
 def escolas_list(request):
@@ -244,6 +268,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['escola'] = escola
     context['grupo_user'] = grupo_user
     context['tab_alunos'] = "active"
+    context['tab_aluno'] = "active"
     context['aluno'] = aluno
     context['classes'] = aluno.get_all_classe(escola)
 
