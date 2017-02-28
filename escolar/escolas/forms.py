@@ -1,5 +1,7 @@
 # coding: utf-8
 from django import forms
+
+from localflavor.br.forms import BRCPFField as CPF
 from escolar.escolas.models import (
     Autorizado,
     AutorizadoAluno,
@@ -11,13 +13,23 @@ from escolar.escolas.models import (
 from escolar.core.models import User, UserGrupos
 
 
+class BRCPFField(CPF):
+    def is_hidden(self):
+        pass
+
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
+    documento = forms.CharField(label='Documento')
+
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)
         self.aluno = kwargs.pop('aluno', None)
         self.responsavel = kwargs.pop('responsavel', None)
         super(AutorizadoForm, self).__init__(*args, **kwargs)
+
+        # TODO: verificar o localflavor
+        if self.escola.pais.sigla == 'BRA':
+            self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
         autorizado, create = Autorizado.objects.get_or_create(email=self.instance.email,
@@ -36,7 +48,7 @@ class AutorizadoForm(forms.ModelForm):
 
     class Meta:
         model = Autorizado
-        fields = ('nome', 'email', 'celular') 
+        fields = ('nome', 'email', 'celular', 'documento') 
 
 class EscolaForm(forms.ModelForm):
     class Meta:

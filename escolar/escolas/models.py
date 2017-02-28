@@ -25,6 +25,7 @@ ANO = (
 class Escola(models.Model):
     '''
     '''
+    pais = models.ForeignKey('core.Pais')
     nome = models.CharField('nome', max_length=200)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
@@ -97,8 +98,9 @@ class Autorizado(models.Model):
     pessoas autorizadas a buscar alunos na escola
     '''
     nome = models.CharField('Nome', max_length=200)
-    email = models.EmailField('email', max_length=200)
+    email = models.EmailField('email', max_length=200, unique=True)
     celular = models.CharField('celular', max_length=14)
+    documento = models.CharField(max_length=25, unique=True)
     # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
 
     def __str__ (self):

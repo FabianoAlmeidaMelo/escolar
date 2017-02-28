@@ -147,5 +147,18 @@ class UserGrupos(models.Model):
         )
     ativo = models.BooleanField()
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.user, self.grupo.name)
+
+
+class Pais(models.Model):
+    '''
+    Contry
+    fuso horáio, ??? 
+    '''
+    nome = models.CharField('Nome', max_length=100)
+    sigla = models.CharField('Sigla', max_length=3)
+    idioma = models.CharField('Idioma', max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.nome, self.sigla)

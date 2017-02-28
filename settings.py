@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'test_without_migrations',
     'bootstrap_toolkit',
+    'localflavor',
     #'childcrud',
     'municipios',
     'escolar.core',
