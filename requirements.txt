@@ -12,3 +12,4 @@ django-test-without-migrations==0.4
 django-bootstrap-toolkit==2.15.0
 Pillow==3.4.2
 pytz
+-e git://github.com/znc-sistemas/django-localbr.git@1.1#egg=localbr-dev
