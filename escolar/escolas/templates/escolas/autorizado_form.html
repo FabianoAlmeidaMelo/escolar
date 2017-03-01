@@ -16,6 +16,7 @@
 <div class="container">
    {% include "base_adm.html" %}
     <div class="row-fluid span10">
+          {% include "base_aluno.html" %}
         Aluno: <b>{{ aluno.nome }}</b><br>
         Classe: <b>{{ classe }}</b><br>
  
@@ -33,11 +34,8 @@
                 </div>
                 <div class="form-actions">
                     <input type="submit" value="Salvar" class="btn btn-primary">
-                    {% if escola %}
-                        <a href="{% url 'escola_cadastro' escola.id %}" class="btn btn-secondary">Cancelar</a>
-                    {% else %}
-                        <a href="{% url 'escolas_list' %}" class="btn btn-secondary">Cancelar</a>
-                    {% endif%}
+                        <a href="{% url 'autorizados_aluno_list' escola.id aluno.id %}" class="btn btn-secondary">Cancelar</a>
+
                 </div>
             </div>
         </form>

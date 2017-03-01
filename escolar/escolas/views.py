@@ -57,6 +57,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     context['classe'] = classe
     context['autoriazao'] = autorizado
     context['tab_alunos'] = "active"
+    context['tab_autorizados_aluno'] = "active"
 
 
     return render(request, 'escolas/autorizado_form.html', context)

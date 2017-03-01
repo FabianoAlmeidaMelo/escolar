@@ -17,6 +17,11 @@
   <div class="row-fluid span10">
       {% include "base_aluno.html" %}
     <table class="table table-striped">
+            <caption>
+           <div style="float:right; margin-right:10px">
+              <a href="{% url 'autorizado_form' escola.pk aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
+           </div>
+        </caption>
         <thead>
           <tr>
               <th>Nome</th>
