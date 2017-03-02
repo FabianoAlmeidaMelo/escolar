@@ -89,10 +89,11 @@ def autorizados_aluno_list(request, escola_pk, aluno_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     aluno = get_object_or_404(User, pk=aluno_pk)
     autorizados = AutorizadoAluno.objects.filter(escola_id=escola, aluno=aluno)
-
+    can_edit = not request.user.is_aluno(escola.id)
     context = {}
     context['escola'] = escola
     context['aluno'] = aluno
+    context['can_edit'] = can_edit
     context['autorizados'] = autorizados
     context['tab_alunos'] = "active"
     context['tab_autorizados_aluno'] = "active"
