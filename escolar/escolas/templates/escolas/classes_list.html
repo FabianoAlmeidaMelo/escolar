@@ -24,9 +24,13 @@
               <th>Curso</th>
               <th>Ano</th>
               <th>Período</th>
-              <th>Ad. Prof.</th>
+              {% if can_edit %}
+                <th>Ad. Prof.</th>
+              {% endif %}
               <th>Nr Professores</th>
-              <th>Ad. Aluno</th>
+              {% if can_edit %}
+                <th>Ad. Aluno</th>
+              {% endif %}
               <th>Nr Alunos</th>
           </tr>
         </thead>
@@ -34,16 +38,20 @@
         <tbody>
         {% for classe in classes %}
           <tr>
-          {% if can_edit  %}
+          {% if can_edit %}
               <td><a href="{% url 'classe_form' escola.pk  classe.pk %}">{{ classe.curso }}</a></td>
           {% else %}
             <td>{{ classe.curso }}</td>
           {% endif %}
             <td>{{ classe.ano}}</td>
             <td>{{ classe.get_periodo_display }}</td>
+           {% if can_edit %}
             <th><a href="{% url 'classe_professor_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
+           {% endif %} 
             <td>{{ classe.classeprofessor_set.count|default:"--" }}</td>
+          {% if can_edit %}  
             <th><a href="{% url 'classe_aluno_form' classe.id %}" class="btn btn-mini btn-success">+</a></td>
+          {% endif %}
             <td>{{ classe.classealuno_set.count|default:"--" }}</td>
           </tr>
         {% empty %}

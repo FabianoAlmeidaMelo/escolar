@@ -30,7 +30,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     escola = Escola.objects.get(id=escola_pk)
     aluno = User.objects.get(id=aluno_pk)
     
-    if not aluno.is_aluno(escola.id):
+    if not aluno.is_aluno(escola.id) or aluno == request.user:
         raise Http404
 
     classe = aluno.get_classe(escola)
@@ -292,6 +292,9 @@ def classe_form(request, escola_pk, classe_pk=None):
     '''
     escola = Escola.objects.get(id=escola_pk)
 
+    if not request.user.is_diretor(escola):
+        raise Http404
+
     classe = None
     msg = u'Classe cadastrada.'
 
@@ -340,6 +343,9 @@ def classe_aluno_form(request, classe_pk, classe_aluno_pk=None):
     msg = 'Vinculação classe aluno criada'
 
     escola = Escola.objects.get(id=classe.escola.id)
+    if not request.user.is_diretor(escola.id):
+        raise Http404
+
     if classe_aluno_pk:
         classe_aluno = get_object_or_404(ClasseAluno, pk=classe_aluno_pk)
         msg = 'Vinculação classe aluno editada'
@@ -371,6 +377,10 @@ def classe_professor_form(request, classe_pk, classe_professor_pk=None):
     msg = 'Vinculação classe professor criada'
 
     escola = Escola.objects.get(id=classe.escola.id)
+
+    if not request.user.is_diretor(escola.id):
+        raise Http404
+
     if classe_professor_pk:
         classe_professor = get_object_or_404(ClasseAluno, pk=classe_professor_pk)
         msg = 'Vinculação classe professor editada'
