@@ -404,3 +404,25 @@ def classe_professor_form(request, classe_pk, classe_professor_pk=None):
     context['classe'] = classe
 
     return render(request, 'escolas/classe_professor_form.html', context)
+
+
+@login_required
+def responsaveis_list(request, escola_pk):
+    '''
+    ref #23
+    Todos ResponavelAluno
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    responsaveis_ids = UserGrupos.objects.filter(escola=escola, grupo=4).values_list('user', flat=True)
+    responsaveis = User.objects.filter(id__in=responsaveis_ids)
+
+    can_edit = True
+    context = {}
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+    context['responsaveis'] = responsaveis
+
+    # context['tab_alunos'] = "active"
+    context['tab_responsaveis'] = "active"
+
+    return render(request, 'escolas/responsaveis_list.html', context)

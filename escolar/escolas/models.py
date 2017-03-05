@@ -121,3 +121,18 @@ class AutorizadoAluno(models.Model):
 
     def __str__ (self):
         return "Aluno: %s; Autorizado %s; Status: %s" % (self.aluno, self.autorizado, self.status)
+
+
+class ResponsavelAluno(models.Model):
+    '''
+    #23
+    users responsáveis pelos alunos peraante a escola
+    Pais de alunos, quem assina o contrato
+    '''
+    escola = models.ForeignKey(Escola)
+    aluno = models.ForeignKey('core.User', related_name='aluno_do_responsevel')
+    responsavel = models.ForeignKey('core.User', related_name='responsavel_pelo_aluno')
+    data = models.DateTimeField('data de cadastro', default=timezone.now)
+
+    def __str__ (self):
+        return "Aluno: %s; Responsavel: %s" % (self.aluno, self.responsavel)

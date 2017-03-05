@@ -2,15 +2,16 @@
 
 {% block page_title %}
     {% if escola %}
-        Autorizados / Escola: {{ escola.nome }}
+        Responsáveis / Escola: {{ escola.nome }}
     {% else %}
-       Autorizados
+       Responsáveis
     {% endif %}
 {% endblock page_title %}
 
 {% block content %}
 
 <div class="container">
+
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     <table class="table table-striped">
@@ -24,21 +25,17 @@
         </thead>
 
         <tbody>
-        {% for autorizado in autorizados %}
+        {% for responsavel in responsaveis %}
           <tr>
-            {% if request.user == autorizado.responsavel %}
-              <td><a href="#">{{ autorizado.autorizado.nome }}</a></td>
-            {% else %}
-              <td>{{ autorizado.autorizado.nome }}</td>
-            {% endif %}
-            <td>{{ autorizado.aluno|default:'--' }}</td>
-            <td>{{ autorizado.status|yesno:'Autorizado,--' }}</td>
-            <td>{{ autorizado.data|date:'d/m/Y' }}</td>
+            <td><a href="#">{{ responsavel.nome }}</a></td>
+            <td>--</td>
+            <td>{{ responsavel.status|yesno:'responsavel,--' }}</td>
+            <td>{{ responsavel.data|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}
         <tr>
           <td>
-              Nenhum autorizado encontrado
+              Nenhum responsável encontrado
           </td>
         </tr>
         {% endfor %}
