@@ -42,7 +42,7 @@ urlpatterns = [
     ),
     url(r'^user/password/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
-    url(r'^municipios_app/', include('municipios.urls')),
-    url(r'^childcrud/', include('childcrud.urls')),
+    # url(r'^municipios_app/', include('municipios.urls')),
+    # url(r'^childcrud/', include('childcrud.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

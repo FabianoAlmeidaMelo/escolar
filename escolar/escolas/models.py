@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from municipios.models import Municipio
+# from municipios.models import Municipio
 from datetime import date
 from django.conf import settings
 

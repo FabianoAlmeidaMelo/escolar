@@ -2,7 +2,7 @@ from datetime import datetime
 from django.test import TestCase
 
 from escolar.escolas.models import Escola
-from municipios.models import Municipio, UF
+# from municipios.models import Municipio, UF
 
 class EscolaModelTest(TestCase):
     def setUp(self):

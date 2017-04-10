@@ -293,7 +293,7 @@ def classe_form(request, escola_pk, classe_pk=None):
     '''
     escola = Escola.objects.get(id=escola_pk)
 
-    if not request.user.is_diretor(escola):
+    if not request.user.is_diretor(escola.id):
         raise Http404
 
     classe = None
