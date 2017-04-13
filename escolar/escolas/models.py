@@ -36,7 +36,7 @@ class Escola(models.Model):
     # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
     slug = models.CharField('slug', max_length=50, null=True)
-    logo = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
+    logo = models.ImageField(upload_to='logo/%Y/%m/%d', null=True, blank=True)
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
 

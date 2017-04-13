@@ -129,7 +129,7 @@ def escola_form(request, pk=None):
         escola = None
         msg = u'Escola criada.' 
 
-    form = EscolaForm(request.POST or None, instance=escola)
+    form = EscolaForm(request.POST or None, request.FILES or None, instance=escola)
     context = {}
     context['form'] = form
     context['escola'] = escola

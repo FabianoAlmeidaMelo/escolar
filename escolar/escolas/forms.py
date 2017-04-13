@@ -52,6 +52,7 @@ class AutorizadoForm(forms.ModelForm):
         fields = ('nome', 'email', 'celular', 'documento') 
 
 class EscolaForm(forms.ModelForm):
+    logo = forms.ImageField(label='Logo', required=False)
     class Meta:
         model = Escola
         exclude = ('created_at', )

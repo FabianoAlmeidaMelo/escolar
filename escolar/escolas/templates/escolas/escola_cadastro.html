@@ -16,7 +16,7 @@
 <div class="container">
    {% include "base_adm.html" %}
     <div class="row-fluid span10">
-
+        País: <b>{{ escola.pais }}</b><br>
         Nome: <b>{{ escola.nome }}</b><br> 
         Endereço: <b>{{ escola.endereco }}</b><br> 
         Número: <b>{{ escola.numero }}</b><br> 
@@ -25,6 +25,7 @@
         Bairro: <b>{{ escola.bairro }}</b><br> 
         Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
         Observaçoes: <b>{{ escola.description }}</b><br> 
+        Logo: <a href="{{ escola.logo }}">{{ escola.logo }}</a><br>
 
         {% if can_edit %}
         <div class="form-actions">
