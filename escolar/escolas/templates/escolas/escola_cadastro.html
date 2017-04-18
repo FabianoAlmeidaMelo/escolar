@@ -25,7 +25,7 @@
         Bairro: <b>{{ escola.bairro }}</b><br> 
         Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
         Observaçoes: <b>{{ escola.description }}</b><br> 
-        Logo: <a href="{{ escola.logo }}">{{ escola.logo }}</a><br>
+        Logo: <a href="{{ escola.logo.url }}">{{ escola.logo }}</a><br>
 
         {% if can_edit %}
         <div class="form-actions">
