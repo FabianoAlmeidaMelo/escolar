@@ -46,7 +46,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
         if form.is_valid():
             autorizado = form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('alunos_list',  ))
         else:
             messages.warning(request, u'Falha no cadastro do Autorizado')
 
@@ -220,16 +220,27 @@ def professor_form(request, escola_pk, professor_pk=None):
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk=escola_pk).values_list('user__id', flat=True)
     context = {}
     escola = Escola.objects.get(id=escola_pk)
+    classes = Classe.objects.filter(escola__pk=escola_pk)
     alunos = User.objects.filter(id__in=alunos_ids)
+    
+    alunos_list = []
+    if user.get_professor_classes(escola):
+        classes = user.get_professor_classes(escola)
+   
     for aluno in alunos:
         aluno.classe = aluno.get_classe(escola)
         aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
-    context['alunos'] = alunos
+        if aluno.classe in classes:
+            alunos_list.append(aluno)
+
+
+    context['alunos'] = alunos_list
     context['escola'] = escola 
-    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['can_edit'] = can_edit
     context['user'] = user
     context['tab_alunos'] = "active"
 
@@ -325,11 +336,17 @@ def classe_form(request, escola_pk, classe_pk=None):
 @login_required
 def classes_list(request, escola_pk):
     user = request.user
-    classes = Classe.objects.filter(escola__pk=escola_pk)
+    escola = Escola.objects.get(id=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+    if user.get_professor_classes(escola):
+        classes = user.get_professor_classes(escola)
+    else:
+        classes = Classe.objects.filter(escola__pk=escola_pk)
+    print(classes.count())
     context = {}
     context['classes'] = classes
-    context['escola'] = Escola.objects.get(id=escola_pk)
-    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['escola'] = escola
+    context['can_edit'] = can_edit
     context['user'] = user
     context['tab_classes'] = "active"
 

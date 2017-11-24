@@ -2,7 +2,7 @@
 from django import forms
 
 #from localflavor.br.forms import BRCPFField  # 1.4
-from localbr.formfields import BRCPFField
+# from localbr.formfields import BRCPFField
 from escolar.escolas.models import (
     Autorizado,
     AutorizadoAluno,

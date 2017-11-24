@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap_toolkit %}
+{% load bootstrap3 %}
 
 {% block extra_css %}
 <style type="text/css">
@@ -43,28 +43,34 @@
 </style>
 {% endblock extra_css %}
 
-{% block page_title %}Login{% endblock page_title %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+  Login
+  </div>
+{% endblock page_title %}
 
 {% block content %}
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <form class="form-signin" method="POST" action="{% if not next %}?next={% url 'escolas_list'%}{% endif %}">
-        {% csrf_token %}
-        {{ form|as_bootstrap }}
-        <button class="btn btn-large btn-small btn-primary" type="submit">Login</button>
-        <a href="{% url 'password_reset' %}" class="btn btn-small btn-inverse ">
-            Esqueci minha Senha
-        </a>
-    </form>
+<div class="container">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  <form method="POST" action="{% if not next %}?next=/{% endif %}">
+    {% csrf_token %}
+    <div class="form-group">
+      {% bootstrap_field form.username %}
+    </div>
+    <div class="form-group">
+      {% bootstrap_field form.password %}
+    </div>
+   <button class="btn btn-default btn-small btn-primary" type="submit">Login</button>
+    <a href="{% url 'password_reset' %}" class="btn btn-default">Esqueci minha Senha</a>
+  </form>
+</div>
 {% endblock content %}
-
-{% block estra_js %}
-{% endblock estra_js %}

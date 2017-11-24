@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-
-{% load bootstrap_toolkit %}
+{% load bootstrap3 %}
 
 {% block page_title %}
     {% if escola %}
@@ -12,35 +11,30 @@
 
 {% block content %}
 
-<div class="container">
-   {% include "base_adm.html" %}
-    <div class="row-fluid span10">
-        <form method="POST" enctype="multipart/form-data">
-            {{ form.errors }}
-            {% csrf_token %}
-            <div class="row-fluid">
-                <div class="controls cwell">
-                    <div class="row-fluid">
-                        {{ form.nome|as_bootstrap }}
-                        {{ form.email|as_bootstrap }}
-                    </div>
-                    <div class="row-fluid">
-                        {{ form.grupo|as_bootstrap }}
-                        {{ form.escola|as_bootstrap }}
-                    </div>
-                    <div class="row-fluid">
-                        {{ form.password1|as_bootstrap }}
-                        {{ form.password2|as_bootstrap }}
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <input type="submit" value="Salvar" class="btn btn-primary">
-                    <a href="{% url 'usuarios_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
-                </div>
-            </div>
-        </form>
+{% include "base_adm.html" %}
+  <form method="POST">
+    {{ form.errors }}
+    {% csrf_token %}
+    <div class="form-group center_div">
+      <div class="row">
+        {{ form.nome|as_bootstrap }}
+        {{ form.email|as_bootstrap }}
+      </div>
+      <div class="row-fluid">
+          {{ form.grupo|as_bootstrap }}
+          {{ form.escola|as_bootstrap }}
+      </div>
+      <div class="row-fluid">
+          {{ form.password1|as_bootstrap }}
+          {{ form.password2|as_bootstrap }}
+      </div>
     </div>
-</div>
+    <div class="form-actions">
+      <input type="submit" value="Salvar" class="btn btn-primary">
+      <a href="{% url 'usuarios_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+
 {% endblock content %}
 
 {% block extra_js %}

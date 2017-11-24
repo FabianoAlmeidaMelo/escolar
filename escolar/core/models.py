@@ -8,7 +8,7 @@ from django.contrib.auth.models import(
     BaseUserManager,
 )
 
-from escolar.escolas.models import Escola
+from escolar.escolas.models import Escola, Classe
 
 from django.contrib.auth.models import User, Group
 
@@ -136,7 +136,8 @@ class User(AbstractBaseUser):
         escola do Aluno
         '''
         ano = date.today().year
-        return self.classeprofessor_set.filter(classe__escola=escola, classe__ano=ano)
+        classe_ids = self.classeprofessor_set.filter(classe__escola=escola, classe__ano=ano).values_list('classe__id', flat=True)
+        return Classe.objects.filter(id__in=classe_ids)
 
 class UserGrupos(models.Model):
     escola = models.ForeignKey(Escola)
