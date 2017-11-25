@@ -1,133 +1,98 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="utf-8">
-    <title>DK</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
-    <meta name="author" content="Fabiano Almeida">
-
-    <!-- Le styles -->
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'ico/favicon.ico' %}">
+    <title>SmartIsCool</title>
+    <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link href="{% static 'css/bootstrap-responsive.min.css' %}" rel="stylesheet">
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static 'css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <!-- <link href="starter-template.css" rel="stylesheet"> -->
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    
+    <!-- <script src="{% static 'js/ie-emulation-modes-warning.js' %}"></script> -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="static/js/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <!-- This file store project specific CSS -->
-    <link href="{% static 'css/project.css' %}" rel="stylesheet">
-
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'ico/apple-touch-icon-144-precomposed.png'%}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'ico/apple-touch-icon-114-precomposed.png' %}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'ico/apple-touch-icon-72-precomposed.png' %}">
-    <link rel="apple-touch-icon-precomposed" href="{% static 'ico/apple-touch-icon-57-precomposed.png' %}">
-    <link rel="shortcut icon" href="{% static 'ico/favicon.png' %}">
-    {% block extra_css %}{% endblock extra_css %}
   </head>
-
-  <body>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">DK</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="{% url 'home' %}">Home</a></li>
-              {% if user.is_anonymous %}
-                  <li><a href="#about">Parceiros</a></li>
-                  <li><a href="#contact">Equipe</a></li>
-                </ul>
-                <form class="navbar-form pull-right">
-                  <a href="{% url 'login' %}" class="btn">LogIn</a>
-                </form>
-              {% else %}
-                <li><a href="{% url 'grupos_list' %}">Grupos</a></li>
-                <li><a href="{% url 'escolas_list' %}">Escolas</a></li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Serviços <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li class="divider"></li>
-                      <li class="nav-header">Nav header</li>
-                      <li><a href="#">Separated link</a></li>
-                      <li><a href="#">One more separated link</a></li>
-                    </ul>
-                  </li>
-                </ul>
-                <ul class="nav pull-right">
-                  {% if user.is_authenticated %}
-                      <li{% if active_perfil %} class="active"{% endif %}>
-                          <a href="#">
-                              <i class="icon-user"></i> {{ user.email }}
-                          </a>
-                      </li>
-                      <li><a href="{% url 'logout' %}"><i class="icon-off"></i> Sair </a></li>
-                  {% else %}
-                      <li><a href="{% url 'login' %}"><i class="icon-arrow-up"></i> Entrar </a></li>
-
-                  {% endif %}
-              </ul>
-            {% endif %}
-          </div><!--/.nav-collapse -->
+  {% block css %}{% endblock css %}
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      {% include 'nav_gestor.html' %}
+    </div>
+    {% if messages %}
+      <div class="row-fluid">
+        <div class="span12" >
+          {% autoescape off %}
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {% if 'info' in message.tags %}<i class="glyphicon glyphicon-info-sign"></i>{% endif %}
+                {% if 'warning' in message.tags %}<i class="glyphicon glyphicon-warning-sign"></i>{% endif %}
+                {% if 'success' in message.tags %}<i class="glyphicon glyphicon-ok"></i>{% endif %}
+                {% if 'error' in message.tags %}<i class="glyphicon glyphicon-exclamation-sign"></i>{% endif %}
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endautoescape %}
         </div>
       </div>
+    {% endif %}
+  </nav>
+ 
+  <div class="container-fluid">
+  <!-- {# container-fluid: para conteúdo responsivo com largura fluída, isto é, toda a largura da janela. #} -->
+    <h3>
+    {% block page_title %}
+    {% endblock page_title %}
+    </h3>
+    <div class="row-fluid">
+      {% block content %}
+      {% endblock content %}
     </div>
+  </div>
+
+
+<!--   <footer class="footer">
     <div class="container">
-        <div class="row-fluid">
-          <h3>
-              {% block page_title %}
-              {% endblock page_title %}
-          </h3>
-
-            {% block content %}
-            {% endblock content %}
-        </div>
+      <p class="text-muted">Place sticky footer content here.</p>
     </div>
+  </footer> -->
 
-    {% block footer %}
-<!--     <div class="container">
-      <footer>
-        <p>&copy; Company 2016.</p>
-      </footer>
-    </div> -->
-    {% endblock footer %}
-
-    <!-- Le javascript
+    <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="{% static 'js/jquery.formset.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <!-- place project specific Javascript in this file -->
-        <script src="{% static 'js/project.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-        <script type="text/javascript">
-        $(function() {
-            // POSSIBILITA CLICAR NO ICONE DE QUALUQER CANPO DE DATETIME
-            $('div.input-append>span.add-on').click( 
-                function(){
-                    $('input[data-bootstrap-widget="datepicker"]', $(this).parent("div")[0]).focus();
-                }
-            );
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
         });
+    </script>
 
-        </script>
+
+
+
+
     {% block extra_js %} {% endblock extra_js%}
-    </body>
+</body>
+
 </html>

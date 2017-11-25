@@ -1,0 +1,56 @@
+     <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Smart Is Cool</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="{{ menu_home }}"><a href="/" title="{{ section.name }}"><i class="icon-home"></i>Home</a></li>
+          {% if user.is_authenticated %}
+            <!-- {# dropdown ADM INI #} -->
+            <li class="dropdown {{ menu_administracao }}">
+                <li><a href="{% url 'grupos_list' %}">Grupos</a></li>
+                <li><a href="{% url 'escolas_list' %}">Escolas</a></li>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração <b class="caret"></b></a>  
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Nav header</li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                  </ul>
+                </li>
+
+            </li>
+            <!-- {# dropdown ADM fim #} -->
+            <!-- {# dropdown Agendas INI #} -->
+
+          <!-- {# dropdown Agendas fim #} -->
+
+
+          {% endif %}
+          <li class="{% if section.selected %}active{% endif %}"><a href="#"><i class="{{ section.icon }}"></i> {{ section.name }}</a></li>
+        </ul>
+          
+        
+        <ul class="nav navbar-nav navbar-right">
+          <!-- <li><a href="#">Link</a></li> -->
+          {% if user.is_authenticated %}
+            <li{% if active_perfil %} class="active"{% endif %}><a href="#"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
+            <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
+          {% else %}
+            <li><a href="{% url 'login' %}"><i class="glyphicon glyphicon-log-in"></i> Entrar </a></li>
+            <!-- <li><a href="#"><i class="icon-arrow-right"></i> Cadastrar </a></li> -->
+          {% endif %}
+        </ul>
+      </div><!-- /.navbar-collapse -->

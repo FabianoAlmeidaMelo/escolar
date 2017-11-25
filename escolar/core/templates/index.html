@@ -3,38 +3,41 @@
 {% block content %}
     <div class="container">
 
-      <!-- Main hero unit for a primary marketing message or call to action -->
-      <div class="hero-unit">
+    <div class="jumbotron">
+      <div class="container">
         <h3>Gestão</h3>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
       </div>
+    </div>
 
       <!-- Example row of columns -->
+    <div class="container">
+      <!-- Example row of columns -->
       <div class="row">
-        <div class="span4">
-           <h5>Calendário de aulas <i class="icon-calendar"></i></h5>
-          <p>Gestão do calendário on line, acesso de qualquer lugar</p>
+        <div class="col-md-4">
+          <h5>Calendário de aulas</h5>
             <ul>
               <li>Datas das provas por sala de aula</li>
               <li>Datas dos compromissos financeiros dos Responsáveis dos alunos</li>
               <li>Envios de alertas para os responsáveis</li>
             </ul>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-        <div class="span4">
-          <h5>Agenda do Aluno <i class="icon-book"></i></h5>
-          <p>Comunicação rápida, direta, multiusuário </p>
-          <ul>
+
+        <div class="col-md-4">
+          <h5>Agenda do Aluno</h5>
+           <ul>
               <li>Mensagem simultânea para todos os alunos</li>
               <li>Mensagem para grupos de alunos</li>
               <li>Mensagem simultânea para todos responsáveis de alunos</li>
               <li>Mensagem para grupos de responsáveis por alunos</li>
             </ul>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h5>Arquivos <i class="icon-file"></i></h5>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+
+        <div class="col-md-4">
+          <h5>Calendário de aulas</h5>
           <p>Acesso aos dados de onde você estiver</p>
           <ul>
               <li>Exercícios</li>
@@ -43,9 +46,12 @@
               <li>Faltas</li>
               <li>Atividades</li>
             </ul>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-      </div>
       <hr>
+
+      <footer>
+        <p>&copy; 2016 Company, Inc.</p>
+      </footer>
     </div> <!-- /container -->
 {% endblock content %}
