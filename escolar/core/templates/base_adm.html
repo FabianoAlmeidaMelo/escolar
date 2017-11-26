@@ -9,18 +9,16 @@
     {% endif %}
 </ul> -->
 
-<div class="span2">
-    <div class="well-side-nav">
-        <ul class="nav nav-list">
-            {% if escola.id %}
-            <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
-            <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
-            <li class="{{ tab_classes }}"><a href="{% url 'classes_list' escola.id %}" id='id_classes'>Classes</a></li>
-            <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
-            <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
-            <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li>
-            <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li>
-            {% endif %}
-        </ul>
-    </div>
+<div class="form-group center_div">
+    <ul class="nav nav-tabs">
+    {% if escola.id %}
+        <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
+        <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
+        <li class="{{ tab_classes }}"><a href="{% url 'classes_list' escola.id %}" id='id_classes'>Classes</a></li>
+        <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
+        <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
+        <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li>
+        <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li>
+    {% endif %}
+    </ul>
 </div>
