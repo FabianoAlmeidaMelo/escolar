@@ -2,49 +2,51 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
     {% if escola %}
         Cadastro de Alunos / Escola: {{ escola.nome }}
     {% else %}
        Cadastro de Usuários
     {% endif %}
+  </div>
 {% endblock page_title %}
 
 
 {% block content %}
 <div class="container">
 
-  {% include "base_adm.html" %}
-    <div class="row-fluid span10">
+{% include "base_adm.html" %}
+<div class="row-fluid span10">
 
-        {% include "base_aluno.html" %}
+  {% include "base_aluno.html" %}
 
-        Nome: {{ aluno.nome }}<br>
-        Email: {{ aluno.email }}<br>
-        Data de ingresso na Escola: {{ form.instance.date_joined|date:"d/m/Y" }}
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row-fluid">
-                <div class="controls cwell">
-                    <div class="row-fluid">
-                    {{ form.ativo|as_bootstrap }}
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <input type="submit" value="Salvar" class="btn btn-primary">
-                    <a href="{% url 'alunos_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
-                </div>
-            </div>
-        </form>
-         {% if classes %}
-            <h4>Histórico de classes:</h4>
-            <ul>
-                {% for classe_aluno in classes %}
-                <li>{{ classe_aluno.classe }}</li>
-                {% endfor %}
-            </ul>
-            
-        {% endif %}
+    Nome: {{ aluno.nome }}<br>
+    Email: {{ aluno.email }}<br>
+    Data de ingresso na Escola: {{ form.instance.date_joined|date:"d/m/Y" }}
+  <form method="POST" >
+    {% csrf_token %}
+    <div class="form-group">
+      <div class="row">
+        <!-- {# Celular, Tablet, Computador #} -->
+        <div class="col-xs-9 col-sm-6 col-md-3">
+          {% bootstrap_field form.ativo %}
+        </div>
+      </div>
+      <input type="submit" value="Salvar" class="btn btn-primary">
+      <a href="{% url 'alunos_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
     </div>
+  </form>
+  {% if classes %}
+  <h4>Histórico de classes:</h4>
+  <ul>
+    {% for classe_aluno in classes %}
+      <li>{{ classe_aluno.classe }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  </div>
 </div>
 {% endblock content %}
 

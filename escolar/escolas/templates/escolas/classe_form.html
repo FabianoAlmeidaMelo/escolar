@@ -2,66 +2,69 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
     {% if escola %}
         Cadastro de Classe / Escola: {{ escola.nome }}
     {% else %}
        Cadastro de Classe
     {% endif %}
+  </div>  
 {% endblock page_title %}
 
 
 {% block content %}
 <div class="container">
-   {% include "base_adm.html" %}
+  {% include "base_adm.html" %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+  <div class="form-group">
+    <div class="row">
+      <!-- {# Celular, Tablet, Computador #} -->
+      <div class="col-xs-9 col-sm-6 col-md-3">
+        {% bootstrap_field form.curso %}
+        {% bootstrap_field form.periodo %}
+        {% bootstrap_field form.ano %}
+      </div>
+    </div>
+  </div>  
+  <input type="submit" value="Salvar" class="btn btn-primary">
+  {% if classe %}
+    <a href="{% url 'classe_form' escola.id  %}" class="btn btn-secondary">Cancelar</a>
+  {% else %}
+    <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
+  {% endif%}
+  </form>
+{% if classe %}
+  <table>
+    <tr>
+      <th>Professores dessa classe:</th> 
+      <th>Alunos dessa classe:</th>
+    </tr>
+    <tr><td>
+            <ul>
+                {% for professor in classe.classeprofessor_set.all %}
+                <li>{{ professor.professor }} : {{ professor.materia }}</li>
+                {% empty %}
+                 Nenhum professor(a) nesta classe
+                {% endfor %}
+            </ul>
+        </td>
+        <td>
+            <ul>
+                {% for aluno in classe.classealuno_set.all %}
+                <li>{{ aluno.aluno }}</li>
+                {% empty %}
+                 Nenhum aluno nesta classe
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+  </table>
+  {% endif %}
+  </div>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row-fluid span10">
-            <div class="controls cwell">
-                <div class="row-fluid">
-                    {{ form.curso|as_bootstrap }}
-                    {{ form.periodo|as_bootstrap }}
-                    {{ form.ano|as_bootstrap }}
-                </div>
-
-            </div>
-            <div class="form-actions">
-                <input type="submit" value="Salvar" class="btn btn-primary">
-                {% if classe %}
-                    <a href="{% url 'classe_form' escola.id  %}" class="btn btn-secondary">Cancelar</a>
-                {% else %}
-                    <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
-                {% endif%}
-            </div>
-        {% if classe %}
-        <table>
-          <tr>
-            <th>Professores dessa classe:</th> 
-            <th>Alunos dessa classe:</th>
-        </tr>
-        <tr><td>
-                <ul>
-                    {% for professor in classe.classeprofessor_set.all %}
-                    <li>{{ professor.professor }}: {{ professor.materia }}</li>
-                    {% empty %}
-                     Nenhum professor(a) nesta classe
-                    {% endfor %}
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    {% for aluno in classe.classealuno_set.all %}
-                    <li>{{ aluno.aluno }}</li>
-                    {% empty %}
-                     Nenhum aluno nesta classe
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>
-        </table>
-        {% endif %}
-        </div>
-    </form>
 </div>
 
 {% endblock content %}
