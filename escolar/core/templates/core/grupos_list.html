@@ -24,7 +24,7 @@
       {% for object in grupos %}
         <tr>
         {% if can_edit %}
-          <td> <a href="{% url 'grupo_form' grupo.pk %}">{{ object.name }}</a></td>
+          <td> <a href="{% url 'grupo_form' object.pk %}">{{ object.name }}</a></td>
         {% else %}
           <td>{{ object.name }}</td>
         {% endif %}

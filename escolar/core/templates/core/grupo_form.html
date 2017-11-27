@@ -1,27 +1,31 @@
 {% extends "base.html" %}
-
 {% load bootstrap3 %}
-{% block page_title %}Cadastro /Grupo{% endblock page_title %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    Cadastro /Grupo
+ </div>
+{% endblock page_title %}
 
 {% block content %}
-
-<div class="container">
-
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row-fluid">
-        <div class="controls cwell">
-            <div class="row-fluid">
-                {{ form.name|as_bootstrap }}
-            </div>
-        </div>
-        <div class="form-actions">
-            <input type="submit" value="Salvar" class="btn btn-primary">
-            <a href="{% url 'grupos_list' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
+<form method="POST" >
+  {% csrf_token %}
+  <div class="form-group">
+    <div class="row">
+      <!-- {# Celular, Tablet, Computador #} -->
+      <div class="col-xs-9 col-sm-6 col-md-3">
+                {% bootstrap_field form.name %}
+      </div>
     </div>
+    <div class="form-actions">
+      <input type="submit" value="Salvar" class="btn btn-primary">
+      <a href="{% url 'grupos_list' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </div>
 </form>
-</div>
+
 {% endblock content %}
 
 {% block extra_js %}
