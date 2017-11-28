@@ -24,8 +24,10 @@
         Bairro: <b>{{ escola.bairro }}</b><br> 
         Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
         Observaçoes: <b>{{ escola.description }}</b><br> 
-        Logo: <a href="{{ escola.logo.url }}">{{ escola.logo }}</a><br>
-
+        {% if escola.logo %}
+        Logo: 
+            <a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a><br>
+        {% endif %}
         {% if can_edit %}
         <div class="form-actions">
             <a href="{% url 'escola_form' escola.pk %}" class="btn btn-secondary">Editar</a>

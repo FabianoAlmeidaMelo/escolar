@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -6,9 +7,9 @@ from datetime import date
 from django.conf import settings
 
 PERIODO = (
-    (1, 'Manhã'),
-    (2, 'Tarde'),
-    (3, 'Noite'),
+    (1, u'Manhã'),
+    (2, u'Tarde'),
+    (3, u'Noite'),
 )
 
 ano_corrente = date.today().year
@@ -21,6 +22,12 @@ ANO = (
     (ano_seguinte, ano_seguinte),
 )
 
+def escola_directory_path(instance, logo):
+    '''
+    conta que fez o upload do arquivo
+    file will be uploaded to MEDIA_ROOT/conta_<id>/<filename>
+    '''
+    return 'escola_{0}/{1}'.format(instance.nome, logo)
 
 class Escola(models.Model):
     '''
@@ -36,7 +43,7 @@ class Escola(models.Model):
     # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
     slug = models.CharField('slug', max_length=50, null=True)
-    logo = models.ImageField(upload_to='logo/%Y/%m/%d', null=True, blank=True)
+    logo = models.ImageField(upload_to=escola_directory_path, null=True, blank=True)
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
 
