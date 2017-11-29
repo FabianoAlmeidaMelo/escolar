@@ -16,9 +16,8 @@
 
 {% block content %}
 <div class="container">
-
-{% include "base_adm.html" %}
-<div class="row-fluid span10">
+  {% include "base_adm.html" %}
+  <div class="row-fluid span10">
 
   {% include "base_aluno.html" %}
 
@@ -46,8 +45,9 @@
     {% endfor %}
   </ul>
   {% endif %}
-  </div>
 </div>
+</div>
+
 {% endblock content %}
 
 {% block extra_js %}

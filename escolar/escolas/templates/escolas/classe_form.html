@@ -15,7 +15,7 @@
 
 
 {% block content %}
-<div class="container">
+
   {% include "base_adm.html" %}
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -63,8 +63,6 @@
     </tr>
   </table>
   {% endif %}
-  </div>
-
 </div>
 
 {% endblock content %}

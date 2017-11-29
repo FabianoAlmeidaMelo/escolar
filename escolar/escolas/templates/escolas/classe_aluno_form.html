@@ -2,27 +2,32 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
     {% if escola %}
-        Vinculação de Aluno a uma Classe / Escola: {{ escola.nome }}
+      Vinculação de Aluno a uma Classe / Escola: {{ escola.nome }}
     {% else %}
-        Vinculação de Aluno a uma Classe
+      Vinculação de Aluno a uma Classe
     {% endif %}
+  </div>  
 {% endblock page_title %}
 
-
 {% block content %}
-<div class="container">
    
   {% include "base_adm.html" %}
-    <div class="row-fluid span10">
+    <div class="form-group">
+      <div class="row">
+        <!-- {# Celular, Tablet, Computador #} -->
+        <div class="col-xs-9 col-sm-6 col-md-3">
         Classe: {{ classe.curso }}<br>
         Ano: {{ classe.ano }}<br><br>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" >
             {% csrf_token %}
             <div class="row-fluid">
                 <div class="controls cwell">
                     <div class="row-fluid">
-                    {{ form.aluno|as_bootstrap }}
+                    {% bootstrap_field form.aluno %}
                     </div>
                 </div>
                 <div class="form-actions">
@@ -43,7 +48,7 @@
             </div>
         </form>
     </div>
-</div>
+
 {% endblock content %}
 
 {% block extra_js %}

@@ -25,12 +25,12 @@ class AutorizadoForm(forms.ModelForm):
         super(AutorizadoForm, self).__init__(*args, **kwargs)
 
         # TODO: verificar o localflavor
-        if self.escola.pais.sigla == 'BRA':
-            self.fields['documento'] = BRCPFField(required=True,
-                                                  always_return_formated=True,
-                                                  return_format=u'%s%s%s%s',
-                                                  help_text='ex: 000.000.000-00')
-            self.fields['documento'].label = 'CPF'
+        # if self.escola.pais.sigla == 'BRA':
+        #     self.fields['documento'] = BRCPFField(required=True,
+        #                                           always_return_formated=True,
+        #                                           return_format=u'%s%s%s%s',
+        #                                           help_text='ex: 000.000.000-00')
+        self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
         autorizado, create = Autorizado.objects.get_or_create(email=self.instance.email,

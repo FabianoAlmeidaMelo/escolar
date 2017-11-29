@@ -11,39 +11,39 @@
 
 
 {% block content %}
-<div class="container">
-   
-  {% include "base_adm.html" %}
-    <div class="row-fluid span10">
-        Classe: {{ classe.curso }}<br>
-        Ano: {{ classe.ano }}<br><br>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row-fluid">
-                <div class="controls cwell">
-                    <div class="row-fluid">
-                    {{ form.professor|as_bootstrap }}
-                    {{ form.materia|as_bootstrap }}
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <input type="submit" value="Salvar" class="btn btn-primary">
-                    <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
-                </div>
-        {% if classe %}
-            <h4>Professores dessa classe:</h4>
-            <ul>
-                {% for professor in classe.classeprofessor_set.all %}
-                <li>{{ professor.professor }} :  {{ professor.materia }}</li>
-                {% empty %}
-                 Nenhum professor nesta classe
-                {% endfor %}
-            </ul>
-            
-        {% endif %}
+  
+{% include "base_adm.html" %}
+<div class="row-fluid span10">
+    Classe: {{ classe.curso }}<br>
+    Ano: {{ classe.ano }}<br><br>
+    <form method="POST" >
+        {% csrf_token %}
+        <div class="form-group">
+          <div class="row">
+            <!-- {# Celular, Tablet, Computador #} -->
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              {% bootstrap_field form.professor %}
+              {% bootstrap_field form.materia %}
             </div>
-        </form>
-    </div>
+          </div>
+        </div>
+          <div class="form-actions">
+            <input type="submit" value="Salvar" class="btn btn-primary">
+            <a href="{% url 'classes_list' escola.id %}" class="btn btn-secondary">Cancelar</a>
+          </div>
+    {% if classe %}
+        <h4>Professores dessa classe:</h4>
+        <ul>
+            {% for professor in classe.classeprofessor_set.all %}
+            <li>{{ professor.professor }} :  {{ professor.materia }}</li>
+            {% empty %}
+             Nenhum professor nesta classe
+            {% endfor %}
+        </ul>
+        
+    {% endif %}
+        </div>
+    </form>
 </div>
 {% endblock content %}
 

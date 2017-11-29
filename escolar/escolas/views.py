@@ -38,7 +38,7 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     msg = u'Autorizado cadastrado.'
 
     if autorizado_pk:
-        autorizado = get_object_or_404(autorizado, pk=autorizado_pk)
+        autorizado = get_object_or_404(Autorizado, pk=autorizado_pk)
         msg = u'Autorizado alterado com sucesso.'
     form = AutorizadoForm(request.POST or None, instance=autorizado, escola=escola, aluno=aluno, responsavel=responsavel)
 

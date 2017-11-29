@@ -34,7 +34,7 @@
           <td>{{ escola.telefone|default:"--" }}</td>
           <td>{{ escola.get_status|yesno:'ativo,inativo' }}</td>
           <td>{{ escola.slug|default:"--" }}</td>
-          <td>{{ escola.site|default:"--" }}</td>
+          <td><a href="{{ escola.site }}">{{ escola.site }}</a></td>
         </tr>
       {% empty %}
             Nenhuma escola encontrada
