@@ -46,6 +46,7 @@
         <ul class="nav navbar-nav navbar-right">
           <!-- <li><a href="#">Link</a></li> -->
           {% if user.is_authenticated %}
+            <li><a href=''>{{ escola }}</a></li>
             <li{% if active_perfil %} class="active"{% endif %}><a href="#"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
           {% else %}

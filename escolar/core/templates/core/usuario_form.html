@@ -2,46 +2,44 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
-  <div class="page-header">
-    {% if escola %}
-        Cadastro de Usuários / Escola: {{ escola.nome }}
-    {% else %}
-       Cadastro de Usuários
-    {% endif %}
-  </div>
+  <br>
 {% endblock page_title %}
 
 {% block content %}
 
-{% include "base_adm.html" %}
-  <form method="POST">
-    {{ form.errors }}
-    {% csrf_token %}
-    <div class="form-group">
-      <div class="row">
-        <div class="col-xs-9 col-sm-6 col-md-3">
-        {% bootstrap_field form.nome %}
-        {% bootstrap_field form.email %}
-      </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-9 col-sm-6 col-md-3">
-          {% bootstrap_field form.grupo %}
-          {% bootstrap_field form.escola %}
-        </div>  
-      </div>
-      <div class="row">
-        <div class="col-xs-9 col-sm-6 col-md-3">
-          {% bootstrap_field form.password1 %}
-          {% bootstrap_field form.password2 %}
+<div class="container">
+  {% include "base_adm.html" %}
+  <div class="row-fluid span10">
+    <form method="POST">
+      {{ form.errors }}
+      {% csrf_token %}
+      <div class="form-group">
+        <div class="row">
+          <div class="col-xs-9 col-sm-6 col-md-3">
+          {% bootstrap_field form.nome %}
+          {% bootstrap_field form.email %}
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.grupo %}
+            {% bootstrap_field form.escola %}
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.password1 %}
+            {% bootstrap_field form.password2 %}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="form-actions">
-      <input type="submit" value="Salvar" class="btn btn-primary">
-      <a href="{% url 'usuarios_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
-    </div>
-  </form>
+      <div class="form-actions">
+        <input type="submit" value="Salvar" class="btn btn-primary">
+        <a href="{% url 'usuarios_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
 
 {% endblock content %}
 
