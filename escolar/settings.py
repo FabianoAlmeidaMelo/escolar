@@ -148,10 +148,25 @@ USE_TZ = True
 
 # STATIC_URL = 'http://localhost:8001/'
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL= '/media/'
 
-MEDIA_URL = '/media/'
+if DEBUG is False:
+    INSTALLED_APPS += ('storages',)
+    DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')  # media file
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    STATICFILES_STORAGE = config('STATICFILES_STORAGE')  # css, js
+    # ##
+    AWS_S3_CUSTON_DOMAIN = "d12ngo9oha73hw.cloudfront.net"  # CDN
+    STATIC_URL = "//%s/staticfile/"  % AWS_S3_CUSTON_DOMAIN
+    MEDIA_URL= "//%s/media/"  % AWS_S3_CUSTON_DOMAIN
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
+# Ex  Local: /home/fabiano/projetos/escolar/escolar/staticfile
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Ex Local: /home/fabiano/projetos/escolar/escolar/media
 
 # Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
