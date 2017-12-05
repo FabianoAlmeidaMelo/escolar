@@ -1,9 +1,9 @@
 #Python 3.5.2
+#http://tecadmin.net/install-python-3-5-on-ubuntu/#
+#sudo apt-get install python3.5-dev
 dj-static==0.0.6
 Django==1.9
 django-localflavor==1.4.1
-#sudo apt-get install python3.5-dev
-#http://tecadmin.net/install-python-3-5-on-ubuntu/#
 psycopg2==2.6.2
 python-decouple==3.0
 static3==0.7.0
