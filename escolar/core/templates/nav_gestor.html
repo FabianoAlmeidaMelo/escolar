@@ -1,3 +1,5 @@
+{% load unica_escola %}
+
      <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -47,7 +49,7 @@
           <!-- <li><a href="#">Link</a></li> -->
           {% if user.is_authenticated %}
             {% if user.get_unica_escola %}
-              <li><a href="{% url 'escola_cadastro' user.get_unica_escola %}">{{ escola }}</a></li>
+              <li><a href="{% url 'escola_cadastro' user.get_unica_escola %}">{{ request.user|get_escola }}</a></li>
             {% else %}
               {% if escola %}
                 <li><a href="{% url 'escola_cadastro' escola.id %}">{{ escola }}</a></li>
