@@ -53,9 +53,16 @@ class AutorizadoForm(forms.ModelForm):
 
 class EscolaForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo', required=False)
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(EscolaForm, self).__init__(*args, **kwargs)
+        if not self.user.is_admin():
+            self.fields['publica'].widget = forms.HiddenInput()
+
     class Meta:
         model = Escola
-        exclude = ('created_at', )
+        exclude = ('created_at',)
 
 
 class AlunoForm(forms.ModelForm):

@@ -46,6 +46,7 @@ class Escola(models.Model):
     logo = models.ImageField(upload_to=escola_directory_path, null=True, blank=True)
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
+    publica = models.BooleanField(u'Escola pública', default=False)
 
     class Meta:
         verbose_name = 'escola'

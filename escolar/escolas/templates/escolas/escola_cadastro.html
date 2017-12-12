@@ -23,15 +23,18 @@
         Telefone: <b>{{ escola.telefone }}</b><br> 
         Bairro: <b>{{ escola.bairro }}</b><br> 
         Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
-        Observaçoes: <b>{{ escola.description }}</b><br> 
+        Observaçoes: <b>{{ escola.description }}</b><br>
+        {% if request.user.is_admin %}
+          Escola: <b>{{ escola.publica|yesno:"Pública,Particular"}}</b><br>
+        {% endif %} 
         {% if escola.logo %}
-        Logo: 
+          Logo: 
             <a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a><br>
         {% endif %}
         {% if can_edit %}
-        <div class="form-actions">
+          <div class="form-actions">
             <a href="{% url 'escola_form' escola.pk %}" class="btn btn-mini btn-success">Editar</a>
-        </div>
+          </div>
         {% endif %}
     </div>
 </div>

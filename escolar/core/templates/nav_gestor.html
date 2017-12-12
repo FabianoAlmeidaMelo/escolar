@@ -20,19 +20,6 @@
             <li class="dropdown {{ menu_administracao }}">
                 <li><a href="{% url 'grupos_list' %}">Grupos</a></li>
                 <li><a href="{% url 'escolas_list' %}">Escolas</a></li>
-               <!--  <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração <b class="caret"></b></a>  
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li class="nav-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                  </ul>
-                </li> -->
-
             </li>
             <!-- {# dropdown ADM fim #} -->
             <!-- {# dropdown Agendas INI #} -->
@@ -43,7 +30,6 @@
           {% endif %}
           <li class="{% if section.selected %}active{% endif %}"><a href="#"><i class="{{ section.icon }}"></i> {{ section.name }}</a></li>
         </ul>
-          
         
         <ul class="nav navbar-nav navbar-right">
           <!-- <li><a href="#">Link</a></li> -->
@@ -63,3 +49,4 @@
           {% endif %}
         </ul>
       </div><!-- /.navbar-collapse -->
+      

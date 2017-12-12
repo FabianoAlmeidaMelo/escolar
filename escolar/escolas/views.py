@@ -129,7 +129,7 @@ def escola_form(request, pk=None):
         escola = None
         msg = u'Escola criada.' 
 
-    form = EscolaForm(request.POST or None, request.FILES or None, instance=escola)
+    form = EscolaForm(request.POST or None, request.FILES or None, instance=escola, user=user)
     context = {}
     context['form'] = form
     context['escola'] = escola
@@ -140,7 +140,7 @@ def escola_form(request, pk=None):
         if form.is_valid():
             escola = form.save()
             messages.success(request, msg)
-            return redirect(reverse('escolas_list'))
+            return redirect(reverse('escola_cadastro', kwargs={'pk': escola.pk}))
         else:
             messages.warning(request, u'Falha no cadastro de escola')
 
