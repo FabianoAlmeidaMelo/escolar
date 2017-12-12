@@ -52,4 +52,5 @@ local_settings.py
 dump
 *~
 */media/*
+*staticfile/*
 media
