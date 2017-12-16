@@ -25,12 +25,12 @@
         </thead>
 
         <tbody>
-        {% for responsavel in responsaveis %}
+        {% for object in responsaveis %}
           <tr>
-            <td><a href="#">{{ responsavel.nome }}</a></td>
-            <td>--</td>
-            <td>{{ responsavel.status|yesno:'responsavel,--' }}</td>
-            <td>{{ responsavel.data|date:'d/m/Y' }}</td>
+            <td><a href="#">{{ object.responsavel.nome }}</a></td>
+            <td><a href="#">{{ object.aluno.nome }}</a><td>
+            <td>{{ object.status|yesno:'Ativo,--' }}</td>
+            <td>{{ object.data|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}
         <tr>

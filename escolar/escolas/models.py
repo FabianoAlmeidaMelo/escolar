@@ -121,7 +121,7 @@ class AutorizadoAluno(models.Model):
     pessoas autorizadas a buscar alunos na escola
     '''
     escola = models.ForeignKey(Escola)
-    aluno = models.ForeignKey('core.User', related_name='aluno')
+    aluno = models.ForeignKey('core.User', related_name='autorizados_aluno')
     autorizado = models.ForeignKey(Autorizado)
     responsavel = models.ForeignKey('core.User', related_name='responsavel')
     data = models.DateTimeField('data de cadastro', default=timezone.now)
@@ -138,7 +138,7 @@ class ResponsavelAluno(models.Model):
     Pais de alunos, quem assina o contrato
     '''
     escola = models.ForeignKey(Escola)
-    aluno = models.ForeignKey('core.User', related_name='aluno_do_responsevel')
+    aluno = models.ForeignKey('core.User', related_name='responseveis_aluno')
     responsavel = models.ForeignKey('core.User', related_name='responsavel_pelo_aluno')
     data = models.DateTimeField('data de cadastro', default=timezone.now)
 

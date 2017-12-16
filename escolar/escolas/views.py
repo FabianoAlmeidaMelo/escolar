@@ -13,6 +13,7 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
+    ResponsavelAluno,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -430,8 +431,8 @@ def responsaveis_list(request, escola_pk):
     Todos ResponavelAluno
     '''
     escola = get_object_or_404(Escola, pk=escola_pk)
-    responsaveis_ids = UserGrupos.objects.filter(escola=escola, grupo=4).values_list('user', flat=True)
-    responsaveis = User.objects.filter(id__in=responsaveis_ids)
+    # responsaveis_ids = ResponsavelAluno.objects.filter(escola=escola)
+    responsaveis = ResponsavelAluno.objects.filter(escola=escola)
 
     can_edit = True
     context = {}
