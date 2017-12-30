@@ -135,7 +135,7 @@ class ResponsavelAluno(models.Model):
     '''
     #23
     users responsáveis pelos alunos peraante a escola
-    Pais de alunos, quem assina o contrato
+    Pais de alunos, quem assina o contrato.
     '''
     escola = models.ForeignKey(Escola)
     aluno = models.ForeignKey('core.User', related_name='responseveis_aluno')

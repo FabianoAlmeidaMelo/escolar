@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'bootstrap3',
     # 'childcrud',
-    # 'municipios',
+    'localbr',
+    'municipios',
     'escolar.core',
     'escolar.escolas.apps.EscolasConfig',
 ]
