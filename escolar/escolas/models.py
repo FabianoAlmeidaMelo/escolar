@@ -134,7 +134,7 @@ class AutorizadoAluno(models.Model):
 class ResponsavelAluno(models.Model):
     '''
     #23
-    users responsáveis pelos alunos peraante a escola
+    users responsáveis pelos alunos perante a escola
     Pais de alunos, quem assina o contrato.
     '''
     escola = models.ForeignKey(Escola)
