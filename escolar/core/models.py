@@ -11,6 +11,7 @@ from django.contrib.auth.models import(
 from escolar.escolas.models import Escola, Classe
 
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 
 SEXO = (
     (1, "M"),
@@ -168,3 +169,35 @@ class Pais(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.nome, self.sigla)
+
+
+class UserAdd(models.Model):
+    user_add = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_created_by")
+    date_add = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+class UserUpd(models.Model):
+    user_upd = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_modified_by")
+    date_upd = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+# class Endereco(models.Model):
+ 
+#     cep = models.CharField(max_length=9)
+#     logradouro = models.CharField(max_length=100)
+#     numero = models.CharField(verbose_name=u'Número', max_length=50)
+#     complemento = models.CharField(max_length=100, null=True, blank=True)
+#     bairro = models.CharField(max_length=100)
+#     municipio = models.ForeignKey(Municipio)
+
+#     def __unicode__(self):
+#         return u"%s - %s" % (self.cep, self.numero)
+
+#     class Meta:
+#         verbose_name = u'Endereço'
