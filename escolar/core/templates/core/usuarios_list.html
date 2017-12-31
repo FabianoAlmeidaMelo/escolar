@@ -1,10 +1,11 @@
 {% extends 'base.html'%}
+
 {% block page_title %}
-    {% if escola %}
-        Usuários / Escola: {{ escola.nome }}
-    {% else %}
-       Usuários
-    {% endif %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+  Usuários
+  </div>
 {% endblock page_title %}
 
 {% block content %}
@@ -25,6 +26,7 @@
           <tr>
               <th>Nome</th>
               <th>Email</th>
+              <th>Grupos</th>
           </tr>
         </thead>
 
@@ -34,6 +36,15 @@
             <td><a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a></td>
             <td>
               {{ usuario.email }}
+            </td>
+            <td>
+              <ul>
+              {% for g in usuario.usergrupos_set.all %}
+                {% if g.escola == escola %}
+                <li>{{ g.grupo.name }}</li>
+                {% endif %}
+              {% endfor %}
+              </ul>
             </td>
 
           </tr>

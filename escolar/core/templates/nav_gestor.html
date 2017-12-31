@@ -19,8 +19,9 @@
             {% if escola %}
             <!-- {# dropdown ADM INI #} -->
             <li class="dropdown {{ menu_administracao }}">
-<!--                 <li class="{{ grupos }}"><a href="{% url 'grupos_list' %}">Grupos</a></li>
-                <li class="{{ escolas }}"><a href="{% url 'escolas_list' %}">Escolas</a></li> -->
+                <li class="{{ tab_grupos }}"><a href="{% url 'grupos_list' escola.id %}">Grupos</a></li>
+                <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
+               <!--  <li class="{{ escolas }}"><a href="{% url 'escolas_list' %}">Escolas</a></li> -->
                 <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
                 <!-- <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li> -->
                 <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li>

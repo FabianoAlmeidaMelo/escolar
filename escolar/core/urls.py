@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^administracao/grupo_form/$', grupo_form, name='grupo_form'),
     url(r'^administracao/grupo_form/(?P<grupo_pk>\d+)/$', grupo_form, name='grupo_form'),
     url(r'^administracao/grupos_list/$', grupos_list, name='grupos_list'),
+    url(r'^administracao/grupos_list/(?P<escola_pk>\d+)/$', grupos_list, name='grupos_list'),
 ]

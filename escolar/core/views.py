@@ -33,7 +33,7 @@ def usuarios_list(request, escola_pk):
         usuarios = User.objects.filter(id__in=usuarios_ids)
     else:
         usuarios = User.objects.filter(id=user.id)
-    context['usuarios'] = usuarios
+    context['usuarios'] = usuarios.order_by('nome')
     context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = diretor or admin
     context['tab_usuarios'] = "active"
@@ -78,13 +78,20 @@ def usuario_form(request, escola_pk, pk=None):
 
 
 @login_required
-def grupos_list(request):
+def grupos_list(request, escola_pk=None):
+    escola = None
+    if escola_pk:
+        escola = Escola.objects.get(pk=escola_pk)
     user = request.user
     can_edit = user.is_admin()
     grupos = Group.objects.all()
+    if escola:
+        grupos = grupos.exclude(name='Admin')
     context = {}
     context['grupos'] = grupos
     context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_grupos'] = "active"
     return render(request, 'core/grupos_list.html', context)
 
 
