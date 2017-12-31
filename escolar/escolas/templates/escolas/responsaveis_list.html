@@ -23,9 +23,8 @@
               <th>Data</th>
           </tr>
         </thead>
-
         <tbody>
-        {% for object in responsaveis %}
+        {% for object in object_list %}
           <tr>
             <td><a href="#">{{ object.responsavel.nome }}</a></td>
             <td><a href="#">{{ object.aluno.nome }}</a><td>
@@ -41,6 +40,7 @@
         {% endfor %}
         </tbody>
     </table>
+    {% include 'pagination.html' %}
   </div>
 </div>
 

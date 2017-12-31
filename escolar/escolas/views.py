@@ -443,14 +443,23 @@ def responsaveis_list(request, escola_pk):
     Todos ResponavelAluno
     '''
     escola = get_object_or_404(Escola, pk=escola_pk)
+    page = request.GET.get('page', 1)
     # responsaveis_ids = ResponsavelAluno.objects.filter(escola=escola)
     responsaveis = ResponsavelAluno.objects.filter(escola=escola)
 
+    paginator = Paginator(responsaveis, 15)
+    try:
+        responsaveis = paginator.page(page)
+    except PageNotAnInteger:
+        responsaveis = paginator.page(1)
+    except EmptyPage:
+        responsaveis = paginator.page(paginator.num_pages)
+    
     can_edit = True
     context = {}
     context['escola'] = escola
     context['can_edit'] = can_edit
-    context['responsaveis'] = responsaveis
+    context['object_list'] = responsaveis
 
     # context['tab_alunos'] = "active"
     context['tab_responsaveis'] = "active"
