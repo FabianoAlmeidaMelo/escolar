@@ -1,5 +1,5 @@
 {% extends 'base.html'%}
-
+{% load unica_escola %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -38,13 +38,11 @@
               {{ usuario.email }}
             </td>
             <td>
-              <ul>
-              {% for g in usuario.usergrupos_set.all %}
-                {% if g.escola == escola %}
+              {% for g in usuario|get_grupos_escola:escola %}
+
                 <li>{{ g.grupo.name }}</li>
-                {% endif %}
+ 
               {% endfor %}
-              </ul>
             </td>
 
           </tr>
