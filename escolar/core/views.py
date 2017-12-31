@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
@@ -23,6 +24,7 @@ def usuarios_list(request, escola_pk):
     Outros: os próprios
     '''
     user = request.user
+    page = request.GET.get('page', 1)
     context = {}
     diretor = user.is_diretor(escola_pk)
     admin = user.is_admin()
@@ -33,7 +35,16 @@ def usuarios_list(request, escola_pk):
         usuarios = User.objects.filter(id__in=usuarios_ids)
     else:
         usuarios = User.objects.filter(id=user.id)
-    context['usuarios'] = usuarios.order_by('nome')
+
+    paginator = Paginator(usuarios, 15)
+    try:
+        usuarios = paginator.page(page)
+    except PageNotAnInteger:
+        usuarios = paginator.page(1)
+    except EmptyPage:
+        usuarios = paginator.page(paginator.num_pages)
+
+    context['object_list'] = usuarios #.order_by('nome')
     context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = diretor or admin
     context['tab_usuarios'] = "active"
@@ -87,6 +98,8 @@ def grupos_list(request, escola_pk=None):
     grupos = Group.objects.all()
     if escola:
         grupos = grupos.exclude(name='Admin')
+    elif not escola and not can_edit:
+        raise Http404
     context = {}
     context['grupos'] = grupos
     context['can_edit'] = can_edit
