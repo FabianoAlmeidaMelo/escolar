@@ -22,9 +22,8 @@
               <th>Status</th>
           </tr>
         </thead>
-
         <tbody>
-        {% for aluno in alunos %}
+        {% for aluno in object_list %}
           <tr>
             {% if can_edit or user.id == aluno.id %}
               <td><a href="{% url 'aluno_form' escola.pk  aluno.pk %}">{{ aluno.nome }}</a></td>
@@ -43,6 +42,7 @@
         {% endfor %}
         </tbody>
     </table>
+    {% include 'pagination.html' %}
   </div>
 </div>
 

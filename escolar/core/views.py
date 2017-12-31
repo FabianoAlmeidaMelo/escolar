@@ -36,6 +36,8 @@ def usuarios_list(request, escola_pk):
     else:
         usuarios = User.objects.filter(id=user.id)
 
+    usuarios = usuarios.order_by('nome')
+
     paginator = Paginator(usuarios, 15)
     try:
         usuarios = paginator.page(page)
@@ -44,7 +46,7 @@ def usuarios_list(request, escola_pk):
     except EmptyPage:
         usuarios = paginator.page(paginator.num_pages)
 
-    context['object_list'] = usuarios #.order_by('nome')
+    context['object_list'] = usuarios
     context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = diretor or admin
     context['tab_usuarios'] = "active"
