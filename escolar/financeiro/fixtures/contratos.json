@@ -1,0 +1,48 @@
+[
+{
+    "model": "financeiro.contratoescola",
+    "pk": 1,
+    "fields": {
+        "user_add": 1,
+        "date_add": "2017-01-02T14:02:08.263Z",
+        "user_upd": 1,
+        "date_upd": "2017-01-02T14:02:08.263Z",
+        "escola": 1,
+        "responsavel": 1,
+        "aluno": 4,
+        "serie": "6\u00ba Ano",
+        "curso": "Ensino Fundamental",
+        "ano": 2017,
+        "matricula_nr": null,
+        "data_assinatura": "2017-01-10T00:00:00Z",
+        "contrato": "",
+        "valor": "8121.80",
+        "nr_parcela": 12,
+        "matricula_valor": "350.00",
+        "desconto": "5.00"
+    }
+},
+{
+    "model": "financeiro.contratoescola",
+    "pk": 2,
+    "fields": {
+        "user_add": 1,
+        "date_add": "2018-01-02T14:08:02.069Z",
+        "user_upd": 1,
+        "date_upd": "2018-01-02T14:08:02.069Z",
+        "escola": 1,
+        "responsavel": 1,
+        "aluno": 4,
+        "serie": "7\u00ba Ano",
+        "curso": "Ensino Fundamental",
+        "ano": 2018,
+        "matricula_nr": null,
+        "data_assinatura": "2018-01-11T00:00:00Z",
+        "contrato": "",
+        "valor": "9121.80",
+        "nr_parcela": 12,
+        "matricula_valor": "390.00",
+        "desconto": "5.00"
+    }
+}
+]

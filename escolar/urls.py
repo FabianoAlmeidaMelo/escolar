@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^', include('escolar.core.urls')),
     url(r'^', include('escolar.escolas.urls')),
+    url(r'^', include('escolar.financeiro.urls')),
 
     # Logins
     url(r'^logout/$', logout, {"next_page": "/"}, name="logout"),

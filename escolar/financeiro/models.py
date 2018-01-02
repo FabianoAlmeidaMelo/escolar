@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.db import models
-from escolar.escolas.models import escolas
-from core.models import UserAdd, UserUpd
+from escolar.escolas.models import Escola, ANO
+from escolar.core.models import UserAdd, UserUpd
 
 
 def escola_contrato_path(instance, logo):
@@ -17,14 +17,15 @@ class ContratoEscola(UserAdd, UserUpd):
     '''
     ref #31
     Contrato faz a ligação:
-    Escola + ResponsavelAluno + Aluno
+    Escola + Responsavel pelo Aluno + Aluno
     '''
     escola = models.ForeignKey(Escola)
-    responsavel = models.ForeignKey('core.User', related_name='responsavel')
-    aluno = models.ForeignKey('core.User', related_name='aluno')
-    serie = models.CharField('série', null=True, blank=True)
-    curso = models.CharField('curso', null=True, blank=True)
-    matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True)
+    responsavel = models.ForeignKey('core.User', related_name='contrato_responsavel')
+    aluno = models.ForeignKey('core.User', related_name='contrato_aluno')
+    serie = models.CharField('série', null=True, blank=True, max_length=20)
+    curso = models.CharField('curso', null=True, blank=True, max_length=120)
+    ano = models.SmallIntegerField('Ano', choices=ANO)
+    matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
     data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
     contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)
     valor = models.DecimalField(
@@ -44,7 +45,7 @@ class ContratoEscola(UserAdd, UserUpd):
     class Meta:
         verbose_name = 'contrato'
         verbose_name_plural = 'contratos'
-        ordering = ('nome',)
+        #ordering = ('aluno',)
 
     def __str__(self):
-        return self.nome
+        return self.escola.nome

@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class CoreConfig(AppConfig):
-    name = 'core'
+    name = 'escolar.core'
+    verbose_name = 'Core'

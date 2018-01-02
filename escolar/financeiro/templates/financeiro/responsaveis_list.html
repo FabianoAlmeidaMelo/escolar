@@ -1,11 +1,15 @@
 {% extends 'base.html'%}
 
 {% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
     {% if escola %}
-        Responsáveis / Escola: {{ escola.nome }}
+        Responsáveis por Alunos/ Escola: {{ escola.nome }}
     {% else %}
        Responsáveis
     {% endif %}
+  </div>
 {% endblock page_title %}
 
 {% block content %}
@@ -19,17 +23,19 @@
           <tr>
               <th>Nome</th>
               <th>Aluno</th>
-              <th>Status</th>
               <th>Data</th>
           </tr>
         </thead>
         <tbody>
-        {% for object in object_list %}
+        {% for contrato in object_list %}
           <tr>
-            <td><a href="#">{{ object.responsavel.nome }}</a></td>
-            <td><a href="#">{{ object.aluno.nome }}</a><td>
-            <td>{{ object.status|yesno:'Ativo,--' }}</td>
-            <td>{{ object.data|date:'d/m/Y' }}</td>
+            <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
+            {% if can_edit or user.id == contrato.aluno.id %}
+              <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
+            {% else %}
+              <td>{{ contrato.aluno.nome }}</td>
+            {% endif %}
+            <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}
         <tr>

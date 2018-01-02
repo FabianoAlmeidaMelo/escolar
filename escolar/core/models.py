@@ -173,7 +173,7 @@ class Pais(models.Model):
 
 class UserAdd(models.Model):
     user_add = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_created_by")
-    date_add = models.DateTimeField(auto_now_add=True)
+    date_add = models.DateTimeField(default=timezone.now)
 
     class Meta:
         abstract = True
@@ -181,7 +181,7 @@ class UserAdd(models.Model):
 
 class UserUpd(models.Model):
     user_upd = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_modified_by")
-    date_upd = models.DateTimeField(auto_now=True)
+    date_upd = models.DateTimeField(default=timezone.now)
 
     class Meta:
         abstract = True

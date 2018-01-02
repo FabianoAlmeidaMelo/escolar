@@ -1,4 +1,4 @@
-
+# coding: utf-8
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -14,7 +14,6 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
-    ResponsavelAluno,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -24,7 +23,9 @@ from escolar.escolas.forms import (
     ClasseProfessorForm,
     EscolaForm,
     ProfessorForm,
-    )
+)
+
+from escolar.financeiro.models import ContratoEscola
 
 @login_required
 def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
@@ -224,40 +225,96 @@ def alunos_list(request, escola_pk):
     user = request.user
     page = request.GET.get('page', 1)
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',
-                                           escola__pk=escola_pk,
-                                           ativo=True).values_list('user__id', flat=True)
-    context = {}
-    escola = Escola.objects.get(id=escola_pk)
-    classes = Classe.objects.filter(escola__pk=escola_pk)
-    # Alunos de UMA única Escola
-    alunos = User.objects.filter(id__in=alunos_ids).order_by('nome')
     
-    alunos_list = []
-    if user.get_professor_classes(escola):
-        classes = user.get_professor_classes(escola)
-   
-    for aluno in alunos:
-        aluno.classe = aluno.get_classe(escola)
-        aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
-        if aluno.classe in classes:
-            alunos_list.append(aluno)
+    context = {}
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    contratos = ContratoEscola.objects.filter(escola=escola)
+    
 
-    paginator = Paginator(alunos_list, 15)
+    paginator = Paginator(contratos, 15)
     try:
-        alunos_list = paginator.page(page)
+        contratos = paginator.page(page)
     except PageNotAnInteger:
-        alunos_list = paginator.page(1)
+        contratos = paginator.page(1)
     except EmptyPage:
-        alunos_list = paginator.page(paginator.num_pages)
+        contratos = paginator.page(paginator.num_pages)
 
-    context['object_list'] = alunos_list
+    context['object_list'] = contratos
     context['escola'] = escola 
     context['can_edit'] = can_edit
     context['user'] = user
     context['tab_alunos'] = "active"
 
     return render(request, 'escolas/alunos_list.html', context)
+
+    
+@login_required
+def alunos_list(request, escola_pk):
+    user = request.user
+    page = request.GET.get('page', 1)
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+    
+    context = {}
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    contratos = ContratoEscola.objects.filter(escola=escola)
+    
+
+    paginator = Paginator(contratos, 15)
+    try:
+        contratos = paginator.page(page)
+    except PageNotAnInteger:
+        contratos = paginator.page(1)
+    except EmptyPage:
+        contratos = paginator.page(paginator.num_pages)
+
+    context['object_list'] = contratos
+    context['escola'] = escola 
+    context['can_edit'] = can_edit
+    context['user'] = user
+    context['tab_alunos'] = "active"
+
+    return render(request, 'escolas/alunos_list.html', context)
+
+# @login_required
+# def alunos_list(request, escola_pk):
+#     user = request.user
+#     page = request.GET.get('page', 1)
+#     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+#     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',
+#                                            escola__pk=escola_pk,
+#                                            ativo=True).values_list('user__id', flat=True)
+#     context = {}
+#     escola = Escola.objects.get(id=escola_pk)
+#     classes = Classe.objects.filter(escola__pk=escola_pk)
+#     # Alunos de UMA única Escola
+#     alunos = User.objects.filter(id__in=alunos_ids).order_by('nome')
+    
+#     alunos_list = []
+#     if user.get_professor_classes(escola):
+#         classes = user.get_professor_classes(escola)
+   
+#     for aluno in alunos:
+#         aluno.classe = aluno.get_classe(escola)
+#         aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
+#         if aluno.classe in classes:
+#             alunos_list.append(aluno)
+#     print('\n', alunos_list)
+
+#     paginator = Paginator(alunos_list, 15)
+#     try:
+#         alunos_list = paginator.page(page)
+#     except PageNotAnInteger:
+#         alunos_list = paginator.page(1)
+#     except EmptyPage:
+#         alunos_list = paginator.page(paginator.num_pages)
+
+#     context['object_list'] = alunos_list
+#     context['escola'] = escola 
+#     context['can_edit'] = can_edit
+#     context['user'] = user
+#     context['tab_alunos'] = "active"
+
+#     return render(request, 'escolas/alunos_list.html', context)
 
 
 @login_required
@@ -434,34 +491,3 @@ def classe_professor_form(request, classe_pk, classe_professor_pk=None):
     context['classe'] = classe
 
     return render(request, 'escolas/classe_professor_form.html', context)
-
-
-@login_required
-def responsaveis_list(request, escola_pk):
-    '''
-    ref #23
-    Todos ResponavelAluno
-    '''
-    escola = get_object_or_404(Escola, pk=escola_pk)
-    page = request.GET.get('page', 1)
-    # responsaveis_ids = ResponsavelAluno.objects.filter(escola=escola)
-    responsaveis = ResponsavelAluno.objects.filter(escola=escola)
-
-    paginator = Paginator(responsaveis, 15)
-    try:
-        responsaveis = paginator.page(page)
-    except PageNotAnInteger:
-        responsaveis = paginator.page(1)
-    except EmptyPage:
-        responsaveis = paginator.page(paginator.num_pages)
-    
-    can_edit = True
-    context = {}
-    context['escola'] = escola
-    context['can_edit'] = can_edit
-    context['object_list'] = responsaveis
-
-    # context['tab_alunos'] = "active"
-    context['tab_responsaveis'] = "active"
-
-    return render(request, 'escolas/responsaveis_list.html', context)

@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     # 'childcrud',
     'localbr',
     'municipios',
-    'escolar.core',
+    'escolar.core.apps.CoreConfig',
     'escolar.escolas.apps.EscolasConfig',
+    'escolar.financeiro', # .apps.FinanceiroConfig',
 ]
 
 MIDDLEWARE_CLASSES = [

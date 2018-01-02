@@ -5,9 +5,9 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        Alunos / Escola: {{ escola.nome }}
+        Contratos / Escola: {{ escola.nome }}
     {% else %}
-       Alunos
+       Contratos
     {% endif %}
   </div>
 {% endblock page_title %}
@@ -19,28 +19,30 @@
     <table class="table table-striped">
         <thead>
           <tr>
-              <th>Nome</th>
+              <th>Responsável</th>
+              <th>Aluno</th>
               <th>Série</th>
-              <th>Curso</th>
-              <th>Matrícula<br>data</th>
+              <th>Ano</th>
+              <th>Data</th>
           </tr>
         </thead>
         <tbody>
         {% for contrato in object_list %}
           <tr>
+            <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
             {% if can_edit or user.id == contrato.aluno.id %}
               <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
             {% else %}
               <td>{{ contrato.aluno.nome }}</td>
             {% endif %}
             <td>{{ contrato.serie|default:'--' }}</td>
-            <td>{{ contrato.curso|default:'--' }}</td>
+            <td>{{ contrato.ano|default:'--' }}</td>
             <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}
         <tr>
           <td>
-              Nenhum aluno encontrado
+              Nenhum contrato encontrado
           </td>
         </tr>
         {% endfor %}
@@ -52,5 +54,6 @@
 
 {% endblock content %}
 
-{% block extra_js %}
-{% endblock extra_js%}
+    {% block extra_js %}
+
+    {% endblock extra_js%}
