@@ -1,13 +1,13 @@
 {% extends 'base.html'%}
-
+{% load bootstrap3 %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        Contratos / Escola: {{ escola.nome }}
+      Contratos / Escola: {{ escola.nome }}
     {% else %}
-       Contratos
+      Contratos
     {% endif %}
   </div>
 {% endblock page_title %}
@@ -16,40 +16,51 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-    <table class="table table-striped">
-        <thead>
-          <tr>
-              <th>Responsável</th>
-              <th>Aluno</th>
-              <th>Série</th>
-              <th>Ano</th>
-              <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for contrato in object_list %}
-          <tr>
-            <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
-            {% if can_edit or user.id == contrato.aluno.id %}
-              <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
-            {% else %}
-              <td>{{ contrato.aluno.nome }}</td>
-            {% endif %}
-            <td>{{ contrato.serie|default:'--' }}</td>
-            <td>{{ contrato.ano|default:'--' }}</td>
-            <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
-          </tr>
-        {% empty %}
-        <tr>
-          <td>
-              Nenhum contrato encontrado
-          </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% include 'pagination.html' %}
+    <form class="form-inline well" method="GET" action="#">
+      <div class="form-group">
+        {% bootstrap_field form.responsavel %}
+        {% bootstrap_field form.aluno %}
+        {% bootstrap_field form.ano %}
+        {% bootstrap_field form.serie %}
+        {% bootstrap_field form.curso %}
+      </div>
+      <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+      <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+    </form>
   </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Responsável</th>
+        <th>Aluno</th>
+        <th>Série</th>
+        <th>Ano</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for contrato in object_list %}
+      <tr>
+        <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
+        {% if can_edit or user.id == contrato.aluno.id %}
+          <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
+        {% else %}
+          <td>{{ contrato.aluno.nome }}</td>
+        {% endif %}
+        <td>{{ contrato.serie|default:'--' }}</td>
+        <td>{{ contrato.ano|default:'--' }}</td>
+        <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
+      </tr>
+    {% empty %}
+    <tr>
+      <td>
+        Nenhum contrato encontrado
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include 'pagination.html' %}
 </div>
 
 {% endblock content %}

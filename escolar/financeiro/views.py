@@ -9,6 +9,7 @@ from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
 
 from escolar.financeiro.models import ContratoEscola
+from escolar.financeiro.forms import ContratoEscolaSearchForm
 from escolar.escolas.models import Escola
 
 @login_required
@@ -21,7 +22,9 @@ def responsaveis_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
 
-    contratos = ContratoEscola.objects.filter(escola=escola)
+    # contratos = ContratoEscola.objects.filter(escola=escola)
+    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    contratos = form.get_result_queryset()
 
     paginator = Paginator(contratos, 15)
     try:
@@ -30,9 +33,10 @@ def responsaveis_list(request, escola_pk):
         contratos = paginator.page(1)
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
-    
+
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     context = {}
+    context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = contratos
@@ -52,7 +56,9 @@ def contratos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
 
-    contratos = ContratoEscola.objects.filter(escola=escola)
+    # contratos = ContratoEscola.objects.filter(escola=escola)
+    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    contratos = form.get_result_queryset()
 
     paginator = Paginator(contratos, 15)
     try:
@@ -61,9 +67,11 @@ def contratos_list(request, escola_pk):
         contratos = paginator.page(1)
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
+
     
     can_edit = True
     context = {}
+    context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = contratos
