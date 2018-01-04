@@ -1,5 +1,13 @@
 {% extends 'base.html'%}
 {% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_serie, #id_ano {
+      width: 75px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -16,7 +24,7 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-    <form class="form-inline well" method="GET" action="#">
+    <form class="form-inline well" method="GET" >
       <div class="form-group">
         {% bootstrap_field form.responsavel %}
         {% bootstrap_field form.aluno %}
