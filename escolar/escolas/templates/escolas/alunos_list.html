@@ -1,5 +1,13 @@
 {% extends 'base.html'%}
-
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_serie, #id_ano {
+      width: 75px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -16,6 +24,18 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
+    <form class="form-inline well" method="GET" >
+      <div class="form-group">
+        {% bootstrap_field form.responsavel %}
+        {% bootstrap_field form.aluno %}
+        {% bootstrap_field form.ano %}
+        {% bootstrap_field form.serie %}
+        {% bootstrap_field form.curso %}
+      </div>
+      <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+      <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+    </form>
+  </div>
     <table class="table table-striped">
         <thead>
           <tr>
@@ -47,10 +67,8 @@
         </tbody>
     </table>
     {% include 'pagination.html' %}
-  </div>
 </div>
 
 {% endblock content %}
-
 {% block extra_js %}
 {% endblock extra_js%}

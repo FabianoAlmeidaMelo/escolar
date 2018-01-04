@@ -26,6 +26,7 @@ from escolar.escolas.forms import (
 )
 
 from escolar.financeiro.models import ContratoEscola
+from escolar.financeiro.forms import ano_corrente, ContratoEscolaSearchForm
 
 @login_required
 def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
@@ -223,12 +224,15 @@ def professor_form(request, escola_pk, professor_pk=None):
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
-    page = request.GET.get('page', 1)
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    
-    context = {}
     escola = get_object_or_404(Escola, pk=escola_pk)
-    contratos = ContratoEscola.objects.filter(escola=escola)
+    page = request.GET.get('page', 1)
+    
+    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    if form.is_valid():
+        contratos = form.get_result_queryset()
+    else:
+        contratos = form.get_result_queryset().filter(ano=ano_corrente)
     
 
     paginator = Paginator(contratos, 15)
@@ -239,41 +243,16 @@ def alunos_list(request, escola_pk):
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
 
-    context['object_list'] = contratos
-    context['escola'] = escola 
-    context['can_edit'] = can_edit
-    context['user'] = user
-    context['tab_alunos'] = "active"
-
-    return render(request, 'escolas/alunos_list.html', context)
-
-    
-@login_required
-def alunos_list(request, escola_pk):
-    user = request.user
-    page = request.GET.get('page', 1)
-    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    
     context = {}
-    escola = get_object_or_404(Escola, pk=escola_pk)
-    contratos = ContratoEscola.objects.filter(escola=escola)
-    
-
-    paginator = Paginator(contratos, 15)
-    try:
-        contratos = paginator.page(page)
-    except PageNotAnInteger:
-        contratos = paginator.page(1)
-    except EmptyPage:
-        contratos = paginator.page(paginator.num_pages)
-
-    context['object_list'] = contratos
+    context['form'] = form
     context['escola'] = escola 
     context['can_edit'] = can_edit
+    context['object_list'] = contratos
     context['user'] = user
     context['tab_alunos'] = "active"
 
     return render(request, 'escolas/alunos_list.html', context)
+
 
 # @login_required
 # def alunos_list(request, escola_pk):
