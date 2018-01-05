@@ -64,7 +64,6 @@ def contratos_list(request, escola_pk):
     page = request.GET.get('page', 1)
 
     form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
-
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
@@ -77,7 +76,6 @@ def contratos_list(request, escola_pk):
         contratos = paginator.page(1)
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
-
     
     context = {}
     context['form'] = form

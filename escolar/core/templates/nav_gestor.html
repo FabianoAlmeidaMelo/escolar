@@ -41,13 +41,14 @@
           <!-- <li><a href="#">Link</a></li> -->
           {% if user.is_authenticated %}
             {% if user.get_unica_escola %}
-              <li><a href="{% url 'escola_cadastro' user.get_unica_escola %}">{{ request.user|get_escola }}</a></li>
+              <li><a href="{% url 'escola_cadastro' request.user.get_unica_escola %}">{{ request.user|get_escola }}</a></li>
+              <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' request.user.get_unica_escola request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             {% else %}
               {% if escola %}
                 <li><a href="{% url 'escola_cadastro' escola.id %}">{{ escola }}</a></li>
+                <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' escola.pk request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
               {% endif %}
             {% endif %}
-            <li{% if active_perfil %} class="active"{% endif %}><a href="#"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
           {% else %}
             <li><a href="{% url 'login' %}"><i class="glyphicon glyphicon-log-in"></i> Entrar </a></li>

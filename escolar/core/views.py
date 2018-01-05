@@ -61,7 +61,7 @@ def usuario_form(request, escola_pk, pk=None):
     Diretor: cria e ou vincula a Escola (dele) e Grupo
     Outros: edita email, nome e troca senha
     '''
-    escola = Escola.objects.get(pk=escola_pk)
+    escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
     if pk:
         usuario = get_object_or_404(User, pk=pk)
@@ -70,7 +70,7 @@ def usuario_form(request, escola_pk, pk=None):
         usuario = None
         msg = u'Usuário cadastrado.'
 
-    form = UserForm(request.POST or None, instance=usuario, user=user)
+    form = UserForm(request.POST or None, instance=usuario, user=user, escola=escola)
     context = {}
     context['form'] = form
     context['escola'] = escola
@@ -85,8 +85,6 @@ def usuario_form(request, escola_pk, pk=None):
             messages.warning(request, u'Falha no cadastro do Aluno')
             return render(request, 'core/usuario_form.html', context)
         return redirect(reverse('usuarios_list', kwargs={'escola_pk': escola.pk}))
-
-
     return render(request, 'core/usuario_form.html', context)
 
 
