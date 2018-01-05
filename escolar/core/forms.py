@@ -1,5 +1,6 @@
 # coding: utf-8
 from django import forms
+from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm as AuthAuthenticationForm
 from django.contrib.auth.models import Group
 from escolar.core.models import User, UserGrupos
@@ -82,3 +83,28 @@ class UserForm(forms.ModelForm):
         if all([self.auto_edicao is False, group, escola]):
             user_grupo, grupo_criado = UserGrupos.objects.get_or_create(escola=escola, grupo=group, user=user, ativo=True)
         return self.instance
+
+
+class UserSearchForm(forms.Form):
+    '''
+    #31
+    '''
+    nome = forms.CharField(label=u'Nome', required=False)
+    email = forms.CharField(label=u'email', required=False)
+
+    def __init__(self, *args, **kargs):
+        self.escola = kargs.pop('escola', None)
+        super(UserSearchForm, self).__init__(*args, **kargs)
+       
+
+    def get_result_queryset(self):
+        q = Q()
+        if self.is_valid():
+            nome = self.cleaned_data['nome']
+            if nome:
+                q = q & Q(nome__icontains=nome)
+            email = self.cleaned_data['email']
+            if email:
+                q = q & Q(email__icontains=email)
+
+        return User.objects.filter(q)

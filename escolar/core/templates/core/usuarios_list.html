@@ -1,5 +1,9 @@
 {% extends 'base.html'%}
+{% load bootstrap3 %}
 {% load unica_escola %}
+
+{% block css %}
+{% endblock css %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -11,9 +15,17 @@
 {% block content %}
 
 <div class="container">
-
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
+    <form class="form-inline well" method="GET" >
+      <div class="form-group">
+        {% bootstrap_field form.email %}
+        {% bootstrap_field form.nome %}
+      </div>
+      <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+      <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+    </form>
+  </div>
     <table class="table table-striped">
       {% if can_edit %}
         <caption>

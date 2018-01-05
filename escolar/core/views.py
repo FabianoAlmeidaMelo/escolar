@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
 from escolar.core.models import User, UserGrupos
-from escolar.core.forms import UserForm, GrupoForm
+from escolar.core.forms import UserForm, GrupoForm, UserSearchForm
 
 from escolar.escolas.models import Escola
 
@@ -24,17 +24,20 @@ def usuarios_list(request, escola_pk):
     Outros: os próprios
     '''
     user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
-    context = {}
+
     diretor = user.is_diretor(escola_pk)
     admin = user.is_admin()
-    if user.is_admin():
-        usuarios = User.objects.all()
-    elif diretor:
+
+    form = UserSearchForm(request.GET or None, escola=escola)
+    usuarios = form.get_result_queryset()
+
+    if diretor:
         usuarios_ids = UserGrupos.objects.filter(escola__pk=escola_pk).values_list('user__id', flat=True)
-        usuarios = User.objects.filter(id__in=usuarios_ids)
+        usuarios =usuarios.filter(id__in=usuarios_ids)
     else:
-        usuarios = User.objects.filter(id=user.id)
+        usuarios = usuarios.filter(id=user.id)
 
     usuarios = usuarios.order_by('nome')
 
@@ -45,9 +48,10 @@ def usuarios_list(request, escola_pk):
         usuarios = paginator.page(1)
     except EmptyPage:
         usuarios = paginator.page(paginator.num_pages)
-
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
     context['object_list'] = usuarios
-    context['escola'] = Escola.objects.get(id=escola_pk)
     context['can_edit'] = diretor or admin
     context['tab_usuarios'] = "active"
 
