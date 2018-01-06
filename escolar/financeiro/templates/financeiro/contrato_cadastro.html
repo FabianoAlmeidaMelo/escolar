@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        Contrato: <b>{{ escola.nome }}</b> {{ escola.nome }}, Responsável <b>{{ contrato.responsavel }}</b>
+    {% else %}
+        Cadastro de Contrato
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+
+{% block content %}
+
+<div class="container">
+   {% include "base_adm.html" %}
+    <div class="row-fluid span10">
+        Responsavel: <b>{{ contrato.responsavel.nome }}</b><br> 
+        Aluno: <b>{{ contrato.aluno.nome }}</b><br> 
+        Série: <b>{{ contrato.serie }}</b><br> 
+        Ano: <b>{{ contrato.ano }}</b><br>
+        Valor do contrato: <b>R$ {{ contrato.valor }}</b><br>
+        matricula_nr: <b>{{ contrato.matricula_nr|default:"--" }}</b><br> 
+        Data de matrícula: <b>{{ contrato.data_assinatura|date:"d/m/Y" }}</b><br> 
+        Número de parcelas: <b>{{ contrato.nr_parcela }}</b><br> 
+        Desconto: <b>{{ contrato.desconto }} (%)</b><br>
+        arquivo: <b>{{ contrato.arquivo }}</b>
+        {% if can_edit %}
+          <div class="form-actions">
+            <a href="" class="btn btn-mini btn-success">Editar</a>
+            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary">Voltar</a>
+          </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

@@ -24,7 +24,7 @@ class ContratoEscola(UserAdd, UserUpd):
     aluno = models.ForeignKey('core.User', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)
     curso = models.CharField('curso', null=True, blank=True, max_length=120)
-    ano = models.SmallIntegerField('Ano', choices=ANO)
+    ano = models.SmallIntegerField()
     matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
     data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
     contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)

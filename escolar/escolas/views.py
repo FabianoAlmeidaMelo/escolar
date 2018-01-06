@@ -157,7 +157,7 @@ def escola_form(request, pk=None):
 @login_required
 def escola_cadastro(request, pk):
     user = request.user
-    escola =  Escola.objects.get(id=pk)
+    escola = get_object_or_404(Escola, pk=pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola

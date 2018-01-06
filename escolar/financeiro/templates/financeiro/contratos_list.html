@@ -26,9 +26,9 @@
   <div class="row-fluid span10">
     <form class="form-inline well" method="GET" >
       <div class="form-group">
+        {% bootstrap_field form.ano %}
         {% bootstrap_field form.responsavel %}
         {% bootstrap_field form.aluno %}
-        {% bootstrap_field form.ano %}
         {% bootstrap_field form.serie %}
         {% bootstrap_field form.curso %}
       </div>
@@ -39,16 +39,19 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>Contrato Ano</th>
         <th>Responsável</th>
         <th>Aluno</th>
         <th>Série</th>
-        <th>Ano</th>
         <th>Data</th>
       </tr>
     </thead>
     <tbody>
     {% for contrato in object_list %}
       <tr>
+        <td>
+          <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
+        </td>
         <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
         {% if can_edit or user.id == contrato.aluno.id %}
           <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
@@ -56,7 +59,6 @@
           <td>{{ contrato.aluno.nome }}</td>
         {% endif %}
         <td>{{ contrato.serie|default:'--' }}</td>
-        <td>{{ contrato.ano|default:'--' }}</td>
         <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
       </tr>
     {% empty %}
