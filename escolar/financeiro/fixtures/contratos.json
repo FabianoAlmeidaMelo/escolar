@@ -18,6 +18,7 @@
         "contrato": "",
         "valor": "8121.80",
         "nr_parcela": 12,
+        "vencimento": 10,
         "matricula_valor": "350.00",
         "desconto": "5.00"
     }
@@ -41,6 +42,7 @@
         "contrato": "",
         "valor": "9121.80",
         "nr_parcela": 12,
+        "vencimento": 10,
         "matricula_valor": "390.00",
         "desconto": "5.00"
     }

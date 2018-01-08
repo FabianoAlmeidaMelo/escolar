@@ -24,15 +24,16 @@
         Série: <b>{{ contrato.serie }}</b><br> 
         Ano: <b>{{ contrato.ano }}</b><br>
         Valor do contrato: <b>R$ {{ contrato.valor }}</b><br>
-        matricula_nr: <b>{{ contrato.matricula_nr|default:"--" }}</b><br> 
-        Data de matrícula: <b>{{ contrato.data_assinatura|date:"d/m/Y" }}</b><br> 
+        Data de assinatura: <b>{{ contrato.data_assinatura|date:"d/m/Y" }}</b><br> 
         Número de parcelas: <b>{{ contrato.nr_parcela }}</b><br> 
         Desconto: <b>{{ contrato.desconto }} (%)</b><br>
         arquivo: <b>{{ contrato.arquivo }}</b>
+        matricula_nr: <b>{{ contrato.matricula_nr|default:"--" }}</b><br> 
+        matricula valor: <b>{{ contrato.matricula_valor|default:"--" }}</b>
         {% if can_edit %}
           <div class="form-actions">
             <a href="" class="btn btn-mini btn-success">Editar</a>
-            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem...">Voltar</a>
           </div>
         {% endif %}
     </div>

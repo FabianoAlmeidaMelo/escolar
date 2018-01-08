@@ -11,7 +11,12 @@ from django.contrib.auth.models import Group
 from datetime import date
 
 from escolar.financeiro.models import ContratoEscola
-from escolar.financeiro.forms import ano_corrente, ContratoEscolaSearchForm
+from escolar.financeiro.forms import (
+    ano_corrente,
+    ContratoEscolaSearchForm,
+    MovimentoEscolaSearchForm,
+)
+
 from escolar.escolas.models import Escola
 
 
@@ -101,3 +106,40 @@ def contrato_cadastro(request, contrato_pk):
     context['can_edit'] = can_edit
     context['tab_contratos'] = "active"
     return render(request, 'financeiro/contrato_cadastro.html', context)
+
+
+@login_required
+def movimentos_list(request, escola_pk):
+    '''
+    ref #31
+    Todos Pgtos e Recebimentos / Escola
+    '''
+    user = request.user
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    page = request.GET.get('page', 1)
+
+    form = MovimentoEscolaSearchForm(request.GET or None, escola=escola)
+    if form.is_valid():
+        pagamentos = form.get_result_queryset()
+    else:
+        pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
+
+    paginator = Paginator(pagamentos, 15)
+    try:
+        pagamentos = paginator.page(page)
+    except PageNotAnInteger:
+        pagamentos = paginator.page(1)
+    except EmptyPage:
+        pagamentos = paginator.page(paginator.num_pages)
+    
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+    context['object_list'] = pagamentos
+
+    # context['tab_alunos'] = "active"
+    context['tab_parcelas'] = "active"
+
+    return render(request, 'financeiro/pagamentos_list.html', context)

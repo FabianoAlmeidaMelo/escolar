@@ -24,7 +24,7 @@
                 <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
                 <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
                 <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}">Contratos</a></li>
-                <li class="{{ tab_parcelas }}"><a href="#">Parcelas</a></li>
+                <li class="{{ tab_parcelas }}"><a href="{% url 'movimentos_list' escola.id %}">Parcelas</a></li>
                 <!-- <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li> -->
                <!--  <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li> -->
             </li>

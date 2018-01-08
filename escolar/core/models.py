@@ -19,7 +19,6 @@ SEXO = (
     )
 
 
-
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         now = timezone.now()

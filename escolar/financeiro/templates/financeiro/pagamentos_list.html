@@ -1,4 +1,3 @@
-
 {% extends 'base.html'%}
 {% load bootstrap3 %}
 {% block css %}
@@ -14,9 +13,9 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-      Contratos / Escola: {{ escola.nome }}
+      Pagamentos / Escola: {{ escola.nome }}
     {% else %}
-      Contratos
+      Pagamentos
     {% endif %}
   </div>
 {% endblock page_title %}
@@ -40,32 +39,30 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Contrato Ano</th>
-        <th>Responsável</th>
-        <th>Aluno</th>
-        <th>Série</th>
-        <th>Data</th>
+        <th>Título</th>
+        <th>Responsavel/<br>Aluno</th>
+        <th>Valor</th>
+        <th>Valor <br>com desconto</th>
+        <th>Data Prevista</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
-    {% for contrato in object_list %}
+    {% for pagamento in object_list %}
       <tr>
         <td>
-          <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
+          <a href="">{{ pagamento.titulo|default:'--' }}</a>
         </td>
-        <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
-        {% if can_edit or user.id == contrato.aluno.id %}
-          <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
-        {% else %}
-          <td>{{ contrato.aluno.nome }}</td>
-        {% endif %}
-        <td>{{ contrato.serie|default:'--' }}</td>
-        <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>R$ {{ pagamento.valor }}</td>
+        <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
+        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>
     {% empty %}
     <tr>
       <td>
-        Nenhum contrato encontrado
+        Nenhum pagamento encontrado
       </td>
     </tr>
     {% endfor %}
