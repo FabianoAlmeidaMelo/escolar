@@ -56,6 +56,10 @@ class Endereco(models.Model):
 
     class Meta:
         verbose_name = u'Endereço'
+        ordering = ('municipio__nome', 'bairro', 'logradouro')
+
+    def __str__(self):
+        return '%s - %s' % (self.logradouro, self.municipio)
 
 
 class Perfil(models.Model):
@@ -80,7 +84,10 @@ class Perfil(models.Model):
     class Meta:
         verbose_name = u'Perfil Escola'
         verbose_name_plural = u'Perfis Escolas'
+        ordering = ('nome',)
 
+    def __str__(self):
+        return '%s - %s' % (self.nome, self.cpf)
 
 class User(AbstractBaseUser):
     '''

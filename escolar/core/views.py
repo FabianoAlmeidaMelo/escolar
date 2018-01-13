@@ -7,13 +7,54 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
-from escolar.core.models import User, UserGrupos
-from escolar.core.forms import UserForm, GrupoForm, UserSearchForm
+from escolar.core.models import Perfil, Endereco, User, UserGrupos
+from escolar.core.forms import UserForm, GrupoForm, PerfilSearchForm, UserSearchForm
 
 from escolar.escolas.models import Escola
 
 def home(request):
     return render(request, 'index.html')
+
+
+@login_required
+def perfis_list(request, escola_pk):
+    '''
+    Admin: todos
+    Diretor: users da escola dele
+    Outros: os próprios
+    '''
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    page = request.GET.get('page', 1)
+
+    diretor = user.is_diretor(escola_pk)
+    admin = user.is_admin()
+
+    form = PerfilSearchForm(request.GET or None, escola=escola)
+    
+    if admin:
+        perfis = form.get_result_queryset()
+    elif diretor:
+        perfis = form.get_result_queryset().filter(escolas=escola)
+    else:
+        perfis = form.get_result_queryset().filter(user=user)
+
+
+    paginator = Paginator(perfis, 15)
+    try:
+        perfis = paginator.page(page)
+    except PageNotAnInteger:
+        perfis = paginator.page(1)
+    except EmptyPage:
+        perfis = paginator.page(paginator.num_pages)
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['object_list'] = perfis
+    context['can_edit'] = diretor or admin
+    context['tab_perfis'] = "active"
+
+    return render(request, 'core/perfis_list.html', context)
 
 
 @login_required

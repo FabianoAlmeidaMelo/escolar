@@ -2,13 +2,18 @@
 from django.conf.urls import include, url
 
 from escolar.core.views import (
-    usuarios_list,
-    usuario_form,
     grupos_list,
     grupo_form,
+    perfis_list,
+    usuarios_list,
+    usuario_form,
     )
 
 urlpatterns = [
+    # Perfil
+    # url(r'^escola/(?P<escola_pk>\d+)/perfil_form/$', perfil_form, name='perfil_form'),
+    # url(r'^escola/(?P<escola_pk>\d+)/perfil_form/(?P<pk>\d+)/$',perfil_form, name='perfil_form'),
+    url(r'^escola/(?P<escola_pk>\d+)/perfis_list/$', perfis_list, name='perfis_list'),
     # User
     url(r'^escola/(?P<escola_pk>\d+)/usuario_form/$', usuario_form, name='usuario_form'),
     url(r'^escola/(?P<escola_pk>\d+)/usuario_form/(?P<pk>\d+)/$',usuario_form, name='usuario_form'),

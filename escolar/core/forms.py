@@ -3,7 +3,7 @@ from django import forms
 from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm as AuthAuthenticationForm
 from django.contrib.auth.models import Group
-from escolar.core.models import User, UserGrupos
+from escolar.core.models import Perfil, User, UserGrupos
 from escolar.escolas.models import Escola
 
 class AuthenticationForm(AuthAuthenticationForm):
@@ -11,6 +11,49 @@ class AuthenticationForm(AuthAuthenticationForm):
                                             label=u'Mantenha-me conectado',
                                             required=False
                                         )
+
+class PerfilSearchForm(forms.Form):
+    '''
+    #32
+    '''
+    nome = forms.CharField(label=u'Nome', required=False)
+    email = forms.CharField(label=u'email', required=False)
+    cpf = forms.CharField(label=u'cpf', required=False)
+
+    def __init__(self, *args, **kargs):
+        self.escola = kargs.pop('escola', None)
+        super(PerfilSearchForm, self).__init__(*args, **kargs)
+
+    def set_only_number(self, txt):
+        numeros = '0123456789'
+        only_numeros = ''
+        for c in txt:
+            if c in numeros:
+                only_numeros += c
+        return only_numeros
+
+    def clean_cpf(self):
+        cpf = self.cleaned_data['cpf']
+        if cpf:
+            return self.set_only_number(cpf)
+        return
+       
+
+    def get_result_queryset(self):
+        q = Q()
+        if self.is_valid():
+            nome = self.cleaned_data['nome']
+            if nome:
+                q = q & Q(nome__icontains=nome)
+            email = self.cleaned_data['email']
+            if email:
+                q = q & Q(email__icontains=email)
+            cpf = self.cleaned_data['cpf']
+            if cpf:
+                q = q & Q(cpf__icontains=cpf)
+
+        return Perfil.objects.filter(q)
+
 
 class GrupoForm(forms.ModelForm):
     class Meta:
