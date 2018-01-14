@@ -47,7 +47,7 @@
         <tbody>
         {% for perfil in object_list %}
           <tr>
-            <td><a href="">{{ perfil.nome }}</a></td>
+            <td><a href="{% url 'perfil_form' escola.id perfil.id %}">{{ perfil.nome }}</a></td>
             <td>{{ perfil.email }}</td>
             <td>{{ perfil.cpf }}</td>
           </tr>
