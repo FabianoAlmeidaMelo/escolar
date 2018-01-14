@@ -8,7 +8,14 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
 from escolar.core.models import Perfil, Endereco, User, UserGrupos
-from escolar.core.forms import UserForm, GrupoForm, PerfilSearchForm, UserSearchForm
+from escolar.core.forms import (
+    EnderecoForm,
+    GrupoForm,
+    PerfilForm,
+    PerfilSearchForm,
+    UserForm,
+    UserSearchForm,
+)
 
 from escolar.escolas.models import Escola
 
@@ -20,7 +27,7 @@ def home(request):
 def perfis_list(request, escola_pk):
     '''
     Admin: todos
-    Diretor: users da escola dele
+    Diretor: Perfis da escola dele
     Outros: os próprios
     '''
     user = request.user
@@ -58,10 +65,50 @@ def perfis_list(request, escola_pk):
 
 
 @login_required
+def perfil_form(request, escola_pk, pk=None):
+    '''
+    Admin: cria, seta senha, vincula a Escola e Group
+    Diretor: cria e ou vincula a Escola (dele) e Grupo
+    Outros: edita email, nome e troca senha
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    if pk:
+        perfil = get_object_or_404(Perfil, pk=pk)
+        endereco = perfil.endereco
+        msg = u'Perfil alterado com sucesso.'
+    else:
+        perfil = None
+        endereco = None
+        msg = u'Perfil cadastrado.'
+
+    perfil_form = PerfilForm(request.POST or None, instance=perfil, user=user, escola=escola)
+    endereco_form = EnderecoForm(request.POST or None, instance=endereco, user=user, escola=escola)
+    context = {}
+    context['perfil_form'] = perfil_form
+    context['endereco_form'] = endereco_form
+    context['escola'] = escola
+    context['tab_perfis'] = "active"
+
+    if request.method == 'POST':
+        if perfil_form.is_valid() and endereco_form.is_valid():
+            perfil = perfil_form.save()
+            # perfil.m2m.save()
+            perfil.escolas.add(escola)
+            endereco_form.save()
+            messages.success(request, msg)
+        else:
+            messages.warning(request, u'Falha no cadastro do Perfil')
+            return render(request, 'core/perfil_form.html', context)
+        return redirect(reverse('perfis_list', kwargs={'escola_pk': escola.pk}))
+    return render(request, 'core/perfil_form.html', context)
+
+
+@login_required
 def usuarios_list(request, escola_pk):
     '''
     Admin: todos
-    Diretor: users da escola dele
+    Diretor: Perfis da escola dele
     Outros: os próprios
     '''
     user = request.user

@@ -3,7 +3,14 @@ from django import forms
 from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm as AuthAuthenticationForm
 from django.contrib.auth.models import Group
-from escolar.core.models import Perfil, User, UserGrupos
+from escolar.core.models import (
+    Endereco,
+    Perfil,
+    User,
+    UserGrupos,
+)
+
+from municipios.widgets import SelectMunicipioWidget
 from escolar.escolas.models import Escola
 
 class AuthenticationForm(AuthAuthenticationForm):
@@ -53,6 +60,35 @@ class PerfilSearchForm(forms.Form):
                 q = q & Q(cpf__icontains=cpf)
 
         return Perfil.objects.filter(q)
+
+
+class PerfilForm(forms.ModelForm):
+    '''
+    TODO
+    clean para cpf, SE nascimento form > que 18 anos
+    cpf required
+    '''
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(PerfilForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Perfil
+        # fields = ['nome', 'email', 'sexo', 'cpf', 'profissao', 'nascimento']
+        exclude = ('endereco', 'escolas', 'user')
+     
+
+class EnderecoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(EnderecoForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Endereco
+        widgets = {'municipio': SelectMunicipioWidget}
+        fields = ['cep', 'logradouro', 'numero', 'complemento', 'bairro', 'municipio']
 
 
 class GrupoForm(forms.ModelForm):
