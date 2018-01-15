@@ -82,7 +82,7 @@ class MovimentoEscolaSearchForm(forms.Form):
                 q = q & Q(contrato__responsavel__nome__icontains=responsavel)
             aluno = self.cleaned_data['aluno']
             if aluno:
-                q = q & Q(Contrato__aluno__nome__icontains=aluno)
+                q = q & Q(contrato__aluno__nome__icontains=aluno)
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(contrato__ano=ano)

@@ -1,0 +1,67 @@
+[
+{
+    "model": "core.perfil",
+    "pk": 1,
+    "fields": {
+        "nome": "Fabiano de Almeida Melo",
+        "nascimento": "1969-06-20",
+        "profissao": "Analista de Sistemas",
+        "sexo": 1,
+        "cpf": "14457031810",
+        "email": "falmeidamelo@uol.com.br",
+        "user": null,
+        "escolas": [
+            1
+        ]
+    }
+},
+{
+    "model": "core.perfil",
+    "pk": 2,
+    "fields": {
+        "nome": "J\u00falia Sales de Almeida Melo",
+        "nascimento": "2005-09-20",
+        "profissao": "estudante",
+        "sexo": 2,
+        "cpf": null,
+        "email": "jualmeidamelo@gmail.com",
+        "user": null,
+        "escolas": [
+            1
+        ]
+    }
+},
+
+{
+    "model": "core.perfil",
+    "pk": 3,
+    "fields": {
+        "nome": "Nome Outro perfil",
+        "nascimento": "1989-10-21",
+        "profissao": "Engenheira",
+        "sexo": 2,
+        "cpf": null,
+        "email": "meidamelo@gmail.com",
+        "user": null,
+        "escolas": [
+            1
+        ]
+    }
+},
+{
+    "model": "core.perfil",
+    "pk": 4,
+    "fields": {
+        "nome": "Jose Silva outro aluno",
+        "nascimento": "2005-04-18",
+        "profissao": "estudante",
+        "sexo": 2,
+        "cpf": null,
+        "email": "",
+        "user": null,
+        "escolas": [
+            1
+        ]
+    }
+}
+]

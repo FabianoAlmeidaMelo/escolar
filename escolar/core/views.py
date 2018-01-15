@@ -75,7 +75,7 @@ def perfil_form(request, escola_pk, pk=None):
     user = request.user
     if pk:
         perfil = get_object_or_404(Perfil, pk=pk)
-        endereco = perfil.endereco
+        endereco = perfil.endereco_set.last()
         msg = u'Perfil alterado com sucesso.'
     else:
         perfil = None
@@ -83,7 +83,7 @@ def perfil_form(request, escola_pk, pk=None):
         msg = u'Perfil cadastrado.'
 
     perfil_form = PerfilForm(request.POST or None, instance=perfil, user=user, escola=escola)
-    endereco_form = EnderecoForm(request.POST or None, instance=endereco, user=user, escola=escola)
+    endereco_form = EnderecoForm(request.POST or None, instance=endereco, perfil=perfil, user=user, escola=escola)
     context = {}
     context['perfil_form'] = perfil_form
     context['endereco_form'] = endereco_form
@@ -98,7 +98,8 @@ def perfil_form(request, escola_pk, pk=None):
             endereco_form.save()
             messages.success(request, msg)
         else:
-            messages.warning(request, u'Falha no cadastro do Perfil')
+            msg = 'Falha no cadastro do Perfil: %s - %s' % (perfil_form.errors, endereco_form.errors)
+            messages.warning(request, msg)
             return render(request, 'core/perfil_form.html', context)
         return redirect(reverse('perfis_list', kwargs={'escola_pk': escola.pk}))
     return render(request, 'core/perfil_form.html', context)

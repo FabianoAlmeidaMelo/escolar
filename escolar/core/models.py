@@ -49,7 +49,8 @@ class Endereco(models.Model):
     numero = models.CharField(verbose_name=u'Número', max_length=50)
     complemento = models.CharField(max_length=100, null=True, blank=True)
     bairro = models.CharField(max_length=100)
-    municipio = models.ForeignKey(Municipio)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    perfil = models.ForeignKey('Perfil', null=True, blank=True)
 
     def __unicode__(self):
         return u"%s - %s" % (self.cep, self.numero)
@@ -78,7 +79,7 @@ class Perfil(models.Model):
     sexo = models.SmallIntegerField(u'Sexo', null=True, blank=True)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     email = models.EmailField('e-mail', null=True, blank=True)
-    endereco = models.ForeignKey(Endereco, null=True, blank=True)
+    # endereco = models.ForeignKey(Endereco, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     class Meta:

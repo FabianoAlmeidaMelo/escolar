@@ -9,7 +9,7 @@
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
-  Usuários
+  Pessoas
   </div>
 {% endblock page_title %}
 
@@ -49,7 +49,7 @@
           <tr>
             <td><a href="{% url 'perfil_form' escola.id perfil.id %}">{{ perfil.nome }}</a></td>
             <td>{{ perfil.email }}</td>
-            <td>{{ perfil.cpf }}</td>
+            <td>{{ perfil.cpf|default:'' }}</td>
           </tr>
         {% empty %}
         <tr>

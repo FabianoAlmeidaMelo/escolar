@@ -68,6 +68,7 @@ class PerfilForm(forms.ModelForm):
     clean para cpf, SE nascimento form > que 18 anos
     cpf required
     '''
+    sexo = forms.ChoiceField(choices=((1, 'Masculino'),(2, 'Feminino'),))
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
@@ -80,15 +81,23 @@ class PerfilForm(forms.ModelForm):
      
 
 class EnderecoForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
+        self.perfil = kwargs.pop('perfil', None)
         super(EnderecoForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Endereco
         widgets = {'municipio': SelectMunicipioWidget}
         fields = ['cep', 'logradouro', 'numero', 'complemento', 'bairro', 'municipio']
+
+    def save(self, *args, **kwargs):
+        self.instance.perfil = self.perfil
+        instance = super(EnderecoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
 
 
 class GrupoForm(forms.ModelForm):

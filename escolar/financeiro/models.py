@@ -27,8 +27,8 @@ class ContratoEscola(UserAdd, UserUpd):
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
     escola = models.ForeignKey(Escola)
-    responsavel = models.ForeignKey('core.User', related_name='contrato_responsavel')
-    aluno = models.ForeignKey('core.User', related_name='contrato_aluno')
+    responsavel = models.ForeignKey('core.Perfil', related_name='contrato_responsavel')
+    aluno = models.ForeignKey('core.Perfil', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)
     curso = models.CharField('curso', null=True, blank=True, max_length=120)
     ano = models.SmallIntegerField()
@@ -113,7 +113,7 @@ class Movimento(models.Model):
     objects = MovimentoManager()
 
     class Meta:
-        ordering = ('contrato', 'nr_parcela')
+        ordering = ('nr_parcela',)
 
     def get_valor_com_desconto(self):
         # import pdb; pdb.set_trace()
