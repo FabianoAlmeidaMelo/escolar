@@ -4,14 +4,19 @@ from django.db.models import Q
 from django.forms.utils import ErrorList
 
 from escolar.financeiro.models import (
-    ContratoEscola,
     ANO,
+    ContratoEscola,
     Movimento,
 )
 
 from datetime import date
 
-ano_corrente = date.today().year
+meses = list(range(1,13))
+MESES = tuple(zip(meses, meses))
+
+hoje = date.today()
+ano_corrente = hoje.year
+mes_corrnete = hoje.month
 
 class ContratoEscolaSearchForm(forms.Form):
     '''
@@ -60,8 +65,10 @@ class MovimentoEscolaSearchForm(forms.Form):
     #31
     '''
     responsavel = forms.CharField(label=u'Responsável', required=False)
+    titulo = forms.CharField(label=u'Título', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
+    mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
     serie = forms.CharField(label=u'Série', required=False)
     curso = forms.CharField(label=u'Curso', required=False)
 
@@ -86,6 +93,10 @@ class MovimentoEscolaSearchForm(forms.Form):
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(contrato__ano=ano)
+
+            titulo = self.cleaned_data['titulo']
+            if titulo:
+                q = q & Q(titulo__icontains=titulo)
 
             serie = self.cleaned_data['serie']
             if serie:

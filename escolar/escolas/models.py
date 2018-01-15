@@ -17,10 +17,14 @@ ano_seguinte = ano_corrente + 1
 ano_anterior = ano_corrente - 1
  
 ANO = (
+    (None, '--'),
     (ano_anterior, ano_anterior),
     (ano_corrente, ano_corrente),
     (ano_seguinte, ano_seguinte),
 )
+
+meses = list(range(1,13))
+MESES = tuple(zip(meses, meses))
 
 def escola_directory_path(instance, logo):
     '''

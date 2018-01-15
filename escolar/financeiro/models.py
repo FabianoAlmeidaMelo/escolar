@@ -61,8 +61,18 @@ class ContratoEscola(UserAdd, UserUpd):
     def __str__(self):
         return self.escola.nome
 
+    def set_matricula(self):
+        data = date.today()
+        Movimento.objects.get_or_create(titulo='Matrícula %s ' % (self.ano) ,
+                                        contrato=self,
+                                        data_prevista=data,
+                                        valor=self.matricula_valor,
+                                        observacao='',
+                                        nr_parcela=None)
+
     def set_parcelas(self):
-        valor = self.valor / self.nr_parcela
+        self.set_matricula()
+        valor = (self.valor - self.matricula_valor) / self.nr_parcela
         for p in range(1, self.nr_parcela + 1):
             data =  date(self.ano, p, self.vencimento)
             Movimento.objects.get_or_create(titulo='Parcela %s / %s ' % (p, self.nr_parcela) ,
@@ -113,7 +123,10 @@ class Movimento(models.Model):
     objects = MovimentoManager()
 
     class Meta:
-        ordering = ('nr_parcela',)
+        ordering = ('data_prevista',)
+
+    def __str__(self):
+        return self.titulo
 
     def get_valor_com_desconto(self):
         # import pdb; pdb.set_trace()
