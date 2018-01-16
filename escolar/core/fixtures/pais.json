@@ -1,0 +1,11 @@
+[
+{
+    "model": "core.pais",
+    "pk": 1,
+    "fields": {
+        "nome": "Brasil",
+        "sigla": "BRA",
+        "idioma": "Portugues"
+    }
+}
+]

@@ -1,8 +1,9 @@
 [
 {
     "model": "escolas.escola",
-    "pk": 1,
+    "pk": 2,
     "fields": {
+        "pais": 1,
         "nome": "Padre Julio Maria",
         "endereco": "Av Olivio Gomes",
         "numero": "123a",
@@ -19,8 +20,9 @@
 },
 {
     "model": "escolas.escola",
-    "pk": 2,
+    "pk": 1,
     "fields": {
+        "pais": 1,
         "nome": "Crescer",
         "endereco": "Av Rui Barbosa",
         "numero": "223a",
