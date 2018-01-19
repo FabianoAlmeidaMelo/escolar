@@ -88,7 +88,7 @@ def perfil_form(request, escola_pk, pk=None):
     context['perfil_form'] = perfil_form
     context['endereco_form'] = endereco_form
     context['escola'] = escola
-    context['tab_perfis'] = "active"
+    context['tab_aluno'] = "active"
 
     if request.method == 'POST':
         if perfil_form.is_valid() and endereco_form.is_valid():

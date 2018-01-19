@@ -19,6 +19,8 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
+    {% include "base_perfil.html" %}
+
     <form method="POST">
       {{ form.errors }}
       {% csrf_token %}

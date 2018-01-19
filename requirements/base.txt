@@ -14,4 +14,6 @@ django-bootstrap3==9.0.0
 Pillow==3.4.2
 pytz
 -e git://github.com/FabianoAlmeidaMelo/django-localbr.git#egg=localbr-dev
--e git://github.com/FabianoAlmeidaMelo/django-municipios.git#egg=django-municipios-dev
+# django-municipios==0.8.1
+
+-e git://github.com/znc-sistemas/django-municipios.git@024d7af7642edf281ba44f5bb4e61de344d0deb9git#egg=django-municipios-dev
