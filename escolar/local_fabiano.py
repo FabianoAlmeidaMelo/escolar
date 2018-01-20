@@ -1,17 +1,17 @@
 # coding: utf-8
 
-from .base import *
+# from .base import *
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+# DEBUG = True
+# TEMPLATE_DEBUG = DEBUG
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'elcolar',
-        'USER': 'fabiano',
-        'PASSWORD': 'fabiano',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'elcolar',
+#         'USER': 'fabiano',
+#         'PASSWORD': 'fabiano',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }

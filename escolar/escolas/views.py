@@ -1,7 +1,8 @@
-
+# coding: utf-8
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
@@ -13,7 +14,6 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
-    ResponsavelAluno,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -23,7 +23,10 @@ from escolar.escolas.forms import (
     ClasseProfessorForm,
     EscolaForm,
     ProfessorForm,
-    )
+)
+
+from escolar.financeiro.models import ContratoEscola
+from escolar.financeiro.forms import ano_corrente, ContratoEscolaSearchForm
 
 @login_required
 def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
@@ -41,7 +44,11 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     if autorizado_pk:
         autorizado = get_object_or_404(Autorizado, pk=autorizado_pk)
         msg = u'Autorizado alterado com sucesso.'
-    form = AutorizadoForm(request.POST or None, instance=autorizado, escola=escola, aluno=aluno, responsavel=responsavel)
+    form = AutorizadoForm(request.POST or None,
+                          instance=autorizado,
+                          escola=escola,
+                          aluno=aluno,
+                          responsavel=responsavel)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -59,7 +66,6 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
     context['autoriazao'] = autorizado
     context['tab_alunos'] = "active"
     context['tab_autorizados_aluno'] = "active"
-
 
     return render(request, 'escolas/autorizado_form.html', context)
 
@@ -151,7 +157,7 @@ def escola_form(request, pk=None):
 @login_required
 def escola_cadastro(request, pk):
     user = request.user
-    escola =  Escola.objects.get(id=pk)
+    escola = get_object_or_404(Escola, pk=pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
@@ -222,30 +228,74 @@ def professor_form(request, escola_pk, professor_pk=None):
 def alunos_list(request, escola_pk):
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',escola__pk=escola_pk).values_list('user__id', flat=True)
-    context = {}
-    escola = Escola.objects.get(id=escola_pk)
-    classes = Classe.objects.filter(escola__pk=escola_pk)
-    alunos = User.objects.filter(id__in=alunos_ids)
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    page = request.GET.get('page', 1)
     
-    alunos_list = []
-    if user.get_professor_classes(escola):
-        classes = user.get_professor_classes(escola)
-   
-    for aluno in alunos:
-        aluno.classe = aluno.get_classe(escola)
-        aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
-        if aluno.classe in classes:
-            alunos_list.append(aluno)
+    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    if form.is_valid():
+        contratos = form.get_result_queryset()
+    else:
+        contratos = form.get_result_queryset().filter(ano=ano_corrente)
 
+    paginator = Paginator(contratos, 15)
+    try:
+        contratos = paginator.page(page)
+    except PageNotAnInteger:
+        contratos = paginator.page(1)
+    except EmptyPage:
+        contratos = paginator.page(paginator.num_pages)
 
-    context['alunos'] = alunos_list
+    context = {}
+    context['form'] = form
     context['escola'] = escola 
     context['can_edit'] = can_edit
+    context['object_list'] = contratos
     context['user'] = user
     context['tab_alunos'] = "active"
 
     return render(request, 'escolas/alunos_list.html', context)
+
+
+# @login_required
+# def alunos_list(request, escola_pk):
+#     user = request.user
+#     page = request.GET.get('page', 1)
+#     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+#     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',
+#                                            escola__pk=escola_pk,
+#                                            ativo=True).values_list('user__id', flat=True)
+#     context = {}
+#     escola = Escola.objects.get(id=escola_pk)
+#     classes = Classe.objects.filter(escola__pk=escola_pk)
+#     # Alunos de UMA única Escola
+#     alunos = User.objects.filter(id__in=alunos_ids).order_by('nome')
+    
+#     alunos_list = []
+#     if user.get_professor_classes(escola):
+#         classes = user.get_professor_classes(escola)
+   
+#     for aluno in alunos:
+#         aluno.classe = aluno.get_classe(escola)
+#         aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
+#         if aluno.classe in classes:
+#             alunos_list.append(aluno)
+#     print('\n', alunos_list)
+
+#     paginator = Paginator(alunos_list, 15)
+#     try:
+#         alunos_list = paginator.page(page)
+#     except PageNotAnInteger:
+#         alunos_list = paginator.page(1)
+#     except EmptyPage:
+#         alunos_list = paginator.page(paginator.num_pages)
+
+#     context['object_list'] = alunos_list
+#     context['escola'] = escola 
+#     context['can_edit'] = can_edit
+#     context['user'] = user
+#     context['tab_alunos'] = "active"
+
+#     return render(request, 'escolas/alunos_list.html', context)
 
 
 @login_required
@@ -422,25 +472,3 @@ def classe_professor_form(request, classe_pk, classe_professor_pk=None):
     context['classe'] = classe
 
     return render(request, 'escolas/classe_professor_form.html', context)
-
-
-@login_required
-def responsaveis_list(request, escola_pk):
-    '''
-    ref #23
-    Todos ResponavelAluno
-    '''
-    escola = get_object_or_404(Escola, pk=escola_pk)
-    # responsaveis_ids = ResponsavelAluno.objects.filter(escola=escola)
-    responsaveis = ResponsavelAluno.objects.filter(escola=escola)
-
-    can_edit = True
-    context = {}
-    context['escola'] = escola
-    context['can_edit'] = can_edit
-    context['responsaveis'] = responsaveis
-
-    # context['tab_alunos'] = "active"
-    context['tab_responsaveis'] = "active"
-
-    return render(request, 'escolas/responsaveis_list.html', context)

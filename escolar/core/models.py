@@ -11,12 +11,13 @@ from django.contrib.auth.models import(
 from escolar.escolas.models import Escola, Classe
 
 from django.contrib.auth.models import User, Group
+from django.conf import settings
+from municipios.models import Municipio
 
 SEXO = (
     (1, "M"),
     (2, "F"),
     )
-
 
 
 class UserManager(BaseUserManager):
@@ -39,6 +40,55 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+class Endereco(models.Model):
+    '''
+    ref #32
+    '''
+    cep = models.CharField(max_length=9)
+    logradouro = models.CharField(max_length=100)
+    numero = models.CharField(verbose_name=u'Número', max_length=50)
+    complemento = models.CharField(max_length=100, null=True, blank=True)
+    bairro = models.CharField(max_length=100)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    perfil = models.ForeignKey('Perfil', null=True, blank=True)
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.cep, self.numero)
+
+    class Meta:
+        verbose_name = u'Endereço'
+        ordering = ('municipio__nome', 'bairro', 'logradouro')
+
+    def __str__(self):
+        return '%s - %s' % (self.logradouro, self.municipio)
+
+
+class Perfil(models.Model):
+    '''
+    ref #32
+    o Perfil estará vinculado ao contrato
+    SE tiver email
+    a escola pode criar um user a partir do perfil (get_or_create)
+    SE for maior de idade:
+    cpf será requerido
+    '''
+    nome = models.CharField(verbose_name=u'Nome', max_length=100)
+    escolas = models.ManyToManyField(Escola)
+    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
+    sexo = models.SmallIntegerField(u'Sexo', null=True, blank=True)
+    cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    # endereco = models.ForeignKey(Endereco, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = u'Perfil Escola'
+        verbose_name_plural = u'Perfis Escolas'
+        ordering = ('nome',)
+
+    def __str__(self):
+        return '%s - %s' % (self.nome, self.cpf)
 
 class User(AbstractBaseUser):
     '''
@@ -46,16 +96,9 @@ class User(AbstractBaseUser):
     email = models.EmailField('e-mail', unique=True)
     nome = models.CharField(verbose_name=u'Nome', max_length=100)
     is_active = models.BooleanField('ativo', default=True,)
-    # is_superuser = models.BooleanField(default=False)
-    # is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(
         'data de cadastro', default=timezone.now
         )
-    # nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-    # profissao = models.CharField(
-        # u'Profissão', max_length=100, null=True, blank=True
-        # )
-    # sexo = models.IntegerField(u'Sexo', choices=SEXO, null=True, blank=True)
     grupos = models.ManyToManyField(Group, through='UserGrupos', related_name='grupos', blank=True)
 
     objects = UserManager()
@@ -168,3 +211,35 @@ class Pais(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.nome, self.sigla)
+
+
+class UserAdd(models.Model):
+    user_add = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_created_by")
+    date_add = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        abstract = True
+
+
+class UserUpd(models.Model):
+    user_upd = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_modified_by")
+    date_upd = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        abstract = True
+
+
+# class Endereco(models.Model):
+ 
+#     cep = models.CharField(max_length=9)
+#     logradouro = models.CharField(max_length=100)
+#     numero = models.CharField(verbose_name=u'Número', max_length=50)
+#     complemento = models.CharField(max_length=100, null=True, blank=True)
+#     bairro = models.CharField(max_length=100)
+#     municipio = models.ForeignKey(Municipio)
+
+#     def __unicode__(self):
+#         return u"%s - %s" % (self.cep, self.numero)
+
+#     class Meta:
+#         verbose_name = u'Endereço'

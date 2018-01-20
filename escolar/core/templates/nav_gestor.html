@@ -19,13 +19,15 @@
             {% if escola %}
             <!-- {# dropdown ADM INI #} -->
             <li class="dropdown {{ menu_administracao }}">
-<!--                 <li class="{{ grupos }}"><a href="{% url 'grupos_list' %}">Grupos</a></li>
-                <li class="{{ escolas }}"><a href="{% url 'escolas_list' %}">Escolas</a></li> -->
-                <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Escola</a></li>
-                <!-- <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li> -->
-                <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li>
+                <li class="{{ tab_grupos }}"><a href="{% url 'grupos_list' escola.id %}" id='id_grupos'>Grupos</a></li>
+                <li class="{{ tab_perfis }}"><a href="{% url 'perfis_list' escola.id %}" id='id_perfis'>Perfis</a></li>
+                <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
+                <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Instituição</a></li>
                 <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
-                <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li>
+                <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
+                <li class="{{ tab_parcelas }}"><a href="{% url 'movimentos_list' escola.id %}" id='id_movimentos'>Parcelas</a></li>
+                <!-- <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li> -->
+               <!--  <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li> -->
             </li>
             {% else %}
               <li class="dropdown {{ menu_administracao }}">
@@ -40,13 +42,14 @@
           <!-- <li><a href="#">Link</a></li> -->
           {% if user.is_authenticated %}
             {% if user.get_unica_escola %}
-              <li><a href="{% url 'escola_cadastro' user.get_unica_escola %}">{{ request.user|get_escola }}</a></li>
+              <li><a href="{% url 'escola_cadastro' request.user.get_unica_escola %}">{{ request.user|get_escola }}</a></li>
+              <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' request.user.get_unica_escola request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             {% else %}
               {% if escola %}
                 <li><a href="{% url 'escola_cadastro' escola.id %}">{{ escola }}</a></li>
+                <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' escola.pk request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
               {% endif %}
             {% endif %}
-            <li{% if active_perfil %} class="active"{% endif %}><a href="#"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
           {% else %}
             <li><a href="{% url 'login' %}"><i class="glyphicon glyphicon-log-in"></i> Entrar </a></li>

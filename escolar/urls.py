@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^', include('escolar.core.urls')),
     url(r'^', include('escolar.escolas.urls')),
+    url(r'^', include('escolar.financeiro.urls')),
 
     # Logins
     url(r'^logout/$', logout, {"next_page": "/"}, name="logout"),
@@ -42,6 +43,6 @@ urlpatterns = [
     ),
     url(r'^user/password/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
-    # url(r'^municipios_app/', include('municipios.urls')),
+    url(r'^municipios_app/', include('municipios.urls')),
     # url(r'^childcrud/', include('childcrud.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

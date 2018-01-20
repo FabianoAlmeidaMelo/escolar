@@ -2,11 +2,18 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
   <br>
+    {% if escola %}
+        Usuários / Escola: {{ escola.nome }}
+    {% else %}
+       Usuários
+    {% endif %}
+  </div>
 {% endblock page_title %}
 
 {% block content %}
-
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
@@ -26,6 +33,20 @@
             {% bootstrap_field form.escola %}
           </div>  
         </div>
+        {% if form.instance.id %}
+          <div class="row">
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>Esse usuário já pertence ao(s) grupo(s):</p>
+              <ul>
+              {% for user_grupo in form.instance.usergrupos_set.all %}
+                {% if user_grupo.escola == escola %}
+                <li>{{ user_grupo.grupo.name }}</li>
+                {% endif%}
+              {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif%}
         <div class="row">
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.password1 %}
@@ -40,9 +61,7 @@
     </form>
   </div>
 </div>
-
 {% endblock content %}
-
 {% block extra_js %}
-    {{ form.media }}
+  {{ form.media }}
 {% endblock extra_js %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 %}
+
 
 {% block page_title %}
   <div class="page-header">
@@ -10,29 +10,30 @@
 {% endblock page_title %}
 
 {% block content %}
-
-<div class="row-fluid">
-  {% if can_edit %}
-  <a class="btn btn-success" href="{% url 'grupo_form' %}" class="btn btn-mini btn-success">Novo Grupo</a>
-  {% endif %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Grupo</th>
-        </tr>
-      </thead>
-      {% for object in grupos %}
-        <tr>
-        {% if can_edit %}
-          <td> <a href="{% url 'grupo_form' object.pk %}">{{ object.name }}</a></td>
-        {% else %}
-          <td>{{ object.name }}</td>
-        {% endif %}
-        </tr>
-      {% empty %}
-        <tr><td colspan="100%">Nenhum item disponível</td></tr>
-      {% endfor %}
-    </table>
+<div class="container">
+  <div class="row-fluid span10">
+    {% if can_edit %}
+    <a class="btn btn-success" href="{% url 'grupo_form' %}" class="btn btn-mini btn-success">Novo Grupo</a>
+    {% endif %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Grupo</th>
+          </tr>
+        </thead>
+        {% for object in grupos %}
+          <tr>
+          {% if can_edit %}
+            <td> <a href="{% url 'grupo_form' object.pk %}">{{ object.name }}</a></td>
+          {% else %}
+            <td>{{ object.name }}</td>
+          {% endif %}
+          </tr>
+        {% empty %}
+          <tr><td colspan="100%">Nenhum item disponível</td></tr>
+        {% endfor %}
+      </table>
+  </div>
 </div>
 
 {% endblock content %}

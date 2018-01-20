@@ -15,3 +15,8 @@ def get_escola(user):
     if escola_id:
         return Escola.objects.get(id=escola_id)
     return None
+
+
+@register.filter
+def get_grupos_escola(user, escola):
+    return user.usergrupos_set.filter(escola=escola).exclude(grupo__name='Admin')

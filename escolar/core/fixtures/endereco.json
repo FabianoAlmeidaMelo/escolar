@@ -1,0 +1,28 @@
+[
+{
+    "model": "core.endereco",
+    "pk": 1,
+    "fields": {
+        "cep": "12212050",
+        "logradouro": "Rua Carlos Belmiro dos Santos",
+        "numero": "458",
+        "complemento": "casa",
+        "bairro": "Santana",
+        "municipio": 3549904,
+        "perfil": 1
+    }
+},
+{
+    "model": "core.endereco",
+    "pk": 2,
+    "fields": {
+        "cep": "12212050",
+        "logradouro": "Rua Carlos Belmiro dos Santos",
+        "numero": "458",
+        "complemento": "casa",
+        "bairro": "Santana",
+        "municipio": 3549904,
+        "perfil": 2
+    }
+}
+]

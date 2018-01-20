@@ -1,74 +1,71 @@
+
 {% extends 'base.html'%}
 {% load bootstrap3 %}
+{% load unica_escola %}
+
 {% block css %}
-  <style type="text/css">
-    #id_serie, #id_ano {
-      width: 75px;
-      height: 35px;
-    }
-   </style>
 {% endblock css %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
-    {% if escola %}
-        Alunos / Escola: {{ escola.nome }}
-    {% else %}
-       Alunos
-    {% endif %}
+  Pessoas
   </div>
 {% endblock page_title %}
 
 {% block content %}
+
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     <form class="form-inline well" method="GET" >
       <div class="form-group">
-        {% bootstrap_field form.responsavel %}
-        {% bootstrap_field form.aluno %}
-        {% bootstrap_field form.ano %}
-        {% bootstrap_field form.serie %}
-        {% bootstrap_field form.curso %}
+        {% bootstrap_field form.nome %}
+        {% bootstrap_field form.email %}
+        {% bootstrap_field form.cpf %}
       </div>
       <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
       <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
     </form>
   </div>
     <table class="table table-striped">
+      {% if can_edit %}
+        <caption>
+           <div style="float:right; margin-right:10px">
+              <a href="{% url 'perfil_form' escola.id %}" class="btn btn-mini btn-success">Novo Perfil</a>
+           </div>
+        </caption>
+      {% endif %}
         <thead>
           <tr>
               <th>Nome</th>
-              <th>Série</th>
-              <th>Curso</th>
-              <th>Matrícula<br>data</th>
+              <th>Email</th>
+              <th>CPF</th>
           </tr>
         </thead>
+
         <tbody>
-        {% for contrato in object_list %}
+        {% for perfil in object_list %}
           <tr>
-            {% if can_edit or user.id == contrato.aluno.id %}
-              <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
-            {% else %}
-              <td>{{ contrato.aluno.nome }}</td>
-            {% endif %}
-            <td>{{ contrato.serie|default:'--' }}</td>
-            <td>{{ contrato.curso|default:'--' }}</td>
-            <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
+            <td><a href="{% url 'perfil_form' escola.id perfil.id %}">{{ perfil.nome }}</a></td>
+            <td>{{ perfil.email }}</td>
+            <td>{{ perfil.cpf|default:'' }}</td>
           </tr>
         {% empty %}
         <tr>
           <td>
-              Nenhum aluno encontrado
+            Nenhum perfil encontrado
           </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
     {% include 'pagination.html' %}
+  </div>
 </div>
 
 {% endblock content %}
+
 {% block extra_js %}
+
 {% endblock extra_js%}

@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'bootstrap3',
     # 'childcrud',
-    # 'municipios',
-    'escolar.core',
+    'localbr',
+    'municipios',
+    'escolar.core.apps.CoreConfig',
     'escolar.escolas.apps.EscolasConfig',
+    'escolar.financeiro', # .apps.FinanceiroConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
