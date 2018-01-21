@@ -16,4 +16,4 @@ pytz
 -e git://github.com/FabianoAlmeidaMelo/django-localbr.git#egg=localbr-dev
 # django-municipios==0.8.1
 
--e git://github.com/znc-sistemas/django-municipios.git@024d7af7642edf281ba44f5bb4e61de344d0deb9git#egg=django-municipios-dev
+-e git://github.com/znc-sistemas/django-municipios.git@024d7af7642edf281ba44f5bb4e61de344d0deb9#egg=django-municipios-dev
