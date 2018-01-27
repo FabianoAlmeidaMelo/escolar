@@ -8,7 +8,12 @@ from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
 
+from escolar.core.forms import (
+    EnderecoForm,
+)
+
 from escolar.escolas.models import (
+    Aluno,
     Autorizado,
     AutorizadoAluno,
     Escola,
@@ -17,6 +22,7 @@ from escolar.escolas.models import (
 )
 from escolar.escolas.forms import (
     AlunoForm,
+    AlunoSearchForm,
     AutorizadoForm,
     ClasseForm,
     ClasseAlunoForm,
@@ -231,97 +237,56 @@ def alunos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
     
-    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    form = AlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
-        contratos = form.get_result_queryset()
+        alunos = form.get_result_queryset()
     else:
-        contratos = form.get_result_queryset().filter(ano=ano_corrente)
+        alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
-    paginator = Paginator(contratos, 15)
+    paginator = Paginator(alunos, 15)
     try:
-        contratos = paginator.page(page)
+        alunos = paginator.page(page)
     except PageNotAnInteger:
-        contratos = paginator.page(1)
+        alunos = paginator.page(1)
     except EmptyPage:
-        contratos = paginator.page(paginator.num_pages)
+        alunos = paginator.page(paginator.num_pages)
 
     context = {}
     context['form'] = form
     context['escola'] = escola 
     context['can_edit'] = can_edit
-    context['object_list'] = contratos
+    context['object_list'] = alunos
     context['user'] = user
     context['tab_alunos'] = "active"
 
     return render(request, 'escolas/alunos_list.html', context)
 
-
-# @login_required
-# def alunos_list(request, escola_pk):
-#     user = request.user
-#     page = request.GET.get('page', 1)
-#     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-#     alunos_ids = UserGrupos.objects.filter(grupo__name='Aluno',
-#                                            escola__pk=escola_pk,
-#                                            ativo=True).values_list('user__id', flat=True)
-#     context = {}
-#     escola = Escola.objects.get(id=escola_pk)
-#     classes = Classe.objects.filter(escola__pk=escola_pk)
-#     # Alunos de UMA única Escola
-#     alunos = User.objects.filter(id__in=alunos_ids).order_by('nome')
-    
-#     alunos_list = []
-#     if user.get_professor_classes(escola):
-#         classes = user.get_professor_classes(escola)
-   
-#     for aluno in alunos:
-#         aluno.classe = aluno.get_classe(escola)
-#         aluno.status = aluno.usergrupos_set.filter(grupo__name='Aluno', escola=escola).last().ativo
-#         if aluno.classe in classes:
-#             alunos_list.append(aluno)
-#     print('\n', alunos_list)
-
-#     paginator = Paginator(alunos_list, 15)
-#     try:
-#         alunos_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         alunos_list = paginator.page(1)
-#     except EmptyPage:
-#         alunos_list = paginator.page(paginator.num_pages)
-
-#     context['object_list'] = alunos_list
-#     context['escola'] = escola 
-#     context['can_edit'] = can_edit
-#     context['user'] = user
-#     context['tab_alunos'] = "active"
-
-#     return render(request, 'escolas/alunos_list.html', context)
-
-
 @login_required
 def aluno_form(request, escola_pk, aluno_pk=None):
     '''
-    aluno é user
-    Não cria aqui, já foi definido no cadastro do user
+    aluno é Aluno, e pode ou não ter um User
     '''
+    user = request.user
     escola = Escola.objects.get(id=escola_pk)
-    grupo = Group.objects.filter(name='Aluno')
-    aluno = None
+    # import pdb; pdb.set_trace() 
     if aluno_pk:
-        aluno = User.objects.get(pk=aluno_pk)
-
-    if aluno_pk:
-        grupo_user = get_object_or_404(UserGrupos, escola=escola_pk, user=aluno_pk, grupo=grupo)
+        aluno = get_object_or_404(Aluno, escola=escola_pk, pk=aluno_pk)
+        endereco = aluno.endereco
         msg = u'Aluno alterado com sucesso.'
     else:
-        grupo_user = None
+        aluno = None
+        endereco = None
         msg = u'Aluno cadastrado.'
 
-    form = AlunoForm(request.POST or None, instance=grupo_user)
+    form = AlunoForm(request.POST or None, request.FILES or None, instance=aluno, user=user, escola=escola)
+    endereco_form = EnderecoForm(request.POST or None, instance=endereco, user=user, escola=escola)
 
     if request.method == 'POST':
-        if form.is_valid():
-            grupo_user = form.save()
+        if form.is_valid() and endereco_form.is_valid():
+            endereco = endereco_form.save()
+            aluno = form.save()
+            aluno.endereco = endereco
+            aluno.save()
             messages.success(request, msg)
             return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
         else:
@@ -330,11 +295,12 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context = {}
     context['form'] = form
     context['escola'] = escola
-    context['grupo_user'] = grupo_user
+    context['aluno'] = aluno
+    context['endereco_form'] = endereco_form
     context['tab_alunos'] = "active"
     context['tab_aluno'] = "active"
-    context['aluno'] = aluno
-    context['classes'] = aluno.get_all_classe(escola)
+
+    # context['classes'] = aluno.get_all_classe(escola)
 
     return render(request, 'escolas/aluno_form.html', context)
 

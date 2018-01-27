@@ -8,7 +8,7 @@ from django.contrib.auth.models import(
     BaseUserManager,
 )
 
-from escolar.escolas.models import Escola, Classe
+# from escolar.escolas.models import Escola, Classe
 
 from django.contrib.auth.models import User, Group
 from django.conf import settings
@@ -73,13 +73,12 @@ class Perfil(models.Model):
     cpf será requerido
     '''
     nome = models.CharField(verbose_name=u'Nome', max_length=100)
-    escolas = models.ManyToManyField(Escola)
+    escolas = models.ManyToManyField('escolas.Escola')  # escrever a tabela, vai entrar se é aluno, pai, mãe ...
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo', null=True, blank=True)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     email = models.EmailField('e-mail', null=True, blank=True)
-    # endereco = models.ForeignKey(Endereco, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     class Meta:
@@ -188,7 +187,7 @@ class User(AbstractBaseUser):
         return Classe.objects.filter(id__in=classe_ids)
 
 class UserGrupos(models.Model):
-    escola = models.ForeignKey(Escola)
+    escola = models.ForeignKey('escolas.Escola')
     user = models.ForeignKey(User)
     grupo = models.ForeignKey(Group)
     date_joined = models.DateTimeField(
