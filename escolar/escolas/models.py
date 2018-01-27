@@ -1,10 +1,12 @@
 # coding: utf-8
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
-# from municipios.models import Municipio
+# from django.contrib.auth.models import User
+from municipios.models import Municipio
 from datetime import date
 from django.conf import settings
+
+from escolar.core.models import UserAdd, UserUpd
 
 PERIODO = (
     (1, u'Manhã'),
@@ -28,7 +30,7 @@ MESES = tuple(zip(meses, meses))
 
 def escola_directory_path(instance, logo):
     '''
-    conta que fez o upload do arquivo
+    Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/conta_<id>/<filename>
     '''
     return 'escola_{0}/{1}'.format(instance.nome, logo)
@@ -44,7 +46,6 @@ class Escola(models.Model):
     celular = models.CharField('celular', max_length=14, null=True, blank=True)
     complemento = models.CharField('comnplemento', max_length=100, null=True, blank=True)
     bairro = models.CharField('bairro', max_length=100)
-    # municipio = models.ForeignKey(Municipio)
     created_at = models.DateTimeField('data de cadastro', auto_now_add=True)
     slug = models.CharField('slug', max_length=50, null=True)
     logo = models.ImageField(upload_to=escola_directory_path, null=True, blank=True)
@@ -68,6 +69,81 @@ class Escola(models.Model):
         se estiver válido, retorna True
         '''
         return True
+
+def escola_aluno_directory_path(instance, documento):
+    '''
+    Escola que fez o upload do arquivo
+    file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
+    '''
+    return 'escola_{0}/secretaria/aluno_{1}'.format(instance.escola.nome, documento)
+
+class Aluno(UserAdd, UserUpd):
+    '''
+    ref #33
+    Aluno tem Ficha de Matrícula, fica arquivada na Escola
+    não está ao 'alcance' do aluno e ou pais para edição
+    é um doc da Escola, diferente do Perfil que "é" do User
+    Nesse caso, acho que vou optar por ligar o user
+    no aluno e membro, assim p último é o perfil
+    '''
+    escola = models.ForeignKey(Escola)
+    user = models.ForeignKey('core.User', null=True, blank=True)
+   
+    ano = models.SmallIntegerField(default=ano_corrente)
+    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    nome = models.CharField(max_length=100)
+    cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
+    rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
+    natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    nacionalidade = models.CharField(max_length=50)
+    observacao = models.CharField(max_length=200, null=True, blank=True)
+    endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
+    documento = models.FileField('RG e ou CPF', upload_to=escola_directory_path, null=True, blank=True)
+    foto = models.ImageField('Foto', upload_to=escola_directory_path, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'aluno'
+        verbose_name_plural = 'alunos'
+        ordering = ('nome',)
+
+    def __str__(self):
+        return self.nome
+
+def escola_aluno_parente_directory_path(instance, arquivo):
+    '''
+    Escola que fez o upload do arquivo
+    file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
+    '''
+    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.escola.nome, instance.aluno.nome, arquivo)
+
+class MembroFamilia(UserAdd, UserUpd):
+    '''
+    ref #33
+    Aluno tem Ficha de Matrícula, fica arquivada na Escola
+    não está ao 'alcance' do aluno e ou pais para edição
+    é um doc da Escola, diferente do Perfil que "é" do User 
+    '''
+    parentesco = models.CharField(max_length=100)
+    aluno = models.ForeignKey(Aluno)
+    user = models.ForeignKey('core.User', null=True, blank=True)
+    responsavel_financeiro = models.BooleanField(default=False)
+    responsavel_pedagogico = models.BooleanField(default=False)
+    nome = models.CharField(max_length=100)
+    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
+    sexo = models.SmallIntegerField(u'Sexo')
+    cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
+    rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    celular = models.CharField(max_length=11, null=True, blank=True)
+    telefone = models.CharField(max_length=11, null=True, blank=True)
+    # comrecial
+    empresa = models.CharField(max_length=100)
+    telefone_empresa = models.CharField(max_length=11)
+    obs_empresa = models.CharField(max_length=100)
+    documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
+
 
 class Classe(models.Model):
     escola = models.ForeignKey(Escola)

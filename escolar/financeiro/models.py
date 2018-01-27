@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.db import models
-from escolar.escolas.models import Escola, ANO
+from escolar.escolas.models import ANO
 from escolar.core.models import UserAdd, UserUpd
 from datetime import date, timedelta
 
@@ -26,7 +26,7 @@ class ContratoEscola(UserAdd, UserUpd):
     Escola + Responsavel pelo Aluno + Aluno
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
-    escola = models.ForeignKey(Escola)
+    escola = models.ForeignKey('escolas.Escola')
     responsavel = models.ForeignKey('core.Perfil', related_name='contrato_responsavel')
     aluno = models.ForeignKey('core.Perfil', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)

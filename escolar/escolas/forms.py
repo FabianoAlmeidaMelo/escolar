@@ -1,9 +1,13 @@
 # coding: utf-8
+from datetime import date
+from django.db.models import Q
 from django import forms
-
+from municipios.widgets import SelectMunicipioWidget
 #from localflavor.br.forms import BRCPFField  # 1.4
 # from localbr.formfields import BRCPFField
 from escolar.escolas.models import (
+    Aluno,
+    ANO,
     Autorizado,
     AutorizadoAluno,
     Escola,
@@ -13,6 +17,8 @@ from escolar.escolas.models import (
     )
 from escolar.core.models import User, UserGrupos
 
+hoje = date.today()
+ano_corrente = hoje.year
 
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
@@ -66,12 +72,76 @@ class EscolaForm(forms.ModelForm):
 
 
 class AlunoForm(forms.ModelForm):
-    ativo = forms.BooleanField(label='Matriculado', required=False)
+    # natural_municipio = forms.IntegerField(label=u"Natural de: UF - Município", widget=SelectMunicipioWidget)
+
+    def __init__(self, *args, **kwargs):
+        self.escola = kwargs.pop('escola', None)
+        self.user = kwargs.pop('user', None)
+        super(AlunoForm, self).__init__(*args, **kwargs)
+        # self.fields['natural_municipio'].widgets = SelectMunicipioWidget
+        # self.fields['natural_municipio'].label = 'Natural de'
 
     class Meta:
-        model = UserGrupos
-        # exclude = ('date_joined', 'escola', 'grupo')
-        fields = ('ativo',)
+        model = Aluno
+        widgets = {'natural_municipio': SelectMunicipioWidget}
+        exclude = ('user', 'escola', 'date_add', 'date_upd', 'user_add', 'user_upd')
+
+
+    def save(self, *args, **kwargs):
+        if not self.instance.pk:
+            self.instance.user_add = self.user
+        self.instance.user_upd = self.user
+        self.instance.escola = self.escola
+        instance = super(AlunoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+        
+
+class AlunoSearchForm(forms.Form):
+    '''
+    #33
+    '''
+    # responsavel = forms.CharField(label=u'Responsável', required=False)
+    nome = forms.CharField(label=u'Nome', required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    serie = forms.CharField(label=u'Série', required=False)
+    curso = forms.CharField(label=u'Curso', required=False)
+
+    def __init__(self, *args, **kargs):
+        self.escola = kargs.pop('escola', None)
+        super(AlunoSearchForm, self).__init__(*args, **kargs)
+       
+
+    def get_result_queryset(self):
+        q = Q(escola=self.escola)
+        if self.is_valid():
+            # responsavel = self.cleaned_data['responsavel']
+            # if responsavel:
+            #     q = q & Q(responsavel__nome__icontains=responsavel)
+            nome = self.cleaned_data['nome']
+            if nome:
+                q = q & Q(nome__icontains=nome)
+            ano = self.cleaned_data['ano']
+            if ano:
+                q = q & Q(ano=ano)
+
+            serie = self.cleaned_data['serie']
+            if serie:
+                q = q & Q(serie__icontains=serie)
+            curso = self.cleaned_data['curso']
+            if curso:
+                q = q & Q(curso__icontains=curso)
+
+        return Aluno.objects.filter(q)
+
+
+# class AlunoForm(forms.ModelForm):
+#     ativo = forms.BooleanField(label='Matriculado', required=False)
+
+#     class Meta:
+#         model = UserGrupos
+#         # exclude = ('date_joined', 'escola', 'grupo')
+#         fields = ('ativo',)
 
 class ProfessorForm(forms.ModelForm):
     ativo = forms.BooleanField(label='Ativo', required=False)
