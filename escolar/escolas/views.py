@@ -317,8 +317,9 @@ def membro_familia_form(request,  aluno_pk):
 
     # import pdb; pdb.set_trace() 
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, id=aluno.escola.pk)
 
-    formset = MembroFamiliaFormSet(request.POST or None, request.FILES or None, instance=aluno, user=user)
+    formset = MembroFamiliaFormSet(request.POST or None, request.FILES or None, instance=aluno)
 
     if request.method == 'POST':
         if formset.is_valid():
@@ -333,8 +334,9 @@ def membro_familia_form(request,  aluno_pk):
     context = {}
     context['formset'] = formset
     context['aluno'] = aluno
+    context['escola'] = escola
     context['tab_alunos'] = "active"
-    context['tab_membros_familia'] = "active"
+    context['tab_responsaveis_aluno'] = "active"
 
     # context['classes'] = aluno.get_all_classe(escola)
 
