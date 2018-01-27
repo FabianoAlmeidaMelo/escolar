@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import date
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.db.models import Q
 from django import forms
 from municipios.widgets import SelectMunicipioWidget
@@ -14,11 +15,19 @@ from escolar.escolas.models import (
     Classe,
     ClasseAluno,
     ClasseProfessor,
-    )
+    MembroFamilia,
+)
+
 from escolar.core.models import User, UserGrupos
 
 hoje = date.today()
 ano_corrente = hoje.year
+
+SEXO_CHOICES = (
+    (None, '---'),
+    (1, 'Masculino'),
+    (2, 'Feminino'),
+)
 
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
@@ -95,7 +104,85 @@ class AlunoForm(forms.ModelForm):
         instance = super(AlunoForm, self).save(*args, **kwargs)
         instance.save()
         return instance
-        
+
+
+class MembroFamiliaForm(forms.ModelForm):
+    sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(MembroFamiliaForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = MembroFamilia
+        fields = ['parentesco',
+                  'responsavel_financeiro',
+                  'responsavel_pedagogico',
+                  'nome',
+                  'nascimento',
+                  'profissao',
+                  'sexo',
+                  'cpf',
+                  'rg',
+                  'email',
+                  'celular',
+                  'empresa',
+                  'obs_empresa',
+                  'documento']
+
+
+
+class BaseMembroFamiliaFormSet(BaseInlineFormSet):
+
+    def get_queryset(self):
+        '''
+        Customizado para ordenar por Parcela
+        1, 2, ...
+        origem:
+        http://stackoverflow.com/questions/13387446/changing-the-display-order-of-forms-in-a-formset
+        '''
+        if not hasattr(self, '_queryset'):
+            if self.queryset is not None:
+                qs = self.queryset
+            else:
+                qs = self.model._default_manager.get_query_set()
+
+            qs = qs.order_by('id')
+            # /MOD
+
+            # Removed queryset limiting here. As per discussion re: #13023
+            # on django-dev, max_num should not prevent existing
+            # related objects/inlines from being displayed.
+            self._queryset = qs
+        return self._queryset
+
+
+MembroFamiliaFormSet = inlineformset_factory(
+    parent_model=Aluno,
+    model=MembroFamilia,
+    form=MembroFamiliaForm,
+    formset=BaseMembroFamiliaFormSet,
+    fields=('parentesco',
+            'responsavel_financeiro',
+            'responsavel_pedagogico',
+            'nome',
+            'nascimento',
+            'profissao',
+            'sexo',
+            'cpf',
+            'rg',
+            'email',
+            'celular',
+            'empresa',
+            'obs_empresa',
+            'documento',
+            ),
+    # can_order=True,
+    can_delete=True,
+    extra=1
+    )
+
+
 
 class AlunoSearchForm(forms.Form):
     '''

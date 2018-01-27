@@ -144,6 +144,14 @@ class MembroFamilia(UserAdd, UserUpd):
     obs_empresa = models.CharField(max_length=100)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Membro da Família'
+        verbose_name_plural = 'Membros da Família'
+        ordering = ('nome',)
+
+    def __str__(self):
+        return self.nome
+
 
 class Classe(models.Model):
     escola = models.ForeignKey(Escola)

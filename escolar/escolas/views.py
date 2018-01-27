@@ -28,6 +28,7 @@ from escolar.escolas.forms import (
     ClasseAlunoForm,
     ClasseProfessorForm,
     EscolaForm,
+    MembroFamiliaFormSet,
     ProfessorForm,
 )
 
@@ -100,8 +101,8 @@ def autorizados_aluno_list(request, escola_pk, aluno_pk):
     Todos Autorizados de Um Aluno
     '''
     escola = get_object_or_404(Escola, pk=escola_pk)
-    aluno = get_object_or_404(User, pk=aluno_pk)
-    autorizados = AutorizadoAluno.objects.filter(escola_id=escola, aluno=aluno)
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    autorizados = []
     can_edit = not request.user.is_aluno(escola.id)
     context = {}
     context['escola'] = escola
@@ -303,6 +304,41 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     # context['classes'] = aluno.get_all_classe(escola)
 
     return render(request, 'escolas/aluno_form.html', context)
+
+
+#MembroFamiliaFormSet
+
+@login_required
+def membro_familia_form(request,  aluno_pk):
+    '''
+    aluno é Aluno, e pode ou não ter um User
+    '''
+    user = request.user
+
+    # import pdb; pdb.set_trace() 
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+
+    formset = MembroFamiliaFormSet(request.POST or None, request.FILES or None, instance=aluno, user=user)
+
+    if request.method == 'POST':
+        if formset.is_valid():
+            
+            formset.save()
+
+            messages.success(request, msg)
+            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do Aluno')
+
+    context = {}
+    context['formset'] = formset
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_membros_familia'] = "active"
+
+    # context['classes'] = aluno.get_all_classe(escola)
+
+    return render(request, 'escolas/membro_familia_form.html', context)
 
 
 @login_required
