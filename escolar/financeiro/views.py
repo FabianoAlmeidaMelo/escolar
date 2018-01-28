@@ -1,4 +1,5 @@
 # coding: utf-8
+from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -10,11 +11,11 @@ from django.contrib.auth.models import Group
 
 from datetime import date
 
-from escolar.financeiro.models import ContratoEscola
+from escolar.financeiro.models import ContratoAluno
 from escolar.financeiro.forms import (
     ano_corrente,
-    ContratoEscolaSearchForm,
-    MovimentoEscolaSearchForm,
+    ContratoAlunoSearchForm,
+    PagamentoEscolaSearchForm,
 )
 
 from escolar.escolas.models import Escola
@@ -30,7 +31,7 @@ def responsaveis_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
 
-    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    form = ContratoAlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
@@ -58,17 +59,20 @@ def responsaveis_list(request, escola_pk):
 
 
 @login_required
-def contratos_list(request, escola_pk):
+def contratos_list(request, aluno_pk):
     '''
     ref #31
     Todos Responaveeis por Alunos / Escola
     '''
+
+    Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     user = request.user
-    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    escola = get_object_or_404(Escola, pk=escola_pk)
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     page = request.GET.get('page', 1)
 
-    form = ContratoEscolaSearchForm(request.GET or None, escola=escola)
+    form = ContratoAlunoSearchForm(request.GET or None, escola=escola)  # ****
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
@@ -97,8 +101,8 @@ def contratos_list(request, escola_pk):
 @login_required
 def contrato_cadastro(request, contrato_pk):
     user = request.user
-    contrato = get_object_or_404(ContratoEscola, pk=contrato_pk)
-    escola = contrato.escola
+    contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
+    escola = contrato.aluno.escola
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
@@ -109,7 +113,7 @@ def contrato_cadastro(request, contrato_pk):
 
 
 @login_required
-def movimentos_list(request, escola_pk):
+def pagamentos_list(request, escola_pk):
     '''
     ref #31
     Todos Pgtos e Recebimentos / Escola
@@ -119,7 +123,7 @@ def movimentos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)
 
-    form = MovimentoEscolaSearchForm(request.GET or None, escola=escola)
+    form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         pagamentos = form.get_result_queryset()
     else:

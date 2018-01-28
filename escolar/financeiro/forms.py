@@ -5,8 +5,8 @@ from django.forms.utils import ErrorList
 
 from escolar.financeiro.models import (
     ANO,
-    ContratoEscola,
-    Movimento,
+    ContratoAluno,
+    Pagamento,
 )
 
 from datetime import date
@@ -18,7 +18,7 @@ hoje = date.today()
 ano_corrente = hoje.year
 mes_corrnete = hoje.month
 
-class ContratoEscolaSearchForm(forms.Form):
+class ContratoAlunoSearchForm(forms.Form):
     '''
     #31
     '''
@@ -30,15 +30,15 @@ class ContratoEscolaSearchForm(forms.Form):
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
-        super(ContratoEscolaSearchForm, self).__init__(*args, **kargs)
-        # responsaveis_list_ids = ContratoEscola.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoEscola.objects.filter(responsavel__id__in=responsaveis_list_ids)
-        # alunos_list_ids = ContratoEscola.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoEscola.objects.filter(aluno__id__in=alunos_list_ids)
+        super(ContratoAlunoSearchForm, self).__init__(*args, **kargs)
+        # responsaveis_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
+        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(responsavel__id__in=responsaveis_list_ids)
+        # alunos_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
+        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(aluno__id__in=alunos_list_ids)
        
 
     def get_result_queryset(self):
-        q = Q(escola=self.escola)
+        q = Q(aluno__escola=self.escola)
         if self.is_valid():
             responsavel = self.cleaned_data['responsavel']
             if responsavel:
@@ -57,10 +57,10 @@ class ContratoEscolaSearchForm(forms.Form):
             if curso:
                 q = q & Q(curso__icontains=curso)
 
-        return ContratoEscola.objects.filter(q)
+        return ContratoAluno.objects.filter(q)
 
 
-class MovimentoEscolaSearchForm(forms.Form):
+class PagamentoEscolaSearchForm(forms.Form):
     '''
     #31
     '''
@@ -74,11 +74,11 @@ class MovimentoEscolaSearchForm(forms.Form):
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
-        super(MovimentoEscolaSearchForm, self).__init__(*args, **kargs)
-        # responsaveis_list_ids = ContratoEscola.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoEscola.objects.filter(responsavel__id__in=responsaveis_list_ids)
-        # alunos_list_ids = ContratoEscola.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoEscola.objects.filter(aluno__id__in=alunos_list_ids)
+        super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
+        # responsaveis_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
+        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(responsavel__id__in=responsaveis_list_ids)
+        # alunos_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
+        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(aluno__id__in=alunos_list_ids)
        
 
     def get_result_queryset(self):
@@ -105,4 +105,4 @@ class MovimentoEscolaSearchForm(forms.Form):
             if curso:
                 q = q & Q(contrato__curso__icontains=curso)
 
-        return Movimento.objects.filter(q)
+        return Pagamento.objects.filter(q)

@@ -19,16 +19,15 @@ def validate_vencimento(value):
     if value not in range(1, 29):
         raise ValidationError(u'%s Não está entre 1 e 28' % value)
 
-class ContratoEscola(UserAdd, UserUpd):
+class ContratoAluno(UserAdd, UserUpd):
     '''
     ref #31
     Contrato faz a ligação:
     Escola + Responsavel pelo Aluno + Aluno
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
-    escola = models.ForeignKey('escolas.Escola')
-    responsavel = models.ForeignKey('core.Perfil', related_name='contrato_responsavel')
-    aluno = models.ForeignKey('core.Perfil', related_name='contrato_aluno')
+    responsavel = models.ForeignKey('escolas.MembroFamilia')
+    aluno = models.ForeignKey('escolas.Aluno', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)
     curso = models.CharField('curso', null=True, blank=True, max_length=120)
     ano = models.SmallIntegerField()
@@ -83,7 +82,7 @@ class ContratoEscola(UserAdd, UserUpd):
                                             nr_parcela=p)
 
 
-class MovimentoManager(models.Manager):
+class PagamentoManager(models.Manager):
     def get_recebimentos_pendentes(self):
         pass
         """Contratos com recebimentos pendentes de parcelas vencidas"""
@@ -95,9 +94,10 @@ class MovimentoManager(models.Manager):
         # return self.filter(query).order_by('-data_prevista')
 
 
-class Movimento(models.Model):
+class Pagamento(models.Model):
+    escola = models.ForeignKey('escolas.Escola')
     titulo = models.CharField(verbose_name=u'Título', max_length=255)
-    contrato = models.ForeignKey(ContratoEscola, null=True, blank=True)
+    contrato = models.ForeignKey(ContratoAluno, null=True, blank=True)
     data_prevista = models.DateField(blank=True, null=True)
     valor = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     data_pag = models.DateField(blank=True, null=True)
@@ -106,7 +106,7 @@ class Movimento(models.Model):
     observacao = models.TextField(verbose_name=u'Observacao')
     tipo = models.SmallIntegerField(u"Tipo", null=True, blank=True) # (+ -)
     parcela = models.ForeignKey( # ID do Movimento 'Pai'
-        'Movimento',  # SE tem É parcela
+        'Pagamento',  # SE tem É parcela
         null=True,
         blank=True
     )
@@ -120,7 +120,7 @@ class Movimento(models.Model):
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
 
 
-    objects = MovimentoManager()
+    objects = PagamentoManager()
 
     class Meta:
         ordering = ('data_prevista',)

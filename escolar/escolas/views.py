@@ -33,8 +33,8 @@ from escolar.escolas.forms import (
     ProfessorForm,
 )
 
-from escolar.financeiro.models import ContratoEscola
-from escolar.financeiro.forms import ano_corrente, ContratoEscolaSearchForm
+from escolar.financeiro.models import ContratoAluno
+from escolar.financeiro.forms import ano_corrente, ContratoAlunoSearchForm
 
 @login_required
 def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
