@@ -7,7 +7,7 @@
       <!--     <li class="{{ tab_usuarios }}"><a href="#" id='id_usuarios'>Boletim</a></li>
       <li class=""><a href="#" id='id_classes'>Faltas</a></li>
       <li class=""><a href="#" id='id_professores'>Agenda</a></li> -->
-      <li class=""><a href="#" id='id_professores'>Contrato</a></li>
+      <li class="{{ tab_aluno_contratos }}"><a href="{% url 'contratos_aluno_list' aluno.id %}" id='id_contratos_aluno'>Contratos</a></li>
       <li class=""><a href="#" id='id_professores'>Parcelas</a></li>
       <li class=""><a href="#" id='id_historico'>Histórico</a></li>
     {% else %}

@@ -99,6 +99,35 @@ def contratos_list(request, aluno_pk):
 
 
 @login_required
+def contratos_aluno_list(request, aluno_pk):
+    '''
+    ref #34
+    Lista todos os contratos do Aluno,
+    na aba 'Contratos' do submenu de Aluno
+    '''
+    user = request.user
+    Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    page = request.GET.get('page', 1)
+
+    contratos = ContratoAluno.objects.filter(aluno=aluno).order_by('-ano')
+    
+    context = {}
+ 
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+    context['object_list'] = contratos
+    context['aluno'] = aluno
+
+    context['tab_alunos'] = "active"
+    context['tab_aluno_contratos'] = "active"
+
+    return render(request, 'financeiro/contratos_aluno_list.html', context)
+
+
+@login_required
 def contrato_cadastro(request, contrato_pk):
     user = request.user
     contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)

@@ -16,10 +16,8 @@
 {% block content %}
 
 <div class="container">
-
-  {% include "base_adm.html" %}
   <div class="row-fluid span10">
-      {% include "base_aluno.html" %}
+    {% include "base_aluno.html" %}
     <table class="table table-striped">
         {% if can_edit %}
         <caption>
