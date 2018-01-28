@@ -336,7 +336,7 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
         if form.is_valid():
             form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('membros_familia_list', kwargs={'aluno_pk': aluno.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do membro família')
 
