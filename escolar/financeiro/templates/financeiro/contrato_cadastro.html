@@ -1,28 +1,26 @@
-{% extends "base.html" %}
+{% extends 'base.html'%}
 {% load bootstrap3 %}
 
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
-    {% if escola %}
-        Contrato: <b>{{ escola.nome }}</b> {{ escola.nome }}, Responsável <b>{{ contrato.responsavel }}</b>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}
     {% else %}
-        Cadastro de Contrato
+       Aluno
     {% endif %}
   </div>
 {% endblock page_title %}
 
-
 {% block content %}
-
 <div class="container">
-   {% include "base_adm.html" %}
-    <div class="row-fluid span10">
+  <div class="row-fluid span10">
+    {% include "base_aluno.html" %}
+        Ano: <b>{{ contrato.ano }}</b><br>
         Responsavel: <b>{{ contrato.responsavel.nome }}</b><br> 
         Aluno: <b>{{ contrato.aluno.nome }}</b><br> 
         Série: <b>{{ contrato.serie }}</b><br> 
-        Ano: <b>{{ contrato.ano }}</b><br>
         Valor do contrato: <b>R$ {{ contrato.valor }}</b><br>
         contrato: <b>R$ {{ contrato.valor }}</b><br>
         Data de assinatura: <b>{{ contrato.data_assinatura|date:"d/m/Y" }}</b><br> 
@@ -34,10 +32,11 @@
         {% if can_edit %}
           <div class="form-actions">
             <a href="" class="btn btn-mini btn-success">Editar</a>
-            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem...">Voltar</a>
+             <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem...">Contratos do aluno</a>
+            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem...">Listagem geral</a>
           </div>
         {% endif %}
-    </div>
+  </div>
 </div>
 
 {% endblock content %}

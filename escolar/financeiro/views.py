@@ -132,12 +132,15 @@ def contrato_cadastro(request, contrato_pk):
     user = request.user
     contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
     escola = contrato.aluno.escola
+    aluno = contrato.aluno
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
     context["contrato"] = contrato
+    context["aluno"] = aluno
     context['can_edit'] = can_edit
-    context['tab_contratos'] = "active"
+    context['tab_alunos'] = "active"
+    context['tab_aluno_contratos'] = "active"
     return render(request, 'financeiro/contrato_cadastro.html', context)
 
 
