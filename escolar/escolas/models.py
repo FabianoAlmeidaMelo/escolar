@@ -115,7 +115,7 @@ def escola_aluno_parente_directory_path(instance, arquivo):
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
-    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.escola.nome, instance.aluno.nome, arquivo)
+    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.aluno.escola.nome, instance.aluno.nome, arquivo)
 
 class MembroFamilia(UserAdd, UserUpd):
     '''
