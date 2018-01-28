@@ -1,0 +1,64 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_serie, #id_ano {
+      width: 75px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno %}
+        Aluno: {{ aluno.nome }}
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    {% include "base_aluno.html" %}
+    <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Responsavel/<br>Aluno</th>
+        <th>Valor</th>
+        <th>Valor <br>com desconto</th>
+        <th>Data Prevista</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for pagamento in object_list %}
+      <tr>
+        <td>
+          <a href="">{{ pagamento.titulo|default:'--' }}</a>
+        </td>
+        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>R$ {{ pagamento.valor }}</td>
+        <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
+        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
+      </tr>
+    {% empty %}
+    <tr>
+      <td>
+        Nenhum pagamento encontrado
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include 'pagination.html' %}
+</div>
+
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js%}
