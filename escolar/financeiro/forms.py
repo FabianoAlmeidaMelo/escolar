@@ -82,7 +82,7 @@ class PagamentoEscolaSearchForm(forms.Form):
        
 
     def get_result_queryset(self):
-        q = Q(contrato__escola=self.escola)
+        q = Q(escola=self.escola)
         if self.is_valid():
             responsavel = self.cleaned_data['responsavel']
             if responsavel:

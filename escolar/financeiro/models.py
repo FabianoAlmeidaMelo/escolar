@@ -58,12 +58,13 @@ class ContratoAluno(UserAdd, UserUpd):
         ordering = ('aluno__nome',)
 
     def __str__(self):
-        return self.escola.nome
+        return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
     def set_matricula(self):
         data = date.today()
-        Movimento.objects.get_or_create(titulo='Matrícula %s ' % (self.ano) ,
+        Pagamento.objects.get_or_create(titulo='Matrícula %s ' % (self.ano) ,
                                         contrato=self,
+                                        escola=self.aluno.escola,
                                         data_prevista=data,
                                         valor=self.matricula_valor,
                                         observacao='',
@@ -74,8 +75,9 @@ class ContratoAluno(UserAdd, UserUpd):
         valor = (self.valor - self.matricula_valor) / self.nr_parcela
         for p in range(1, self.nr_parcela + 1):
             data =  date(self.ano, p, self.vencimento)
-            Movimento.objects.get_or_create(titulo='Parcela %s / %s ' % (p, self.nr_parcela) ,
+            Pagamento.objects.get_or_create(titulo='Parcela %s / %s ' % (p, self.nr_parcela) ,
                                             contrato=self,
+                                            escola=self.aluno.escola,
                                             data_prevista=data,
                                             valor=valor,
                                             observacao='',
@@ -105,7 +107,7 @@ class Pagamento(models.Model):
     efet = models.BooleanField(blank=True, default=False)
     observacao = models.TextField(verbose_name=u'Observacao')
     tipo = models.SmallIntegerField(u"Tipo", null=True, blank=True) # (+ -)
-    parcela = models.ForeignKey( # ID do Movimento 'Pai'
+    parcela = models.ForeignKey( # ID do Pagamento 'Pai'
         'Pagamento',  # SE tem É parcela
         null=True,
         blank=True

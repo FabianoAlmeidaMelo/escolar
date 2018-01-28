@@ -88,19 +88,23 @@ class Aluno(UserAdd, UserUpd):
     '''
     escola = models.ForeignKey(Escola)
     user = models.ForeignKey('core.User', null=True, blank=True)
-   
     ano = models.SmallIntegerField(default=ano_corrente)
+   
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-    email = models.EmailField('e-mail', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
     natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
     nacionalidade = models.CharField(max_length=50)
     observacao = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
     endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_directory_path, null=True, blank=True)
     foto = models.ImageField('Foto', upload_to=escola_directory_path, null=True, blank=True)
+    # profissao
+    # telefone
+    # celular
+    # sexo
 
     class Meta:
         verbose_name = 'aluno'
