@@ -111,7 +111,18 @@ class MembroFamiliaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.aluno = kwargs.pop('aluno', None)
         super(MembroFamiliaForm, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if not self.instance.pk:
+            self.instance.user_add = self.user
+        self.instance.user_upd = self.user
+        self.instance.aluno = self.aluno
+
+        instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
 
     class Meta:
         model = MembroFamilia
@@ -128,60 +139,9 @@ class MembroFamiliaForm(forms.ModelForm):
                   'celular',
                   'empresa',
                   'obs_empresa',
-                  'documento']
-
-
-
-class BaseMembroFamiliaFormSet(BaseInlineFormSet):
-
-    def get_queryset(self):
-        '''
-        Customizado para ordenar por Parcela
-        1, 2, ...
-        origem:
-        http://stackoverflow.com/questions/13387446/changing-the-display-order-of-forms-in-a-formset
-        '''
-        if not hasattr(self, '_queryset'):
-            if self.queryset is not None:
-                qs = self.queryset
-            else:
-                qs = self.model._default_manager.get_query_set()
-
-            qs = qs.order_by('id')
-            # /MOD
-
-            # Removed queryset limiting here. As per discussion re: #13023
-            # on django-dev, max_num should not prevent existing
-            # related objects/inlines from being displayed.
-            self._queryset = qs
-        return self._queryset
-
-
-MembroFamiliaFormSet = inlineformset_factory(
-    parent_model=Aluno,
-    model=MembroFamilia,
-    form=MembroFamiliaForm,
-    formset=BaseMembroFamiliaFormSet,
-    fields=('parentesco',
-            'responsavel_financeiro',
-            'responsavel_pedagogico',
-            'nome',
-            'nascimento',
-            'profissao',
-            'sexo',
-            'cpf',
-            'rg',
-            'email',
-            'celular',
-            'empresa',
-            'obs_empresa',
-            'documento',
-            ),
-    # can_order=True,
-    can_delete=True,
-    extra=1
-    )
-
+                  'documento',
+                  'telefone_empresa',
+                  'telefone']
 
 
 class AlunoSearchForm(forms.Form):

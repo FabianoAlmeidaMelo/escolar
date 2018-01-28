@@ -19,6 +19,7 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
+    MembroFamilia,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -28,7 +29,7 @@ from escolar.escolas.forms import (
     ClasseAlunoForm,
     ClasseProfessorForm,
     EscolaForm,
-    MembroFamiliaFormSet,
+    MembroFamiliaForm,
     ProfessorForm,
 )
 
@@ -306,33 +307,38 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     return render(request, 'escolas/aluno_form.html', context)
 
 
-#MembroFamiliaFormSet
+
 
 @login_required
-def membro_familia_form(request,  aluno_pk):
+def membro_familia_form(request,  aluno_pk, membro_pk=None):
     '''
-    aluno é Aluno, e pode ou não ter um User
+    #33
+    são os responsáveis pelo aluno, se Menor de Idade
+    resp financeiro e ou pedagógico
     '''
     user = request.user
-
-    # import pdb; pdb.set_trace() 
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, id=aluno.escola.pk)
+    
+    if membro_pk:
+        membro = get_object_or_404(MembroFamilia, pk=membro_pk)
+        msg = u'Membro da família alterado com sucesso.'
+    else:
+        membro = None
+        msg = u'Membro da família.'
 
-    formset = MembroFamiliaFormSet(request.POST or None, request.FILES or None, instance=aluno)
+    form = MembroFamiliaForm(request.POST or None, request.FILES or None, instance=membro, user=user, aluno=aluno)
 
     if request.method == 'POST':
-        if formset.is_valid():
-            
-            formset.save()
-
+        if form.is_valid():
+            form.save()
             messages.success(request, msg)
             return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
         else:
-            messages.warning(request, u'Falha no cadastro do Aluno')
+            messages.warning(request, u'Falha no cadastro do membro família')
 
     context = {}
-    context['formset'] = formset
+    context['form'] = form
     context['aluno'] = aluno
     context['escola'] = escola
     context['tab_alunos'] = "active"

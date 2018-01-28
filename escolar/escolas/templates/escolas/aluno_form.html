@@ -20,10 +20,10 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {{ form.errors }}
       {% csrf_token %}
-      <div class="form-group center_div" enctype="multipart/form-data">
+      <div class="form-group center_div" >
         <div class="row">
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
