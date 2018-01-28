@@ -319,6 +319,9 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
     user = request.user
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, id=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    if not can_edit:
+        raise Http404
     
     if membro_pk:
         membro = get_object_or_404(MembroFamilia, pk=membro_pk)
@@ -347,6 +350,24 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
     # context['classes'] = aluno.get_all_classe(escola)
 
     return render(request, 'escolas/membro_familia_form.html', context)
+
+@login_required
+def membros_familia_list(request, aluno_pk):
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+
+    context = {}
+    context['escola'] = escola 
+    context['can_edit'] = can_edit
+    context['object_list'] = MembroFamilia.objects.filter(aluno=aluno)
+    context['user'] = user
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_responsaveis_aluno'] = "active"
+
+    return render(request, 'escolas/membros_familia_aluno_list.html', context)
 
 
 @login_required
