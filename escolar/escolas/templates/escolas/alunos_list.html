@@ -24,16 +24,18 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-    <form class="form-inline well" method="GET" >
-      <div class="form-group">
-        {% bootstrap_field form.nome %}
-        {% bootstrap_field form.ano %}
-        {% bootstrap_field form.serie %}
-        {% bootstrap_field form.curso %}
-      </div>
-      <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
-      <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
-    </form>
+    {% if can_edit %}
+      <form class="form-inline well" method="GET" >
+        <div class="form-group">
+          {% bootstrap_field form.nome %}
+          {% bootstrap_field form.ano %}
+          {% bootstrap_field form.serie %}
+          {% bootstrap_field form.curso %}
+        </div>
+        <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+        <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+      </form>
+    {% endif%}
   </div>
     <table class="table table-striped">
       {% if can_edit %}
@@ -47,21 +49,21 @@
           <tr>
               <th>Nome</th>
               <th>Nascimento</th>
-              <th>Curso</th>
+              <th>Série / <br>Curso</th>
               <th>Matrícula<br>data</th>
           </tr>
         </thead>
         <tbody>
         {% for aluno in object_list %}
           <tr>
-            {% if can_edit or user.id == aluno.aluno.id %}
+            {% if can_edit or user.id == aluno.user.id %}
               <td><a href="{% url 'aluno_form' escola.id aluno.id %}">{{ aluno.nome }}</a></td>
             {% else %}
               <td>{{ aluno.nome }}</td>
             {% endif %}
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
-            <td>{{ aluno.curso|default:'--' }}</td>
-            <td>{{ aluno.data_assinatura|date:'d/m/Y' }}</td>
+            <td>{{ aluno.get_serie|default:"--" }} /<br>{{ aluno.get_curso|default:'--' }}</td>
+            <td>{{ aluno.get_data_matricula|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}
         <tr>
@@ -72,7 +74,9 @@
         {% endfor %}
         </tbody>
     </table>
+    {% if can_edit %}
     {% include 'pagination.html' %}
+    {% endif %}
 </div>
 
 {% endblock content %}

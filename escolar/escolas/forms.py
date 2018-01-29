@@ -170,14 +170,15 @@ class AlunoSearchForm(forms.Form):
                 q = q & Q(nome__icontains=nome)
             ano = self.cleaned_data['ano']
             if ano:
-                q = q & Q(ano=ano)
+                q = q & Q(contrato_aluno__ano=int(ano))
 
             serie = self.cleaned_data['serie']
-            if serie:
-                q = q & Q(serie__icontains=serie)
+            if serie and ano:
+                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie__icontains=serie)
+
             curso = self.cleaned_data['curso']
-            if curso:
-                q = q & Q(curso__icontains=curso)
+            if curso and ano:
+                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__curso__icontains=curso)
 
         return Aluno.objects.filter(q)
 

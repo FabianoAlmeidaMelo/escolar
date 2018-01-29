@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
-{% block extra_css %}
-    {{ endereco_form.media.css }}
-{% endblock extra_css %}
+{% block css %}
+  {{ endereco_form.media.css }}
+  <style type="text/css">
+    #id_serie, #id_ano {
+      width: 80px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -28,7 +34,7 @@
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.ano %}
-            {% bootstrap_field form.foto %}
+            <small>Dados do Aluno:</small>
             {% bootstrap_field form.nome %}
             {% bootstrap_field form.nascimento %}
             {% bootstrap_field form.nacionalidade %}
@@ -36,6 +42,7 @@
             Natural de:
             </small>
             {{ form.natural_municipio }}
+            {% bootstrap_field form.foto %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.email %}
@@ -57,7 +64,9 @@
         </div>
       </div>
       <div class="form-actions">
-        <input type="submit" value="Salvar" class="btn btn-primary">
+        {% if can_edit %}
+          <input type="submit" value="Salvar" class="btn btn-primary">
+        {% endif %}
         <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
       </div>
     </form>

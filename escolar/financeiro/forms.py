@@ -27,6 +27,12 @@ PAGAMENTO_STATUS_CHOICES=(
     (0,'Em Aberto'),
 )
 
+# pgto tipo 
+# TIPO_CHOICES = (
+#     (1, u'(+)'),
+#     (2, u'(-)'),
+# )
+
 class ContratoAlunoSearchForm(forms.Form):
     '''
     #31

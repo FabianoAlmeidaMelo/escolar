@@ -29,6 +29,7 @@
         <thead>
           <tr>
               <th>Nome</th>
+              <th>Parentesco</th>
               <th>Resp Financeiro</th>
               <th>Resp Pedagógico</th>
               <th>Celular</th>
@@ -44,6 +45,7 @@
             {% else %}
               <td>{{ membro.nome }}</td>
             {% endif %}
+            <td>{{ membro.parentesco }}</td>
             <td>{{ membro.responsavel_financeiro|yesno:"Sim,Não" }}</td>
             <td>{{ membro.responsavel_pedagogico|yesno:"Sim,Não" }}</td>
             <td>{{ membro.celular|default:"" }}</td>

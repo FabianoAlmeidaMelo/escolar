@@ -47,7 +47,11 @@
     {% for pagamento in object_list %}
       <tr class="{{ pagamento.get_context_alert }}">
         <td>
+          {% if can_edit %}
           <a href="">{{ pagamento.titulo|default:'--' }}</a>
+          {% else %}
+            {{ pagamento.titulo|default:'--' }}
+          {% endif %}
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>R$ {{ pagamento.valor }}</td>

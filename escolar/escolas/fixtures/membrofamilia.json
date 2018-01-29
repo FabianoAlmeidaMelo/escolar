@@ -1,0 +1,58 @@
+[
+{
+    "model": "escolas.membrofamilia",
+    "pk": 1,
+    "fields": {
+        "user_add": 3,
+        "date_add": "2018-01-28T01:50:35.845Z",
+        "user_upd": 3,
+        "date_upd": "2018-01-28T01:50:35.845Z",
+        "parentesco": "Pai",
+        "aluno": 1,
+        "user": null,
+        "responsavel_financeiro": true,
+        "responsavel_pedagogico": true,
+        "nome": "Fabiano de Almeida Melo",
+        "nascimento": "1969-06-20",
+        "profissao": "Analista de Sistemas",
+        "sexo": 1,
+        "cpf": "",
+        "rg": "",
+        "email": "falmeidamelo@uol.com.br",
+        "celular": "12982239764",
+        "telefone": "1239224718",
+        "empresa": "Necto Systems",
+        "telefone_empresa": "1239052405",
+        "obs_empresa": "TI",
+        "documento": "escola_Crescer/secretaria/aluno_J\u00falia Sales de Almeida Melo/cnh.jpg"
+    }
+},
+{
+    "model": "escolas.membrofamilia",
+    "pk": 2,
+    "fields": {
+        "user_add": 3,
+        "date_add": "2018-01-28T02:26:43.121Z",
+        "user_upd": 3,
+        "date_upd": "2018-01-28T02:26:43.121Z",
+        "parentesco": "M\u00e3e",
+        "aluno": 1,
+        "user": null,
+        "responsavel_financeiro": false,
+        "responsavel_pedagogico": false,
+        "nome": "V\u00e2nia Sales da Rosa",
+        "nascimento": null,
+        "profissao": "",
+        "sexo": 2,
+        "cpf": "",
+        "rg": "",
+        "email": "",
+        "celular": "12982239733",
+        "telefone": "12982239733",
+        "empresa": "Do Lar",
+        "telefone_empresa": "12982239733",
+        "obs_empresa": "dom\u00e9stica",
+        "documento": ""
+    }
+}
+]

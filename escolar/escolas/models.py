@@ -114,6 +114,18 @@ class Aluno(UserAdd, UserUpd):
     def __str__(self):
         return self.nome
 
+    def get_curso(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].curso
+
+    def get_serie(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].serie
+
+    def get_data_matricula(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].data_assinatura
+
 def escola_aluno_parente_directory_path(instance, arquivo):
     '''
     Escola que fez o upload do arquivo
