@@ -3,7 +3,7 @@
 {% block css %}
   <style type="text/css">
     #id_serie, #id_ano {
-      width: 75px;
+      width: 80px;
       height: 35px;
     }
    </style>
@@ -24,27 +24,35 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
+    <form class="form-inline well" method="GET" >
+      <div class="form-group">
+        {% bootstrap_field form.ano %}
+        {% bootstrap_field form.efet %}
+      </div>
+      <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+      <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+    </form>
     <table class="table table-striped">
     <thead>
       <tr>
         <th>Título</th>
-        <th>Responsavel/<br>Aluno</th>
+        <th>Data Prevista</th>
         <th>Valor</th>
         <th>Valor <br>com desconto</th>
-        <th>Data Prevista</th>
+        <th>Responsavel/<br>Aluno</th>
         <th>Status</th>
       </tr>
     </thead>
     <tbody>
     {% for pagamento in object_list %}
-      <tr>
+      <tr class="{{ pagamento.get_context_alert }}">
         <td>
           <a href="">{{ pagamento.titulo|default:'--' }}</a>
         </td>
-        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>R$ {{ pagamento.valor }}</td>
         <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
-        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>
     {% empty %}
@@ -56,7 +64,6 @@
     {% endfor %}
     </tbody>
   </table>
-  {% include 'pagination.html' %}
 </div>
 
 {% endblock content %}

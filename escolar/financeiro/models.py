@@ -62,26 +62,28 @@ class ContratoAluno(UserAdd, UserUpd):
 
     def set_matricula(self):
         data = date.today()
-        Pagamento.objects.get_or_create(titulo='Matrícula %s ' % (self.ano) ,
+        Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
                                         contrato=self,
                                         escola=self.aluno.escola,
                                         data_prevista=data,
                                         valor=self.matricula_valor,
                                         observacao='',
-                                        nr_parcela=None)
+                                        nr_parcela=None,
+                                        tipo=2)
 
     def set_parcelas(self):
         self.set_matricula()
         valor = (self.valor - self.matricula_valor) / self.nr_parcela
         for p in range(1, self.nr_parcela + 1):
             data =  date(self.ano, p, self.vencimento)
-            Pagamento.objects.get_or_create(titulo='Parcela %s / %s ' % (p, self.nr_parcela) ,
+            Pagamento.objects.get_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
                                             contrato=self,
                                             escola=self.aluno.escola,
                                             data_prevista=data,
                                             valor=valor,
                                             observacao='',
-                                            nr_parcela=p)
+                                            nr_parcela=p,
+                                            tipo=2)
 
 
 class PagamentoManager(models.Manager):
@@ -94,6 +96,11 @@ class PagamentoManager(models.Manager):
         # query = estagio_valido & pag_lib & pag_nao_efetuado
 
         # return self.filter(query).order_by('-data_prevista')
+
+# TIPO_CHOICES = (
+#     (1, u'(+)'),
+#     (2, u'(-)'),
+# )
 
 
 class Pagamento(models.Model):
@@ -140,3 +147,21 @@ class Pagamento(models.Model):
             return self.valor - desconto
         return self.valor
 
+    def get_context_alert(self):
+        '''
+        ref #35
+        Destaca o pagamento com datas previstas ultrapassadas
+        '''
+        hoje = date.today()
+        # import pdb; pdb.set_trace()
+        if self.data_prevista <= hoje and self.tipo == 1:
+            if self.efet is True:
+                return "success"
+            elif self.efet is None or self.efet is False:
+                return "warning"
+        elif self.data_prevista <= hoje and self.tipo == 2:
+            if self.efet is True:
+                return "success"
+            elif self.efet is None or self.efet is False:
+                return "danger"
+        return ""

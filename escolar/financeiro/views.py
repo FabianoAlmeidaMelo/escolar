@@ -10,12 +10,15 @@ from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
 
 from datetime import date
+from calendar import monthrange
 
 from escolar.financeiro.models import ContratoAluno
 from escolar.financeiro.forms import (
     ano_corrente,
+    mes_corrnete,
     ContratoAlunoSearchForm,
     PagamentoEscolaSearchForm,
+    PagamentoAlunoEscolaSearchForm,
 )
 
 from escolar.escolas.models import Escola
@@ -158,22 +161,12 @@ def pagamentos_aluno_list(request, aluno_pk):
 
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
 
-    page = request.GET.get('page', 1)
-
-    form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
+    form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
     if form.is_valid():
         pagamentos = form.get_result_queryset()
     else:
         pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
-
-    paginator = Paginator(pagamentos, 15)
-    try:
-        pagamentos = paginator.page(page)
-    except PageNotAnInteger:
-        pagamentos = paginator.page(1)
-    except EmptyPage:
-        pagamentos = paginator.page(paginator.num_pages)
-    
+  
     context = {}
     context['form'] = form
     context['escola'] = escola
@@ -201,7 +194,10 @@ def pagamentos_list(request, escola_pk):
     if form.is_valid():
         pagamentos = form.get_result_queryset()
     else:
-        pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
+        data_ini = date(ano_corrente, mes_corrnete, 1)
+        data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
+        pagamentos = form.get_result_queryset().filter(data_prevista__gte=data_ini,
+                                                       data_prevista__lte=data_fim )
 
     paginator = Paginator(pagamentos, 15)
     try:

@@ -10,13 +10,22 @@ from escolar.financeiro.models import (
 )
 
 from datetime import date
+from calendar import monthrange
 
-meses = list(range(1,13))
-MESES = tuple(zip(meses, meses))
+months = (list(range(1,13)))
+meses = (list(range(1,13)))
+meses.insert(0, '--')
+months.insert(0, None)
+MESES = tuple(zip(months, meses))
 
 hoje = date.today()
 ano_corrente = hoje.year
 mes_corrnete = hoje.month
+
+PAGAMENTO_STATUS_CHOICES=( 
+    (1,'Pago'),
+    (0,'Em Aberto'),
+)
 
 class ContratoAlunoSearchForm(forms.Form):
     '''
@@ -64,6 +73,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     '''
     #31
     '''
+    efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     responsavel = forms.CharField(label=u'Responsável', required=False)
     titulo = forms.CharField(label=u'Título', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
@@ -75,13 +85,9 @@ class PagamentoEscolaSearchForm(forms.Form):
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
-        # responsaveis_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(responsavel__id__in=responsaveis_list_ids)
-        # alunos_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(aluno__id__in=alunos_list_ids)
        
 
-    def get_result_queryset(self):
+    def get_result_queryset(self, mes=None):
         q = Q(escola=self.escola)
         if self.is_valid():
             responsavel = self.cleaned_data['responsavel']
@@ -94,6 +100,15 @@ class PagamentoEscolaSearchForm(forms.Form):
             if ano:
                 q = q & Q(contrato__ano=ano)
 
+            mes = self.cleaned_data['mes']
+            if mes and ano:
+                year = int(ano)
+                month = int(mes)
+                data_ini = date(year, month, 1)
+                data_fim = date(year, month, monthrange(year, month)[1])
+
+                q = q & Q(data_prevista__gte=data_ini, data_prevista__lte=data_fim)
+
             titulo = self.cleaned_data['titulo']
             if titulo:
                 q = q & Q(titulo__icontains=titulo)
@@ -104,5 +119,41 @@ class PagamentoEscolaSearchForm(forms.Form):
             curso = self.cleaned_data['curso']
             if curso:
                 q = q & Q(contrato__curso__icontains=curso)
+
+            efet = self.cleaned_data['efet']
+            if efet and efet == '1':
+                q = q & Q(efet=True)
+            if efet and efet == '0':
+                q = q & Q(efet=False)
+
+        return Pagamento.objects.filter(q)
+
+
+class PagamentoAlunoEscolaSearchForm(forms.Form):
+    '''
+    #35
+    '''
+    efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
+
+
+    def __init__(self, *args, **kargs):
+        self.escola = kargs.pop('escola', None)
+        self.aluno = kargs.pop('aluno', None)
+        super(PagamentoAlunoEscolaSearchForm, self).__init__(*args, **kargs)
+ 
+
+    def get_result_queryset(self):
+        q = Q(escola=self.escola, contrato__aluno=self.aluno)
+        if self.is_valid():
+            ano = self.cleaned_data['ano']
+            if ano:
+                q = q & Q(contrato__ano=ano)
+
+            efet = self.cleaned_data['efet']
+            if efet and efet == '1':
+                q = q & Q(efet=True)
+            if efet and efet == '0':
+                q = q & Q(efet=False)
 
         return Pagamento.objects.filter(q)
