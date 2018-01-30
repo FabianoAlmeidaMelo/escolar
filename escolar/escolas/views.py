@@ -270,7 +270,8 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     '''
     user = request.user
     escola = Escola.objects.get(id=escola_pk)
-    # import pdb; pdb.set_trace() 
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+
     if aluno_pk:
         aluno = get_object_or_404(Aluno, escola=escola_pk, pk=aluno_pk)
         endereco = aluno.endereco
@@ -298,6 +299,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['aluno'] = aluno
+    context['can_edit'] = can_edit
     context['endereco_form'] = endereco_form
     context['tab_alunos'] = "active"
     context['tab_aluno'] = "active"

@@ -38,16 +38,18 @@
             {% bootstrap_field form.nome %}
             {% bootstrap_field form.nascimento %}
             {% bootstrap_field form.nacionalidade %}
+            {% bootstrap_field form.cpf %}
+            {% bootstrap_field form.rg %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
             <small>
             Natural de:
             </small>
             {{ form.natural_municipio }}
+            {% bootstrap_field form.email %}
             {% bootstrap_field form.foto %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
-            {% bootstrap_field form.email %}
-            {% bootstrap_field form.cpf %}
-            {% bootstrap_field form.rg %}
             {% bootstrap_field form.observacao %}
             {% bootstrap_field form.documento %}
           </div>
@@ -56,18 +58,20 @@
             {% bootstrap_field endereco_form.logradouro %}
             {% bootstrap_field endereco_form.numero %}
             {% bootstrap_field endereco_form.bairro %}
-          </div>
-          <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field endereco_form.cep %}
             {{ endereco_form.municipio }}
           </div>
         </div>
       </div>
+      <!-- glyphicon glyphicon-print -->
       <div class="form-actions">
         {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
+          <button type="button" class="btn btn-default btn" title="imprimir ..." aligin="left">
+            <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Ficha Matrícula
+          </button>
         {% endif %}
-        <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Cancelar</a>
+        <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
       </div>
     </form>
   </div>

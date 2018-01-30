@@ -4,8 +4,9 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.db.models import Q
 from django import forms
 from municipios.widgets import SelectMunicipioWidget
-#from localflavor.br.forms import BRCPFField  # 1.4
-# from localbr.formfields import BRCPFField
+
+from localbr.formfields import BRCPFField, BRCNPJField
+
 from escolar.escolas.models import (
     Aluno,
     ANO,
@@ -29,9 +30,18 @@ SEXO_CHOICES = (
     (2, 'Feminino'),
 )
 
+def set_only_number(txt):
+    especiais = '_-./;^;ç=*&%$#@!'
+    only_numeros = ''
+    for c in txt:
+        if c not in especiais:
+            only_numeros += c
+    return only_numeros
+
+
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
-    documento = forms.CharField(label='Documento')
+    documento = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
 
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)
@@ -39,12 +49,6 @@ class AutorizadoForm(forms.ModelForm):
         self.responsavel = kwargs.pop('responsavel', None)
         super(AutorizadoForm, self).__init__(*args, **kwargs)
 
-        # TODO: verificar o localflavor
-        # if self.escola.pais.sigla == 'BRA':
-        #     self.fields['documento'] = BRCPFField(required=True,
-        #                                           always_return_formated=True,
-        #                                           return_format=u'%s%s%s%s',
-        #                                           help_text='ex: 000.000.000-00')
         self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
@@ -81,19 +85,23 @@ class EscolaForm(forms.ModelForm):
 
 
 class AlunoForm(forms.ModelForm):
-    # natural_municipio = forms.IntegerField(label=u"Natural de: UF - Município", widget=SelectMunicipioWidget)
+    cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
 
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)
         self.user = kwargs.pop('user', None)
         super(AlunoForm, self).__init__(*args, **kwargs)
-        # self.fields['natural_municipio'].widgets = SelectMunicipioWidget
-        # self.fields['natural_municipio'].label = 'Natural de'
 
     class Meta:
         model = Aluno
         widgets = {'natural_municipio': SelectMunicipioWidget}
         exclude = ('user', 'escola', 'date_add', 'date_upd', 'user_add', 'user_upd')
+
+    def clean_rg(self):
+        rg = cleaned_data['rg']
+        if rg:
+            return self.set_only_number(rg)
+        return
 
 
     def save(self, *args, **kwargs):
@@ -107,12 +115,19 @@ class AlunoForm(forms.ModelForm):
 
 
 class MembroFamiliaForm(forms.ModelForm):
+    cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(MembroFamiliaForm, self).__init__(*args, **kwargs)
+
+    def clean_rg(self):
+        rg = self.cleaned_data['rg']
+        if rg:
+            return set_only_number(rg)
+        return
 
     def save(self, *args, **kwargs):
         if not self.instance.pk:
