@@ -13,6 +13,7 @@ from escolar.core.models import (
 
 from municipios.widgets import SelectMunicipioWidget
 from escolar.escolas.models import Escola
+from localflavor.br.forms import BRZipCodeField
 
 class AuthenticationForm(AuthAuthenticationForm):
     keep_me_logged_in = forms.BooleanField(
@@ -82,6 +83,7 @@ class PerfilForm(forms.ModelForm):
      
 
 class EnderecoForm(forms.ModelForm):
+    cep = BRZipCodeField(label='CEP', required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

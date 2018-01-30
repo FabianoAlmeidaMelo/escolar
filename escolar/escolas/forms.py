@@ -5,7 +5,8 @@ from django.db.models import Q
 from django import forms
 from municipios.widgets import SelectMunicipioWidget
 
-from localbr.formfields import BRCPFField, BRCNPJField
+from localbr.formfields import BRCPFField, BRCNPJField, BRPhoneNumberField
+
 
 from escolar.escolas.models import (
     Aluno,
@@ -98,9 +99,9 @@ class AlunoForm(forms.ModelForm):
         exclude = ('user', 'escola', 'date_add', 'date_upd', 'user_add', 'user_upd')
 
     def clean_rg(self):
-        rg = cleaned_data['rg']
+        rg = self.cleaned_data['rg']
         if rg:
-            return self.set_only_number(rg)
+            return set_only_number(rg)
         return
 
 
