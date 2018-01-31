@@ -24,7 +24,7 @@
         {% if can_edit %}
         <caption>
            <div style="float:right; margin-right:10px">
-              <a href="{% url 'autorizado_form' escola.pk aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
+              <a href="{% url 'autorizado_form' aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
            </div>
         </caption>
         {% endif %}
@@ -41,7 +41,7 @@
         {% for autorizado in autorizados %}
           <tr>
             {% if request.user == autorizado.responsavel %}
-              <td><a href="{% url 'autorizado_form' escola.pk aluno.pk autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
+              <td><a href="{% url 'autorizado_form' aluno.pk autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
             {% else %}
               <td>{{ autorizado.autorizado.nome }}</td>
             {% endif %}

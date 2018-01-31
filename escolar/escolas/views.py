@@ -37,15 +37,16 @@ from escolar.financeiro.models import ContratoAluno
 from escolar.financeiro.forms import ano_corrente, ContratoAlunoSearchForm
 
 @login_required
-def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
-    responsavel = request.user  # TODO: deve ser os Pais OU Diretor
-    escola = Escola.objects.get(id=escola_pk)
-    aluno = User.objects.get(id=aluno_pk)
+def autorizado_form(request, aluno_pk, autorizado_pk=None):
+    user = request.user  # TODO: deve ser os Pais OU Diretor
+    aluno = Aluno.objects.get(id=aluno_pk)
+    escola = aluno.escola
     
-    if not aluno.is_aluno(escola.id) or aluno == request.user:
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    if not can_edit:
         raise Http404
 
-    classe = aluno.get_classe(escola)
+    classe = None  # aluno.get_classe(escola)
     autorizado = None
     msg = u'Autorizado cadastrado.'
 
@@ -56,17 +57,18 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
                           instance=autorizado,
                           escola=escola,
                           aluno=aluno,
-                          responsavel=responsavel)
+                          responsavel=user)
 
     if request.method == 'POST':
         if form.is_valid():
             autorizado = form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list',  ))
+            return redirect(reverse('autorizados_aluno_list', kwargs={'aluno_pk': aluno.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Autorizado')
 
     context = {}
+    context['can_edit'] = can_edit
     context['form'] = form
     context['escola'] = escola
     context['aluno'] = aluno
@@ -84,27 +86,31 @@ def autorizados_list(request, escola_pk):
     Todos Autorizados de  
     todos Alunos
     '''
+    user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    autorizados = AutorizadoAluno.objects.filter(escola_id=escola)
-
+    autorizados = AutorizadoAluno.objects.filter(escola_id=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context['escola'] = escola
     context['autorizados'] = autorizados
     context['tab_autorizados'] = "active"
+    context['can_edit'] = can_edit
 
     return render(request, 'escolas/autorizados_alunos_list.html', context)
 
 
 @login_required
-def autorizados_aluno_list(request, escola_pk, aluno_pk):
+def autorizados_aluno_list(request, aluno_pk):
     '''
     ref #22
     Todos Autorizados de Um Aluno
     '''
-    escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
-    autorizados = []
-    can_edit = not request.user.is_aluno(escola.id)
+    escola = aluno.escola
+    autorizados_ids = AutorizadoAluno.objects.filter(aluno=aluno).values_list('autorizado__id', flat=True)
+    autorizados = Autorizado.objects.filter(id__in=autorizados_ids)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context['escola'] = escola
     context['aluno'] = aluno

@@ -225,9 +225,9 @@ class AutorizadoAluno(models.Model):
     pessoas autorizadas a buscar alunos na escola
     '''
     escola = models.ForeignKey(Escola)
-    aluno = models.ForeignKey('core.User', related_name='autorizados_aluno')
+    aluno = models.ForeignKey(Aluno)
     autorizado = models.ForeignKey(Autorizado)
-    responsavel = models.ForeignKey('core.User', related_name='responsavel')
+    responsavel = models.ForeignKey('core.User')
     data = models.DateTimeField('data de cadastro', default=timezone.now)
     status = models.BooleanField('Ativo', default=False)
 

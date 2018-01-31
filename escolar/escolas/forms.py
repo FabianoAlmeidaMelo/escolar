@@ -42,7 +42,7 @@ def set_only_number(txt):
 
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
-    documento = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
+    documento = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
 
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)
@@ -118,6 +118,8 @@ class AlunoForm(forms.ModelForm):
 class MembroFamiliaForm(forms.ModelForm):
     cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
+    # celular = BRPhoneNumberField(label='Celular', required=False)
+    # telefone = BRPhoneNumberField(label='Telefone', required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
