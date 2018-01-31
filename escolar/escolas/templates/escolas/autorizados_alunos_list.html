@@ -27,7 +27,7 @@
         {% for autorizado in autorizados %}
           <tr>
             {% if request.user == autorizado.responsavel %}
-              <td><a href="">{{ autorizado.autorizado.nome }}</a></td>
+              <td><a href="{% url 'autorizado_form' autorizado.aluno.id autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
             {% else %}
               <td>{{ autorizado.autorizado.nome }}</td>
             {% endif %}

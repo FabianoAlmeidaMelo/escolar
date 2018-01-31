@@ -108,8 +108,9 @@ def autorizados_aluno_list(request, aluno_pk):
     user = request.user
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    autorizados_ids = AutorizadoAluno.objects.filter(aluno=aluno).values_list('autorizado__id', flat=True)
-    autorizados = Autorizado.objects.filter(id__in=autorizados_ids)
+    autorizados = AutorizadoAluno.objects.filter(aluno=aluno)
+    # autorizados = Autorizado.objects.filter(id__in=autorizados_ids)
+
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context['escola'] = escola

@@ -40,7 +40,7 @@
         <tbody>
         {% for autorizado in autorizados %}
           <tr>
-            {% if request.user == autorizado.responsavel %}
+            {% if can_edit %}
               <td><a href="{% url 'autorizado_form' aluno.pk autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
             {% else %}
               <td>{{ autorizado.autorizado.nome }}</td>
