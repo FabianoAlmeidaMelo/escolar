@@ -53,10 +53,11 @@ class AutorizadoForm(forms.ModelForm):
         self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
-        autorizado, create = Autorizado.objects.get_or_create(email=self.instance.email,
-                                                              defaults={'nome': self.instance.nome, 
+        autorizado, create = Autorizado.objects.get_or_create(documento=self.instance.documento,
+                                                              defaults={'email': self.instance.email,
+                                                                        'nome': self.instance.nome, 
                                                                         'celular': self.instance.celular})
-
+        
         autorizado_aluno, created = AutorizadoAluno.objects.get_or_create(escola=self.escola,
                                                                           aluno=self.aluno,
                                                                           autorizado=autorizado,
