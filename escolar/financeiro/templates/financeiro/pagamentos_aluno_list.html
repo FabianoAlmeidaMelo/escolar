@@ -37,6 +37,7 @@
       <tr>
         <th>Título</th>
         <th>Data Prevista</th>
+        <th>Data Pago</th>
         <th>Valor</th>
         <th>Valor <br>com desconto</th>
         <th>Responsavel/<br>Aluno</th>
@@ -54,6 +55,7 @@
           {% endif %}
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
         <td>R$ {{ pagamento.valor }}</td>
         <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
