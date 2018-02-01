@@ -39,23 +39,29 @@
     <thead>
       <tr>
         <th>Título</th>
-        <th>Responsavel/<br>Aluno</th>
+        <th>Data Prevista</th>
+        <th>Data Pago</th>
         <th>Valor</th>
         <th>Valor <br>com desconto</th>
-        <th>Data Prevista</th>
+        <th>Responsavel/<br>Aluno</th>
         <th>Status</th>
       </tr>
     </thead>
     <tbody>
     {% for pagamento in object_list %}
-      <tr>
+      <tr class="{{ pagamento.get_context_alert }}">
         <td>
+          {% if can_edit %}
           <a href="">{{ pagamento.titulo|default:'--' }}</a>
+          {% else %}
+            {{ pagamento.titulo|default:'--' }}
+          {% endif %}
         </td>
-        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
         <td>R$ {{ pagamento.valor }}</td>
         <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
-        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
+        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>
     {% empty %}
