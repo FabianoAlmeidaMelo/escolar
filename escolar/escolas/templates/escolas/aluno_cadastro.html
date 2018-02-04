@@ -62,6 +62,7 @@
       <!-- glyphicon glyphicon-print  {% url 'aluno_form' escola.id aluno.id %} -->
       
       <div class="form-actions">
+        <br>
         {% if can_edit %}
           <a href="{% url 'aluno_form' escola.id aluno.id %}" class="btn btn-mini btn-success">Editar</a>
           <button type="button" class="btn btn-default btn" title="imprimir ..." aligin="left">

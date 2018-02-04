@@ -17,19 +17,32 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-        Ano: <b>{{ contrato.ano }}</b><br>
-        Responsavel: <b>{{ contrato.responsavel.nome }}</b><br> 
-        Aluno: <b>{{ contrato.aluno.nome }}</b><br> 
-        Série: <b>{{ contrato.serie }}</b><br> 
-        Valor do contrato: <b>R$ {{ contrato.valor }}</b><br>
-        contrato: <b>R$ {{ contrato.valor }}</b><br>
-        Data de assinatura: <b>{{ contrato.data_assinatura|date:"d/m/Y" }}</b><br> 
-        Número de parcelas: <b>{{ contrato.nr_parcela }}</b><br> 
-        Desconto: <b>{{ contrato.desconto }} (%)</b><br>
-        arquivo: <b>{{ contrato.arquivo }}</b>
-        matricula_nr: <b>{{ contrato.matricula_nr|default:"--" }}</b><br> 
-        matricula valor: <b>{{ contrato.matricula_valor|default:"--" }}</b>
+          <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <br>
+          <h3><b>Ano</b> : {{ contrato.ano }}</h3>
+          <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
+          <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
+          <p><b>Série</b>: {{ contrato.serie }}</p>
+          <p><b>Valor do contrato:</b>: >R$ {{ contrato.valor }}</p>
+          <p><b>Data de assinatura:</b>: {{ contrato.data_assinatura|date:"d/m/Y" }}</p>
+        </div>
+        <div class="col-md-4">
+          <h3>Condições</h3>
+          <p><b>Número de parcelas:</b>:{{ contrato.nr_parcela }}</p>
+          <p><b> Desconto:</b>: {{ contrato.desconto }} (%)</p>
+          <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
+          <p><b>matricula valor</b>: {{ contrato.matricula_nr|default:"--" }}</p>
+        </div>
+        <div class="col-md-4">
+          <h3>Arquivo</h3>
+          <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
+          </div>
+      </div>
+
         {% if can_edit %}
+        <br>
           <div class="form-actions">
             <a href="" class="btn btn-mini btn-success">Editar</a>
              <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem...">Contratos do aluno</a>
