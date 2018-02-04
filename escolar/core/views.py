@@ -40,6 +40,8 @@ def perfis_list(request, escola_pk):
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     page = request.GET.get('page', 1)
 
     diretor = user.is_diretor(escola_pk)
@@ -80,6 +82,8 @@ def perfil_form(request, escola_pk, pk=None):
     Outros: edita email, nome e troca senha
     '''
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     user = request.user
     if pk:
         perfil = get_object_or_404(Perfil, pk=pk)
@@ -122,6 +126,8 @@ def usuarios_list(request, escola_pk):
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     page = request.GET.get('page', 1)
 
     diretor = user.is_diretor(escola_pk)

@@ -173,6 +173,8 @@ def escola_form(request, pk=None):
 def escola_cadastro(request, pk):
     user = request.user
     escola = get_object_or_404(Escola, pk=pk)
+    if not user.can_access_escola(pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
@@ -242,6 +244,8 @@ def professor_form(request, escola_pk, professor_pk=None):
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
+    if not user.can_access_escola(escola_pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
     page = request.GET.get('page', 1)

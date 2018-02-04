@@ -32,6 +32,8 @@ def responsaveis_list(request, escola_pk):
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola_pk):
+        raise Http404
     page = request.GET.get('page', 1)
 
     form = ContratoAlunoSearchForm(request.GET or None, escola=escola)
@@ -72,6 +74,8 @@ def contratos_list(request, aluno_pk):
     user = request.user
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     page = request.GET.get('page', 1)
 
@@ -112,6 +116,8 @@ def contratos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     page = request.GET.get('page', 1)
 
@@ -136,6 +142,8 @@ def contrato_cadastro(request, contrato_pk):
 
     contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
     escola = contrato.aluno.escola
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     aluno = contrato.aluno
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
@@ -158,6 +166,8 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
+    if not user.can_access_escola(escola.pk):
+        raise Http404
 
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
 
@@ -188,6 +198,8 @@ def pagamentos_list(request, escola_pk):
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     page = request.GET.get('page', 1)
 
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
