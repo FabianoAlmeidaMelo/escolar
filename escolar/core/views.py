@@ -20,7 +20,15 @@ from escolar.core.forms import (
 from escolar.escolas.models import Escola
 
 def home(request):
-    return render(request, 'index.html')
+    escola_pk = None
+    user = request.user
+    context = {}
+    if user.is_authenticated():
+        escola_pk = user.get_unica_escola()
+    if escola_pk:
+        escola = get_object_or_404(Escola, pk=escola_pk)
+        context['escola'] = escola
+    return render(request, 'index.html', context)
 
 
 @login_required

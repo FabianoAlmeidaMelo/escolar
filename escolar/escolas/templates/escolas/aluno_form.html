@@ -3,7 +3,7 @@
 {% block css %}
   {{ endereco_form.media.css }}
   <style type="text/css">
-    #id_serie, #id_ano {
+    #id_serie, #id_ano, #id_ra {
       width: 80px;
       height: 35px;
     }
@@ -34,6 +34,7 @@
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.ano %}
+            {% bootstrap_field form.ra %}
             <small>Dados do Aluno:</small>
             {% bootstrap_field form.nome %}
             {% bootstrap_field form.nascimento %}
