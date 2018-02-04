@@ -89,6 +89,7 @@ class EscolaForm(forms.ModelForm):
 class AlunoForm(forms.ModelForm):
     ra = forms.CharField(label='RA', required=False)
     cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
+    sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
 
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)

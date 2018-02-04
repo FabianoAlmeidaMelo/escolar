@@ -34,11 +34,9 @@
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.ano %}
-            {% bootstrap_field form.ra %}
+            {% bootstrap_field form.ra %}{% bootstrap_field form.sexo %}
             <small>Dados do Aluno:</small>
             {% bootstrap_field form.nome %}
-            {% bootstrap_field form.nascimento %}
-            {% bootstrap_field form.nacionalidade %}
             {% bootstrap_field form.cpf %}
             {% bootstrap_field form.rg %}
           </div>
@@ -47,12 +45,17 @@
             Natural de:
             </small>
             {{ form.natural_municipio }}
+            {% bootstrap_field form.nascimento %}
+            {% bootstrap_field form.nacionalidade %}
             {% bootstrap_field form.email %}
-            {% bootstrap_field form.foto %}
+            {% bootstrap_field form.celular %}
+            {% bootstrap_field form.telefone %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.observacao %}
+            {% bootstrap_field form.profissao %}
             {% bootstrap_field form.documento %}
+            {% bootstrap_field form.foto %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             <small>Endereço do Aluno:</small>
