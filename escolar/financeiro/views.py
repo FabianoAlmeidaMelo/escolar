@@ -64,7 +64,7 @@ def responsaveis_list(request, escola_pk):
 
 
 @login_required
-def contratos_list(request, aluno_pk):
+def contratos_list(request, escola_pk):
     '''
     ref #31
     Todos Responaveeis por Alunos / Escola
@@ -72,8 +72,7 @@ def contratos_list(request, aluno_pk):
 
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     user = request.user
-    aluno = get_object_or_404(Aluno, pk=aluno_pk)
-    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    escola = get_object_or_404(Escola, pk=escola_pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
