@@ -302,7 +302,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
             aluno.endereco = endereco
             aluno.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('aluno_cadastro', kwargs={'aluno_pk': aluno.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Aluno')
 
@@ -319,7 +319,29 @@ def aluno_form(request, escola_pk, aluno_pk=None):
 
     return render(request, 'escolas/aluno_form.html', context)
 
+@login_required
+def aluno_cadastro(request, aluno_pk):
+    '''
 
+    '''
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = aluno.escola
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+
+    context = {}
+    context['escola'] = escola
+    context['aluno'] = aluno
+    context['can_edit'] = can_edit
+
+    context['tab_alunos'] = "active"
+    context['tab_aluno'] = "active"
+
+    # context['classes'] = aluno.get_all_classe(escola)
+
+    return render(request, 'escolas/aluno_cadastro.html', context)
 
 
 @login_required

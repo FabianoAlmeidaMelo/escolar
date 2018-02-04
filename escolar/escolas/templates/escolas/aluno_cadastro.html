@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block css %}
+  {{ endereco_form.media.css }}
+  <style type="text/css">
+    #id_serie, #id_ano, #id_ra {
+      width: 80px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  {% include "base_adm.html" %}
+  <div class="row-fluid span10">
+    {% include "base_aluno.html" %}
+  
+      <div class="form-group center_div" >
+        <div class="row">
+          <!-- {# Celular, Tablet, Computador #} -->
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {{ aluno.ano }}
+            {{ aluno.ra }}
+            {{ aluno.sexo }}
+            <small>Dados do Aluno:</small>
+            {{ aluno.nome }}
+            {{ aluno.cpf }}
+            {{ aluno.rg }}
+          
+            <small>
+            Natural de:
+            </small>
+            {{ aluno.natural_municipio }}
+            {{ aluno.nascimento }}
+            {{ aluno.nacionalidade }}
+            {{ aluno.email }}
+            {{ aluno.celular }}
+            {{ aluno.telefone }}
+
+            {{ aluno.observacao }}
+            {{ aluno.profissao }}
+            {{ aluno.documento }}
+            {{ aluno.foto }}
+
+            <small>Endereço do Aluno:</small>
+            {{ aluno.endereco.logradouro }}
+            {{ aluno.endereco.numero }}
+            {{ aluno.endereco.bairro }}
+            {{ aluno.endereco.cep }}
+            {{ aluno.endereco.municipio }}
+          </div>
+        </div>
+      </div>
+      <!-- glyphicon glyphicon-print  {% url 'aluno_form' escola.id aluno.id %} -->
+      
+      <div class="form-actions">
+        {% if can_edit %}
+          <a href="{% url 'aluno_form' escola.id aluno.id %}" class="btn btn-mini btn-success">Editar</a>
+          <button type="button" class="btn btn-default btn" title="imprimir ..." aligin="left">
+            <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Ficha Matrícula
+          </button>
+        {% endif %}
+        <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
+      </div>
+
+  </div>
+</div>
+  {% if classes %}
+  <h4>Histórico de classes:</h4>
+  <ul>
+    {% for classe_aluno in classes %}
+      <li>{{ classe_aluno.classe }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

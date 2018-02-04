@@ -38,7 +38,7 @@ def escola_directory_path(instance, logo):
 class Escola(models.Model):
     '''
     '''
-    pais = models.ForeignKey('core.Pais')
+    pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)

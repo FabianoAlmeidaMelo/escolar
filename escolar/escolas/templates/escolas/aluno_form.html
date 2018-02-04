@@ -71,9 +71,6 @@
       <div class="form-actions">
         {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
-          <button type="button" class="btn btn-default btn" title="imprimir ..." aligin="left">
-            <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Ficha Matrícula
-          </button>
         {% endif %}
         <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
       </div>

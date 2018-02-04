@@ -57,7 +57,7 @@
         {% for aluno in object_list %}
           <tr>
             {% if can_edit or user.id == aluno.user.id %}
-              <td><a href="{% url 'aluno_form' escola.id aluno.id %}">{{ aluno.nome }}</a></td>
+              <td><a href="{% url 'aluno_cadastro' aluno.id %}">{{ aluno.nome }}</a></td>
             {% else %}
               <td>{{ aluno.nome }}</td>
             {% endif %}
