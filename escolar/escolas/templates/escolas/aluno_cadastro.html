@@ -26,41 +26,37 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-  
-      <div class="form-group center_div" >
-        <div class="row">
-          <!-- {# Celular, Tablet, Computador #} -->
-          <div class="col-xs-9 col-sm-6 col-md-3">
-            {{ aluno.ano }}
-            {{ aluno.ra }}
-            {{ aluno.sexo }}
-            <small>Dados do Aluno:</small>
-            {{ aluno.nome }}
-            {{ aluno.cpf }}
-            {{ aluno.rg }}
-          
-            <small>
-            Natural de:
-            </small>
-            {{ aluno.natural_municipio }}
-            {{ aluno.nascimento }}
-            {{ aluno.nacionalidade }}
-            {{ aluno.email }}
-            {{ aluno.celular }}
-            {{ aluno.telefone }}
-
-            {{ aluno.observacao }}
-            {{ aluno.profissao }}
-            {{ aluno.documento }}
-            {{ aluno.foto }}
-
-            <small>Endereço do Aluno:</small>
-            {{ aluno.endereco.logradouro }}
-            {{ aluno.endereco.numero }}
-            {{ aluno.endereco.bairro }}
-            {{ aluno.endereco.cep }}
-            {{ aluno.endereco.municipio }}
-          </div>
+    
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <br>
+          <h3><b>Ano</b> : {{ aluno.ano }}</h3>
+          <p><b>RA</b>: {{ aluno.ra }}</p>
+          <p><b>Nome</b>: {{ aluno.nome }}</p>
+          <p><b>sexo</b>: {{ aluno.get_sexo_display }}</p>
+          <p><b>CPF</b>: {{ aluno.cpf|default:"--" }}</p>
+          <p><b>RG</b>: {{ aluno.rg|default:"--" }} </p>
+          <p><small>Nascimento</small></p>
+          <p><b>Nacionalidade</b>: {{ aluno.nacionalidade }}</p>
+          <p><b>Natural de</b>: {{ aluno.natural_municipio }}</p>
+          <p><b>data de nascimento</b>: {{ aluno.nascimento }}</p>
+        </div>
+        <div class="col-md-4">
+          <h3>Contato</h3>
+          <p><b>Email</b>: {{ aluno.email|default:"--" }} </p>
+          <p><b>Celular</b>: {{ aluno.celular|default:"--" }} </p>
+          <p><b>Telefone</b>: {{ aluno.telefone|default:"--" }} </p>
+          <p><b>Observação</b>: {{ aluno.observacao|default:"--" }} </p>
+          <p></p>
+        </div>
+        <div class="col-md-4">
+          <h3>Endereço</h3>
+            <p><b>Logradouro</b>: {{ aluno.endereco.logradouro }}</p>
+            <p><b>número</b>: {{ aluno.endereco.numero }}</p>
+            <p><b>bairro</b>: {{ aluno.endereco.bairro }}</p>
+            <p><b>CEP</b>: {{ aluno.endereco.cep }}</p>
+            <p><b>Município</b>: {{ aluno.endereco.municipio }}</p>
         </div>
       </div>
       <!-- glyphicon glyphicon-print  {% url 'aluno_form' escola.id aluno.id %} -->

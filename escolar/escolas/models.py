@@ -115,6 +115,10 @@ class Aluno(UserAdd, UserUpd):
     def __str__(self):
         return self.nome
 
+    def get_sexo_display(self):
+        sexo = {1: 'masculino', 2: 'feminino'}
+        return sexo[self.sexo]
+
     def get_curso(self):
         if self.contrato_aluno.count():
             return self.contrato_aluno.filter(ano=ano_corrente)[0].curso
