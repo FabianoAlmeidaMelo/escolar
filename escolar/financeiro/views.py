@@ -16,6 +16,7 @@ from escolar.financeiro.models import ContratoAluno
 from escolar.financeiro.forms import (
     ano_corrente,
     mes_corrnete,
+    ContratoAlunoForm,
     ContratoAlunoSearchForm,
     PagamentoEscolaSearchForm,
     PagamentoAlunoEscolaSearchForm,
@@ -133,6 +134,45 @@ def contratos_aluno_list(request, aluno_pk):
     context['tab_aluno_contratos'] = "active"
 
     return render(request, 'financeiro/contratos_aluno_list.html', context)
+
+
+@login_required
+def contrato_form(request, aluno_pk, contrato_pk=None):
+    user = request.user
+    Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = aluno.escola
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    if not can_edit:
+        raise Http404
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    if contrato_pk:
+        contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
+        msg = u'Contrato alterado com sucesso.'
+    else:
+        contrato = None
+        msg = u'Contrato criado.' 
+
+    form = ContratoAlunoForm(request.POST or None, request.FILES or None, instance=contrato, aluno=aluno, user=user)
+    context = {}
+    context['form'] = form
+    context['contrato'] = contrato
+    context['aluno'] = aluno
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_alunos'] = "active"
+    context['tab_aluno_contratos'] = "active"
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contrato = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('contrato_cadastro', kwargs={'contrato_pk': contrato.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do contrato.')
+
+    return render(request, 'financeiro/contrato_form.html', context)
 
 
 @login_required

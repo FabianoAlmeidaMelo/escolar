@@ -33,6 +33,28 @@ PAGAMENTO_STATUS_CHOICES=(
 #     (2, u'(-)'),
 # )
 
+class ContratoAlunoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.aluno = kwargs.pop('aluno', None)
+        super(ContratoAlunoForm, self).__init__(*args, **kwargs)
+
+        self.fields['responsavel'].query_set = self.aluno.membrofamilia_set.all()
+
+    class Meta:
+        model = ContratoAluno
+        exclude = ('aluno', 'date_add', 'date_upd', 'user_add', 'user_upd') 
+
+    def save(self, *args, **kwargs):
+        if not self.instance.pk:
+            self.instance.user_add = self.user
+        self.instance.user_upd = self.user
+        self.instance.aluno = self.aluno
+        instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+
 class ContratoAlunoSearchForm(forms.Form):
     '''
     #31
@@ -46,10 +68,6 @@ class ContratoAlunoSearchForm(forms.Form):
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(ContratoAlunoSearchForm, self).__init__(*args, **kargs)
-        # responsaveis_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('responsavel_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(responsavel__id__in=responsaveis_list_ids)
-        # alunos_list_ids = ContratoAluno.objects.filter(escola=self.escola).values_list('aluno_id', flat=True)
-        # self.fields['responsavel'].queryset = ContratoAluno.objects.filter(aluno__id__in=alunos_list_ids)
        
 
     def get_result_queryset(self):
