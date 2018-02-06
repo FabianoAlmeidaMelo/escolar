@@ -2,7 +2,8 @@
 from django.db import models
 from escolar.escolas.models import ANO
 from escolar.core.models import UserAdd, UserUpd
-from datetime import date, timedelta
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 ano_corrente = date.today().year
@@ -73,6 +74,29 @@ class ContratoAluno(UserAdd, UserUpd):
                                         observacao='',
                                         nr_parcela=None,
                                         tipo=2)
+
+    def set_parcelas_material(self):
+        data_um = self.material_data_parcela_um
+        #   3  meses  4 parcelas  relativedelta
+        month_range = 12 // self.material_parcelas
+        #   jan 1, abr 4, jul 7, out 10
+        #import pdb; pdb.set_trace()
+        datas = [data_um]
+        for i in list(range(1,month_range + 1)):
+            months = i * month_range
+            data = data_um + relativedelta(months=months)
+            datas.append(data)
+
+        print(datas)
+
+        # Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
+        #                                 contrato=self,
+        #                                 escola=self.aluno.escola,
+        #                                 data_prevista=data,
+        #                                 valor=self.matricula_valor,
+        #                                 observacao='',
+        #                                 nr_parcela=None,
+        #                                 tipo=2)
 
     def set_parcelas(self):
         self.set_matricula()
