@@ -43,14 +43,17 @@ class ContratoAluno(UserAdd, UserUpd):
         u'Dia de Pagar',
         validators=[validate_vencimento],
     )
-    matricula_valor  = models.DecimalField('Valor Matrícula',
-        max_digits=7,
-        decimal_places=2)
-    desconto  = models.DecimalField('Desconto',
+    desconto = models.DecimalField('Desconto por pontualidade',
         max_digits=7,
         decimal_places=2,
         blank=True,
         null=True)
+    matricula_valor = models.DecimalField('Valor Matrícula',
+        max_digits=7,
+        decimal_places=2)
+    material_valor = models.DecimalField('valor material', max_digits=5, decimal_places=2, null=True, blank=True)
+    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ material', null=True, blank=True)
+    material_data_parcela_um = models.DateTimeField('Data parcela material', null=True, blank=True)
 
     class Meta:
         verbose_name = 'contrato'

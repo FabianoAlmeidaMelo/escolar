@@ -45,6 +45,25 @@ class ContratoAlunoForm(forms.ModelForm):
         model = ContratoAluno
         exclude = ('aluno', 'date_add', 'date_upd', 'user_add', 'user_upd') 
 
+    def clean(self):
+        cleaned_data = super(ContratoAlunoForm, self).clean()
+        material_valor = cleaned_data['material_valor']
+        material_parcelas = cleaned_data['material_parcelas']
+        material_data_parcela_um = cleaned_data['material_data_parcela_um']
+
+        if any([material_valor, material_parcelas, material_data_parcela_um]):
+            errors_list = []
+            if not material_valor:
+                errors_list.append("material_valor")
+            if not material_parcelas:
+                errors_list.append("material_parcelas")
+            if not material_data_parcela_um:
+                errors_list.append("material_data_parcela_um")
+            for error in errors_list:
+                self._errors[error] = ErrorList([u'Campo obrigatório.'])
+        
+        return cleaned_data
+
     def save(self, *args, **kwargs):
         if not self.instance.pk:
             self.instance.user_add = self.user

@@ -25,7 +25,6 @@
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
     <form method="POST" enctype="multipart/form-data">
-      {{ form.errors }}
       {% csrf_token %}
         <div class="form-group center_div" >
           <div class="row">
@@ -48,6 +47,10 @@
           <div class="col-xs-9 col-sm-6 col-md-3">
             <p>{% bootstrap_field form.vencimento %}</p>
             <p>{% bootstrap_field form.contrato %}</p>
+            <small>Apostilas</small>
+            <p>{% bootstrap_field form.material_valor %}</p>
+            <p>{% bootstrap_field form.material_parcelas %}</p>
+            <p>{% bootstrap_field form.material_data_parcela_um %}</p>
           </div>
         </div>
       </div>
