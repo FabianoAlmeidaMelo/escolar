@@ -239,6 +239,7 @@ def pagamentos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
+
     page = request.GET.get('page', 1)
 
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
@@ -250,7 +251,7 @@ def pagamentos_list(request, escola_pk):
         pagamentos = form.get_result_queryset().filter(data_prevista__gte=data_ini,
                                                        data_prevista__lte=data_fim )
 
-    paginator = Paginator(pagamentos, 15)
+    paginator = Paginator(pagamentos, 13)
     try:
         pagamentos = paginator.page(page)
     except PageNotAnInteger:

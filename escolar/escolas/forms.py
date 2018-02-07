@@ -171,7 +171,7 @@ class AlunoSearchForm(forms.Form):
     '''
     # responsavel = forms.CharField(label=u'Responsável', required=False)
     nome = forms.CharField(label=u'Nome', required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     serie = forms.CharField(label=u'Série', required=False)
     curso = forms.CharField(label=u'Curso', required=False)
 

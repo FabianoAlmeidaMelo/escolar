@@ -76,27 +76,43 @@ class ContratoAluno(UserAdd, UserUpd):
                                         tipo=2)
 
     def set_parcelas_material(self):
-        data_um = self.material_data_parcela_um
-        #   3  meses  4 parcelas  relativedelta
-        month_range = 12 // self.material_parcelas
-        #   jan 1, abr 4, jul 7, out 10
-        #import pdb; pdb.set_trace()
-        datas = [data_um]
-        for i in list(range(1,month_range + 1)):
-            months = i * month_range
-            data = data_um + relativedelta(months=months)
-            datas.append(data)
+        '''
+        calcula valor e data das parcelas 
+        das apostilas E
+        Cria os pagamentos
+        '''
+        if all([self.material_parcelas,
+                self.material_valor,
+                self.material_data_parcela_um]):
 
-        print(datas)
+            month_range = 12 // self.material_parcelas
+            valor = self.material_valor / self.material_parcelas
+            #   jan 1, abr 4, jul 7, out 10
+            #import pdb; pdb.set_trace()
+            datas = [self.material_data_parcela_um]
+            i_list = []
+            if self.material_parcelas > 1:
+                for i in list(range(1, month_range + 1)):
+                    i_list.append(i)
+                    months = i * month_range
+                    data = self.material_data_parcela_um + relativedelta(months=months)
+                    datas.append(data)
+            datas.sort()
+            count = 0
+            for data in datas:
+                count += 1
+                Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
+                                                contrato=self,
+                                                escola=self.aluno.escola,
+                                                data_prevista=data,
+                                                valor=valor,
+                                                observacao='',
+                                                nr_parcela=None,
+                                                tipo=2)
 
-        # Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
-        #                                 contrato=self,
-        #                                 escola=self.aluno.escola,
-        #                                 data_prevista=data,
-        #                                 valor=self.matricula_valor,
-        #                                 observacao='',
-        #                                 nr_parcela=None,
-        #                                 tipo=2)
+            print(datas)
+        
+
 
     def set_parcelas(self):
         self.set_matricula()
@@ -123,6 +139,7 @@ class PagamentoManager(models.Manager):
         # query = estagio_valido & pag_lib & pag_nao_efetuado
 
         # return self.filter(query).order_by('-data_prevista')
+
 
 # TIPO_CHOICES = (
 #     (1, u'(+)'),

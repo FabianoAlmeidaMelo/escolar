@@ -256,7 +256,7 @@ def alunos_list(request, escola_pk):
     else:
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
-    paginator = Paginator(alunos, 15)
+    paginator = Paginator(alunos, 1)
     try:
         alunos = paginator.page(page)
     except PageNotAnInteger:
