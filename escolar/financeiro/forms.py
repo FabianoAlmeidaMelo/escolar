@@ -215,7 +215,7 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
     '''
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
-
+    titulo = forms.CharField(label=u'Título', required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -229,6 +229,10 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(contrato__ano=ano)
+            
+            titulo = self.cleaned_data['titulo']
+            if titulo:
+                q = q & Q(titulo__icontains=titulo)
 
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
