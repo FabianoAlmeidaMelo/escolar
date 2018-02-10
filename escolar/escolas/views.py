@@ -259,8 +259,8 @@ def alunos_list(request, escola_pk):
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
-    page = request.GET.get('page', 15)
-    paginator = Paginator(alunos, 1)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(alunos, 15)
     try:
         alunos = paginator.page(page)
     except PageNotAnInteger:
