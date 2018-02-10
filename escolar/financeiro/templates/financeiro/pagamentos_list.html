@@ -42,7 +42,7 @@
         <th>Data Prevista</th>
         <th>Data Pago</th>
         <th>Valor</th>
-        <th>Valor <br>com desconto</th>
+        <th>Valor pago</th>
         <th>Responsavel/<br>Aluno</th>
         <th>Status</th>
       </tr>
@@ -52,7 +52,7 @@
       <tr class="{{ pagamento.get_context_alert }}">
         <td>
           {% if can_edit %}
-          <a href="">{{ pagamento.titulo|default:'--' }}</a>
+            <a href="{% url 'pagamento_edit' escola.pk pagamento.id  %}">{{ pagamento.titulo|default:'--' }}</a>
           {% else %}
             {{ pagamento.titulo|default:'--' }}
           {% endif %}
@@ -60,7 +60,7 @@
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
         <td>R$ {{ pagamento.valor }}</td>
-        <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
+        <td>R$ {{ pagamento.valor_pag }}</td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>

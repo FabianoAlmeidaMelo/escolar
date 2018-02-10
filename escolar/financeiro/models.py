@@ -156,7 +156,7 @@ class Pagamento(models.Model):
     data_pag = models.DateField(blank=True, null=True)
     valor_pag = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     efet = models.BooleanField(blank=True, default=False)
-    observacao = models.TextField(verbose_name=u'Observacao')
+    observacao = models.TextField(verbose_name=u'Observacao', blank=True, null=True)
     tipo = models.SmallIntegerField(u"Tipo", null=True, blank=True) # (+ -)
     parcela = models.ForeignKey( # ID do Pagamento 'Pai'
         'Pagamento',  # SE tem É parcela

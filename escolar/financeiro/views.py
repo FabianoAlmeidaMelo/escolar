@@ -12,14 +12,15 @@ from django.contrib.auth.models import Group
 from datetime import date
 from calendar import monthrange
 
-from escolar.financeiro.models import ContratoAluno
+from escolar.financeiro.models import ContratoAluno, Pagamento
 from escolar.financeiro.forms import (
     ano_corrente,
     mes_corrnete,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
-    PagamentoEscolaSearchForm,
     PagamentoAlunoEscolaSearchForm,
+    PagamentoEscolaSearchForm,
+    PagamentoForm,
 )
 
 from escolar.escolas.models import Escola
@@ -205,6 +206,47 @@ def contrato_cadastro(request, contrato_pk):
     context['tab_aluno_contratos'] = "active"
     return render(request, 'financeiro/contrato_cadastro.html', context)
 
+
+@login_required
+def pagamento_form(request, escola_pk, pagamento_pk=None):
+    user = request.user
+    Escola = apps.get_model(app_label='escolas', model_name='Escola')
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+
+    if not can_edit:
+        raise Http404
+    if pagamento_pk:
+        pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
+        msg = u'Pagamento alterado com sucesso.'
+    else:
+        pagamento = None
+        msg = u'Pagamento criado.' 
+
+    form = PagamentoForm(request.POST or None, request.FILES or None, instance=pagamento, escola=escola, user=user)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            pagamento = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('pagamentos_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do pagamento.')
+
+    context = {}
+    context['form'] = form
+    context['pagamento'] = pagamento
+    if pagamento.contrato:
+        context['contrato'] = pagamento.contrato
+        context['aluno'] = pagamento.contrato.aluno
+        context['tab_alunos'] = "active"
+        context['tab_pagamentos_aluno'] = "active"
+    else:
+        context['tab_parcelas'] = "active"
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+
+    return render(request, 'financeiro/pagamento_form.html', context)
 
 @login_required
 def pagamentos_aluno_list(request, aluno_pk):

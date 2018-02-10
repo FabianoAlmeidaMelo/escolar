@@ -6,6 +6,7 @@ from escolar.financeiro.views import (
     contrato_form,
 	contratos_list,
     contratos_aluno_list,
+    pagamento_form,
 	pagamentos_list,
     pagamentos_aluno_list,
 	responsaveis_list,
@@ -23,4 +24,6 @@ urlpatterns = [
     # Pagamentos
     url(r'^escola/(?P<escola_pk>\d+)/pagamentos_list/$', pagamentos_list, name='pagamentos_list'),
     url(r'^escola/pagamentos_aluno_list/(?P<aluno_pk>\d+)/$', pagamentos_aluno_list, name='pagamentos_aluno_list'),
+    url(r'^escola/(?P<escola_pk>\d+)/pagamento_form/$', pagamento_form, name='pagamento_form'),
+    url(r'^escola/(?P<escola_pk>\d+)/pagamento/(?P<pagamento_pk>\d+)/$', pagamento_form, name='pagamento_edit'),
 ]

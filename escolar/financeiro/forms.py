@@ -1,8 +1,9 @@
 # coding: utf-8
+from localbr.formfields import BRDateField, BRDecimalField
+
 from django import forms
 from django.db.models import Q
 from django.forms.utils import ErrorList
-
 from escolar.financeiro.models import (
     ANO,
     ContratoAluno,
@@ -27,11 +28,10 @@ PAGAMENTO_STATUS_CHOICES=(
     (0,'Em Aberto'),
 )
 
-# pgto tipo 
-# TIPO_CHOICES = (
-#     (1, u'(+)'),
-#     (2, u'(-)'),
-# )
+TIPO_CHOICES = (
+    (1, u'(+)'),
+    (2, u'(-)'),
+)
 
 class ContratoAlunoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -110,6 +110,43 @@ class ContratoAlunoSearchForm(forms.Form):
                 q = q & Q(curso__icontains=curso)
 
         return ContratoAluno.objects.filter(q)
+
+
+class PagamentoForm(forms.ModelForm):
+    tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
+    valor = BRDecimalField(label="Valor", required=True)
+    valor_pag = BRDecimalField(label="Valor pago", required=False)
+    efet = forms.BooleanField(label="Pago", required=False)
+    data_pag = BRDateField(label="Pagamento efetivado em", required=False)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        self.contrato = kwargs.pop('contrato', None)
+        super(PagamentoForm, self).__init__(*args, **kwargs)
+        
+
+    class Meta:
+        model = Pagamento
+        exclude = ('escola', 
+                   'contrato',
+                   'parcela',
+                   'nr_parcela',
+                   'date_add',
+                   'date_upd',
+                   'user_add',
+                   'user_upd') 
+
+
+    def save(self, *args, **kwargs):
+        if not self.instance.pk:
+            self.instance.user_add = self.user
+        self.instance.user_upd = self.user
+        self.instance.escola = self.escola
+        if self.contrato:
+            self.instance.contrato = self.contrato
+        instance = super(PagamentoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
 
 
 class PagamentoEscolaSearchForm(forms.Form):
