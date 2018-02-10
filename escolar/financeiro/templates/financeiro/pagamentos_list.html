@@ -36,6 +36,13 @@
     </form>
   </div>
   <table class="table table-striped">
+    {% if can_edit %}
+      <caption>
+       <div style="float:right; margin-right:10px">
+        <a href="{% url 'pagamento_form' escola.id %}" class="btn btn-mini btn-success">Novo Pagamento</a>
+       </div>
+      </caption>
+    {% endif %}
     <thead>
       <tr>
         <th>Título</th>
@@ -59,8 +66,8 @@
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
-        <td>R$ {{ pagamento.valor }}</td>
-        <td>R$ {{ pagamento.valor_pag }}</td>
+        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|default:"--" }} {{ pagamento.get_tipo_display }}</font></td>
+        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor_pag|default:"--" }}</font></td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>

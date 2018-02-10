@@ -181,6 +181,14 @@ class Pagamento(models.Model):
     def __str__(self):
         return self.titulo
 
+    def get_tipo_display(self):
+        tipo = {1: '(+)', 2: '(-)'}
+        return tipo[self.tipo]
+
+    def get_color_display(self):
+        collor = {1: 'blue', 2: 'red', None: 'black'}
+        return collor[self.tipo]
+
     def get_valor_com_desconto(self):
         # import pdb; pdb.set_trace()
         #TODO:

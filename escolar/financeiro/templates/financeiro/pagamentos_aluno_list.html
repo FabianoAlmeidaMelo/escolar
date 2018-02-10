@@ -57,8 +57,8 @@
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
-        <td>R$ {{ pagamento.valor }}</td>
-        <td>R$ {{ pagamento.get_valor_com_desconto }}</td>
+        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor }}</font></td>
+        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.get_valor_com_desconto }}</font></td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
       </tr>

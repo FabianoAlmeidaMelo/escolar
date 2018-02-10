@@ -39,7 +39,7 @@
           {% autoescape off %}
             {% for message in messages %}
               <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
-                <button type="button" class="close" data-dismiss="alert">×</button>
+                <button type="button" class="close" data-dismiss="alert">Fechar</button>
                 {% if 'info' in message.tags %}<i class="glyphicon glyphicon-info-sign"></i>{% endif %}
                 {% if 'warning' in message.tags %}<i class="glyphicon glyphicon-warning-sign"></i>{% endif %}
                 {% if 'success' in message.tags %}<i class="glyphicon glyphicon-ok"></i>{% endif %}

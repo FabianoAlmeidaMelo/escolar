@@ -213,12 +213,17 @@ def pagamento_form(request, escola_pk, pagamento_pk=None):
     Escola = apps.get_model(app_label='escolas', model_name='Escola')
     escola = get_object_or_404(Escola, pk=escola_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    contrato = None
+    aluno = None
 
     if not can_edit:
         raise Http404
     if pagamento_pk:
         pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
         msg = u'Pagamento alterado com sucesso.'
+        contrato = pagamento.contrato
+        if contrato:
+            aluno = contrato.aluno
     else:
         pagamento = None
         msg = u'Pagamento criado.' 
@@ -229,16 +234,19 @@ def pagamento_form(request, escola_pk, pagamento_pk=None):
         if form.is_valid():
             pagamento = form.save()
             messages.success(request, msg)
-            return redirect(reverse('pagamentos_list', kwargs={'escola_pk': escola.pk}))
+            if contrato:
+                return redirect(reverse('pagamentos_aluno_list', kwargs={'aluno_pk': aluno.pk}))
+            else:
+                return redirect(reverse('pagamentos_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do pagamento.')
 
     context = {}
     context['form'] = form
     context['pagamento'] = pagamento
-    if pagamento.contrato:
-        context['contrato'] = pagamento.contrato
-        context['aluno'] = pagamento.contrato.aluno
+    if pagamento and pagamento.contrato:
+        context['contrato'] = contrato
+        context['aluno'] = contrato.aluno
         context['tab_alunos'] = "active"
         context['tab_pagamentos_aluno'] = "active"
     else:
