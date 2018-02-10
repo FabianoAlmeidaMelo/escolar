@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block extra_css %}
+    {{ formset.media.css }}
+{% endblock extra_css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno %}
+        Aluno: {{ aluno.nome }}
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    {% include "base_aluno.html" %}
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group center_div" >
+        <div class="row">
+          <!-- {# Celular, Tablet, Computador #} -->
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.parentesco %}
+            {% bootstrap_field form.nome %}
+            {% bootstrap_field form.nascimento %}
+            {% bootstrap_field form.responsavel_financeiro %}
+            {% bootstrap_field form.responsavel_pedagogico %}
+            {% bootstrap_field form.sexo %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.cpf %}
+            {% bootstrap_field form.rg %}
+            {% bootstrap_field form.email %}
+            {% bootstrap_field form.celular %}
+            {% bootstrap_field form.telefone %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.profissao %}
+            {% bootstrap_field form.empresa %}
+            {% bootstrap_field form.telefone_empresa %}
+            {% bootstrap_field form.obs_empresa %}
+            {% bootstrap_field form.documento %}
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <input type="submit" value="Salvar" class="btn btn-primary">
+        <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+  {% if classes %}
+  <h4>Histórico de classes:</h4>
+  <ul>
+    {% for classe_aluno in classes %}
+      <li></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+  {{ formset.media }}
+{% endblock extra_js %}

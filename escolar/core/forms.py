@@ -1,4 +1,5 @@
 # coding: utf-8
+from localbr.formfields import BRCPFField
 from django import forms
 from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm as AuthAuthenticationForm
@@ -12,6 +13,7 @@ from escolar.core.models import (
 
 from municipios.widgets import SelectMunicipioWidget
 from escolar.escolas.models import Escola
+from localflavor.br.forms import BRZipCodeField
 
 class AuthenticationForm(AuthAuthenticationForm):
     keep_me_logged_in = forms.BooleanField(
@@ -25,7 +27,7 @@ class PerfilSearchForm(forms.Form):
     '''
     nome = forms.CharField(label=u'Nome', required=False)
     email = forms.CharField(label=u'email', required=False)
-    cpf = forms.CharField(label=u'cpf', required=False)
+    cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -81,6 +83,7 @@ class PerfilForm(forms.ModelForm):
      
 
 class EnderecoForm(forms.ModelForm):
+    cep = BRZipCodeField(label='CEP', required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

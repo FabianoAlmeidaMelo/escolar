@@ -38,7 +38,7 @@ def escola_directory_path(instance, logo):
 class Escola(models.Model):
     '''
     '''
-    pais = models.ForeignKey('core.Pais')
+    pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
@@ -88,19 +88,24 @@ class Aluno(UserAdd, UserUpd):
     '''
     escola = models.ForeignKey(Escola)
     user = models.ForeignKey('core.User', null=True, blank=True)
-   
     ano = models.SmallIntegerField(default=ano_corrente)
+    ra = models.CharField('RA', max_length=15, null=True, blank=True)
+   
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-    email = models.EmailField('e-mail', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
     natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
     nacionalidade = models.CharField(max_length=50)
     observacao = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
     endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_directory_path, null=True, blank=True)
     foto = models.ImageField('Foto', upload_to=escola_directory_path, null=True, blank=True)
+    profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
+    celular = models.CharField(max_length=11, null=True, blank=True)
+    telefone = models.CharField(max_length=11, null=True, blank=True)
+    sexo = models.SmallIntegerField(u'Sexo')
 
     class Meta:
         verbose_name = 'aluno'
@@ -110,12 +115,28 @@ class Aluno(UserAdd, UserUpd):
     def __str__(self):
         return self.nome
 
+    def get_sexo_display(self):
+        sexo = {1: 'masculino', 2: 'feminino'}
+        return sexo[self.sexo]
+
+    def get_curso(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].curso
+
+    def get_serie(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].serie
+
+    def get_data_matricula(self):
+        if self.contrato_aluno.count():
+            return self.contrato_aluno.filter(ano=ano_corrente)[0].data_assinatura
+
 def escola_aluno_parente_directory_path(instance, arquivo):
     '''
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
-    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.escola.nome, instance.aluno.nome, arquivo)
+    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.aluno.escola.nome, instance.aluno.nome, arquivo)
 
 class MembroFamilia(UserAdd, UserUpd):
     '''
@@ -143,6 +164,14 @@ class MembroFamilia(UserAdd, UserUpd):
     telefone_empresa = models.CharField(max_length=11)
     obs_empresa = models.CharField(max_length=100)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Membro da Família'
+        verbose_name_plural = 'Membros da Família'
+        ordering = ('nome',)
+
+    def __str__(self):
+        return self.nome
 
 
 class Classe(models.Model):
@@ -201,9 +230,9 @@ class AutorizadoAluno(models.Model):
     pessoas autorizadas a buscar alunos na escola
     '''
     escola = models.ForeignKey(Escola)
-    aluno = models.ForeignKey('core.User', related_name='autorizados_aluno')
+    aluno = models.ForeignKey(Aluno)
     autorizado = models.ForeignKey(Autorizado)
-    responsavel = models.ForeignKey('core.User', related_name='responsavel')
+    responsavel = models.ForeignKey('core.User')
     data = models.DateTimeField('data de cadastro', default=timezone.now)
     status = models.BooleanField('Ativo', default=False)
 

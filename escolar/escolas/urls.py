@@ -2,6 +2,7 @@
 from django.conf.urls import url
 
 from escolar.escolas.views import (
+    aluno_cadastro,
     aluno_form,
     alunos_list,
     autorizado_form,
@@ -14,9 +15,10 @@ from escolar.escolas.views import (
     escolas_list,
     escola_cadastro,
     escola_form,
+    membro_familia_form,
     professores_list,
     professor_form,
-    #responsaveis_list,
+    membros_familia_list,
     )
 
 urlpatterns = [
@@ -33,6 +35,7 @@ urlpatterns = [
     #  Alunos
     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/$', aluno_form, name='aluno_form'),
     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/(?P<aluno_pk>\d+)/$', aluno_form, name='aluno_form'),
+    url(r'^escola/aluno_cadastro/(?P<aluno_pk>\d+)/$', aluno_cadastro, name='aluno_cadastro'),
     url(r'^escola/(?P<escola_pk>\d+)/alunos_list/$', alunos_list, name='alunos_list'),
     #  Classes
     url(r'^escola/(?P<escola_pk>\d+)/classe_form/$', classe_form, name='classe_form'),
@@ -41,9 +44,12 @@ urlpatterns = [
     url(r'^escola/aluno/classe/(?P<classe_pk>\d)/$', classe_aluno_form, name='classe_aluno_form'),
     url(r'^escola/professor/classe/(?P<classe_pk>\d)/$', classe_professor_form, name='classe_professor_form'),
     # Autorizado   responsaveis_list
-    url(r'^escola/(?P<escola_pk>\d+)/(?P<aluno_pk>\d+)/autorizado_form/$', autorizado_form, name='autorizado_form'),
-     url(r'^escola/(?P<escola_pk>\d+)/(?P<aluno_pk>\d+)/autorizado_form/(?P<autorizado_pk>\d+)/$', autorizado_form, name='autorizado_form'),
+    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel_form/$', membro_familia_form, name='membro_familia_form'),
+    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel/(?P<membro_pk>\d+)/$', membro_familia_form, name='membro_familia_form'),
+    url(r'^escola/(?P<aluno_pk>\d+)/responsaveis_list/$', membros_familia_list, name='membros_familia_list'),
+
+    url(r'^escola/(?P<aluno_pk>\d+)/autorizado_form/$', autorizado_form, name='autorizado_form'),
+    url(r'^escola/(?P<aluno_pk>\d+)/autorizado_form/(?P<autorizado_pk>\d+)/$', autorizado_form, name='autorizado_form'),
     url(r'^escola/(?P<escola_pk>\d+)/autorizados_list/$', autorizados_list, name='autorizados_list'),
-    url(r'^escola/(?P<escola_pk>\d+)/autorizados_aluno_list/(?P<aluno_pk>\d+)/$', autorizados_aluno_list, name='autorizados_aluno_list'),
-    # url(r'^escola/(?P<escola_pk>\d+)/responsaveis_list/$', responsaveis_list, name='responsaveis_list'),
+    url(r'^escola/autorizados_aluno_list/(?P<aluno_pk>\d+)/$', autorizados_aluno_list, name='autorizados_aluno_list'),
 ]

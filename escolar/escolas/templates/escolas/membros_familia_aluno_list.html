@@ -16,45 +16,45 @@
 {% block content %}
 
 <div class="container">
-
-  {% include "base_adm.html" %}
   <div class="row-fluid span10">
-      {% include "base_aluno.html" %}
+    {% include "base_aluno.html" %}
     <table class="table table-striped">
         {% if can_edit %}
         <caption>
            <div style="float:right; margin-right:10px">
-              <a href="{% url 'autorizado_form' aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
+              <a href="{% url 'membro_familia_form' aluno.id %}" class="btn btn-mini btn-success">Adicionar</a>
            </div>
         </caption>
         {% endif %}
         <thead>
           <tr>
               <th>Nome</th>
-              <th>Aluno</th>
-              <th>Status</th>
-              <th>Quem autorizou</th>
-              <th>Data</th>
+              <th>Parentesco</th>
+              <th>Resp Financeiro</th>
+              <th>Resp Pedagógico</th>
+              <th>Celular</th>
+              <th>Email</th>
           </tr>
         </thead>
 
         <tbody>
-        {% for autorizado in autorizados %}
+        {% for membro in object_list %}
           <tr>
             {% if can_edit %}
-              <td><a href="{% url 'autorizado_form' aluno.pk autorizado.autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
+              <td><a href="{% url 'membro_familia_form' aluno.pk membro.pk %}">{{ membro.nome }}</a></td>
             {% else %}
-              <td>{{ autorizado.autorizado.nome }}</td>
+              <td>{{ membro.nome }}</td>
             {% endif %}
-            <td>{{ autorizado.aluno|default:'--' }}</td>
-            <td>{{ autorizado.status|yesno:'Autorizado,--' }}</td>
-            <td>{{ autorizado.responsavel }}</td>
-            <td>{{ autorizado.data|date:"d/m/Y" }} - {{ autorizado.data|time:"H:i" }}</td>
+            <td>{{ membro.parentesco }}</td>
+            <td>{{ membro.responsavel_financeiro|yesno:"Sim,Não" }}</td>
+            <td>{{ membro.responsavel_pedagogico|yesno:"Sim,Não" }}</td>
+            <td>{{ membro.celular|default:"" }}</td>
+            <td>{{ membro.email|default:"" }}</td>
           </tr>
         {% empty %}
         <tr>
           <td>
-              Nenhum autorizado encontrado
+              Nenhum membro da família encontrado
           </td>
         </tr>
         {% endfor %}

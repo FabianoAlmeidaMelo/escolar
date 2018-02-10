@@ -19,6 +19,7 @@ from escolar.escolas.models import (
     Escola,
     Classe,
     ClasseAluno,
+    MembroFamilia,
 )
 from escolar.escolas.forms import (
     AlunoForm,
@@ -28,22 +29,24 @@ from escolar.escolas.forms import (
     ClasseAlunoForm,
     ClasseProfessorForm,
     EscolaForm,
+    MembroFamiliaForm,
     ProfessorForm,
 )
 
-from escolar.financeiro.models import ContratoEscola
-from escolar.financeiro.forms import ano_corrente, ContratoEscolaSearchForm
+from escolar.financeiro.models import ContratoAluno
+from escolar.financeiro.forms import ano_corrente, ContratoAlunoSearchForm
 
 @login_required
-def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
-    responsavel = request.user  # TODO: deve ser os Pais OU Diretor
-    escola = Escola.objects.get(id=escola_pk)
-    aluno = User.objects.get(id=aluno_pk)
+def autorizado_form(request, aluno_pk, autorizado_pk=None):
+    user = request.user  # TODO: deve ser os Pais OU Diretor
+    aluno = Aluno.objects.get(id=aluno_pk)
+    escola = aluno.escola
     
-    if not aluno.is_aluno(escola.id) or aluno == request.user:
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    if not can_edit:
         raise Http404
 
-    classe = aluno.get_classe(escola)
+    classe = None  # aluno.get_classe(escola)
     autorizado = None
     msg = u'Autorizado cadastrado.'
 
@@ -54,17 +57,18 @@ def autorizado_form(request, escola_pk, aluno_pk, autorizado_pk=None):
                           instance=autorizado,
                           escola=escola,
                           aluno=aluno,
-                          responsavel=responsavel)
+                          responsavel=user)
 
     if request.method == 'POST':
         if form.is_valid():
             autorizado = form.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list',  ))
+            return redirect(reverse('autorizados_aluno_list', kwargs={'aluno_pk': aluno.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Autorizado')
 
     context = {}
+    context['can_edit'] = can_edit
     context['form'] = form
     context['escola'] = escola
     context['aluno'] = aluno
@@ -82,27 +86,32 @@ def autorizados_list(request, escola_pk):
     Todos Autorizados de  
     todos Alunos
     '''
+    user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    autorizados = AutorizadoAluno.objects.filter(escola_id=escola)
-
+    autorizados = AutorizadoAluno.objects.filter(escola_id=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context['escola'] = escola
     context['autorizados'] = autorizados
     context['tab_autorizados'] = "active"
+    context['can_edit'] = can_edit
 
     return render(request, 'escolas/autorizados_alunos_list.html', context)
 
 
 @login_required
-def autorizados_aluno_list(request, escola_pk, aluno_pk):
+def autorizados_aluno_list(request, aluno_pk):
     '''
     ref #22
     Todos Autorizados de Um Aluno
     '''
-    escola = get_object_or_404(Escola, pk=escola_pk)
-    aluno = get_object_or_404(User, pk=aluno_pk)
-    autorizados = AutorizadoAluno.objects.filter(escola_id=escola, aluno=aluno)
-    can_edit = not request.user.is_aluno(escola.id)
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = aluno.escola
+    autorizados = AutorizadoAluno.objects.filter(aluno=aluno)
+    # autorizados = Autorizado.objects.filter(id__in=autorizados_ids)
+
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context['escola'] = escola
     context['aluno'] = aluno
@@ -164,6 +173,8 @@ def escola_form(request, pk=None):
 def escola_cadastro(request, pk):
     user = request.user
     escola = get_object_or_404(Escola, pk=pk)
+    if not user.can_access_escola(pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
@@ -233,9 +244,11 @@ def professor_form(request, escola_pk, professor_pk=None):
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
+    if not user.can_access_escola(escola_pk):
+        raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
-    page = request.GET.get('page', 1)
+    context = {}
     
     form = AlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
@@ -243,6 +256,10 @@ def alunos_list(request, escola_pk):
     else:
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
     paginator = Paginator(alunos, 15)
     try:
         alunos = paginator.page(page)
@@ -250,8 +267,8 @@ def alunos_list(request, escola_pk):
         alunos = paginator.page(1)
     except EmptyPage:
         alunos = paginator.page(paginator.num_pages)
+    # ### paginação ####
 
-    context = {}
     context['form'] = form
     context['escola'] = escola 
     context['can_edit'] = can_edit
@@ -268,7 +285,8 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     '''
     user = request.user
     escola = Escola.objects.get(id=escola_pk)
-    # import pdb; pdb.set_trace() 
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+
     if aluno_pk:
         aluno = get_object_or_404(Aluno, escola=escola_pk, pk=aluno_pk)
         endereco = aluno.endereco
@@ -288,7 +306,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
             aluno.endereco = endereco
             aluno.save()
             messages.success(request, msg)
-            return redirect(reverse('alunos_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('aluno_cadastro', kwargs={'aluno_pk': aluno.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do Aluno')
 
@@ -296,6 +314,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['aluno'] = aluno
+    context['can_edit'] = can_edit
     context['endereco_form'] = endereco_form
     context['tab_alunos'] = "active"
     context['tab_aluno'] = "active"
@@ -303,6 +322,91 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     # context['classes'] = aluno.get_all_classe(escola)
 
     return render(request, 'escolas/aluno_form.html', context)
+
+@login_required
+def aluno_cadastro(request, aluno_pk):
+    '''
+
+    '''
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = aluno.escola
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+
+    context = {}
+    context['escola'] = escola
+    context['aluno'] = aluno
+    context['can_edit'] = can_edit
+
+    context['tab_alunos'] = "active"
+    context['tab_aluno'] = "active"
+
+    # context['classes'] = aluno.get_all_classe(escola)
+
+    return render(request, 'escolas/aluno_cadastro.html', context)
+
+
+@login_required
+def membro_familia_form(request,  aluno_pk, membro_pk=None):
+    '''
+    #33
+    são os responsáveis pelo aluno, se Menor de Idade
+    resp financeiro e ou pedagógico
+    '''
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, id=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    if not can_edit:
+        raise Http404
+    
+    if membro_pk:
+        membro = get_object_or_404(MembroFamilia, pk=membro_pk)
+        msg = u'Membro da família alterado com sucesso.'
+    else:
+        membro = None
+        msg = u'Membro da família.'
+
+    form = MembroFamiliaForm(request.POST or None, request.FILES or None, instance=membro, user=user, aluno=aluno)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, msg)
+            return redirect(reverse('membros_familia_list', kwargs={'aluno_pk': aluno.pk}))
+        else:
+            messages.warning(request, u'Falha no cadastro do membro família')
+
+    context = {}
+    context['form'] = form
+    context['aluno'] = aluno
+    context['escola'] = escola
+    context['tab_alunos'] = "active"
+    context['tab_responsaveis_aluno'] = "active"
+
+    # context['classes'] = aluno.get_all_classe(escola)
+
+    return render(request, 'escolas/membro_familia_form.html', context)
+
+@login_required
+def membros_familia_list(request, aluno_pk):
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+
+    context = {}
+    context['escola'] = escola 
+    context['can_edit'] = can_edit
+    context['object_list'] = MembroFamilia.objects.filter(aluno=aluno)
+    context['user'] = user
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_responsaveis_aluno'] = "active"
+
+    return render(request, 'escolas/membros_familia_aluno_list.html', context)
 
 
 @login_required

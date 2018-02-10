@@ -20,7 +20,15 @@ from escolar.core.forms import (
 from escolar.escolas.models import Escola
 
 def home(request):
-    return render(request, 'index.html')
+    escola_pk = None
+    user = request.user
+    context = {}
+    if user.is_authenticated():
+        escola_pk = user.get_unica_escola()
+    if escola_pk:
+        escola = get_object_or_404(Escola, pk=escola_pk)
+        context['escola'] = escola
+    return render(request, 'index.html', context)
 
 
 @login_required
@@ -32,12 +40,13 @@ def perfis_list(request, escola_pk):
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    page = request.GET.get('page', 1)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
 
     diretor = user.is_diretor(escola_pk)
     admin = user.is_admin()
-
     form = PerfilSearchForm(request.GET or None, escola=escola)
+    context = {}
     
     if admin:
         perfis = form.get_result_queryset()
@@ -46,7 +55,10 @@ def perfis_list(request, escola_pk):
     else:
         perfis = form.get_result_queryset().filter(user=user)
 
-
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
     paginator = Paginator(perfis, 15)
     try:
         perfis = paginator.page(page)
@@ -54,7 +66,8 @@ def perfis_list(request, escola_pk):
         perfis = paginator.page(1)
     except EmptyPage:
         perfis = paginator.page(paginator.num_pages)
-    context = {}
+    # ### paginação ####
+
     context['form'] = form
     context['escola'] = escola
     context['object_list'] = perfis
@@ -72,6 +85,8 @@ def perfil_form(request, escola_pk, pk=None):
     Outros: edita email, nome e troca senha
     '''
     escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     user = request.user
     if pk:
         perfil = get_object_or_404(Perfil, pk=pk)
@@ -114,13 +129,14 @@ def usuarios_list(request, escola_pk):
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    page = request.GET.get('page', 1)
-
+    if not user.can_access_escola(escola.pk):
+        raise Http404
     diretor = user.is_diretor(escola_pk)
     admin = user.is_admin()
 
     form = UserSearchForm(request.GET or None, escola=escola)
     usuarios = form.get_result_queryset()
+    context = {}
 
     if diretor:
         usuarios_ids = UserGrupos.objects.filter(escola__pk=escola_pk).values_list('user__id', flat=True)
@@ -130,6 +146,10 @@ def usuarios_list(request, escola_pk):
 
     usuarios = usuarios.order_by('nome')
 
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
     paginator = Paginator(usuarios, 15)
     try:
         usuarios = paginator.page(page)
@@ -137,7 +157,8 @@ def usuarios_list(request, escola_pk):
         usuarios = paginator.page(1)
     except EmptyPage:
         usuarios = paginator.page(paginator.num_pages)
-    context = {}
+    # ### paginação ####
+
     context['form'] = form
     context['escola'] = escola
     context['object_list'] = usuarios
