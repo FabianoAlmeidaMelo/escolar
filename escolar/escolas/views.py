@@ -248,7 +248,7 @@ def alunos_list(request, escola_pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
-    page = request.GET.get('page', 1)
+    context = {}
     
     form = AlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
@@ -256,6 +256,10 @@ def alunos_list(request, escola_pk):
     else:
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 15)
     paginator = Paginator(alunos, 1)
     try:
         alunos = paginator.page(page)
@@ -263,8 +267,8 @@ def alunos_list(request, escola_pk):
         alunos = paginator.page(1)
     except EmptyPage:
         alunos = paginator.page(paginator.num_pages)
+    # ### paginação ####
 
-    context = {}
     context['form'] = form
     context['escola'] = escola 
     context['can_edit'] = can_edit

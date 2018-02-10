@@ -29,20 +29,24 @@ from escolar.escolas.models import Escola
 def responsaveis_list(request, escola_pk):
     '''
     ref #31
-    Todos Responaveeis por Alunos / Escola
+    **[[Todos]] Responaveis por Alunos / Escola
     '''
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
     if not user.can_access_escola(escola_pk):
         raise Http404
-    page = request.GET.get('page', 1)
 
     form = ContratoAlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
         contratos = form.get_result_queryset().filter(ano=ano_corrente)
+    context = {}
 
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
     paginator = Paginator(contratos, 15)
     try:
         contratos = paginator.page(page)
@@ -50,9 +54,9 @@ def responsaveis_list(request, escola_pk):
         contratos = paginator.page(1)
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
+    # ### paginação ####
 
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
-    context = {}
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
@@ -68,7 +72,7 @@ def responsaveis_list(request, escola_pk):
 def contratos_list(request, escola_pk):
     '''
     ref #31
-    Todos Responaveeis por Alunos / Escola
+    **[[Todos]] Contratos de Alunos / Escola
     '''
 
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
@@ -77,7 +81,7 @@ def contratos_list(request, escola_pk):
     if not user.can_access_escola(escola.pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
-    page = request.GET.get('page', 1)
+    context = {}
 
     form = ContratoAlunoSearchForm(request.GET or None, escola=escola)  # ****
     if form.is_valid():
@@ -85,6 +89,10 @@ def contratos_list(request, escola_pk):
     else:
         contratos = form.get_result_queryset().filter(ano=ano_corrente)
 
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    parameters = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
     paginator = Paginator(contratos, 15)
     try:
         contratos = paginator.page(page)
@@ -92,8 +100,9 @@ def contratos_list(request, escola_pk):
         contratos = paginator.page(1)
     except EmptyPage:
         contratos = paginator.page(paginator.num_pages)
-    
-    context = {}
+    context['parameters']= parameters
+    # ### paginação ####
+
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
@@ -111,6 +120,8 @@ def contratos_aluno_list(request, aluno_pk):
     ref #34
     Lista todos os contratos do Aluno,
     na aba 'Contratos' do submenu de Aluno
+    Não precisa de paginação
+    do infantil ao 3 colegial, não mais que 15 linhas
     '''
     user = request.user
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
@@ -239,8 +250,7 @@ def pagamentos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
-
-    page = request.GET.get('page', 1)
+    context = {}
 
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
@@ -250,16 +260,20 @@ def pagamentos_list(request, escola_pk):
         data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
         pagamentos = form.get_result_queryset().filter(data_prevista__gte=data_ini,
                                                        data_prevista__lte=data_fim )
-
-    paginator = Paginator(pagamentos, 13)
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    
+    page = request.GET.get('page', 1)
+    paginator = Paginator(pagamentos, 15)
     try:
         pagamentos = paginator.page(page)
     except PageNotAnInteger:
         pagamentos = paginator.page(1)
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
+    # ### paginação ####
     
-    context = {}
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
