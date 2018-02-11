@@ -27,6 +27,7 @@
           <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
           <p><b>Série</b>: {{ contrato.serie }}</p>
           <p><b>Valor do contrato</b>: R$ {{ contrato.valor|numberformat_br }}</p>
+          <p>({{ contrato.get_valor_extenso }})</p>
           <p><b>Data de assinatura</b>: {{ contrato.data_assinatura|date:"d/m/Y" }}</p>
         </div>
         <div class="col-md-3">

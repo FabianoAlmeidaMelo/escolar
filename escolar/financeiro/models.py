@@ -4,6 +4,7 @@ from escolar.escolas.models import ANO
 from escolar.core.models import UserAdd, UserUpd
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from escolar.utils.numextenso import numero_extenso
 
 
 ano_corrente = date.today().year
@@ -74,6 +75,9 @@ class ContratoAluno(UserAdd, UserUpd):
                                         observacao='',
                                         nr_parcela=None,
                                         tipo=2)
+
+    def get_valor_extenso(self):
+        return numero_extenso(self.valor)
 
     def set_parcelas_material(self):
         '''
