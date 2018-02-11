@@ -67,7 +67,7 @@
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
         <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
-        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br|default:"--" }} {{ pagamento.get_tipo_display }}</font></td>
+        <td valor_id="valor_id_{{ pagamento.id }}"><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br|default:"--" }} {{ pagamento.get_tipo_display }}</font></td>
         <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor_pag|numberformat_br|default:"--" }}</font></td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>
@@ -76,7 +76,7 @@
             {% else %}
               <label>
                 <input type="checkbox"
-                       id="{{ pagamento.id }}"
+                       checkbox_id="{{ pagamento.id }}"
                        value="pagamento_{{ pagamento.id }}"
                        name="set_status"
                        onchange="set_pagamento_status(this)" 
@@ -102,16 +102,18 @@
    <script type="text/javascript">
     function set_pagamento_status(field){
       if($(field).is(':checked')){
-        var pagamento_id = $(field).attr('id')
+        var pagamento_id = $(field).attr('checkbox_id')
         // alert(pagamento_id)
         // Zero: 0, é um id válido
         // não quebra a url ao carregar a página
-        if (confirm('Tem certeza?', pagamento_id)) {
+        if (confirm('Tem certeza? ' + pagamento_id)) {
             $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
               location.reload();
               });
-            }
-        }      
-      }
+        } else {
+          $(field).prop('checked', false);
+        }
+      }      
+    }
   </script>
 {% endblock extra_js%}
