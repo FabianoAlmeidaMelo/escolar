@@ -1,5 +1,6 @@
 {% extends 'base.html'%}
 {% load bootstrap3 %}
+{% load numberformat_br %}
 
 {% block page_title %}
   <div class="page-header">
@@ -25,7 +26,7 @@
           <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
           <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
           <p><b>Série</b>: {{ contrato.serie }}</p>
-          <p><b>Valor do contrato</b>: R$ {{ contrato.valor }}</p>
+          <p><b>Valor do contrato</b>: R$ {{ contrato.valor|numberformat_br }}</p>
           <p><b>Data de assinatura</b>: {{ contrato.data_assinatura|date:"d/m/Y" }}</p>
         </div>
         <div class="col-md-3">
@@ -33,7 +34,7 @@
           <p><b>Número de parcelas</b>:{{ contrato.nr_parcela }}</p>
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
-          <p><b>matricula valor</b>: {{ contrato.matricula_nr|default:"--" }}</p>
+          <p><b>matricula valor</b>: {{ contrato.matricula_nr|numberformat_br|default:"--" }}</p>
         </div>
         <div class="col-md-3">
           <h3>Apostilas</h3>
