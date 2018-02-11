@@ -33,7 +33,7 @@
       </div>
       <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
       <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
-      {% if can_edit %}
+      {% if can_create %}
       <caption>
        <div style="float:right; margin-right:10px">
         <a href="{% url 'pagamento_contrato_form' escola.id contrato.id %}" class="btn btn-mini btn-success">Novo Pagamento</a>
@@ -79,6 +79,9 @@
     {% endfor %}
     </tbody>
   </table>
+  {% if object_list.has_other_pages %}
+    {% include 'pagination.html' %}
+  {% endif %}
 </div>
 
 {% endblock content %}

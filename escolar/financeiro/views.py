@@ -273,16 +273,40 @@ def pagamentos_aluno_list(request, aluno_pk):
     if not user.can_access_escola(escola.pk):
         raise Http404
 
+    context = {}
+
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
+    
     if form.is_valid():
         pagamentos = form.get_result_queryset()
     else:
         pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
-  
-    context = {}
+
+    ano_valido = list(set(pagamentos.values_list('contrato__ano', flat=True)))
+
+    # o pgto tem de estar vinculado a um contrato
+    # o default para isso é o contrato do ano corrente,
+    # pagamentos de novos contratos, tem funççoes do ContratoAluno, que geram todas as parcelas básicas do ano
+    can_create = all([len(ano_valido) == 1, ano_valido[0] == ano_corrente, can_edit]) if ano_valido else False
+
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    
+    page = request.GET.get('page', 1)
+    paginator = Paginator(pagamentos, 20)
+    try:
+        pagamentos = paginator.page(page)
+    except PageNotAnInteger:
+        pagamentos = paginator.page(1)
+    except EmptyPage:
+        pagamentos = paginator.page(paginator.num_pages)
+    # ### paginação ####
+
     context['form'] = form
+    context['can_create'] = can_create
     context['escola'] = escola
     context['aluno'] = aluno
     context['can_edit'] = can_edit
