@@ -2,14 +2,14 @@
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.contrib.auth.models import Group
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
-from escolar.core.models import UserGrupos, User
-from django.contrib.auth.models import Group
 
-from datetime import date
+from escolar.core.models import UserGrupos, User
+from datetime import date, datetime
 from calendar import monthrange
 
 from escolar.financeiro.models import ContratoAluno, Pagamento
@@ -371,6 +371,7 @@ def set_pagamento_status(request, pagamento_pk):
         para: True ou False
     '''
     user = request.user
+    data_hora = datetime.today()
     pagamento = get_object_or_404(Pagamento, id=pagamento_pk)
     escola = pagamento.escola
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
@@ -379,6 +380,9 @@ def set_pagamento_status(request, pagamento_pk):
     if pagamento.efet is True:
         pagamento.efet = False
     else:
+        pagamento.valor_pag = pagamento.valor # vai entrar a regra aqui
+        pagamento.data_pag = data_hora
+        pagamento.observacao = 'Marcado pago por: %s; em %s' % (user.nome, str(data_hora))
         pagamento.efet = True
     pagamento.save()
 

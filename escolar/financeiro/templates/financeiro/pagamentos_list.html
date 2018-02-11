@@ -103,12 +103,14 @@
     function set_pagamento_status(field){
       if($(field).is(':checked')){
         var pagamento_id = $(field).attr('id')
-        alert(pagamento_id)
+        // alert(pagamento_id)
         // Zero: 0, é um id válido
         // não quebra a url ao carregar a página
-        $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
-          location.reload();
-          });
+        if (confirm('Tem certeza?', pagamento_id)) {
+            $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+              location.reload();
+              });
+            }
         }      
       }
   </script>
