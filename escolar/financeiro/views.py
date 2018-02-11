@@ -208,13 +208,16 @@ def contrato_cadastro(request, contrato_pk):
 
 
 @login_required
-def pagamento_form(request, escola_pk, pagamento_pk=None):
+def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
     user = request.user
     Escola = apps.get_model(app_label='escolas', model_name='Escola')
     escola = get_object_or_404(Escola, pk=escola_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     contrato = None
     aluno = None
+    if contrato_pk:
+        contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
+        aluno = contrato.aluno
 
     if not can_edit:
         raise Http404
@@ -228,7 +231,7 @@ def pagamento_form(request, escola_pk, pagamento_pk=None):
         pagamento = None
         msg = u'Pagamento criado.' 
 
-    form = PagamentoForm(request.POST or None, request.FILES or None, instance=pagamento, escola=escola, user=user)
+    form = PagamentoForm(request.POST or None, request.FILES or None, instance=pagamento, escola=escola, contrato=contrato, user=user)
 
     if request.method == 'POST':
         if form.is_valid():
@@ -244,15 +247,15 @@ def pagamento_form(request, escola_pk, pagamento_pk=None):
     context = {}
     context['form'] = form
     context['pagamento'] = pagamento
-    if pagamento and pagamento.contrato:
-        context['contrato'] = contrato
-        context['aluno'] = contrato.aluno
+    context['contrato'] = contrato
+    context['aluno'] = aluno
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    if contrato:
         context['tab_alunos'] = "active"
         context['tab_pagamentos_aluno'] = "active"
     else:
         context['tab_parcelas'] = "active"
-    context['can_edit'] = can_edit
-    context['escola'] = escola
 
     return render(request, 'financeiro/pagamento_form.html', context)
 
@@ -266,6 +269,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
+    contrato = get_object_or_404(ContratoAluno, aluno=aluno, ano=ano_corrente)
     if not user.can_access_escola(escola.pk):
         raise Http404
 
@@ -283,7 +287,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     context['aluno'] = aluno
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
-
+    context['contrato'] = contrato
     context['tab_alunos'] = "active"
     context['tab_pagamentos_aluno'] = "active"
 

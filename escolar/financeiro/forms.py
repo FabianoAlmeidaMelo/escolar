@@ -170,12 +170,12 @@ class PagamentoEscolaSearchForm(forms.Form):
     def get_result_queryset(self, mes=None):
         q = Q(escola=self.escola)
         if self.is_valid():
-            responsavel = self.cleaned_data['responsavel']
-            if responsavel:
-                q = q & Q(contrato__responsavel__nome__icontains=responsavel)
-            aluno = self.cleaned_data['aluno']
-            if aluno:
-                q = q & Q(contrato__aluno__nome__icontains=aluno)
+            # responsavel = self.cleaned_data['responsavel']
+            # if responsavel:
+            #     q = q & Q(contrato__responsavel__nome__icontains=responsavel)
+            # aluno = self.cleaned_data['aluno']
+            # if aluno:
+            #     q = q & Q(contrato__aluno__nome__icontains=aluno)
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(contrato__ano=ano)
@@ -186,26 +186,26 @@ class PagamentoEscolaSearchForm(forms.Form):
                 month = int(mes)
                 data_ini = date(year, month, 1)
                 data_fim = date(year, month, monthrange(year, month)[1])
-
+                print('\n FORM:\n',data_ini, data_fim)
                 q = q & Q(data_prevista__gte=data_ini, data_prevista__lte=data_fim)
 
             titulo = self.cleaned_data['titulo']
             if titulo:
                 q = q & Q(titulo__icontains=titulo)
 
-            serie = self.cleaned_data['serie']
-            if serie:
-                q = q & Q(contrato__serie__icontains=serie)
-            curso = self.cleaned_data['curso']
-            if curso:
-                q = q & Q(contrato__curso__icontains=curso)
+            # serie = self.cleaned_data['serie']
+            # if serie:
+            #     q = q & Q(contrato__serie__icontains=serie)
+            # curso = self.cleaned_data['curso']
+            # if curso:
+            #     q = q & Q(contrato__curso__icontains=curso)
 
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
                 q = q & Q(efet=True)
             if efet and efet == '0':
                 q = q & Q(efet=False)
-
+            print(Pagamento.objects.filter(q).count())
         return Pagamento.objects.filter(q)
 
 
