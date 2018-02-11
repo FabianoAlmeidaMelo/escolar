@@ -30,7 +30,6 @@
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.efet %}
         {% bootstrap_field form.titulo %}
-
       </div>
       <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
       <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
@@ -69,7 +68,20 @@
         <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font></td>
         <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.get_valor_com_desconto|numberformat_br }}</font></td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
-        <td>{{ pagamento.efet|yesno:'Pago,Em Aberto' }}</td>
+        <td>
+          {% if pagamento.efet %}
+              Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+            {% else %}
+              <label>
+                <input type="checkbox"
+                       checkbox_id="{{ pagamento.id }}"
+                       value="pagamento_{{ pagamento.id }}"
+                       name="set_status"
+                       onchange="set_pagamento_status(this)" 
+                       > Pagar
+              </label>
+            {% endif %}
+        </td>
       </tr>
     {% empty %}
     <tr>
@@ -87,4 +99,21 @@
 
 {% endblock content %}
 {% block extra_js %}
+  <script type="text/javascript">
+    function set_pagamento_status(field){
+      if($(field).is(':checked')){
+        var pagamento_id = $(field).attr('checkbox_id')
+        // alert(pagamento_id)
+        // Zero: 0, é um id válido
+        // não quebra a url ao carregar a página
+        if (confirm('Tem certeza? ' + pagamento_id)) {
+            $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+              location.reload();
+              });
+        } else {
+          $(field).prop('checked', false);
+        }
+      }      
+    }
+  </script>
 {% endblock extra_js%}
