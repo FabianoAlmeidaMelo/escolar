@@ -221,3 +221,4 @@ class Pagamento(models.Model):
             elif self.efet is None or self.efet is False:
                 return "danger"
         return ""
+

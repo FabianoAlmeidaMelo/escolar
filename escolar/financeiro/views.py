@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
@@ -361,3 +361,25 @@ def pagamentos_list(request, escola_pk):
     context['tab_parcelas'] = "active"
 
     return render(request, 'financeiro/pagamentos_list.html', context)
+
+
+@login_required
+def set_pagamento_status(request, pagamento_pk):
+    '''
+    ref #48 - ajax
+    altera pagamento.efet
+        para: True ou False
+    '''
+    user = request.user
+    pagamento = get_object_or_404(Pagamento, id=pagamento_pk)
+    escola = pagamento.escola
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    if not can_edit:
+        raise Http404
+    if pagamento.efet is True:
+        pagamento.efet = False
+    else:
+        pagamento.efet = True
+    pagamento.save()
+
+    return HttpResponse('Ok')
