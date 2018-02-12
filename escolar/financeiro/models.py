@@ -5,6 +5,7 @@ from escolar.core.models import UserAdd, UserUpd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from escolar.utils.numextenso import numero_extenso
+from datetime import datetime, timedelta, date
 
 
 ano_corrente = date.today().year
@@ -192,6 +193,27 @@ class Pagamento(models.Model):
     def get_color_display(self):
         collor = {1: 'blue', 2: 'red', None: 'black'}
         return collor[self.tipo]
+
+    # def get_bizdays(self, numero=None):
+    #     start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
+    #     dates = [start + timedelta(days=i) for i in range((end-start).days+1)]
+    #     dias = ('Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo')
+    #     for dte in dates:
+    #         if dte.weekday() not in [5, 6]:
+    #             print(dte, dte.weekday(), 'dia:', dias[dte.weekday()])
+
+    def get_bizdays(self, numero):
+        # numero ex: 5
+        # significa  o 5º dia útil
+        start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
+        dias_uteis = []
+        i = 0
+        while len(dias_uteis) < numero:
+            data = start + timedelta(days=i)
+            if data.weekday() not in [5, 6]:
+                dias_uteis.append(data)
+            i += 1
+        return dias_uteis[numero - 1]
 
     def get_valor_com_desconto(self):
         # import pdb; pdb.set_trace()
