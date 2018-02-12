@@ -19,6 +19,7 @@
   {% include "base_adm.html" %}
     <div class="row-fluid span10">
     {% include "base_aluno.html" %}
+    <br>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
@@ -34,7 +35,7 @@
         <div class="form-actions">
           <input type="submit" value="Salvar" class="btn btn-primary">
           {% if autorizado %}
-            <a href="{% url 'autorizado_cadastro' aluno.pk autorizado.pk %}" class="btn btn-secondary">Cancelar</a>
+            <a href="{% url 'autorizado_cadastro' aluno.pk autorizado.pk %}" class="btn btn-secondary">Voltar para o cadastro {{ autorizado.nome }}</a>
           {% else %}
             <a href="{% url 'autorizados_aluno_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
           {% endif %}

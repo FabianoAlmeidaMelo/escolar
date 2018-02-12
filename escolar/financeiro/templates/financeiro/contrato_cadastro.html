@@ -18,10 +18,10 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-          <!-- Example row of columns -->
+    <br>
+      <!-- Example row of columns -->
       <div class="row">
         <div class="col-xs-9 col-sm-6 col-md-3">
-          <br>
           <h3><b>Ano</b> : {{ contrato.ano }}</h3>
           <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
           <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
@@ -49,14 +49,14 @@
           </div>
       </div>
 
-        {% if can_edit %}
+      {% if can_edit %}
         <br>
           <div class="form-actions">
             <a href="{% url 'contrato_edit' aluno.id contrato.id %}" class="btn btn-mini btn-success">Editar</a>
              <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
             <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
           </div>
-        {% endif %}
+      {% endif %}
   </div>
 </div>
 

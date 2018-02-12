@@ -170,6 +170,10 @@ class MembroFamilia(UserAdd, UserUpd):
         verbose_name_plural = 'Membros da Família'
         ordering = ('nome',)
 
+    def get_sexo_display(self):
+        sexo = {1: 'masculino', 2: 'feminino'}
+        return sexo[self.sexo]
+
     def __str__(self):
         return self.nome
 
@@ -219,6 +223,7 @@ class Autorizado(models.Model):
     celular = models.CharField('celular', max_length=14)
     documento = models.CharField(max_length=25, unique=True)
     # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
+    # ativo = models.BooleanField('Autorizado', default=False)
 
     def __str__ (self):
         return self.nome

@@ -19,14 +19,15 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
+    <br>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-group center_div" >
         <div class="row">
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
-            {% bootstrap_field form.parentesco %}
             {% bootstrap_field form.nome %}
+            {% bootstrap_field form.parentesco %}
             {% bootstrap_field form.nascimento %}
             {% bootstrap_field form.responsavel_financeiro %}
             {% bootstrap_field form.responsavel_pedagogico %}
@@ -50,7 +51,12 @@
       </div>
       <div class="form-actions">
         <input type="submit" value="Salvar" class="btn btn-primary">
-        <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
+        {% if membro %}
+          <a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk %}" class="btn btn-secondary">Voltar para o cadastro {{ membro.nome }}</a>
+        {% else %}
+          <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
+        {% endif %}
+          <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de familiares do aluno">Familiares do aluno</a>
       </div>
     </form>
   </div>

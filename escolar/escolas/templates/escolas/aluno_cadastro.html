@@ -26,11 +26,10 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-    
+      <br>
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <br>
           <h3><b>Ano</b> : {{ aluno.ano }}</h3>
           <p><b>RA</b>: {{ aluno.ra }}</p>
           <p><b>Nome</b>: {{ aluno.nome }}</p>
@@ -52,11 +51,11 @@
         </div>
         <div class="col-md-4">
           <h3>Endereço</h3>
-            <p><b>Logradouro</b>: {{ aluno.endereco.logradouro }}</p>
-            <p><b>número</b>: {{ aluno.endereco.numero }}</p>
-            <p><b>bairro</b>: {{ aluno.endereco.bairro }}</p>
-            <p><b>CEP</b>: {{ aluno.endereco.cep }}</p>
-            <p><b>Município</b>: {{ aluno.endereco.municipio }}</p>
+          <p><b>Logradouro</b>: {{ aluno.endereco.logradouro }}</p>
+          <p><b>número</b>: {{ aluno.endereco.numero }}</p>
+          <p><b>bairro</b>: {{ aluno.endereco.bairro }}</p>
+          <p><b>CEP</b>: {{ aluno.endereco.cep }}</p>
+          <p><b>Município</b>: {{ aluno.endereco.municipio }}</p>
         </div>
       </div>
       <!-- glyphicon glyphicon-print  {% url 'aluno_form' escola.id aluno.id %} -->
