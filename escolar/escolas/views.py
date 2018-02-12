@@ -399,22 +399,48 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
 
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
+            memnbro = form.save()
             messages.success(request, msg)
-            return redirect(reverse('membros_familia_list', kwargs={'aluno_pk': aluno.pk}))
+            return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk, 'membro_pk': membro.id}))
         else:
             messages.warning(request, u'Falha no cadastro do membro família')
 
     context = {}
     context['form'] = form
+    context['membro'] = membro
     context['aluno'] = aluno
     context['escola'] = escola
     context['tab_alunos'] = "active"
     context['tab_responsaveis_aluno'] = "active"
 
-    # context['classes'] = aluno.get_all_classe(escola)
-
     return render(request, 'escolas/membro_familia_form.html', context)
+
+@login_required
+def membro_familia_cadastro(request,  aluno_pk, membro_pk):
+    '''
+    #33
+    são os responsáveis pelo aluno, se Menor de Idade
+    resp financeiro e ou pedagógico
+    '''
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, id=aluno.escola.pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    
+    membro = get_object_or_404(MembroFamilia, pk=membro_pk)
+
+    
+    context = {}
+    context['membro'] = membro
+    context['aluno'] = aluno
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+    context['tab_alunos'] = "active"
+    context['tab_responsaveis_aluno'] = "active"
+
+    return render(request, 'escolas/membro_familia_cadastro.html', context)
 
 @login_required
 def membros_familia_list(request, aluno_pk):
