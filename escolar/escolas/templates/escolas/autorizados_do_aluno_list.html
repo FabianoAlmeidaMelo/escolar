@@ -42,7 +42,7 @@
         {% for autorizado in autorizados %}
           <tr>
             {% if can_edit %}
-              <td><a href="{% url 'autorizado_form' aluno.pk autorizado.autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
+              <td><a href="{% url 'autorizado_cadastro' aluno.pk autorizado.autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
             {% else %}
               <td>{{ autorizado.autorizado.nome }}</td>
             {% endif %}

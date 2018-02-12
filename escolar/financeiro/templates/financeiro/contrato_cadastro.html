@@ -20,7 +20,7 @@
     {% include "base_aluno.html" %}
           <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <br>
           <h3><b>Ano</b> : {{ contrato.ano }}</h3>
           <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
@@ -30,20 +30,20 @@
           <p>({{ contrato.get_valor_extenso }})</p>
           <p><b>Data de assinatura</b>: {{ contrato.data_assinatura|date:"d/m/Y" }}</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Condições</h3>
           <p><b>Número de parcelas</b>:{{ contrato.nr_parcela }}</p>
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
           <p><b>matricula valor</b>: {{ contrato.matricula_nr|numberformat_br|default:"--" }}</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>
             <p><b>Valor</b>: R$ {{ contrato.material_valor }}</p>
             <p><b>Número de parcelas</b>: {{ contrato.material_parcelas }}</p>
             <p><b>Data da 1ª parcela</b>: {{ contrato.material_data_parcela_um|date:"d/m/Y" }}</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Arquivo</h3>
           <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
           </div>
