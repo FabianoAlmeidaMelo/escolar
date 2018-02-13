@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
+from django.db import IntegrityError
+from escolar.core.models import Feriado
+from municipios.models import Municipio
+from django.shortcuts import get_object_or_404
+from datetime import date, datetime
+import time
 
 ####  http://www.calendario.com.br/api_feriados_municipais_estaduais_nacionais.php
 
@@ -26,23 +32,21 @@ import requests
 # equipe Calendario.com.br
 
 
-# from datetime import date, datetime
-# import time
 
 
-# DATE_FTMS = ('%Y%m%d', '%d/%m/%Y', '%d/%m/%Y %H:%M', '%d/%m/%Y %H:%M:%S',)
+DATE_FTMS = ('%Y%m%d', '%d/%m/%Y', '%d/%m/%Y %H:%M', '%d/%m/%Y %H:%M:%S',)
 
 
-# def get_date(value, formats=DATE_FTMS):
-#     date_value = None
-#     if value:  # pode vir None do Protheus
-#         for fmt in formats:
-#             try:
-#                 date_value = date(*time.strptime(value, fmt)[:3])
-#                 break
-#             except ValueError:
-#                 pass
-#     return date_value
+def get_date(value, formats=DATE_FTMS):
+    date_value = None
+    if value:
+        for fmt in formats:
+            try:
+                date_value = date(*time.strptime(value, fmt)[:3])
+                break
+            except ValueError:
+                pass
+    return date_value
 
 
 def CONSULTA(ano, codigo_ibge):
@@ -51,12 +55,34 @@ def CONSULTA(ano, codigo_ibge):
     achar os dias úteis
     ex: CONSULTA(2018, 3549904)
     """
+    municipio = get_object_or_404(Municipio, id_ibge=codigo_ibge)
     url = u'https://api.calendario.com.br/?ano=%s&&ibge=%s&json=true&token=ZmFsbWVpZGFtZWxvQHVvbC5jb20uYnImaGFzaD0xOTU2OTg2MTc='  % (ano, codigo_ibge)
     response = requests.get(url)
     json_data = json.loads(response.text)
+    for dicionario in json_data:
+        data = get_date(dicionario['date'])
+        type_code = int(dicionario['type_code'])
+        mun = None
+        if type_code == 3:
+            mun = municipio
+        # print(type_code, mun)
+        try:
+            #  ref #47
+            feriado, created = Feriado.objects.get_or_create(
+                date=data,
+                name=dicionario['name'],
+                type_name=dicionario['type'],
+                type_code=type_code,
+                municipio=mun,
+                )
+        except IntegrityError as e:
+            self.stdout.write("ERRO:")
+            self.stdout.write(e)
+     
 
-    return json_data
+    # return json_data
 
+# exemplo:
 
 [{'date': '01/01/2018',
   'description': 'O Ano-Novo ou Réveillon é um evento que acontece quando uma cultura celebra o fim de um ano e o começo do próximo. A celebração do evento é também chamada Réveillon, termo oriundo do verbo francês réveiller, que em português significa DESPERTAR',
