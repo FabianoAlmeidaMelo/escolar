@@ -2,8 +2,17 @@
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
-    #id_ano {
+    #id_ano, #id_material_parcelas {
       width: 80px;
+      height: 35px;
+    }
+    #id_data_um_material,
+    #id_data_dois_material,
+    #id_data_tres_material,
+    #id_data_quatro_material,
+    #id_data_cinco_material,
+    #id_data_seis_material {
+      width: 120px;
       height: 35px;
     }
    </style>
@@ -39,9 +48,10 @@
               <p>{% bootstrap_field form.multa %}</p>
               <p>{% bootstrap_field form.juros %}</p>
               <p>{% bootstrap_field form.condicao_juros %}</p>
+              <p>{% bootstrap_field form.material_parcelas %}</p>
             </div>
             <div class="col-xs-9 col-sm-6 col-md-3">
-              <p>{% bootstrap_field form.material_parcelas %}</p>
+              <small>Data das Parcelas das Apostilas</small>
               <p>{% bootstrap_field form.data_um_material %}</p>
               <p>{% bootstrap_field form.data_dois_material %}</p>
               <p>{% bootstrap_field form.data_tres_material %}</p>

@@ -78,12 +78,12 @@ class ParametrosContrato(models.Model):
     condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
-    data_um_material = models.DateField(blank=True, null=True)
-    data_dois_material = models.DateField(blank=True, null=True)
-    data_tres_material = models.DateField(blank=True, null=True)
-    data_quatro_material = models.DateField(blank=True, null=True)
-    data_cinco_material = models.DateField(blank=True, null=True)
-    data_seis_material = models.DateField(blank=True, null=True)
+    data_um_material = models.DateField('1ª parcela em', blank=True, null=True)
+    data_dois_material = models.DateField('2ª parcela em', blank=True, null=True)
+    data_tres_material = models.DateField('3ª parcela em', blank=True, null=True)
+    data_quatro_material = models.DateField('4ª parcela em', blank=True, null=True)
+    data_cinco_material = models.DateField('5ª parcela em', blank=True, null=True)
+    data_seis_material = models.DateField('6ª parcela em', blank=True, null=True)
 
     def __str__(self):
         return 'Parâmetros / Escola: %s' % self.escola.nome

@@ -34,8 +34,19 @@ TIPO_CHOICES = (
     (2, u'(-)'),
 )
 
+PARCELAS_MATERIAL = (
+    (None, '--'),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+)
+
 
 class ParametrosContratoForm(forms.ModelForm):
+    material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL)
     multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
     juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
 
