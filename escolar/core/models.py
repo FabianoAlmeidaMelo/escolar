@@ -52,7 +52,7 @@ class Endereco(models.Model):
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
     perfil = models.ForeignKey('Perfil', null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s - %s" % (self.cep, self.numero)
 
     class Meta:
@@ -245,9 +245,10 @@ class Feriado(models.Model):
     name = models.CharField(max_length=100)
     type_name = models.CharField(max_length=80)
     type_code = models.SmallIntegerField('tipo')
+    uf_ibge_code = models.SmallIntegerField('uf ibge', null=True, blank=True)
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s - %s" % (self.date, self.type_name)
 
     class Meta:

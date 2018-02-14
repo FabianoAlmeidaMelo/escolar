@@ -11,7 +11,7 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-
+    <br>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-group center_div">
@@ -21,9 +21,10 @@
             {% bootstrap_field form.pais %}
             {% bootstrap_field form.nome %}
             {% bootstrap_field form.endereco %}
-            {% bootstrap_field form.numero %}
+            {{ form.municipio }}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.numero %}
             {% bootstrap_field form.telefone %}
             {% bootstrap_field form.complemento %}
             {% bootstrap_field form.bairro %}

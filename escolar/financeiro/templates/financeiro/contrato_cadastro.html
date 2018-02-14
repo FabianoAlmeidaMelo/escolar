@@ -35,7 +35,9 @@
           <p><b>Número de parcelas</b>:{{ contrato.nr_parcela }}</p>
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
-          <p><b>matricula valor</b>: {{ contrato.matricula_nr|numberformat_br|default:"--" }}</p>
+          <p><b>matricula valor</b>:R$ {{ contrato.matricula_valor|numberformat_br|default:"--" }}</p>
+          <p><b>multa por atraso mensalidade</b>: % --</p>
+          <p><b>juros por atraso na mensalidade</b>:  % --</p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>

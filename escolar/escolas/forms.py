@@ -83,6 +83,7 @@ class EscolaForm(forms.ModelForm):
 
     class Meta:
         model = Escola
+        widgets = {'municipio': SelectMunicipioWidget}
         exclude = ('created_at',)
 
 

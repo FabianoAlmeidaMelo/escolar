@@ -40,6 +40,7 @@ class Escola(models.Model):
     '''
     pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
+    municipio = models.ForeignKey(Municipio)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
     telefone = models.CharField('telefone', max_length=14, null=True, blank=True)

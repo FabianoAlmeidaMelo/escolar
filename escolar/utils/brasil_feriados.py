@@ -53,9 +53,10 @@ def CONSULTA(ano, codigo_ibge):
     """
     ref #47
     achar os dias úteis
-    ex: CONSULTA(2018, 3549904)
+    ex: CONSULTA(2018, '3549904')
     """
-    municipio = get_object_or_404(Municipio, id_ibge=codigo_ibge)
+    municipio = get_object_or_404(Municipio, id_ibge=int(codigo_ibge))
+    uf_code = int(codigo_ibge[:2])
     url = u'https://api.calendario.com.br/?ano=%s&&ibge=%s&json=true&token=ZmFsbWVpZGFtZWxvQHVvbC5jb20uYnImaGFzaD0xOTU2OTg2MTc='  % (ano, codigo_ibge)
     response = requests.get(url)
     json_data = json.loads(response.text)
@@ -65,6 +66,9 @@ def CONSULTA(ano, codigo_ibge):
         mun = None
         if type_code == 3:
             mun = municipio
+        uf_ibge_code = None
+        if type_code == 2:
+            uf_ibge_code = uf_code
         # print(type_code, mun)
         try:
             #  ref #47
@@ -73,6 +77,7 @@ def CONSULTA(ano, codigo_ibge):
                 name=dicionario['name'],
                 type_name=dicionario['type'],
                 type_code=type_code,
+                uf_ibge_code=uf_ibge_code,
                 municipio=mun,
                 )
         except IntegrityError as e:

@@ -1,5 +1,7 @@
 # coding: utf-8
+from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from escolar.escolas.models import ANO
 from escolar.core.models import UserAdd, UserUpd
 from datetime import date
@@ -9,6 +11,15 @@ from datetime import datetime, timedelta, date
 
 
 ano_corrente = date.today().year
+ano_seguinte = ano_corrente + 1
+ano_anterior = ano_corrente - 1
+ 
+ANO = (
+    (None, '--'),
+    (ano_anterior, ano_anterior),
+    (ano_corrente, ano_corrente),
+    (ano_seguinte, ano_seguinte),
+)
 
 
 def escola_contrato_path(instance, logo):
@@ -21,6 +32,61 @@ def escola_contrato_path(instance, logo):
 def validate_vencimento(value):
     if value not in range(1, 29):
         raise ValidationError(u'%s Não está entre 1 e 28' % value)
+
+
+CONDICAO_DESCONTO = (
+    (None, '--'),
+    (1, 'Pagamento até a data vencimento'),
+    (2, 'Pagamento até determinado dia útil'),
+)
+
+JUROS_EXPECIFICACAO = (
+    (None, "--"),
+    (1, "Por dia"),
+    (2, "Por Mês"),
+)
+
+DIA_UTIL = (
+    (None, '--'),
+    (1, '1º'),
+    (2, '2º'),
+    (3, '3º'),
+    (4, '4º'),
+    (5, '5º'),
+    (6, '6º'),
+    (7, '7º'),
+    (8, '8º'),
+    (9, '9º'),
+    (10, '10º'),
+    (11, '11º'),
+    (12, '12º'),
+)
+
+class ParametrosContrato(models.Model):
+    '''
+    para Escolas de educação infantil até o 2º grau
+    1 desses por escola
+    '''
+    ano = models.SmallIntegerField('Ano', choices=ANO) # pelo ano valida as datas
+    escola = models.ForeignKey('escolas.Escola')
+    tem_desconto = models.BooleanField('tem desconto', default=False)
+    condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
+    dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
+    multa = models.DecimalField('Multa por atraso mensalidade', max_digits=2, decimal_places=2, null=True, blank=True)
+    juros = models.DecimalField('juros por atraso mensalidade', max_digits=2, decimal_places=2, null=True, blank=True)
+    condicao_juros = models.SmallIntegerField('condição desconto', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
+    # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
+    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
+    data_um_material = models.DateField(blank=True, null=True)
+    data_dois_material = models.DateField(blank=True, null=True)
+    data_tres_material = models.DateField(blank=True, null=True)
+    data_quatro_material = models.DateField(blank=True, null=True)
+    data_cinco_material = models.DateField(blank=True, null=True)
+    data_seis_material = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return 'Parâmetros / Escola: ', self.escola.nome
+
 
 class ContratoAluno(UserAdd, UserUpd):
     '''
@@ -132,7 +198,17 @@ class ContratoAluno(UserAdd, UserUpd):
                                             observacao='',
                                             nr_parcela=p,
                                             tipo=2)
+class CategoriaPagamento(models.Model):
+    # Categorias default para os Contratos, serve para todas Escolas
+    # Prestação de Serviços
+    # Matrícula
+    escola = models.ForeignKey('escolas.Escola', null=True, blank=True)
+    nome = models.CharField('Categoria', max_length=50)
 
+    def __str__(self):
+        if self.escola:
+            return "%s - %s" % (self.nome, self.escola.nome)
+        return self.nome
 
 class PagamentoManager(models.Manager):
     def get_recebimentos_pendentes(self):
@@ -144,12 +220,6 @@ class PagamentoManager(models.Manager):
         # query = estagio_valido & pag_lib & pag_nao_efetuado
 
         # return self.filter(query).order_by('-data_prevista')
-
-
-# TIPO_CHOICES = (
-#     (1, u'(+)'),
-#     (2, u'(-)'),
-# )
 
 
 class Pagamento(models.Model):
@@ -174,7 +244,7 @@ class Pagamento(models.Model):
         blank=True
     )
     nr_documento = models.CharField(verbose_name=u'Nr Documento', max_length=20, null=True, blank=True)
-    # categoria = models.ForeignKey(Categoria, null=True, blank=True)
+    categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
 
 
@@ -194,33 +264,38 @@ class Pagamento(models.Model):
         collor = {1: 'blue', 2: 'red', None: 'black'}
         return collor[self.tipo]
 
-    # def get_bizdays(self, numero=None):
-    #     start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
-    #     dates = [start + timedelta(days=i) for i in range((end-start).days+1)]
-    #     dias = ('Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo')
-    #     for dte in dates:
-    #         if dte.weekday() not in [5, 6]:
-    #             print(dte, dte.weekday(), 'dia:', dias[dte.weekday()])
+    def get_feriados(self):
+        '''
+        lista os feriados antes da
+        data_prevista
+        '''
+        Feriado = apps.get_model(app_label='core', model_name='Feriado')
+        municipio = self.escola.municipio
+        uf = int(str(municipio.id_ibge)[:2])
+        inicio = date(self.data_prevista.year, self.data_prevista.month, 1)
+        feriados = Feriado.objects.filter(Q(type_code=1) | Q(uf_ibge_code=uf) | Q(municipio=municipio))
+        feriados = feriados.filter(date__gte=inicio, date__lte=self.data_prevista).values_list('date', flat=True)
+        return feriados
 
-    def get_bizdays(self, numero):
+    def get_bizday(self, numero):
+        # Retorna o dia útil expecificado;
         # numero ex: 5
         # significa  o 5º dia útil
+        feriados = self.get_feriados()
         start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
         dias_uteis = []
         i = 0
         while len(dias_uteis) < numero:
             data = start + timedelta(days=i)
-            if data.weekday() not in [5, 6]:
+            if data.weekday() not in [5, 6] and data not in feriados:
                 dias_uteis.append(data)
             i += 1
         return dias_uteis[numero - 1]
 
     def get_valor_com_desconto(self):
-        # import pdb; pdb.set_trace()
-        #TODO:
         # calcular por dias úteis ou data específica
-        time5 = (self.data_prevista - date.today()).days
-        if time5 > 5:
+        # time5 = (self.data_prevista - date.today()).days
+        if date.today() <= self.get_bizday(5):
             desconto = self.valor * (self.contrato.desconto/ 100)
             return self.valor - desconto
         return self.valor
