@@ -12,7 +12,12 @@ from escolar.core.models import UserGrupos, User
 from datetime import date, datetime
 from calendar import monthrange
 
-from escolar.financeiro.models import ContratoAluno, Pagamento
+from escolar.financeiro.models import (
+    ContratoAluno,
+    Pagamento,
+    ParametrosContrato,
+)
+
 from escolar.financeiro.forms import (
     ano_corrente,
     mes_corrnete,
@@ -21,6 +26,7 @@ from escolar.financeiro.forms import (
     PagamentoAlunoEscolaSearchForm,
     PagamentoEscolaSearchForm,
     PagamentoForm,
+    ParametrosContratoForm,
 )
 
 from escolar.escolas.models import Escola
@@ -109,7 +115,7 @@ def contratos_list(request, escola_pk):
     context['can_edit'] = can_edit
     context['object_list'] = contratos
 
-    # context['tab_alunos'] = "active"
+    context['tab_administracao'] = "active"
     context['tab_contratos'] = "active"
 
     return render(request, 'financeiro/contratos_list.html', context)
@@ -146,6 +152,59 @@ def contratos_aluno_list(request, aluno_pk):
     context['tab_aluno_contratos'] = "active"
 
     return render(request, 'financeiro/contratos_aluno_list.html', context)
+
+
+@login_required
+def parametros_contrato_form(request, escola_pk):
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    # no save do EscolaForm, já criou 1 parâmetro para Escola
+    parametros = escola.parametroscontrato_set.last()
+    if not can_edit:
+        raise Http404
+
+    msg = u'Parâmetros alterados com sucesso.'
+
+    form = ParametrosContratoForm(request.POST or None, request.FILES or None, instance=parametros, escola=escola, user=user)
+    context = {}
+    context['form'] = form
+    context['parametros'] = parametros
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+
+    context['tab_administracao'] = "active"
+    context['tab_parametros'] = "active"
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contrato = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('parametro_cadastro', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha na edição dos parâmetros.')
+
+    return render(request, 'financeiro/parametros_contrato_form.html', context)
+
+
+
+@login_required
+def parametro_cadastro(request, escola_pk):
+    user = request.user
+
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    parametros = escola.parametroscontrato_set.last()
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    context = {}
+    context["escola"] = escola
+    context["parametros"] = parametros
+
+    context['can_edit'] = can_edit
+    context['tab_administracao'] = "active"
+    context['tab_parametros'] = "active"
+    return render(request, 'financeiro/parametros_contrato_cadastro.html', context)
 
 
 @login_required
@@ -357,7 +416,7 @@ def pagamentos_list(request, escola_pk):
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
 
-    # context['tab_alunos'] = "active"
+    context['tab_administracao'] = "active"
     context['tab_parcelas'] = "active"
 
     return render(request, 'financeiro/pagamentos_list.html', context)

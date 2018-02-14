@@ -1,0 +1,70 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_ano {
+      width: 80px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        Parametros de Contratos / {{ escola.nome }}
+    {% else %}
+        Cadastro de Parametros de Contratos
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+        <div class="form-group center_div" >
+          <div class="row">
+            <!-- {# Celular, Tablet, Computador #} -->
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.ano %}</p>
+              <p>{% bootstrap_field form.tem_desconto %}</p>
+              <p>{% bootstrap_field form.condicao_desconto %}</p>
+              <p>{% bootstrap_field form.dia_util %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.multa %}</p>
+              <p>{% bootstrap_field form.juros %}</p>
+              <p>{% bootstrap_field form.condicao_juros %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.material_parcelas %}</p>
+              <p>{% bootstrap_field form.data_um_material %}</p>
+              <p>{% bootstrap_field form.data_dois_material %}</p>
+              <p>{% bootstrap_field form.data_tres_material %}</p>
+              <p>{% bootstrap_field form.data_quatro_material %}</p>
+              <p>{% bootstrap_field form.data_seis_material %}</p>
+              <p>{% bootstrap_field form.data_seis_material %}</p>
+            </div>
+        </div>
+      </div>
+
+      <!-- glyphicon glyphicon-print -->
+      <div class="form-actions">
+        {% if can_edit %}
+          <input type="submit" value="Salvar" class="btn btn-primary">
+        {% endif %}
+        <a href="" class="btn btn-secondary">Voltar para o contrato {{ form.instance.ano }}</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

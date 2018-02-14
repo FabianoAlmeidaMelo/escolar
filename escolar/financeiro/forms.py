@@ -8,6 +8,7 @@ from escolar.financeiro.models import (
     ANO,
     ContratoAluno,
     Pagamento,
+    ParametrosContrato,
 )
 
 from datetime import date
@@ -32,6 +33,32 @@ TIPO_CHOICES = (
     (1, u'(+)'),
     (2, u'(-)'),
 )
+
+
+class ParametrosContratoForm(forms.ModelForm):
+    multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
+    juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(ParametrosContratoForm, self).__init__(*args, **kwargs)
+
+
+    class Meta:
+        model = ParametrosContrato
+        exclude = ('escola',) 
+
+    def clean(self):
+        cleaned_data = super(ParametrosContratoForm, self).clean()
+
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(ParametrosContratoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
 
 class ContratoAlunoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

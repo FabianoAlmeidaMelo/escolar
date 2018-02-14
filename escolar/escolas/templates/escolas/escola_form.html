@@ -2,9 +2,15 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
-
-    <!-- TODO erver esse br -->
-    <br>
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        Escola: {{ escola.nome }}
+    {% else %}
+        Cadastro de Escola
+    {% endif %}
+  </div>
 {% endblock page_title %}
 
 {% block content %}

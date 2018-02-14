@@ -66,15 +66,16 @@ class ParametrosContrato(models.Model):
     '''
     para Escolas de educação infantil até o 2º grau
     1 desses por escola
+    criado no save() de escolas.EscolaForm()
     '''
     ano = models.SmallIntegerField('Ano', choices=ANO) # pelo ano valida as datas
     escola = models.ForeignKey('escolas.Escola')
     tem_desconto = models.BooleanField('tem desconto', default=False)
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
     dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
-    multa = models.DecimalField('Multa por atraso mensalidade', max_digits=2, decimal_places=2, null=True, blank=True)
-    juros = models.DecimalField('juros por atraso mensalidade', max_digits=2, decimal_places=2, null=True, blank=True)
-    condicao_juros = models.SmallIntegerField('condição desconto', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
+    multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    juros = models.DecimalField('juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
     data_um_material = models.DateField(blank=True, null=True)
@@ -85,7 +86,7 @@ class ParametrosContrato(models.Model):
     data_seis_material = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return 'Parâmetros / Escola: ', self.escola.nome
+        return 'Parâmetros / Escola: %s' % self.escola.nome
 
 
 class ContratoAluno(UserAdd, UserUpd):
