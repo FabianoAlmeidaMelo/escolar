@@ -89,7 +89,7 @@ class EscolaForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         instance = super(EscolaForm, self).save(*args, **kwargs)
         instance.save()
-        if not instance.parametroscontrato_set.count():
+        if not instance.parametroscontrato_set.count() and instance.publica is False:
             ParametrosContrato.objects.get_or_create(escola=instance,
                                                      defaults={'ano':ano_corrente})
         return instance
