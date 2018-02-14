@@ -74,7 +74,7 @@ class ParametrosContrato(models.Model):
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
     dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
     multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
-    juros = models.DecimalField('juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
