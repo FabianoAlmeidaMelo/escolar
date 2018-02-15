@@ -47,19 +47,21 @@
               <p><b>Data 2ª</b>: {{ parametros.data_dois_material|date:"d/m/Y"|default:'' }}</p>
               <p><b>Data 3ª</b>: {{ parametros.data_tres_material|date:"d/m/Y"|default:'' }}</p>
               <p><b>Data 4ª</b>: {{ parametros.data_quatro_material|date:"d/m/Y"|default:'' }}</p>
-              <p><b>Data 5ª</b>: {{ parametros.data_seis_material|date:"d/m/Y"|default:'' }}</p>
+            {% if parametros.data_cinco_material%}
+              <p><b>Data 5ª</b>: {{ parametros.data_cinco_material|date:"d/m/Y"|default:'' }}</p>
               <p><b>Data 6ª</b>: {{ parametros.data_seis_material|date:"d/m/Y"|default:'' }}</p>
+            {% endif %}
             </div>
         </div>
       </div>
 
       <!-- glyphicon glyphicon-print -->
-      <div class="form-actions">
-        {% if can_edit %}
-          <input type="submit" value="Salvar" class="btn btn-primary">
-        {% endif %}
-        <a href="" class="btn btn-secondary">Voltar para o contrato {{ form.instance.ano }}</a>
-      </div>
+      {% if can_edit %}
+        <br>
+          <div class="form-actions">
+            <a href="{% url 'parametros_contrato_form' escola.id %}" class="btn btn-mini btn-success">Editar</a>
+          </div>
+      {% endif %}
     </form>
   </div>
 </div>

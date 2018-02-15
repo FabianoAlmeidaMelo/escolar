@@ -2,8 +2,13 @@
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
-    #id_ano, #id_material_parcelas {
-      width: 80px;
+    #id_ano,
+    #id_material_parcelas,
+    #id_multa,
+    #id_juros,
+    #id_condicao_juros,
+    #id_dia_util {
+      width: 100px;
       height: 35px;
     }
     #id_data_um_material,
@@ -55,8 +60,10 @@
               <p>{% bootstrap_field form.data_um_material %}</p>
               <p>{% bootstrap_field form.data_dois_material %}</p>
               <p>{% bootstrap_field form.data_tres_material %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
               <p>{% bootstrap_field form.data_quatro_material %}</p>
-              <p>{% bootstrap_field form.data_seis_material %}</p>
+              <p>{% bootstrap_field form.data_cinco_material %}</p>
               <p>{% bootstrap_field form.data_seis_material %}</p>
             </div>
         </div>
@@ -67,7 +74,7 @@
         {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
         {% endif %}
-        <a href="" class="btn btn-secondary">Voltar para o contrato {{ form.instance.ano }}</a>
+        <a href="{% url 'parametro_cadastro' escola.id %}" class="btn btn-secondary">Voltar para os para os parâmetros de {{ form.instance.ano }}</a>
       </div>
     </form>
   </div>
