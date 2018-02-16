@@ -46,7 +46,7 @@ PARCELAS_MATERIAL = (
 
 
 class ParametrosContratoForm(forms.ModelForm):
-    material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL)
+    material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)
     multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
     juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
 
@@ -68,6 +68,14 @@ class ParametrosContratoForm(forms.ModelForm):
         dia_util = cleaned_data['dia_util']
         juros = cleaned_data['juros']
         condicao_juros = cleaned_data['condicao_juros']
+        material_parcelas = cleaned_data['material_parcelas']
+        data_um = cleaned_data['data_um_material']
+        data_dois = cleaned_data['data_dois_material']
+        data_tres = cleaned_data['data_tres_material']
+        data_quatro = cleaned_data['data_quatro_material']
+        data_cinco = cleaned_data['data_cinco_material']
+        data_seis = cleaned_data['data_seis_material']
+
 
         errors_list = []
         if tem_desconto and not condicao_desconto:
@@ -82,6 +90,11 @@ class ParametrosContratoForm(forms.ModelForm):
             errors_list.append("Juros ao mês ou ao dia??")
         if condicao_juros and not juros or juros <= 0:
             errors_list.append("A taxa de juros deve ser maior que Zero")
+        if material_parcelas and not any([data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]):
+            errors_list.append("Expecifíque as datas das parcelas de apostilas")
+        if any([data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]) and not material_parcelas:
+            errors_list.append("Expecifíque o números de parcelas correspondente às datas das parcelas das apostilas")
+
 
         for error in errors_list:
             self._errors[error] = ErrorList([])
