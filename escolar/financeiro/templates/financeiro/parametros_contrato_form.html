@@ -39,6 +39,7 @@
   <div class="row-fluid span10">
     <br>
     <form method="POST" enctype="multipart/form-data">
+      {{ form.errors }}
       {% csrf_token %}
         <div class="form-group center_div" >
           <div class="row">

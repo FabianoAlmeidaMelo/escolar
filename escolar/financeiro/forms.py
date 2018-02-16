@@ -63,6 +63,29 @@ class ParametrosContratoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ParametrosContratoForm, self).clean()
 
+        tem_desconto = cleaned_data['tem_desconto']
+        condicao_desconto = cleaned_data['condicao_desconto']
+        dia_util = cleaned_data['dia_util']
+        juros = cleaned_data['juros']
+        condicao_juros = cleaned_data['condicao_juros']
+
+        errors_list = []
+        if tem_desconto and not condicao_desconto:
+            errors_list.append("Condição do desconto é requerida")
+        if condicao_desconto and not tem_desconto:
+            errors_list.append("Deve marcar que tem desconto")
+        if condicao_desconto == 1 and dia_util: # até a data vencimento
+            errors_list.append("Dia útil não é válido para 'Pagamento até a data do vencimento'")
+        if dia_util and condicao_desconto != 2: # Pagamento até determinado dia útil
+            errors_list.append("Condição de desconto deve ser 'Pagamento até determinado dia útil'")
+        if juros and not condicao_juros:
+            errors_list.append("Juros ao mês ou ao dia??")
+        if condicao_juros and not juros or juros <= 0:
+            errors_list.append("A taxa de juros deve ser maior que Zero")
+
+        for error in errors_list:
+            self._errors[error] = ErrorList([])
+
         return cleaned_data
 
     def save(self, *args, **kwargs):
