@@ -62,7 +62,7 @@ class ParametrosContratoForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ParametrosContratoForm, self).clean()
-
+        ano = cleaned_data['ano']
         tem_desconto = cleaned_data['tem_desconto']
         condicao_desconto = cleaned_data['condicao_desconto']
         dia_util = cleaned_data['dia_util']
@@ -76,6 +76,16 @@ class ParametrosContratoForm(forms.ModelForm):
         data_cinco = cleaned_data['data_cinco_material']
         data_seis = cleaned_data['data_seis_material']
 
+        data_dict = {1: bool(data_um),
+                     2: bool(data_dois),
+                     3: bool(data_tres),
+                     4: bool(data_quatro),
+                     5: bool(data_cinco),
+                     6: bool(data_seis)}
+
+        data_list = [data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]
+        ano_list = [data.year for data in data_list if data]
+        print('\n', ano_list)
 
         errors_list = []
         if tem_desconto and not condicao_desconto:
@@ -92,9 +102,22 @@ class ParametrosContratoForm(forms.ModelForm):
             errors_list.append("A taxa de juros deve ser maior que Zero")
         if material_parcelas and not any([data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]):
             errors_list.append("Expecifíque as datas das parcelas de apostilas")
-        if any([data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]) and not material_parcelas:
-            errors_list.append("Expecifíque o números de parcelas correspondente às datas das parcelas das apostilas")
+        if any([data_um,
+                data_dois,
+                data_tres,
+                data_quatro,
+                data_cinco,
+                data_seis]) and not material_parcelas:
+            errors_list.append("Expecifique o números de parcelas correspondente às datas das parcelas das apostilas")
 
+        for k in data_dict.keys():
+            if k <= int(material_parcelas) and data_dict[k] is False:
+                errors_list.append("Número de datas abaixo do Nr das parcelas")
+            if k > int(material_parcelas) and data_dict[k] is True:
+                errors_list.append("Número de datas acima do Nr das parcelas")
+
+        if ano_list.count(ano) != material_parcelas:
+            errors_list.append("o Ano das datas, deve ser igual o ano do formulário")
 
         for error in errors_list:
             self._errors[error] = ErrorList([])
