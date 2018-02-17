@@ -85,7 +85,6 @@ class ParametrosContratoForm(forms.ModelForm):
 
         data_list = [data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]
         ano_list = [data.year for data in data_list if data]
-        print('\n', ano_list)
 
         errors_list = []
         if tem_desconto and not condicao_desconto:
