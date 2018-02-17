@@ -299,9 +299,11 @@ class Pagamento(models.Model):
     def get_valor_com_desconto(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data_prevista - date.today()).days
-        if date.today() <= self.get_bizday(5):
-            desconto = self.valor * (self.contrato.desconto/ 100)
-            return self.valor - desconto
+        parametros = ParametrosContrato.objects.get(escola=self.escola, ano=ano_corrente)
+        if self.categoria and self.categoria.id == 1 and parametros.tem_desconto: # só Prestação de Serviços
+            if date.today() <= self.get_bizday(5):
+                desconto = self.valor * (self.contrato.desconto/ 100)
+                return self.valor - desconto
         return self.valor
 
     def get_context_alert(self):
