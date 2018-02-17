@@ -135,6 +135,7 @@ class ContratoAluno(UserAdd, UserUpd):
 
     def set_matricula(self):
         data = date.today()
+        categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
         Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
                                         contrato=self,
                                         escola=self.aluno.escola,
@@ -142,47 +143,12 @@ class ContratoAluno(UserAdd, UserUpd):
                                         valor=self.matricula_valor,
                                         observacao='',
                                         nr_parcela=None,
+                                        categoria=categoria,
                                         tipo=2)
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
 
-    # def set_parcelas_material(self):
-    #     '''
-    #     calcula valor e data das parcelas 
-    #     das apostilas E
-    #     Cria os pagamentos
-    #     '''
-    #     if all([self.material_parcelas,
-    #             self.material_valor,
-    #             self.material_data_parcela_um]):
-
-    #         month_range = 12 // self.material_parcelas
-    #         valor = self.material_valor / self.material_parcelas
-    #         #   jan 1, abr 4, jul 7, out 10
-    #         #import pdb; pdb.set_trace()
-    #         datas = [self.material_data_parcela_um]
-    #         i_list = []
-    #         if self.material_parcelas > 1:
-    #             for i in list(range(1, month_range + 1)):
-    #                 i_list.append(i)
-    #                 months = i * month_range
-    #                 data = self.material_data_parcela_um + relativedelta(months=months)
-    #                 datas.append(data)
-    #         datas.sort()
-    #         count = 0
-    #         for data in datas:
-    #             count += 1
-    #             Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
-    #                                             contrato=self,
-    #                                             escola=self.aluno.escola,
-    #                                             data_prevista=data,
-    #                                             valor=valor,
-    #                                             observacao='',
-    #                                             nr_parcela=None,
-    #                                             tipo=2)
-
-    #         print(datas)
         
     def set_parcelas_material(self):
         '''
@@ -224,6 +190,7 @@ class ContratoAluno(UserAdd, UserUpd):
         self.set_matricula()
         self.set_parcelas_material()
         valor = (self.valor - self.matricula_valor) / self.nr_parcela
+        categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
         for p in range(1, self.nr_parcela + 1):
             data =  date(self.ano, p, self.vencimento)
             Pagamento.objects.get_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
@@ -233,6 +200,7 @@ class ContratoAluno(UserAdd, UserUpd):
                                             valor=valor,
                                             observacao='',
                                             nr_parcela=p,
+                                            categoria=categoria,
                                             tipo=2)
 class CategoriaPagamento(models.Model):
     # Categorias default para os Contratos, serve para todas Escolas
