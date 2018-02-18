@@ -328,7 +328,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    contrato = get_object_or_404(ContratoAluno, aluno=aluno, ano=ano_corrente)
+    contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ano_corrente).last()
     if not user.can_access_escola(escola.pk):
         raise Http404
 
@@ -347,7 +347,7 @@ def pagamentos_aluno_list(request, aluno_pk):
 
     # o pgto tem de estar vinculado a um contrato
     # o default para isso é o contrato do ano corrente,
-    # pagamentos de novos contratos, tem funççoes do ContratoAluno, que geram todas as parcelas básicas do ano
+    # pagamentos de novos contratos, tem funções do ContratoAluno, que geram todas as parcelas básicas do ano
     can_create = all([len(ano_valido) == 1, ano_valido[0] == ano_corrente, can_edit]) if ano_valido else False
 
     # ### PAGINAÇÃO ####
