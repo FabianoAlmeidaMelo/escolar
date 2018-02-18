@@ -26,6 +26,9 @@
            </div>
         </caption>
         {% endif %}
+        {% if object_list and aluno.count_responsavel_financeiro == 0 %}
+        <div class="alert alert-warning">Necessário definir um Responsável Financeiro</div>
+        {% endif %}
         <thead>
           <tr>
               <th>Nome</th>
@@ -36,7 +39,6 @@
               <th>Email</th>
           </tr>
         </thead>
-
         <tbody>
         {% for membro in object_list %}
           <tr>

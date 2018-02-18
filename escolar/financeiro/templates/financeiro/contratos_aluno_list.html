@@ -19,11 +19,15 @@
     {% include "base_aluno.html" %}
     <table class="table table-striped">
       {% if can_edit %}
-        <caption>
-           <div style="float:right; margin-right:10px">
+        {% if aluno.count_responsavel_financeiro == 0 %}
+          <div class="alert alert-warning">Necessário definir um Responsável Financeiro</div>
+        {% else %}
+          <caption>
+            <div style="float:right; margin-right:10px">
               <a href="{% url 'contrato_form' aluno.id %}" class="btn btn-mini btn-success">Novo Contrato</a>
-           </div>
-        </caption>
+            div>
+          </caption>
+        {% endif %}
       {% endif %}
       <thead>
         <tr>

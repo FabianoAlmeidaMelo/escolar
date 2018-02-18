@@ -135,7 +135,7 @@ class ContratoAlunoForm(forms.ModelForm):
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
 
-        self.fields['responsavel'].query_set = self.aluno.membrofamilia_set.all()
+        self.fields['responsavel'].queryset = self.aluno.membrofamilia_set.filter(responsavel_financeiro=True)
 
     class Meta:
         model = ContratoAluno

@@ -187,6 +187,10 @@ class ContratoAluno(UserAdd, UserUpd):
 
 
     def set_parcelas(self):
+        '''
+        ref #51
+        chamado no ContratoAlunoForm().save()
+        '''
         if self.pagamento_set.count() == 0:
             self.set_matricula()
             self.set_parcelas_material()

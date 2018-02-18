@@ -399,7 +399,7 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
 
     if request.method == 'POST':
         if form.is_valid():
-            memnbro = form.save()
+            membro = form.save()
             messages.success(request, msg)
             return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk, 'membro_pk': membro.id}))
         else:
