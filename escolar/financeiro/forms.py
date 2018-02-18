@@ -114,8 +114,8 @@ class ParametrosContratoForm(forms.ModelForm):
                 errors_list.append("Número de datas abaixo do Nr das parcelas")
             if k > int(material_parcelas) and data_dict[k] is True:
                 errors_list.append("Número de datas acima do Nr das parcelas")
-
-        if ano_list.count(ano) != material_parcelas:
+        # import pdb; pdb.set_trace()
+        if ano_list.count(ano) != int(material_parcelas):
             errors_list.append("o Ano das datas, deve ser igual o ano do formulário")
 
         for error in errors_list:

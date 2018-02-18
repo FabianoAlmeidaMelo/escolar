@@ -113,7 +113,7 @@ class ContratoAluno(UserAdd, UserUpd):
         u'Dia de Pagar',
         validators=[validate_vencimento],
     )
-    desconto = models.DecimalField('Desconto por pontualidade',
+    desconto = models.DecimalField('Desconto por pontualidade (%)',
         max_digits=7,
         decimal_places=2,
         blank=True,
@@ -144,7 +144,7 @@ class ContratoAluno(UserAdd, UserUpd):
                                         observacao='',
                                         nr_parcela=None,
                                         categoria=categoria,
-                                        tipo=2)
+                                        tipo=1)
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
@@ -181,7 +181,7 @@ class ContratoAluno(UserAdd, UserUpd):
                                             valor=valor,
                                             observacao='',
                                             nr_parcela=None,
-                                            tipo=2)
+                                            tipo=1)
 
         print(datas)
 
@@ -201,7 +201,7 @@ class ContratoAluno(UserAdd, UserUpd):
                                             observacao='',
                                             nr_parcela=p,
                                             categoria=categoria,
-                                            tipo=2)
+                                            tipo=1)
 class CategoriaPagamento(models.Model):
     # Categorias default para os Contratos, serve para todas Escolas
     # Prestação de Serviços
@@ -281,10 +281,11 @@ class Pagamento(models.Model):
         feriados = feriados.filter(date__gte=inicio, date__lte=self.data_prevista).values_list('date', flat=True)
         return feriados
 
-    def get_bizday(self, numero):
+    def get_bizday(self):
         # Retorna o dia útil expecificado;
         # numero ex: 5
         # significa  o 5º dia útil
+        numero = self.escola.parametroscontrato_set.last().dia_util
         feriados = self.get_feriados()
         start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
         dias_uteis = []
@@ -301,7 +302,7 @@ class Pagamento(models.Model):
         # time5 = (self.data_prevista - date.today()).days
         parametros = ParametrosContrato.objects.get(escola=self.escola, ano=ano_corrente)
         if self.categoria and self.categoria.id == 1 and parametros.tem_desconto: # só Prestação de Serviços
-            if date.today() <= self.get_bizday(5):
+            if date.today() <= self.get_bizday():
                 desconto = self.valor * (self.contrato.desconto/ 100)
                 return self.valor - desconto
         return self.valor
