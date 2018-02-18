@@ -55,7 +55,7 @@
         <br>
           <div class="form-actions">
             <a href="{% url 'contrato_edit' aluno.id contrato.id %}" class="btn btn-mini btn-success">Editar</a>
-             <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
+            <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
             <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
           </div>
       {% endif %}

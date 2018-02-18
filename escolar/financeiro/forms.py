@@ -167,6 +167,8 @@ class ContratoAlunoForm(forms.ModelForm):
         self.instance.aluno = self.aluno
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
         instance.save()
+        if instance.pagamento_set.count() == 0:
+            instance.set_parcelas()
         return instance
 
 
