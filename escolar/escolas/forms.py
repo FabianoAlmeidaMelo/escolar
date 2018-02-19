@@ -6,7 +6,7 @@ from django import forms
 from municipios.widgets import SelectMunicipioWidget
 
 from localbr.formfields import BRCPFField, BRCNPJField, BRPhoneNumberField
-
+from escolar.financeiro.models import ParametrosContrato
 
 from escolar.escolas.models import (
     Aluno,
@@ -83,7 +83,16 @@ class EscolaForm(forms.ModelForm):
 
     class Meta:
         model = Escola
+        widgets = {'municipio': SelectMunicipioWidget}
         exclude = ('created_at',)
+
+    def save(self, *args, **kwargs):
+        instance = super(EscolaForm, self).save(*args, **kwargs)
+        instance.save()
+        if not instance.parametroscontrato_set.count() and instance.publica is False:
+            ParametrosContrato.objects.get_or_create(escola=instance,
+                                                     defaults={'ano':ano_corrente})
+        return instance
 
 
 class AlunoForm(forms.ModelForm):

@@ -1,13 +1,25 @@
 # coding: utf-8
+from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from escolar.escolas.models import ANO
 from escolar.core.models import UserAdd, UserUpd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from escolar.utils.numextenso import numero_extenso
+from datetime import datetime, timedelta, date
 
 
 ano_corrente = date.today().year
+ano_seguinte = ano_corrente + 1
+ano_anterior = ano_corrente - 1
+ 
+ANO = (
+    (None, '--'),
+    (ano_anterior, ano_anterior),
+    (ano_corrente, ano_corrente),
+    (ano_seguinte, ano_seguinte),
+)
 
 
 def escola_contrato_path(instance, logo):
@@ -20,6 +32,62 @@ def escola_contrato_path(instance, logo):
 def validate_vencimento(value):
     if value not in range(1, 29):
         raise ValidationError(u'%s Não está entre 1 e 28' % value)
+
+
+CONDICAO_DESCONTO = (
+    (None, '--'),
+    (1, 'Pagamento até a data vencimento'),
+    (2, 'Pagamento até determinado dia útil'),
+)
+
+JUROS_EXPECIFICACAO = (
+    (None, "--"),
+    (1, "Por dia"),
+    (2, "Por Mês"),
+)
+
+DIA_UTIL = (
+    (None, '--'),
+    (1, '1º'),
+    (2, '2º'),
+    (3, '3º'),
+    (4, '4º'),
+    (5, '5º'),
+    (6, '6º'),
+    (7, '7º'),
+    (8, '8º'),
+    (9, '9º'),
+    (10, '10º'),
+    (11, '11º'),
+    (12, '12º'),
+)
+
+class ParametrosContrato(models.Model):
+    '''
+    para Escolas de educação infantil até o 2º grau
+    1 desses por escola
+    criado no save() de escolas.EscolaForm()
+    '''
+    ano = models.SmallIntegerField('Ano', choices=ANO) # pelo ano valida as datas
+    escola = models.ForeignKey('escolas.Escola')
+    tem_desconto = models.BooleanField('tem desconto', default=False)
+    condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
+    dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
+    multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
+    # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
+    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
+    data_um_material = models.DateField('1ª parcela em', blank=True, null=True)
+    data_dois_material = models.DateField('2ª parcela em', blank=True, null=True)
+    data_tres_material = models.DateField('3ª parcela em', blank=True, null=True)
+    data_quatro_material = models.DateField('4ª parcela em', blank=True, null=True)
+    data_cinco_material = models.DateField('5ª parcela em', blank=True, null=True)
+    data_seis_material = models.DateField('6ª parcela em', blank=True, null=True)
+
+    def __str__(self):
+        return 'Parâmetros / Escola: %s' % self.escola.nome
+
 
 class ContratoAluno(UserAdd, UserUpd):
     '''
@@ -45,7 +113,7 @@ class ContratoAluno(UserAdd, UserUpd):
         u'Dia de Pagar',
         validators=[validate_vencimento],
     )
-    desconto = models.DecimalField('Desconto por pontualidade',
+    desconto = models.DecimalField('Desconto por pontualidade (%)',
         max_digits=7,
         decimal_places=2,
         blank=True,
@@ -67,6 +135,7 @@ class ContratoAluno(UserAdd, UserUpd):
 
     def set_matricula(self):
         data = date.today()
+        categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
         Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
                                         contrato=self,
                                         escola=self.aluno.escola,
@@ -74,64 +143,82 @@ class ContratoAluno(UserAdd, UserUpd):
                                         valor=self.matricula_valor,
                                         observacao='',
                                         nr_parcela=None,
-                                        tipo=2)
+                                        categoria=categoria,
+                                        tipo=1)
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
 
+        
     def set_parcelas_material(self):
         '''
         calcula valor e data das parcelas 
         das apostilas E
         Cria os pagamentos
         '''
-        if all([self.material_parcelas,
-                self.material_valor,
-                self.material_data_parcela_um]):
+        parametros = ParametrosContrato.objects.get(escola=self.aluno.escola, ano=self.ano)
 
-            month_range = 12 // self.material_parcelas
-            valor = self.material_valor / self.material_parcelas
-            #   jan 1, abr 4, jul 7, out 10
-            #import pdb; pdb.set_trace()
-            datas = [self.material_data_parcela_um]
-            i_list = []
-            if self.material_parcelas > 1:
-                for i in list(range(1, month_range + 1)):
-                    i_list.append(i)
-                    months = i * month_range
-                    data = self.material_data_parcela_um + relativedelta(months=months)
-                    datas.append(data)
-            datas.sort()
-            count = 0
-            for data in datas:
-                count += 1
-                Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
-                                                contrato=self,
-                                                escola=self.aluno.escola,
-                                                data_prevista=data,
-                                                valor=valor,
-                                                observacao='',
-                                                nr_parcela=None,
-                                                tipo=2)
-
-            print(datas)
+        dates = [parametros.data_um_material,
+                 parametros.data_dois_material,
+                 parametros.data_tres_material,
+                 parametros.data_quatro_material,
+                 parametros.data_cinco_material,
+                 parametros.data_seis_material]
         
+        datas = [data for data in dates if data]
 
+        month_range = 12 // parametros.material_parcelas
+        valor = self.material_valor / parametros.material_parcelas
 
-    def set_parcelas(self):
-        self.set_matricula()
-        valor = (self.valor - self.matricula_valor) / self.nr_parcela
-        for p in range(1, self.nr_parcela + 1):
-            data =  date(self.ano, p, self.vencimento)
-            Pagamento.objects.get_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
+        datas.sort()
+        count = 0
+        for data in datas:
+            count += 1
+            Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, parametros.material_parcelas) ,
                                             contrato=self,
                                             escola=self.aluno.escola,
                                             data_prevista=data,
                                             valor=valor,
                                             observacao='',
-                                            nr_parcela=p,
-                                            tipo=2)
+                                            nr_parcela=None,
+                                            tipo=1)
 
+        print(datas)
+
+
+    def set_parcelas(self):
+        '''
+        ref #51
+        chamado no ContratoAlunoForm().save()
+        '''
+        if self.pagamento_set.count() == 0:
+            self.set_matricula()
+            self.set_parcelas_material()
+            valor = (self.valor - self.matricula_valor) / self.nr_parcela
+            categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
+            for p in range(1, self.nr_parcela + 1):
+                data =  date(self.ano, p, self.vencimento)
+                Pagamento.objects.get_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
+                                                contrato=self,
+                                                escola=self.aluno.escola,
+                                                data_prevista=data,
+                                                valor=valor,
+                                                observacao='',
+                                                nr_parcela=p,
+                                                categoria=categoria,
+                                                tipo=1)
+
+class CategoriaPagamento(models.Model):
+    # Categorias default para os Contratos, serve para todas Escolas
+    # Prestação de Serviços
+    # Matrícula
+    escola = models.ForeignKey('escolas.Escola', null=True, blank=True)
+    nome = models.CharField('Categoria', max_length=50)
+
+    def __str__(self):
+        if self.escola:
+            return "%s - %s" % (self.nome, self.escola.nome)
+        return self.nome
 
 class PagamentoManager(models.Manager):
     def get_recebimentos_pendentes(self):
@@ -143,12 +230,6 @@ class PagamentoManager(models.Manager):
         # query = estagio_valido & pag_lib & pag_nao_efetuado
 
         # return self.filter(query).order_by('-data_prevista')
-
-
-# TIPO_CHOICES = (
-#     (1, u'(+)'),
-#     (2, u'(-)'),
-# )
 
 
 class Pagamento(models.Model):
@@ -173,7 +254,7 @@ class Pagamento(models.Model):
         blank=True
     )
     nr_documento = models.CharField(verbose_name=u'Nr Documento', max_length=20, null=True, blank=True)
-    # categoria = models.ForeignKey(Categoria, null=True, blank=True)
+    categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
 
 
@@ -193,14 +274,43 @@ class Pagamento(models.Model):
         collor = {1: 'blue', 2: 'red', None: 'black'}
         return collor[self.tipo]
 
+    def get_feriados(self):
+        '''
+        lista os feriados antes da
+        data_prevista
+        '''
+        Feriado = apps.get_model(app_label='core', model_name='Feriado')
+        municipio = self.escola.municipio
+        uf = int(str(municipio.id_ibge)[:2])
+        inicio = date(self.data_prevista.year, self.data_prevista.month, 1)
+        feriados = Feriado.objects.filter(Q(type_code=1) | Q(uf_ibge_code=uf) | Q(municipio=municipio))
+        feriados = feriados.filter(date__gte=inicio, date__lte=self.data_prevista).values_list('date', flat=True)
+        return feriados
+
+    def get_bizday(self):
+        # Retorna o dia útil expecificado;
+        # numero ex: 5
+        # significa  o 5º dia útil
+        numero = self.escola.parametroscontrato_set.last().dia_util
+        feriados = self.get_feriados()
+        start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
+        dias_uteis = []
+        i = 0
+        while len(dias_uteis) < numero:
+            data = start + timedelta(days=i)
+            if data.weekday() not in [5, 6] and data not in feriados:
+                dias_uteis.append(data)
+            i += 1
+        return dias_uteis[numero - 1]
+
     def get_valor_com_desconto(self):
-        # import pdb; pdb.set_trace()
-        #TODO:
         # calcular por dias úteis ou data específica
-        time5 = (self.data_prevista - date.today()).days
-        if time5 > 5:
-            desconto = self.valor * (self.contrato.desconto/ 100)
-            return self.valor - desconto
+        # time5 = (self.data_prevista - date.today()).days
+        parametros = ParametrosContrato.objects.get(escola=self.escola, ano=ano_corrente)
+        if self.categoria and self.categoria.id == 1 and parametros.tem_desconto: # só Prestação de Serviços
+            if date.today() <= self.get_bizday():
+                desconto = self.valor * (self.contrato.desconto/ 100)
+                return self.valor - desconto
         return self.valor
 
     def get_context_alert(self):
@@ -221,3 +331,4 @@ class Pagamento(models.Model):
             elif self.efet is None or self.efet is False:
                 return "danger"
         return ""
+

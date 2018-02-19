@@ -26,6 +26,7 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
+    <br>
     <form method="POST" enctype="multipart/form-data">
       {{ form.errors }}
       {% csrf_token %}
@@ -72,7 +73,10 @@
         {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
         {% endif %}
-        <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
+        {% if aluno %}
+          <a href="{% url 'aluno_cadastro' aluno.id %}" class="btn btn-secondary">Voltar para o cadastro {{ aluno.nome }}</a>
+        {% endif %}
+          <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
       </div>
     </form>
   </div>

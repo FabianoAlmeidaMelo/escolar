@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  {% include "base_adm.html" %}
+    <div class="row-fluid span10">
+     {% include "base_aluno.html" %}
+      <div class="row">
+        <br>
+        <!-- {# Celular, Tablet, Computador #} -->
+        <div class="col-xs-9 col-sm-6 col-md-3">
+          <p><b>nome</b>: {{ autorizado.nome }}</p>
+          <p><b>emsil</b>: {{ autorizado.email }}</p>
+          <p><b>cel./tel.</b>: {{ autorizado.celular }}</p>
+          <p><b>documento</b>: {{ autorizado.documento }}</p>
+        </div>
+      </div>
+  </div>
+  {% if can_edit %}
+  <br>
+    <div class="form-actions">
+      <a href="{% url 'autorizado_form' aluno.id autorizado.pk %}" class="btn btn-mini btn-success">Editar</a>
+      <a href="{% url 'autorizados_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de autorizados do aluno">Autorizados do aluno</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock content %}
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

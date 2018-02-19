@@ -40,6 +40,7 @@ class Escola(models.Model):
     '''
     pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
+    municipio = models.ForeignKey(Municipio)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
     telefone = models.CharField('telefone', max_length=14, null=True, blank=True)
@@ -115,6 +116,9 @@ class Aluno(UserAdd, UserUpd):
     def __str__(self):
         return self.nome
 
+    def count_responsavel_financeiro(self):
+        return self.membrofamilia_set.filter(responsavel_financeiro=True).count()
+
     def get_sexo_display(self):
         sexo = {1: 'masculino', 2: 'feminino'}
         return sexo[self.sexo]
@@ -160,15 +164,19 @@ class MembroFamilia(UserAdd, UserUpd):
     celular = models.CharField(max_length=11, null=True, blank=True)
     telefone = models.CharField(max_length=11, null=True, blank=True)
     # comrecial
-    empresa = models.CharField(max_length=100)
-    telefone_empresa = models.CharField(max_length=11)
-    obs_empresa = models.CharField(max_length=100)
+    empresa = models.CharField(max_length=100, null=True, blank=True)
+    telefone_empresa = models.CharField(max_length=11, null=True, blank=True)
+    obs_empresa = models.CharField(max_length=100, null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Membro da Família'
         verbose_name_plural = 'Membros da Família'
         ordering = ('nome',)
+
+    def get_sexo_display(self):
+        sexo = {1: 'masculino', 2: 'feminino'}
+        return sexo[self.sexo]
 
     def __str__(self):
         return self.nome
@@ -219,6 +227,7 @@ class Autorizado(models.Model):
     celular = models.CharField('celular', max_length=14)
     documento = models.CharField(max_length=25, unique=True)
     # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
+    # ativo = models.BooleanField('Autorizado', default=False)
 
     def __str__ (self):
         return self.nome

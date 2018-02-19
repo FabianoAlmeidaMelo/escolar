@@ -52,7 +52,7 @@ class Endereco(models.Model):
     municipio = models.ForeignKey(Municipio, null=True, blank=True)
     perfil = models.ForeignKey('Perfil', null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s - %s" % (self.cep, self.numero)
 
     class Meta:
@@ -232,17 +232,24 @@ class UserUpd(models.Model):
         abstract = True
 
 
-# class Endereco(models.Model):
- 
-#     cep = models.CharField(max_length=9)
-#     logradouro = models.CharField(max_length=100)
-#     numero = models.CharField(verbose_name=u'Número', max_length=50)
-#     complemento = models.CharField(max_length=100, null=True, blank=True)
-#     bairro = models.CharField(max_length=100)
-#     municipio = models.ForeignKey(Municipio)
+class Feriado(models.Model):
+    '''
+    popula os dados quando tiver clientes
+    de um Município, e próximo a liberação de contratos para
+    ano seguinte
+    popular com get or create no brasil_feriados.py
+    Depois que os contratos de um ano estivrem validados, limpar
+    os feriados do mesmo ano do BD
+    '''
+    date = models.DateField('data')
+    name = models.CharField(max_length=100)
+    type_name = models.CharField(max_length=80)
+    type_code = models.SmallIntegerField('tipo')
+    uf_ibge_code = models.SmallIntegerField('uf ibge', null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, null=True, blank=True)
 
-#     def __unicode__(self):
-#         return u"%s - %s" % (self.cep, self.numero)
+    def __str__(self):
+        return u"%s - %s" % (self.date, self.type_name)
 
-#     class Meta:
-#         verbose_name = u'Endereço'
+    class Meta:
+        verbose_name = u'Feriado'

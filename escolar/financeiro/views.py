@@ -2,17 +2,22 @@
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, redirect, get_object_or_404, resolve_url
-from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 
-from datetime import date
+from escolar.core.models import UserGrupos, User
+from datetime import date, datetime
 from calendar import monthrange
 
-from escolar.financeiro.models import ContratoAluno, Pagamento
+from escolar.financeiro.models import (
+    ContratoAluno,
+    Pagamento,
+    ParametrosContrato,
+)
+
 from escolar.financeiro.forms import (
     ano_corrente,
     mes_corrnete,
@@ -21,6 +26,7 @@ from escolar.financeiro.forms import (
     PagamentoAlunoEscolaSearchForm,
     PagamentoEscolaSearchForm,
     PagamentoForm,
+    ParametrosContratoForm,
 )
 
 from escolar.escolas.models import Escola
@@ -109,7 +115,7 @@ def contratos_list(request, escola_pk):
     context['can_edit'] = can_edit
     context['object_list'] = contratos
 
-    # context['tab_alunos'] = "active"
+    context['tab_administracao'] = "active"
     context['tab_contratos'] = "active"
 
     return render(request, 'financeiro/contratos_list.html', context)
@@ -146,6 +152,59 @@ def contratos_aluno_list(request, aluno_pk):
     context['tab_aluno_contratos'] = "active"
 
     return render(request, 'financeiro/contratos_aluno_list.html', context)
+
+
+@login_required
+def parametros_contrato_form(request, escola_pk):
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    # no save do EscolaForm, já criou 1 parâmetro para Escola
+    parametros = escola.parametroscontrato_set.last()
+    if not can_edit:
+        raise Http404
+
+    msg = u'Parâmetros alterados com sucesso.'
+
+    form = ParametrosContratoForm(request.POST or None, request.FILES or None, instance=parametros, escola=escola, user=user)
+    context = {}
+    context['form'] = form
+    context['parametros'] = parametros
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+
+    context['tab_administracao'] = "active"
+    context['tab_parametros'] = "active"
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contrato = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('parametro_cadastro', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha na edição dos parâmetros.')
+
+    return render(request, 'financeiro/parametros_contrato_form.html', context)
+
+
+
+@login_required
+def parametro_cadastro(request, escola_pk):
+    user = request.user
+
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    parametros = escola.parametroscontrato_set.last()
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    context = {}
+    context["escola"] = escola
+    context["parametros"] = parametros
+
+    context['can_edit'] = can_edit
+    context['tab_administracao'] = "active"
+    context['tab_parametros'] = "active"
+    return render(request, 'financeiro/parametros_contrato_cadastro.html', context)
 
 
 @login_required
@@ -269,7 +328,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    contrato = get_object_or_404(ContratoAluno, aluno=aluno, ano=ano_corrente)
+    contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ano_corrente).last()
     if not user.can_access_escola(escola.pk):
         raise Http404
 
@@ -288,7 +347,7 @@ def pagamentos_aluno_list(request, aluno_pk):
 
     # o pgto tem de estar vinculado a um contrato
     # o default para isso é o contrato do ano corrente,
-    # pagamentos de novos contratos, tem funççoes do ContratoAluno, que geram todas as parcelas básicas do ano
+    # pagamentos de novos contratos, tem funções do ContratoAluno, que geram todas as parcelas básicas do ano
     can_create = all([len(ano_valido) == 1, ano_valido[0] == ano_corrente, can_edit]) if ano_valido else False
 
     # ### PAGINAÇÃO ####
@@ -357,7 +416,33 @@ def pagamentos_list(request, escola_pk):
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
 
-    # context['tab_alunos'] = "active"
+    context['tab_administracao'] = "active"
     context['tab_parcelas'] = "active"
 
     return render(request, 'financeiro/pagamentos_list.html', context)
+
+
+@login_required
+def set_pagamento_status(request, pagamento_pk):
+    '''
+    ref #48 - ajax
+    altera pagamento.efet
+        para: True ou False
+    '''
+    user = request.user
+    data_hora = datetime.today()
+    pagamento = get_object_or_404(Pagamento, id=pagamento_pk)
+    escola = pagamento.escola
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    if not can_edit:
+        raise Http404
+    if pagamento.efet is True:
+        pagamento.efet = False
+    else:
+        pagamento.valor_pag = pagamento.valor # vai entrar a regra aqui
+        pagamento.data_pag = data_hora
+        pagamento.observacao = 'Marcado pago por: %s; em %s' % (user.nome, str(data_hora))
+        pagamento.efet = True
+    pagamento.save()
+
+    return HttpResponse('Ok')

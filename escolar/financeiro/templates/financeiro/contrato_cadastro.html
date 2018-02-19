@@ -18,10 +18,10 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-          <!-- Example row of columns -->
+    <br>
+      <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-3">
-          <br>
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3><b>Ano</b> : {{ contrato.ano }}</h3>
           <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
           <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
@@ -30,33 +30,35 @@
           <p>({{ contrato.get_valor_extenso }})</p>
           <p><b>Data de assinatura</b>: {{ contrato.data_assinatura|date:"d/m/Y" }}</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Condições</h3>
           <p><b>Número de parcelas</b>:{{ contrato.nr_parcela }}</p>
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
-          <p><b>matricula valor</b>: {{ contrato.matricula_nr|numberformat_br|default:"--" }}</p>
+          <p><b>matricula valor</b>:R$ {{ contrato.matricula_valor|numberformat_br|default:"--" }}</p>
+          <p><b>multa por atraso mensalidade</b>: % --</p>
+          <p><b>juros por atraso na mensalidade</b>:  % --</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>
             <p><b>Valor</b>: R$ {{ contrato.material_valor }}</p>
             <p><b>Número de parcelas</b>: {{ contrato.material_parcelas }}</p>
             <p><b>Data da 1ª parcela</b>: {{ contrato.material_data_parcela_um|date:"d/m/Y" }}</p>
         </div>
-        <div class="col-md-3">
+        <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Arquivo</h3>
           <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
           </div>
       </div>
 
-        {% if can_edit %}
+      {% if can_edit %}
         <br>
           <div class="form-actions">
             <a href="{% url 'contrato_edit' aluno.id contrato.id %}" class="btn btn-mini btn-success">Editar</a>
-             <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
+            <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
             <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
           </div>
-        {% endif %}
+      {% endif %}
   </div>
 </div>
 

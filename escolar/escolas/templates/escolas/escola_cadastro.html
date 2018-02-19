@@ -13,14 +13,13 @@
   </div>
 {% endblock page_title %}
 
-
 {% block content %}
-
 <div class="container">
    {% include "base_adm.html" %}
     <div class="row-fluid span10">
         País: <b>{{ escola.pais }}</b><br>
-        Nome: <b>{{ escola.nome }}</b><br> 
+        Nome: <b>{{ escola.nome }}</b><br>
+        Município:<b>{{ escola.municipio }}</b><br>
         Endereço: <b>{{ escola.endereco }}</b><br> 
         Número: <b>{{ escola.numero }}</b><br> 
         complemento: <b>{{ escola.complemento }}</b><br> 

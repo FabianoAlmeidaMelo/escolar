@@ -19,10 +19,10 @@
     {% endif %}
   </div>
 {% endblock page_title %}
-
 {% block content %}
 <div class="container">
   <div class="row-fluid span10">
+    <br>
     {% include "base_aluno.html" %}
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
@@ -30,7 +30,6 @@
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-9 col-sm-6 col-md-3">
-            
               <p>{% bootstrap_field form.ano %}</p>
               <p>{% bootstrap_field form.serie %}</p>
               <p><b>Aluno</b>:{{ aluno.nome }}</p>
@@ -40,7 +39,7 @@
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             <p>{% bootstrap_field form.nr_parcela %}</p>
-            <p>{% bootstrap_field form.desconto %} (%)</p>
+            <p>{% bootstrap_field form.desconto %}</p>
             <p>{% bootstrap_field form.matricula_nr %}</p>
             <p>{% bootstrap_field form.matricula_valor %}</p>
           </div>

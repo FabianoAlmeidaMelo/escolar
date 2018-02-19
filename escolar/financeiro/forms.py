@@ -8,6 +8,7 @@ from escolar.financeiro.models import (
     ANO,
     ContratoAluno,
     Pagamento,
+    ParametrosContrato,
 )
 
 from datetime import date
@@ -33,13 +34,108 @@ TIPO_CHOICES = (
     (2, u'(-)'),
 )
 
+PARCELAS_MATERIAL = (
+    (None, '--'),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+)
+
+
+class ParametrosContratoForm(forms.ModelForm):
+    material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)
+    multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
+    juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(ParametrosContratoForm, self).__init__(*args, **kwargs)
+
+
+    class Meta:
+        model = ParametrosContrato
+        exclude = ('escola',) 
+
+    def clean(self):
+        cleaned_data = super(ParametrosContratoForm, self).clean()
+        ano = cleaned_data['ano']
+        tem_desconto = cleaned_data['tem_desconto']
+        condicao_desconto = cleaned_data['condicao_desconto']
+        dia_util = cleaned_data['dia_util']
+        juros = cleaned_data['juros']
+        condicao_juros = cleaned_data['condicao_juros']
+        material_parcelas = cleaned_data['material_parcelas']
+        data_um = cleaned_data['data_um_material']
+        data_dois = cleaned_data['data_dois_material']
+        data_tres = cleaned_data['data_tres_material']
+        data_quatro = cleaned_data['data_quatro_material']
+        data_cinco = cleaned_data['data_cinco_material']
+        data_seis = cleaned_data['data_seis_material']
+
+        data_dict = {1: bool(data_um),
+                     2: bool(data_dois),
+                     3: bool(data_tres),
+                     4: bool(data_quatro),
+                     5: bool(data_cinco),
+                     6: bool(data_seis)}
+
+        data_list = [data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]
+        ano_list = [data.year for data in data_list if data]
+
+        errors_list = []
+        if tem_desconto and not condicao_desconto:
+            errors_list.append("Condição do desconto é requerida")
+        if condicao_desconto and not tem_desconto:
+            errors_list.append("Deve marcar que tem desconto")
+        if condicao_desconto == 1 and dia_util: # até a data vencimento
+            errors_list.append("Dia útil não é válido para 'Pagamento até a data do vencimento'")
+        if dia_util and condicao_desconto != 2: # Pagamento até determinado dia útil
+            errors_list.append("Condição de desconto deve ser 'Pagamento até determinado dia útil'")
+        if juros and not condicao_juros:
+            errors_list.append("Juros ao mês ou ao dia??")
+        if condicao_juros and not juros or juros <= 0:
+            errors_list.append("A taxa de juros deve ser maior que Zero")
+        if material_parcelas and not any([data_um, data_dois, data_tres, data_quatro, data_cinco, data_seis]):
+            errors_list.append("Expecifíque as datas das parcelas de apostilas")
+        if any([data_um,
+                data_dois,
+                data_tres,
+                data_quatro,
+                data_cinco,
+                data_seis]) and not material_parcelas:
+            errors_list.append("Expecifique o números de parcelas correspondente às datas das parcelas das apostilas")
+
+        for k in data_dict.keys():
+            if k <= int(material_parcelas) and data_dict[k] is False:
+                errors_list.append("Número de datas abaixo do Nr das parcelas")
+            if k > int(material_parcelas) and data_dict[k] is True:
+                errors_list.append("Número de datas acima do Nr das parcelas")
+        # import pdb; pdb.set_trace()
+        if ano_list.count(ano) != int(material_parcelas):
+            errors_list.append("o Ano das datas, deve ser igual o ano do formulário")
+
+        for error in errors_list:
+            self._errors[error] = ErrorList([])
+
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(ParametrosContratoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
 class ContratoAlunoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
 
-        self.fields['responsavel'].query_set = self.aluno.membrofamilia_set.all()
+        self.fields['responsavel'].queryset = self.aluno.membrofamilia_set.filter(responsavel_financeiro=True)
 
     class Meta:
         model = ContratoAluno
@@ -71,6 +167,8 @@ class ContratoAlunoForm(forms.ModelForm):
         self.instance.aluno = self.aluno
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
         instance.save()
+        if instance.pagamento_set.count() == 0:
+            instance.set_parcelas()
         return instance
 
 

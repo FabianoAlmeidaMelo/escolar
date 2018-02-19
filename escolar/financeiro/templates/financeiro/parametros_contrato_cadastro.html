@@ -1,0 +1,73 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_ano {
+      width: 80px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        Parâmetros de Contratos / {{ escola.nome }}
+    {% else %}
+        Cadastro de Parâmetros de Contratos
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+        <div class="form-group center_div" >
+          <div class="row">
+            <!-- {# Celular, Tablet, Computador #} -->
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p><b>Ano</b>: {{ parametros.ano }}</p>
+              <p><b>Da desconto</b>: {{ parametros.tem_desconto|yesno:"Sim,Não" }}</p>
+              <p><b>Condição para ter desconto</b>: {{ parametros.get_condicao_desconto_display }}</p>
+              <p><b>Pagamento até</b>: {{ parametros.get_dia_util_display }} dia útil</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p><b>Multa por atraso mensalidade (%)</b>: {{ parametros.multa }}</p>
+              <p><b>Juros por atraso mensalidade (%)</b>: {{ parametros.juros }}</p>
+              <p>juros: {{ parametros.get_condicao_juros_display }}</p>
+              <p><b>Pgamento das Apostilas em</b>: {{ parametros.material_parcelas }} parcelas</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <small>Data das Parcelas das Apostilas</small>
+              <p><b>Data 1ª</b>: {{ parametros.data_um_material|date:"d/m/Y"|default:'' }}</p>
+              <p><b>Data 2ª</b>: {{ parametros.data_dois_material|date:"d/m/Y"|default:'' }}</p>
+              <p><b>Data 3ª</b>: {{ parametros.data_tres_material|date:"d/m/Y"|default:'' }}</p>
+              <p><b>Data 4ª</b>: {{ parametros.data_quatro_material|date:"d/m/Y"|default:'' }}</p>
+            {% if parametros.data_cinco_material%}
+              <p><b>Data 5ª</b>: {{ parametros.data_cinco_material|date:"d/m/Y"|default:'' }}</p>
+              <p><b>Data 6ª</b>: {{ parametros.data_seis_material|date:"d/m/Y"|default:'' }}</p>
+            {% endif %}
+            </div>
+        </div>
+      </div>
+
+      <!-- glyphicon glyphicon-print -->
+      {% if can_edit %}
+        <br>
+          <div class="form-actions">
+            <a href="{% url 'parametros_contrato_form' escola.id %}" class="btn btn-mini btn-success">Editar</a>
+          </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

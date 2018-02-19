@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
-
 {% block page_title %}
   <div class="page-header">
   <!-- TODO erver esse br -->
@@ -12,53 +11,49 @@
     {% endif %}
   </div>
 {% endblock page_title %}
-
 {% block content %}
-
 <div class="container">
-
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-      {% include "base_aluno.html" %}
+    {% include "base_aluno.html" %}
     <table class="table table-striped">
-        {% if can_edit %}
-        <caption>
-           <div style="float:right; margin-right:10px">
-              <a href="{% url 'autorizado_form' aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
-           </div>
-        </caption>
-        {% endif %}
-        <thead>
-          <tr>
-              <th>Nome</th>
-              <th>Aluno</th>
-              <th>Status</th>
-              <th>Quem autorizou</th>
-              <th>Data</th>
-          </tr>
-        </thead>
-
-        <tbody>
-        {% for autorizado in autorizados %}
-          <tr>
-            {% if can_edit %}
-              <td><a href="{% url 'autorizado_form' aluno.pk autorizado.autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
-            {% else %}
-              <td>{{ autorizado.autorizado.nome }}</td>
-            {% endif %}
-            <td>{{ autorizado.aluno|default:'--' }}</td>
-            <td>{{ autorizado.status|yesno:'Autorizado,--' }}</td>
-            <td>{{ autorizado.responsavel }}</td>
-            <td>{{ autorizado.data|date:"d/m/Y" }} - {{ autorizado.data|time:"H:i" }}</td>
-          </tr>
-        {% empty %}
+      {% if can_edit %}
+      <caption>
+       <div style="float:right; margin-right:10px">
+          <a href="{% url 'autorizado_form' aluno.pk %}" class="btn btn-mini btn-success">Novo Autorizado</a>
+       </div>
+      </caption>
+      {% endif %}
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Aluno</th>
+          <th>Status</th>
+          <th>Quem autorizou</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for autorizado in autorizados %}
+        <tr>
+          {% if can_edit %}
+            <td><a href="{% url 'autorizado_cadastro' aluno.pk autorizado.autorizado.pk %}">{{ autorizado.autorizado.nome }}</a></td>
+          {% else %}
+            <td>{{ autorizado.autorizado.nome }}</td>
+          {% endif %}
+          <td>{{ autorizado.aluno|default:'--' }}</td>
+          <td>{{ autorizado.status|yesno:'Autorizado,--' }}</td>
+          <td>{{ autorizado.responsavel }}</td>
+          <td>{{ autorizado.data|date:"d/m/Y" }} - {{ autorizado.data|time:"H:i" }}</td>
+        </tr>
+      {% empty %}
         <tr>
           <td>
-              Nenhum autorizado encontrado
+            Nenhum autorizado cadastrado
           </td>
         </tr>
-        {% endfor %}
-        </tbody>
+      {% endfor %}
+      </tbody>
     </table>
   </div>
 </div>

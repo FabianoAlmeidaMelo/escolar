@@ -22,9 +22,12 @@
         {% if can_edit %}
         <caption>
            <div style="float:right; margin-right:10px">
-              <a href="{% url 'membro_familia_form' aluno.id %}" class="btn btn-mini btn-success">Adicionar</a>
+              <a href="{% url 'membro_familia_form' aluno.id %}" class="btn btn-mini btn-success">Novo Familiar</a>
            </div>
         </caption>
+        {% endif %}
+        {% if object_list and aluno.count_responsavel_financeiro == 0 %}
+        <div class="alert alert-warning">Necessário definir um Responsável Financeiro</div>
         {% endif %}
         <thead>
           <tr>
@@ -36,12 +39,11 @@
               <th>Email</th>
           </tr>
         </thead>
-
         <tbody>
         {% for membro in object_list %}
           <tr>
             {% if can_edit %}
-              <td><a href="{% url 'membro_familia_form' aluno.pk membro.pk %}">{{ membro.nome }}</a></td>
+              <td><a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk %}">{{ membro.nome }}</a></td>
             {% else %}
               <td>{{ membro.nome }}</td>
             {% endif %}
@@ -54,7 +56,7 @@
         {% empty %}
         <tr>
           <td>
-              Nenhum membro da família encontrado
+              Nenhum membro da família cadastrado
           </td>
         </tr>
         {% endfor %}

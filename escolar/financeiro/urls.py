@@ -9,10 +9,16 @@ from escolar.financeiro.views import (
     pagamento_form,
 	pagamentos_list,
     pagamentos_aluno_list,
+    parametro_cadastro,
+    parametros_contrato_form,
 	responsaveis_list,
+    set_pagamento_status,
 )
 
 urlpatterns = [
+    # Parametros dos Contratos
+    url(r'^escola/(?P<escola_pk>\d+)/parametros_cadastro/$', parametro_cadastro, name='parametro_cadastro'),
+    url(r'^escola/(?P<escola_pk>\d+)/parametros/$', parametros_contrato_form, name='parametros_contrato_form'),
     # Contratos
     url(r'^escola/(?P<escola_pk>\d+)/contratos_list/$', contratos_list, name='contratos_list'),
     url(r'^escola/(?P<aluno_pk>\d+)/contratos_aluno_list/$', contratos_aluno_list, name='contratos_aluno_list'),
@@ -28,4 +34,6 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/pagamento/(?P<pagamento_pk>\d+)/$', pagamento_form, name='pagamento_edit'),
     url(r'^escola/(?P<escola_pk>\d+)/contrato/(?P<contrato_pk>\d+)/pagamento_form/$', pagamento_form, name='pagamento_contrato_form'),
     url(r'^escola/(?P<escola_pk>\d+)/contrato/(?P<contrato_pk>\d+)pagamento/(?P<pagamento_pk>\d+)/$', pagamento_form, name='pagamento_aluno_edit'),
+    url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/set_status/$', set_pagamento_status, name="set_pagamento_status"
+        ),
 ]

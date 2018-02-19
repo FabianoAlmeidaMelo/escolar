@@ -2,13 +2,16 @@
 {% load bootstrap3 %}
 
 {% block page_title %}
-    {% if escola %}
-         Cadastro de Autorizado / Escola: {{ escola.nome }}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}
     {% else %}
-        Cadastro de Autorizado
+       Aluno
     {% endif %}
+  </div>
 {% endblock page_title %}
-
 
 {% block content %}
 
@@ -16,9 +19,7 @@
   {% include "base_adm.html" %}
     <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-      Aluno: <b>{{ aluno.nome }}</b><br>
-      Classe: <b>{{ classe|default:"--" }}</b><br>
- 
+    <br>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
@@ -33,7 +34,11 @@
           </div>
         <div class="form-actions">
           <input type="submit" value="Salvar" class="btn btn-primary">
+          {% if autorizado %}
+            <a href="{% url 'autorizado_cadastro' aluno.pk autorizado.pk %}" class="btn btn-secondary">Voltar para o cadastro {{ autorizado.nome }}</a>
+          {% else %}
             <a href="{% url 'autorizados_aluno_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
+          {% endif %}
        </div>
       </div>
     </form>
