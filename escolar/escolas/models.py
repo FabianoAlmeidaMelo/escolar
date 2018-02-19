@@ -164,9 +164,9 @@ class MembroFamilia(UserAdd, UserUpd):
     celular = models.CharField(max_length=11, null=True, blank=True)
     telefone = models.CharField(max_length=11, null=True, blank=True)
     # comrecial
-    empresa = models.CharField(max_length=100)
-    telefone_empresa = models.CharField(max_length=11)
-    obs_empresa = models.CharField(max_length=100)
+    empresa = models.CharField(max_length=100, null=True, blank=True)
+    telefone_empresa = models.CharField(max_length=11, null=True, blank=True)
+    obs_empresa = models.CharField(max_length=100, null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
 
     class Meta:
