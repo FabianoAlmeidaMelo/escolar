@@ -36,14 +36,20 @@
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
           <p><b>matricula valor</b>:R$ {{ contrato.matricula_valor|numberformat_br|default:"--" }}</p>
-          <p><b>multa por atraso mensalidade</b>: % --</p>
-          <p><b>juros por atraso na mensalidade</b>:  % --</p>
+          <p><b>multa por atraso mensalidade</b>: {{ contrato.multa }} % </p>
+          <p><b>juros por atraso mensalidade</b>: {{ contrato.juros }} % </p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>
             <p><b>Valor</b>: R$ {{ contrato.material_valor }}</p>
             <p><b>Número de parcelas</b>: {{ contrato.material_parcelas }}</p>
-            <p><b>Data da 1ª parcela</b>: {{ contrato.material_data_parcela_um|date:"d/m/Y" }}</p>
+            <p><b>Data das parcelas</b>:</p>
+              <ul>
+                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_um_material|date:"d/m/Y" }}</li>
+                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_dois_material|date:"d/m/Y" }}</li>
+                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_tres_material|date:"d/m/Y" }}</li>
+                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_quatro_material|date:"d/m/Y" }}</li>
+              </ul>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Arquivo</h3>
