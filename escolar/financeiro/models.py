@@ -76,6 +76,7 @@ class ParametrosContrato(models.Model):
     multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
+
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
     data_um_material = models.DateField('1ª parcela em', blank=True, null=True)
@@ -84,6 +85,17 @@ class ParametrosContrato(models.Model):
     data_quatro_material = models.DateField('4ª parcela em', blank=True, null=True)
     data_cinco_material = models.DateField('5ª parcela em', blank=True, null=True)
     data_seis_material = models.DateField('6ª parcela em', blank=True, null=True)
+    
+    # contrato
+    desconto = models.DecimalField('Desconto por pontualidade (%)',
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True)
+    matricula_valor = models.DecimalField('Valor Matrícula',
+        max_digits=7,
+        decimal_places=2)
+
 
     def __str__(self):
         return 'Parâmetros / Escola: %s' % self.escola.nome
@@ -96,11 +108,19 @@ class ContratoAluno(UserAdd, UserUpd):
     Escola + Responsavel pelo Aluno + Aluno
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
+    ano = models.SmallIntegerField()
+    # INI parametros
+    tem_desconto = models.BooleanField('tem desconto', default=False)
+    condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
+    dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
+    multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
+    condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
+    # fim parametros
     responsavel = models.ForeignKey('escolas.MembroFamilia')
     aluno = models.ForeignKey('escolas.Aluno', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)
     curso = models.CharField('curso', null=True, blank=True, max_length=120)
-    ano = models.SmallIntegerField()
     matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
     data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
     contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)
@@ -108,11 +128,11 @@ class ContratoAluno(UserAdd, UserUpd):
         'valor',
         max_digits=7,
         decimal_places=2)
-    nr_parcela = models.PositiveSmallIntegerField('Nr de Parcelas')
     vencimento = models.IntegerField(
         u'Dia de Pagar',
         validators=[validate_vencimento],
     )
+    nr_parcela = models.PositiveSmallIntegerField('Nr de Parcelas')
     desconto = models.DecimalField('Desconto por pontualidade (%)',
         max_digits=7,
         decimal_places=2,
@@ -123,7 +143,6 @@ class ContratoAluno(UserAdd, UserUpd):
         decimal_places=2)
     material_valor = models.DecimalField('valor material', max_digits=5, decimal_places=2, null=True, blank=True)
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ material', null=True, blank=True)
-    material_data_parcela_um = models.DateTimeField('Data parcela material', null=True, blank=True)
 
     class Meta:
         verbose_name = 'contrato'

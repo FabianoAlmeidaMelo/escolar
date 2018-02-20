@@ -32,10 +32,12 @@
             <div class="col-xs-9 col-sm-6 col-md-3">
               <p><b>Ano</b>: {{ parametros.ano }}</p>
               <p><b>Da desconto</b>: {{ parametros.tem_desconto|yesno:"Sim,Não" }}</p>
+              <p><b>Desconto</b>: {{ parametros.desconto|default:"" }}</p>
               <p><b>Condição para ter desconto</b>: {{ parametros.get_condicao_desconto_display }}</p>
               <p><b>Pagamento até</b>: {{ parametros.get_dia_util_display }} dia útil</p>
             </div>
             <div class="col-xs-9 col-sm-6 col-md-3">
+              <p><b>Matrícula</b>: R$ {{ parametros.matricula_valor }}</p>
               <p><b>Multa por atraso mensalidade (%)</b>: {{ parametros.multa }}</p>
               <p><b>Juros por atraso mensalidade (%)</b>: {{ parametros.juros }}</p>
               <p>juros: {{ parametros.get_condicao_juros_display }}</p>
