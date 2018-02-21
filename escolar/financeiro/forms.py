@@ -154,6 +154,7 @@ class ContratoAlunoForm(forms.ModelForm):
             self.fields['nr_parcela'].initial = 12
             self.fields['matricula_valor'].initial = parametros.matricula_valor
             self.fields['material_parcelas'].initial = parametros.material_parcelas
+            self.fields['vencimento'].initial = parametros.vencimento
 
 
     class Meta:

@@ -2,8 +2,22 @@
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
-    #id_serie, #id_ano, #id_ra {
-      width: 80px;
+    #id_serie,
+    #id_ano,
+    #id_vencimento,
+    #id_desconto,
+    #id_material_parcelas,
+    #id_matricula_valor,
+    #id_multa,
+    #id_juros,
+    #id_condicao_juros,
+    #id_dia_util,
+    #id_nr_parcela {
+      width: 100px;
+      height: 35px;
+    }
+    #id_data_assinatura {
+      width: 120px;
       height: 35px;
     }
    </style>
@@ -22,8 +36,8 @@
 {% block content %}
 <div class="container">
   <div class="row-fluid span10">
-    <br>
     {% include "base_aluno.html" %}
+    <br>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
         <div class="form-group center_div" >
@@ -48,11 +62,11 @@
               <p>{% bootstrap_field form.matricula_nr %}</p>
               <p>{% bootstrap_field form.matricula_valor %}</p>
               <p>{% bootstrap_field form.vencimento %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
               <small>Apostilas</small>
               <p>{% bootstrap_field form.material_valor %}</p>
               <p>{% bootstrap_field form.material_parcelas %}</p>
-            </div>
-            <div class="col-xs-9 col-sm-6 col-md-3">
               <p>{% bootstrap_field form.data_assinatura %}</p>
               <p>{% bootstrap_field form.contrato %}</p>
             </div>
