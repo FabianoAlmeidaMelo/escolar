@@ -314,25 +314,28 @@ class Pagamento(models.Model):
         # Retorna o dia útil expecificado;
         # numero ex: 5
         # significa  o 5º dia útil
-        numero = self.escola.parametroscontrato_set.last().dia_util
-        feriados = self.get_feriados()
-        start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
+        # numero = self.escola.parametroscontrato_set.last().dia_util
         dias_uteis = []
-        i = 0
-        while len(dias_uteis) < numero:
-            data = start + timedelta(days=i)
-            if data.weekday() not in [5, 6] and data not in feriados:
-                dias_uteis.append(data)
-            i += 1
-        return dias_uteis[numero - 1]
+        if self.contrato:
+            # import pdb; pdb.set_trace()
+            numero = self.contrato.dia_util if self.contrato else 0
+            feriados = self.get_feriados()
+            start, end = date(self.data_prevista.year, self.data_prevista.month, 1), self.data_prevista
+            i = 0
+            while len(dias_uteis) < numero:
+                data = start + timedelta(days=i)
+                if data.weekday() not in [5, 6] and data not in feriados:
+                    dias_uteis.append(data)
+                i += 1
+            return dias_uteis[numero - 1]
+
 
     def get_valor_com_desconto(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data_prevista - date.today()).days
-        parametros = ParametrosContrato.objects.get(escola=self.escola, ano=ano_corrente)
-        if self.categoria and self.categoria.id == 1 and parametros.tem_desconto: # só Prestação de Serviços
+        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.tem_desconto: # só Prestação de Serviços
             if date.today() <= self.get_bizday():
-                desconto = self.valor * (self.contrato.desconto/ 100)
+                desconto = self.valor * (self.contrato.desconto / 100)
                 return self.valor - desconto
         return self.valor
 
