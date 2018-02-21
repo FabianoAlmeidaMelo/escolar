@@ -190,14 +190,14 @@ class ContratoAluno(UserAdd, UserUpd):
         
         datas = [data for data in dates if data]
 
-        month_range = 12 // parametros.material_parcelas
-        valor = self.material_valor / parametros.material_parcelas
+        month_range = 12 // self.material_parcelas
+        valor = self.material_valor / self.material_parcelas
 
         datas.sort()
         count = 0
         for data in datas:
             count += 1
-            Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, parametros.material_parcelas) ,
+            Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
                                             contrato=self,
                                             escola=self.aluno.escola,
                                             data_prevista=data,
@@ -217,7 +217,7 @@ class ContratoAluno(UserAdd, UserUpd):
         if self.pagamento_set.count() == 0:
             self.set_matricula()
             self.set_parcelas_material()
-            valor = (self.valor - self.matricula_valor) / self.nr_parcela
+            valor = (self.valor - self.matricula_valor) // self.nr_parcela
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
             for p in range(1, self.nr_parcela + 1):
                 data =  date(self.ano, p, self.vencimento)
