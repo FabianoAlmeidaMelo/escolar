@@ -194,6 +194,7 @@ class ContratoAluno(UserAdd, UserUpd):
         valor = self.material_valor / self.material_parcelas
 
         datas.sort()
+        categoria = CategoriaPagamento.objects.get(id=9) # Material Didático
         count = 0
         for data in datas:
             count += 1
@@ -204,6 +205,7 @@ class ContratoAluno(UserAdd, UserUpd):
                                             valor=valor,
                                             observacao='',
                                             nr_parcela=None,
+                                            categoria=categoria,
                                             tipo=1)
 
         print(datas)
