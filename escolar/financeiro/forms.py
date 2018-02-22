@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
     ANO,
+    CategoriaPagamento,
     ContratoAluno,
     Pagamento,
     ParametrosContrato,
@@ -233,11 +234,15 @@ class PagamentoForm(forms.ModelForm):
     valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
     data_pag = BRDateField(label="Pagamento efetivado em", required=False)
+    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=True)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
+        if self.instance.pk and self.instance.categoria:
+            if self.instance.id in [1, 2]:
+                self.fields['categoria'].widget = forms.HiddenInput()
         
 
     class Meta:

@@ -48,7 +48,11 @@
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.titulo %}
-            {% bootstrap_field form.nr_documento %}
+             {% bootstrap_field form.nr_documento %}
+             {% if form.instance.categoria.id == 1 or form.instance.categoria.id == 2 %}
+                {{ form.instance.categoria }}
+             {% endif %} 
+             {% bootstrap_field form.categoria %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.data_prevista %}
