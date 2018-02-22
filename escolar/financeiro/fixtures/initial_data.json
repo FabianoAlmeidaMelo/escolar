@@ -14,5 +14,70 @@
             "escola": null,
             "nome": "Matr\u00edcula"
         }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 3,
+        "fields": {
+            "escola": null,
+            "nome": "Agua"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 4,
+        "fields": {
+            "escola": null,
+            "nome": "Luz"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 5,
+        "fields": {
+            "escola": null,
+            "nome": "Comunicacao"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 6,
+        "fields": {
+            "escola": null,
+            "nome": "Manutencao"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 7,
+        "fields": {
+            "escola": null,
+            "nome": "Folha de Pagamento"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 8,
+        "fields": {
+            "escola": null,
+            "nome": "Impostos"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 9,
+        "fields": {
+            "escola": null,
+            "nome": "Material Didatico"
+        }
+    },
+    {
+        "model": "financeiro.categoriapagamento",
+        "pk": 10,
+        "fields": {
+            "escola": null,
+            "nome": "Equipamentos"
+        }
     }
+
 ]

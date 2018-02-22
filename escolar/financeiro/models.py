@@ -243,6 +243,9 @@ class CategoriaPagamento(models.Model):
             return "%s - %s" % (self.nome, self.escola.nome)
         return self.nome
 
+    class Meta:
+        ordering = ('nome',)
+
 class PagamentoManager(models.Manager):
     def get_recebimentos_pendentes(self):
         pass

@@ -234,7 +234,7 @@ class PagamentoForm(forms.ModelForm):
     valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
     data_pag = BRDateField(label="Pagamento efetivado em", required=False)
-    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=True)
+    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2]), required=True)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
