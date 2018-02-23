@@ -38,6 +38,7 @@
           <p><b>matricula valor</b>:R$ {{ contrato.matricula_valor|numberformat_br|default:"--" }}</p>
           <p><b>multa por atraso mensalidade</b>: {{ contrato.multa }} % </p>
           <p><b>juros por atraso mensalidade</b>: {{ contrato.juros }} % </p>
+          <p><b>juros</b>: {{ contrato.get_condicao_juros_display }}</p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>

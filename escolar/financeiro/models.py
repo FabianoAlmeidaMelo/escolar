@@ -42,7 +42,7 @@ CONDICAO_DESCONTO = (
 
 JUROS_EXPECIFICACAO = (
     (None, "--"),
-    (1, "Por dia"),
+    (1, "pro rata die"),
     (2, "Por Mês"),
 )
 
