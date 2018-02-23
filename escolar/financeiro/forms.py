@@ -231,23 +231,27 @@ class ContratoAlunoSearchForm(forms.Form):
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
     valor = BRDecimalField(label="Valor", required=True)
-    valor_pag = BRDecimalField(label="Valor pago", required=False)
+    # valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
-    data_pag = BRDateField(label="Pagamento efetivado em", required=False)
-    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2]), required=True)
+    # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
+    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
+        if self.contrato:
+            self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
         if self.instance.pk and self.instance.categoria:
-            if self.instance.id in [1, 2]:
+            if self.instance.categoria.id in [1, 2, 9]:
                 self.fields['categoria'].widget = forms.HiddenInput()
         
 
     class Meta:
         model = Pagamento
-        exclude = ('escola', 
+        exclude = ('valor_pag',
+                   'data_pag',
+                   'escola', 
                    'contrato',
                    'parcela',
                    'nr_parcela',
