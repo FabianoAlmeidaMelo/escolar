@@ -172,13 +172,7 @@ class ContratoAluno(UserAdd, UserUpd):
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
 
-        
-    def set_parcelas_material(self):
-        '''
-        calcula valor e data das parcelas 
-        das apostilas E
-        Cria os pagamentos
-        '''
+    def get_datas_parcelas_material(self):
         parametros = ParametrosContrato.objects.get(escola=self.aluno.escola, ano=self.ano)
 
         dates = [parametros.data_um_material,
@@ -188,7 +182,16 @@ class ContratoAluno(UserAdd, UserUpd):
                  parametros.data_cinco_material,
                  parametros.data_seis_material]
         
-        datas = [data for data in dates if data]
+        return [data for data in dates if data]
+        
+
+    def set_parcelas_material(self):
+        '''
+        calcula valor e data das parcelas 
+        das apostilas E
+        Cria os pagamentos
+        '''
+        datas = self.get_datas_parcelas_material()
 
         month_range = 12 // self.material_parcelas
         valor = self.material_valor / self.material_parcelas

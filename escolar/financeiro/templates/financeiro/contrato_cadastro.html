@@ -46,10 +46,9 @@
             <p><b>Número de parcelas</b>: {{ contrato.material_parcelas }}</p>
             <p><b>Data das parcelas</b>:</p>
               <ul>
-                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_um_material|date:"d/m/Y" }}</li>
-                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_dois_material|date:"d/m/Y" }}</li>
-                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_tres_material|date:"d/m/Y" }}</li>
-                <li>{{ contrato.aluno.escola.parametroscontrato_set.last.data_quatro_material|date:"d/m/Y" }}</li>
+                {% for data in contrato.get_datas_parcelas_material %}
+                <li>{{ data|date:"d/m/Y" }}</li>
+                {% endfor %}
               </ul>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
