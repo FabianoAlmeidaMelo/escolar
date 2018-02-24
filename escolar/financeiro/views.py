@@ -442,7 +442,7 @@ def set_pagamento_status(request, pagamento_pk):
         valor_previsto = pagamento.valor
         pagamento.valor = pagamento.get_valor_com_desconto() # vai entrar a regra aqui
         pagamento.data_pag = data_hora
-        pagamento.observacao = 'Marcado pago por: %s; em %s. O valor previsto era: %s' % (user.nome, str(data_hora), valor_previsto)
+        pagamento.observacao += '\n Marcado pago por: %s;\n em %s. \n O valor previsto era: %s' % (user.nome, str(data_hora), valor_previsto)
         pagamento.efet = True
     pagamento.save()
 
