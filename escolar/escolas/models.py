@@ -91,7 +91,7 @@ class Aluno(UserAdd, UserUpd):
     user = models.ForeignKey('core.User', null=True, blank=True)
     ano = models.SmallIntegerField(default=ano_corrente)
     ra = models.CharField('RA', max_length=15, null=True, blank=True)
-   
+    responsaveis = models.ManyToManyField('MembroFamilia')
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
@@ -150,7 +150,7 @@ class MembroFamilia(UserAdd, UserUpd):
     é um doc da Escola, diferente do Perfil que "é" do User 
     '''
     parentesco = models.CharField(max_length=100)
-    aluno = models.ForeignKey(Aluno)
+    # aluno = models.ForeignKey(Aluno)
     user = models.ForeignKey('core.User', null=True, blank=True)
     responsavel_financeiro = models.BooleanField(default=False)
     responsavel_pedagogico = models.BooleanField(default=False)
