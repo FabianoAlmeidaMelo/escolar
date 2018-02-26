@@ -117,7 +117,7 @@ class Aluno(UserAdd, UserUpd):
         return self.nome
 
     def count_responsavel_financeiro(self):
-        return self.membrofamilia_set.filter(responsavel_financeiro=True).count()
+        return self.responsaveis.filter(responsavel_financeiro=True).count()
 
     def get_sexo_display(self):
         sexo = {1: 'masculino', 2: 'feminino'}
