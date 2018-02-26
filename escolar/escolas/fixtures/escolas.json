@@ -1,40 +1,48 @@
 [
-{
-    "model": "escolas.escola",
-    "pk": 2,
-    "fields": {
-        "pais": 1,
-        "nome": "Padre Julio Maria",
-        "endereco": "Av Olivio Gomes",
-        "numero": "123a",
-        "telefone": "12 39210308",
-        "celular": "",
-        "complemento": "casa",
-        "bairro": "Santana",
-        "created_at": "2016-12-26T22:51:45.205Z",
-        "slug": "pdr_julio",
-        "logo": "",
-        "site": "http://blogpadrejulio.blogspot.com.br/",
-        "description": "do jardim at\u00e9 o 5\u00ba ano"
+    {
+        "model": "escolas.escola",
+        "pk": 1,
+        "fields": {
+            "pais": 1,
+            "nome": "Col\u00e9gio Crescer",
+            "razao_social": "Crescer Espa\u00e7o de Crescimento e Aperfei\u00e7oamento Psicopedag\u00f3gico S/C Ltda",
+            "cnpj": "01626645000105",
+            "municipio": 3549904,
+            "endereco": "Av Rui Barbosa",
+            "numero": "1868",
+            "telefone": "",
+            "celular": "",
+            "complemento": "",
+            "bairro": "Sanatana",
+            "created_at": "2016-12-26T23:22:06.868Z",
+            "slug": "crescer_sjc",
+            "logo": "escola_Crescer/crescer_logomarca.png",
+            "site": "",
+            "description": "do pr\u00e9 escolar at\u00e9 o 9\u00ba ano ...",
+            "publica": false
+        }
+    },
+    {
+        "model": "escolas.escola",
+        "pk": 2,
+        "fields": {
+            "pais": 1,
+            "nome": "Padre Julio Maria",
+            "razao_social": "Crescer Espa\u00e7o de Crescimento e Aperfei\u00e7oamento Psicopedag\u00f3gico S/C Ltda",
+            "cnpj": "01626645000105",
+            "municipio": 3549904,
+            "endereco": "Av Olivio Gomes",
+            "numero": "123a",
+            "telefone": "12 39210308",
+            "celular": "",
+            "complemento": "casa",
+            "bairro": "Santana",
+            "created_at": "2016-12-26T22:51:45.205Z",
+            "slug": "pdr_julio",
+            "logo": "",
+            "site": "http://blogpadrejulio.blogspot.com.br/",
+            "description": "do jardim at\u00e9 o 5\u00ba ano",
+            "publica": false
+        }
     }
-},
-{
-    "model": "escolas.escola",
-    "pk": 1,
-    "fields": {
-        "pais": 1,
-        "nome": "Crescer",
-        "endereco": "Av Rui Barbosa",
-        "numero": "223a",
-        "telefone": null,
-        "celular": null,
-        "complemento": null,
-        "bairro": "",
-        "created_at": "2016-12-26T23:22:06.868Z",
-        "slug": null,
-        "logo": "",
-        "site": null,
-        "description": null
-    }
-}
 ]
