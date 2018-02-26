@@ -12,6 +12,7 @@ from escolar.escolas.models import (
 from escolar.core.models import Endereco
 from escolar.escolas.forms import set_only_number
 from municipios.models import Municipio
+from escolar.core.models import User
 
 SETENTA_ANOS = datetime(1970, 1, 1) - datetime(1900, 1, 1) + timedelta(days=1)
 
@@ -62,9 +63,10 @@ class Command(BaseCommand):
         criando um Alno ou MembroFamilia para cada linha da planilha
        
         """
+        user = User.objects.filter(email='colegio.crescer.contabil@gmail.com').last()
         print('importa_alunos_e_responsaveis')
         escola = Escola.objects.get(slug=slug)
-        municipio = Municipio.objects.get(id_ibge=3549904)
+        municipio = Municipio.objects.get(id_ibge=3549904)  # são josé dos campos
         alunos = Aluno.objects.all()
         responsaveis = MembroFamilia.objects.all()
         enderecos = Endereco.objects.all()
@@ -103,61 +105,76 @@ class Command(BaseCommand):
             #        s.cell(row, 14), # O   'BAIRRO'
             #        s.cell(row, 15)) # P   'CEP' 
 
-            perfil = (s.cell(row, 0).value).strip().lower()
-            ra = (s.cell(row, 1).value).strip()
-            nome = (s.cell(row, 2).value).strip()
-            email = (s.cell(row, 3).value).strip()
-            resp_fin = (s.cell(row, 4).value).strip().lower()
+            perfil = (s.cell(row, 0).value or '').strip().lower()
+            ra = (s.cell(row, 1).value or '').strip()
+            nome = (s.cell(row, 2).value or '').strip()
+            email = (s.cell(row, 3).value or '').strip()
+            resp_fin = (s.cell(row, 4).value or '').strip().lower()
+
             responsavel_financeiro = resp_fin == 'sim'
-            resp_ped = (s.cell(row, 5).value).strip().lower()
+
+            resp_ped = (s.cell(row, 5).value or '').strip().lower()
             responsavel_pedagogico = resp_ped == 'sim'
-            sexo = 1 if (s.cell(row, 6).value).strip().lower() == 'm' else 2
-            data_planilha = (s.cell(row, 7).value or 0)
+
+            sexo = 1 if (s.cell(row, 6).value or '').strip().lower() == 'm' else 2
+            data_planilha = (s.cell(row, 7).value or '' or 0)
             nascimento = date.fromtimestamp(data_planilha*86400) - SETENTA_ANOS if data_planilha else None
-            cpf = str(s.cell(row, 8)).strip()    # I   'CPF'
+            cpf = (s.cell(row, 8).value or '').strip()    # I   'CPF'
+
             if cpf:
                 cpf = set_only_number(cpf)
-            rg = str(s.cell(row, 9))    # J   'RG'
+            rg = int(s.cell(row, 9).value) if type(s.cell(row, 9).value or '') == float else (s.cell(row, 9).value or '').strip()   # J   'RG'
             if rg:
                 rg = set_only_number(rg).strip()
-            celular = str(s.cell(row, 10)).strip()   # K   'CELULAR' 
-             #str(s.cell(row, 11))   # L   'CIDADE'
-            logradouro = str(s.cell(row, 12)).strip()   # M   'RUA'
-            numero = str(s.cell(row, 13)).strip()   # N   'NUMERO'
-            bairro = str(s.cell(row, 14)).strip()   # O   'BAIRRO'
-            cep = str(s.cell(row, 15)).strip()   # P   'CEP' 
-            # print(perfil, data_planilha, nascimento)
+            celular = (s.cell(row, 10).value or '').strip().replace(" ", "")   # K   'CELULAR' 
+             
+            logradouro = (s.cell(row, 12).value or '').strip()   # M   'RUA'
+            numero = str(int(s.cell(row, 13).value)).strip() if type(s.cell(row, 13).value or '') == float else (s.cell(row, 13).value or '').strip()  # N   'NUMERO'
+            bairro = (s.cell(row, 14).value or '').strip()   # O   'BAIRRO'
+            cep = str(int(s.cell(row, 15).value)).strip() if type(s.cell(row, 15).value or '') == float else (s.cell(row, 15).value or '').strip()   # P   'CEP' 
+            observacao = sheet_name # sala
+            
+            # print(perfil, logradouro, numero, bairro, cep)
 
             if perfil == 'aluno':
-                aluno, aluno_created = Aluno.objects.get_or_create(escola=escola,
-                                                             ra=ra,
-                                                             nascimento=nascimento,
-                                                             nome=nome,
-                                                             nacionalidade='brasileira',
-                                                             email=email,
-                                                             cpf=cpf,
-                                                             rg=rg,
-                                                             sexo=sexo)
-                if aluno_created:
-                    endereco, endereco_created = Endereco.objects.get_or_create(logradouro=logradouro,
-                                                                                municipio=municipio,
-                                                                                numero=numero,
-                                                                                bairro=bairro,
-                                                                                cep=cep)
+                aluno, aluno_created = Aluno.objects.update_or_create(escola=escola,
+                                                                      ra=ra, defaults={
+                                                                      'nascimento':nascimento,
+                                                                      'nome':nome,
+                                                                      'nacionalidade':'brasileira',
+                                                                      'email':email,
+                                                                      'cpf':cpf,
+                                                                      'rg':rg,
+                                                                      'sexo':sexo,
+                                                                      'user_add':user,
+                                                                      'user_upd':user,
+                                                                      'observacao':observacao,
+                                                                      })
+                if aluno and not aluno.endereco:
+                    endereco, endereco_created = Endereco.objects.update_or_create(logradouro=logradouro,
+                                                                                   municipio=municipio,
+                                                                                   numero=numero,
+                                                                                   bairro=bairro,
+                                                                                   cep=cep)
+                    aluno.endereco = endereco
+                    aluno.save()
             else:
-                aluno = Aluno.objects.get(ra=ra)
-                if aluno.
-                responsavel = MembroFamilia.objects.get_or_create(parentesco=perfil,
-                                                                  aluno=aluno,
-                                                                  nome=nome, defaults={
-                                                                  'nascimento':nascimento,
-                                                                  'responsavel_financeiro':responsavel_financeiro,
-                                                                  'responsavel_pedagogico':responsavel_pedagogico,
-                                                                  'email':email,
-                                                                  'cpf':cpf,
-                                                                  'rg':rg,
-                                                                  'sexo':sexo,
-                                                                  'celular':celular})
+                aluno = Aluno.objects.filter(ra=ra, escola=escola).last()
+                if aluno and aluno.responsaveis.filter(cpf=cpf).count() == 0:
+                    responsavel, responsavel_created = MembroFamilia.objects.update_or_create(parentesco=perfil,
+                                                                                              nome=nome,
+                                                                                              cpf=cpf, defaults={
+                                                                                              'nascimento':nascimento,
+                                                                                              'responsavel_financeiro':responsavel_financeiro,
+                                                                                              'responsavel_pedagogico':responsavel_pedagogico,
+                                                                                              'email':email,
+                                                                                              'rg':rg,
+                                                                                              'sexo':sexo,
+                                                                                              'celular':celular,
+                                                                                              'user_add':user,
+                                                                                              'user_upd':user,
+                                                                                              })
+                    aluno.responsaveis.add(responsavel)
             
 
         print('Adicionado: %s Alunos' % Aluno.objects.all().count())

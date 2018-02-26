@@ -328,7 +328,7 @@ def aluno_form(request, escola_pk, aluno_pk=None):
     if request.method == 'POST':
         if form.is_valid() and endereco_form.is_valid():
             endereco = endereco_form.save()
-            aluno = form.save()
+            aluno = form.save(commit=False)
             aluno.endereco = endereco
             aluno.save()
             messages.success(request, msg)
