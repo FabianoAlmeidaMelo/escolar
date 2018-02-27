@@ -41,7 +41,7 @@ class Escola(models.Model):
     pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
     razao_social = models.CharField('razão social', max_length=200)
-    cnpj = models.CharField('cnp', max_length=14)
+    cnpj = models.CharField('cnpj', max_length=14)
     municipio = models.ForeignKey(Municipio)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
@@ -93,7 +93,7 @@ class Aluno(UserAdd, UserUpd):
     user = models.ForeignKey('core.User', null=True, blank=True)
     ano = models.SmallIntegerField(default=ano_corrente)
     ra = models.CharField('RA', max_length=20, null=True, blank=True)
-    responsaveis = models.ManyToManyField('MembroFamilia', null=True, blank=True)
+    responsaveis = models.ManyToManyField('MembroFamilia')
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
