@@ -16,32 +16,41 @@
 {% block content %}
 <div class="container">
    {% include "base_adm.html" %}
+   <br>
     <div class="row-fluid span10">
-        País: <b>{{ escola.pais }}</b><br>
-        Razão Social: <b>{{ escola.razao_social }}</b><br>
-        CNPJ: <b>{{ escola.cnpj }}</b><br>
-        Nome: <b>{{ escola.nome }}</b><br>
-        Município:<b>{{ escola.municipio }}</b><br>
-        Endereço: <b>{{ escola.endereco }}</b><br> 
-        Número: <b>{{ escola.numero }}</b><br> 
-        complemento: <b>{{ escola.complemento }}</b><br> 
-        Telefone: <b>{{ escola.telefone }}</b><br> 
-        Bairro: <b>{{ escola.bairro }}</b><br> 
-        Site: <a href="{{ escola.site }}">{{ escola.site }}</a><br>
-        Observaçoes: <b>{{ escola.description }}</b><br>
-        {% if request.user.is_admin %}
-          Escola: <b>{{ escola.publica|yesno:"Pública,Particular"}}</b><br>
-        {% endif %} 
-        {% if escola.logo %}
-          Logo: 
-            <a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a><br>
-        {% endif %}
+      <div class="row">
+        <!-- {# Celular, Tablet, Computador #} -->
+        <div class="col-xs-9 col-sm-6 col-md-3">
+          <p>País: <b>{{ escola.pais }}</b></p>
+          <p>Razão Social: <b>{{ escola.razao_social }}</b></p>
+          <p>CNPJ: <b>{{ escola.cnpj }}</b></p>
+          <p>Nome: <b>{{ escola.nome }}</b></p>
+          <p>Município: <b>{{ escola.municipio }}</b></p>
+        </div>
+        <div class="col-xs-9 col-sm-6 col-md-3">
+          <p>Endereço: <b>{{ escola.endereco }}</b> </p>
+          <p>Número: <b>{{ escola.numero }}</b> </p>
+          <p>complemento: <b>{{ escola.complemento }}</b> </p>
+          <p>Telefone: <b>{{ escola.telefone }}</b> </p>
+          <p>Bairro: <b>{{ escola.bairro }}</b></p>
+        </div>
+        <div class="col-xs-9 col-sm-6 col-md-3">
+          <p>Site: <a href="{{ escola.site }}">{{ escola.site }}</a></p>
+          <p>Observaçoes: <b>{{ escola.description }}</b></p>
+          {% if request.user.is_admin %}
+            <p>Escola: <b>{{ escola.publica|yesno:"Pública,Particular"}}</b></p>
+          {% endif %} 
+          {% if escola.logo %}
+            Logo: 
+              <p><a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a></p>
+          {% endif %}
+        </div>
+    </div>
         {% if can_edit %}
           <div class="form-actions">
             <a href="{% url 'escola_form' escola.pk %}" class="btn btn-mini btn-success">Editar</a>
           </div>
         {% endif %}
-    </div>
 </div>
 
 {% endblock content %}
