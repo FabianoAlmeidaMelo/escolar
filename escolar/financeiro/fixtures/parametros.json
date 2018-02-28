@@ -1,0 +1,26 @@
+[
+{
+    "model": "financeiro.parametroscontrato",
+    "pk": 2,
+    "fields": {
+        "ano": 2018,
+        "escola": 1,
+        "tem_desconto": true,
+        "condicao_desconto": 2,
+        "dia_util": 5,
+        "multa": "2.00",
+        "juros": "2.00",
+        "condicao_juros": 1,
+        "vencimento": 10,
+        "material_parcelas": 4,
+        "data_um_material": "2018-01-10",
+        "data_dois_material": "2018-04-10",
+        "data_tres_material": "2018-06-10",
+        "data_quatro_material": "2018-09-10",
+        "data_cinco_material": null,
+        "data_seis_material": null,
+        "desconto": "5.00",
+        "matricula_valor": "390.00"
+    }
+}
+]
