@@ -32,7 +32,8 @@ SEXO_CHOICES = (
 )
 
 def set_only_number(txt):
-    especiais = '_-./;^;ç=*&%$#@!'
+    txt = str(txt)
+    especiais = "_-./;^;ç=*&%''$#@!"
     only_numeros = ''
     for c in txt:
         if c not in especiais:
@@ -108,7 +109,13 @@ class AlunoForm(forms.ModelForm):
     class Meta:
         model = Aluno
         widgets = {'natural_municipio': SelectMunicipioWidget}
-        exclude = ('user', 'escola', 'date_add', 'date_upd', 'user_add', 'user_upd')
+        exclude = ('user',
+                   'escola',
+                   'date_add',
+                   'date_upd',
+                   'user_add',
+                   'user_upd',
+                   'responsaveis')
 
     def clean_rg(self):
         rg = self.cleaned_data['rg']
@@ -124,6 +131,7 @@ class AlunoForm(forms.ModelForm):
         self.instance.escola = self.escola
         instance = super(AlunoForm, self).save(*args, **kwargs)
         instance.save()
+
         return instance
 
 
@@ -148,10 +156,9 @@ class MembroFamiliaForm(forms.ModelForm):
         if not self.instance.pk:
             self.instance.user_add = self.user
         self.instance.user_upd = self.user
-        self.instance.aluno = self.aluno
-
         instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
         instance.save()
+        instance.aluno_set.add(self.aluno)
         return instance
 
     class Meta:
@@ -191,6 +198,7 @@ class AlunoSearchForm(forms.Form):
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
+        # import pdb; pdb.set_trace()
         if self.is_valid():
             # responsavel = self.cleaned_data['responsavel']
             # if responsavel:
@@ -200,7 +208,7 @@ class AlunoSearchForm(forms.Form):
                 q = q & Q(nome__icontains=nome)
             ano = self.cleaned_data['ano']
             if ano:
-                q = q & Q(contrato_aluno__ano=int(ano))
+                q = q & Q(ano=int(ano))
 
             serie = self.cleaned_data['serie']
             if serie and ano:

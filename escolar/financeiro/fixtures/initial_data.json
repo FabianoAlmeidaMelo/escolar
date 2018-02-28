@@ -1,18 +1,82 @@
 [
-    {
-        "model": "financeiro.categoriapagamento",
-        "pk": 1,
-        "fields": {
-            "escola": null,
-            "nome": "Presta\u00e7\u00e3o de Servi\u00e7os"
-        }
-    },
-    {
-        "model": "financeiro.categoriapagamento",
-        "pk": 2,
-        "fields": {
-            "escola": null,
-            "nome": "Matr\u00edcula"
-        }
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 1,
+    "fields": {
+        "escola": null,
+        "nome": "Presta\u00e7\u00e3o de Servi\u00e7os"
     }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 2,
+    "fields": {
+        "escola": null,
+        "nome": "Matr\u00edcula"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 3,
+    "fields": {
+        "escola": null,
+        "nome": "\u00c1gua"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 4,
+    "fields": {
+        "escola": null,
+        "nome": "Luz"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 5,
+    "fields": {
+        "escola": null,
+        "nome": "Comunica\u00e7\u00e3o"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 6,
+    "fields": {
+        "escola": null,
+        "nome": "Manuten\u00e7\u00e3o"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 7,
+    "fields": {
+        "escola": null,
+        "nome": "Folha de Pagamento"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 8,
+    "fields": {
+        "escola": null,
+        "nome": "Impostos"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 9,
+    "fields": {
+        "escola": null,
+        "nome": "Material Did\u00e1tico"
+    }
+},
+{
+    "model": "financeiro.categoriapagamento",
+    "pk": 10,
+    "fields": {
+        "escola": null,
+        "nome": "Equipamentos"
+    }
+}
 ]

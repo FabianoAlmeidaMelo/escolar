@@ -3,8 +3,12 @@
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
-    #id_serie, #id_ano, #id_ra {
-      width: 80px;
+    #id_tipo,
+    #id_data_prevista,
+    #id_data_pag,
+    #id_valor,
+    #id_valor_pag {
+      width: 100px;
       height: 35px;
     }
    </style>
@@ -44,15 +48,18 @@
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.titulo %}
+             {% bootstrap_field form.nr_documento %}
+             {% if form.instance.categoria.id == 1 or form.instance.categoria.id == 2 or form.instance.categoria.id == 9 %}
+             <b>Categoira</b><br>
+                {{ form.instance.categoria }}
+             {% endif %} 
+             {% bootstrap_field form.categoria %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.data_prevista %}
              {% bootstrap_field form.valor %}
              {% bootstrap_field form.tipo %}
-          </div>
-          <div class="col-xs-9 col-sm-6 col-md-3">
-            {% bootstrap_field form.nr_documento %}
-            {% bootstrap_field form.data_pag %}
-            {% bootstrap_field form.valor_pag %}
-            {% bootstrap_field form.efet %}
+             {% bootstrap_field form.efet %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.observacao %}

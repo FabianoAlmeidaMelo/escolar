@@ -48,10 +48,10 @@
     <thead>
       <tr>
         <th>Título</th>
-        <th>Data Prevista</th>
-        <th>Data Pago</th>
+        <th>Data</th>
+        <!-- <th>Data Pago</th> -->
         <th>Valor</th>
-        <th>Valor <br>com desconto</th>
+       <!--  <th>Valor <br>com desconto</th> -->
         <th>Responsavel/<br>Aluno</th>
         <th>Status</th>
       </tr>
@@ -67,9 +67,14 @@
           {% endif %}
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
-        <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
-        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font></td>
-        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.get_valor_com_desconto|numberformat_br }}</font></td>
+       <!--  <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td> -->
+        <td>
+          <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
+          {% if pagamento.categoria.id == 1 and not pagamento.efet %}
+            <br>
+            <small>R$ {{ pagamento.get_valor_com_desconto|numberformat_br }}</small>
+          {% endif %}
+        </td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
         <td>
           {% if pagamento.efet %}

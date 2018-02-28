@@ -26,10 +26,12 @@
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.pais %}
             {% bootstrap_field form.nome %}
-            {% bootstrap_field form.endereco %}
+            {% bootstrap_field form.razao_social %}
+            {% bootstrap_field form.cnpj %}
             {{ form.municipio }}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.endereco %}
             {% bootstrap_field form.numero %}
             {% bootstrap_field form.telefone %}
             {% bootstrap_field form.complemento %}

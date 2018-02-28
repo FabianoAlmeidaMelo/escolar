@@ -2,8 +2,22 @@
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
-    #id_serie, #id_ano, #id_ra {
-      width: 80px;
+    #id_serie,
+    #id_ano,
+    #id_vencimento,
+    #id_desconto,
+    #id_material_parcelas,
+    #id_matricula_valor,
+    #id_multa,
+    #id_juros,
+    #id_condicao_juros,
+    #id_dia_util,
+    #id_nr_parcela {
+      width: 100px;
+      height: 35px;
+    }
+    #id_data_assinatura {
+      width: 120px;
       height: 35px;
     }
    </style>
@@ -22,8 +36,8 @@
 {% block content %}
 <div class="container">
   <div class="row-fluid span10">
-    <br>
     {% include "base_aluno.html" %}
+    <br>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
         <div class="form-group center_div" >
@@ -35,35 +49,41 @@
               <p><b>Aluno</b>:{{ aluno.nome }}</p>
               <p>{% bootstrap_field form.responsavel %}</p>
               <p>{% bootstrap_field form.valor %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.vencimento %}</p>
+              <p>{% bootstrap_field form.tem_desconto %}</p>
+              <p>{% bootstrap_field form.desconto %}</p>
+              <p>{% bootstrap_field form.condicao_desconto %}</p>
+              <p>{% bootstrap_field form.dia_util %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.multa %}</p>
+              <p>{% bootstrap_field form.juros %}</p>
+              <p>{% bootstrap_field form.condicao_juros %}</p>
+              <p>{% bootstrap_field form.nr_parcela %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.matricula_nr %}</p>
+              <p>{% bootstrap_field form.matricula_valor %}</p>
+              <small>Apostilas</small>
+              <p>{% bootstrap_field form.material_valor %}</p>
+              <p>{% bootstrap_field form.material_parcelas %}</p>
               <p>{% bootstrap_field form.data_assinatura %}</p>
-          </div>
-          <div class="col-xs-9 col-sm-6 col-md-3">
-            <p>{% bootstrap_field form.nr_parcela %}</p>
-            <p>{% bootstrap_field form.desconto %}</p>
-            <p>{% bootstrap_field form.matricula_nr %}</p>
-            <p>{% bootstrap_field form.matricula_valor %}</p>
-          </div>
-          <div class="col-xs-9 col-sm-6 col-md-3">
-            <p>{% bootstrap_field form.vencimento %}</p>
-            <p>{% bootstrap_field form.contrato %}</p>
-            <small>Apostilas</small>
-            <p>{% bootstrap_field form.material_valor %}</p>
-            <p>{% bootstrap_field form.material_parcelas %}</p>
-            <p>{% bootstrap_field form.material_data_parcela_um %}</p>
+              <p>{% bootstrap_field form.contrato %}</p>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- glyphicon glyphicon-print -->
-      <div class="form-actions">
-        {% if can_edit %}
-          <input type="submit" value="Salvar" class="btn btn-primary">
-        {% endif %}
-        {% if contrato %}
-          <a href="{% url 'contrato_cadastro' contrato.id %}" class="btn btn-secondary">Voltar para o contrato {{ form.instance.ano }}</a>
-        {% endif %}
-        <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary">Contratos do aluno</a>
-      </div>
+        <!-- glyphicon glyphicon-print -->
+        <div class="form-actions">
+          {% if can_edit %}
+            <input type="submit" value="Salvar" class="btn btn-primary">
+          {% endif %}
+          {% if contrato %}
+            <a href="{% url 'contrato_cadastro' contrato.id %}" class="btn btn-secondary">Voltar para o contrato {{ form.instance.ano }}</a>
+          {% endif %}
+          <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary">Contratos do aluno</a>
+        </div>
     </form>
   </div>
 </div>

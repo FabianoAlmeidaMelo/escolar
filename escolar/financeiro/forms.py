@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
     ANO,
+    CategoriaPagamento,
     ContratoAluno,
     Pagamento,
     ParametrosContrato,
@@ -64,6 +65,7 @@ class ParametrosContratoForm(forms.ModelForm):
         cleaned_data = super(ParametrosContratoForm, self).clean()
         ano = cleaned_data['ano']
         tem_desconto = cleaned_data['tem_desconto']
+        desconto = cleaned_data['desconto']
         condicao_desconto = cleaned_data['condicao_desconto']
         dia_util = cleaned_data['dia_util']
         juros = cleaned_data['juros']
@@ -89,6 +91,8 @@ class ParametrosContratoForm(forms.ModelForm):
         errors_list = []
         if tem_desconto and not condicao_desconto:
             errors_list.append("Condição do desconto é requerida")
+        if tem_desconto and not desconto:
+            errors_list.append("Valor do desconto é requerido")
         if condicao_desconto and not tem_desconto:
             errors_list.append("Deve marcar que tem desconto")
         if condicao_desconto == 1 and dia_util: # até a data vencimento
@@ -130,12 +134,29 @@ class ParametrosContratoForm(forms.ModelForm):
         return instance
 
 class ContratoAlunoForm(forms.ModelForm):
+    serie = forms.CharField(required=True)
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
+        self.fields['responsavel'].queryset = self.aluno.responsaveis.filter(responsavel_financeiro=True)
+        if not self.instance.pk:
+            escola = self.aluno.escola
+            parametros = escola.parametroscontrato_set.last()
+            self.fields['ano'].initial = parametros.ano
+            self.fields['tem_desconto'].initial = parametros.tem_desconto
+            self.fields['desconto'].initial = parametros.desconto
+            self.fields['condicao_desconto'].initial = parametros.condicao_desconto
+            self.fields['dia_util'].initial = parametros.dia_util
+            self.fields['multa'].initial = parametros.multa
+            self.fields['juros'].initial = parametros.juros
+            self.fields['condicao_juros'].initial = parametros.condicao_juros
+            self.fields['nr_parcela'].initial = 12
+            self.fields['matricula_valor'].initial = parametros.matricula_valor
+            self.fields['material_parcelas'].initial = parametros.material_parcelas
+            self.fields['vencimento'].initial = parametros.vencimento
 
-        self.fields['responsavel'].queryset = self.aluno.membrofamilia_set.filter(responsavel_financeiro=True)
 
     class Meta:
         model = ContratoAluno
@@ -145,16 +166,13 @@ class ContratoAlunoForm(forms.ModelForm):
         cleaned_data = super(ContratoAlunoForm, self).clean()
         material_valor = cleaned_data['material_valor']
         material_parcelas = cleaned_data['material_parcelas']
-        material_data_parcela_um = cleaned_data['material_data_parcela_um']
-
-        if any([material_valor, material_parcelas, material_data_parcela_um]):
+ 
+        if any([material_valor, material_parcelas]):
             errors_list = []
             if not material_valor:
                 errors_list.append("material_valor")
             if not material_parcelas:
                 errors_list.append("material_parcelas")
-            if not material_data_parcela_um:
-                errors_list.append("material_data_parcela_um")
             for error in errors_list:
                 self._errors[error] = ErrorList([u'Campo obrigatório.'])
         
@@ -213,19 +231,27 @@ class ContratoAlunoSearchForm(forms.Form):
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
     valor = BRDecimalField(label="Valor", required=True)
-    valor_pag = BRDecimalField(label="Valor pago", required=False)
+    # valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
-    data_pag = BRDateField(label="Pagamento efetivado em", required=False)
+    # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
+    categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
+        if self.contrato:
+            self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
+        if self.instance.pk and self.instance.categoria:
+            if self.instance.categoria.id in [1, 2, 9]:
+                self.fields['categoria'].widget = forms.HiddenInput()
         
 
     class Meta:
         model = Pagamento
-        exclude = ('escola', 
+        exclude = ('valor_pag',
+                   'data_pag',
+                   'escola', 
                    'contrato',
                    'parcela',
                    'nr_parcela',

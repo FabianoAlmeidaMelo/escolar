@@ -40,6 +40,8 @@ class Escola(models.Model):
     '''
     pais = models.ForeignKey('core.Pais')  # País, Country
     nome = models.CharField('nome', max_length=200)
+    razao_social = models.CharField('razão social', max_length=200)
+    cnpj = models.CharField('cnpj', max_length=14)
     municipio = models.ForeignKey(Municipio)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
@@ -90,8 +92,8 @@ class Aluno(UserAdd, UserUpd):
     escola = models.ForeignKey(Escola)
     user = models.ForeignKey('core.User', null=True, blank=True)
     ano = models.SmallIntegerField(default=ano_corrente)
-    ra = models.CharField('RA', max_length=15, null=True, blank=True)
-   
+    ra = models.CharField('RA', max_length=20, null=True, blank=True)
+    responsaveis = models.ManyToManyField('MembroFamilia')
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
@@ -117,7 +119,7 @@ class Aluno(UserAdd, UserUpd):
         return self.nome
 
     def count_responsavel_financeiro(self):
-        return self.membrofamilia_set.filter(responsavel_financeiro=True).count()
+        return self.responsaveis.filter(responsavel_financeiro=True).count()
 
     def get_sexo_display(self):
         sexo = {1: 'masculino', 2: 'feminino'}
@@ -150,7 +152,7 @@ class MembroFamilia(UserAdd, UserUpd):
     é um doc da Escola, diferente do Perfil que "é" do User 
     '''
     parentesco = models.CharField(max_length=100)
-    aluno = models.ForeignKey(Aluno)
+    # aluno = models.ForeignKey(Aluno)
     user = models.ForeignKey('core.User', null=True, blank=True)
     responsavel_financeiro = models.BooleanField(default=False)
     responsavel_pedagogico = models.BooleanField(default=False)
