@@ -157,7 +157,7 @@ class ContratoAluno(UserAdd, UserUpd):
         return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
     def set_matricula(self):
-        data = date.today()
+        data = self.data_assinatura or date.today()
         categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
         Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
                                         contrato=self,

@@ -141,6 +141,7 @@ class ContratoAlunoForm(forms.ModelForm):
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
         self.fields['responsavel'].queryset = self.aluno.responsaveis.filter(responsavel_financeiro=True)
+        self.fields['data_assinatura'].required = True
         if not self.instance.pk:
             escola = self.aluno.escola
             parametros = escola.parametroscontrato_set.last()
