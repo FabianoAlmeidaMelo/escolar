@@ -47,10 +47,8 @@
     <thead>
       <tr>
         <th>Título</th>
-        <th>Data Prevista</th>
-        <th>Data Pago</th>
+        <th>Data</th>
         <th>Valor</th>
-        <th>Valor pago</th>
         <th>Responsavel/<br>Aluno</th>
         <th>Status</th>
       </tr>
@@ -66,7 +64,6 @@
           {% endif %}
         </td>
         <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
-        <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td>
         <td valor_id="valor_id_{{ pagamento.id }}"><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br|default:"--" }} {{ pagamento.get_tipo_display }}</font></td>
         <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor_pag|numberformat_br|default:"--" }}</font></td>
         <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
