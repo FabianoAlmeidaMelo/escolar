@@ -105,6 +105,14 @@ class ParametrosContrato(models.Model):
         return 'Parâmetros / Escola: %s' % self.escola.nome
 
 
+
+# class Contrato(UserAdd, UserUpd):
+#     '''
+#     ContratoAluno herda de Contrato
+#     '''
+#     pass
+
+
 class ContratoAluno(UserAdd, UserUpd):
     '''
     ref #31

@@ -1,25 +1,170 @@
 [
-    {
-        "model": "escolas.escola",
-        "pk": 1,
-        "fields": {
-            "pais": 1,
-            "nome": "Col\u00e9gio Crescer",
-            "razao_social": "Crescer Espa\u00e7o de Crescimento e Aperfei\u00e7oamento Psicopedag\u00f3gico S/C Ltda",
-            "cnpj": "01626645000105",
-            "municipio": 3549904,
-            "endereco": "Av Rui Barbosa",
-            "numero": "1868",
-            "telefone": "",
-            "celular": "",
-            "complemento": "",
-            "bairro": "Sanatana",
-            "created_at": "2016-12-26T23:22:06.868Z",
-            "slug": "crescer_sjc",
-            "logo": "",
-            "site": "",
-            "description": "do pr\u00e9 escolar at\u00e9 o 9\u00ba ano ...",
-            "publica": false
-        }
+{
+    "model": "escolas.curso",
+    "pk": 1,
+    "fields": {
+        "nome": "Ber\u00e7\u00e1rio",
+        "escola": null
     }
+},
+{
+    "model": "escolas.curso",
+    "pk": 2,
+    "fields": {
+        "nome": "Educa\u00e7\u00e3o Infantil",
+        "escola": null
+    }
+},
+{
+    "model": "escolas.curso",
+    "pk": 3,
+    "fields": {
+        "nome": "Ensino Fundamental (séries iniciais)",
+        "escola": null
+    }
+},
+{
+    "model": "escolas.curso",
+    "pk": 4,
+    "fields": {
+        "nome": "Ensino Fundamental (séries finais)",
+        "escola": null
+    }
+},
+{
+    "model": "escolas.curso",
+    "pk": 5,
+    "fields": {
+        "nome": "Ensino M\u00e9dio",
+        "escola": null
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 1,
+    "fields": {
+        "curso": 1,
+        "serie": "0 a 2 anos"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 2,
+    "fields": {
+        "curso": 2,
+        "serie": "N1"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 3,
+    "fields": {
+        "curso": 2,
+        "serie": "N2"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 4,
+    "fields": {
+        "curso": 2,
+        "serie": "N3"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 5,
+    "fields": {
+        "curso": 3,
+        "serie": "1\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 6,
+    "fields": {
+        "curso": 3,
+        "serie": "2\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 7,
+    "fields": {
+        "curso": 3,
+        "serie": "3\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 8,
+    "fields": {
+        "curso": 3,
+        "serie": "4\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 9,
+    "fields": {
+        "curso": 3,
+        "serie": "5\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 10,
+    "fields": {
+        "curso": 4,
+        "serie": "6\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 11,
+    "fields": {
+        "curso": 4,
+        "serie": "7\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 12,
+    "fields": {
+        "curso": 4,
+        "serie": "8\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 13,
+    "fields": {
+        "curso": 4,
+        "serie": "9\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 14,
+    "fields": {
+        "curso": 5,
+        "serie": "1\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 15,
+    "fields": {
+        "curso": 5,
+        "serie": "2\u00ba ano"
+    }
+},
+{
+    "model": "escolas.serie",
+    "pk": 16,
+    "fields": {
+        "curso": 5,
+        "serie": "3\u00ba ano"
+    }
+}
 ]
