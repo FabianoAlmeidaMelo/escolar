@@ -19,7 +19,7 @@
     "model": "escolas.curso",
     "pk": 3,
     "fields": {
-        "nome": "Ensino Fundamental (séries iniciais)",
+        "nome": "Ensino Fundamental 1",
         "escola": null
     }
 },
@@ -27,7 +27,7 @@
     "model": "escolas.curso",
     "pk": 4,
     "fields": {
-        "nome": "Ensino Fundamental (séries finais)",
+        "nome": "Ensino Fundamental 2",
         "escola": null
     }
 },
