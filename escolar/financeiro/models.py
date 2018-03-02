@@ -80,7 +80,7 @@ class ParametrosContrato(models.Model):
         u'Dia de Pagar',
         validators=[validate_vencimento],
     )
-
+    # TODO: desconto irmãos
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
     material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
     data_um_material = models.DateField('1ª parcela em', blank=True, null=True)
@@ -112,31 +112,33 @@ class ContratoAluno(UserAdd, UserUpd):
     Escola + Responsavel pelo Aluno + Aluno
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
+    # INI: comum a qualquer contrato ???
     ano = models.SmallIntegerField()
-    # INI parametros
+    data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
+    valor = models.DecimalField(
+        'valor',
+        max_digits=7,
+        decimal_places=2)
+    nr_parcela = models.PositiveSmallIntegerField('Nr de Parcelas')
+    contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)
+    vencimento = models.IntegerField(
+        u'Dia de Pagar',
+        validators=[validate_vencimento],
+    )
+    # fim: comum a qualquer contrato ???
+    # INI  CONTRATOS de prestação de serviços para Alunos:
     tem_desconto = models.BooleanField('tem desconto', default=False)
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
     dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
     multa = models.DecimalField('Multa por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
-    # fim parametros
+
     responsavel = models.ForeignKey('escolas.MembroFamilia')
     aluno = models.ForeignKey('escolas.Aluno', related_name='contrato_aluno')
     serie = models.CharField('série', null=True, blank=True, max_length=20)
     curso = models.CharField('curso', null=True, blank=True, max_length=120)
     matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
-    data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
-    contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)
-    valor = models.DecimalField(
-        'valor',
-        max_digits=7,
-        decimal_places=2)
-    vencimento = models.IntegerField(
-        u'Dia de Pagar',
-        validators=[validate_vencimento],
-    )
-    nr_parcela = models.PositiveSmallIntegerField('Nr de Parcelas')
     desconto = models.DecimalField('Desconto por pontualidade (%)',
         max_digits=7,
         decimal_places=2,
