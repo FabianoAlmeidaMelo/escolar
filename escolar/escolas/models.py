@@ -55,6 +55,7 @@ class Escola(models.Model):
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
     publica = models.BooleanField(u'Escola pública', default=False)
+    cursos = models.ManyToManyField('Curso')
 
     class Meta:
         verbose_name = 'escola'
@@ -82,11 +83,9 @@ class Curso(models.Model):
     Berçário  0 A 2 ANOS
     '''
     nome = models.CharField(max_length=100)
-    escola = models.ForeignKey(Escola, null=True, blank=True)
+    # escola = models.ForeignKey(Escola, null=True, blank=True)
 
     def __str__(self):
-        if self.escola:
-            return "%s - %s" % (self.nome, self.escola,nome)
         return self.nome
 
 class Serie(models.Model):
@@ -137,6 +136,7 @@ class Aluno(UserAdd, UserUpd):
     celular = models.CharField(max_length=11, null=True, blank=True)
     telefone = models.CharField(max_length=11, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo')
+    curso = models.ForeignKey('Curso', null=True, blank=True)
 
     class Meta:
         verbose_name = 'aluno'

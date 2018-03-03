@@ -13,6 +13,7 @@ from escolar.escolas.models import (
     ANO,
     Autorizado,
     AutorizadoAluno,
+    Curso,
     Escola,
     Classe,
     ClasseAluno,
@@ -75,6 +76,8 @@ class AutorizadoForm(forms.ModelForm):
 
 class EscolaForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo', required=False)
+    cursos = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                            queryset=Curso.objects.all())
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -105,6 +108,7 @@ class AlunoForm(forms.ModelForm):
         self.escola = kwargs.pop('escola', None)
         self.user = kwargs.pop('user', None)
         super(AlunoForm, self).__init__(*args, **kwargs)
+        self.fields['curso'].queryset = self.escola.cursos.all()
 
     class Meta:
         model = Aluno

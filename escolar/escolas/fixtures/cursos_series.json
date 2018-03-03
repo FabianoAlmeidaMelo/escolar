@@ -3,40 +3,40 @@
     "model": "escolas.curso",
     "pk": 1,
     "fields": {
-        "nome": "Ber\u00e7\u00e1rio",
-        "escola": null
+        "nome": "Ber\u00e7\u00e1rio"
+        
     }
 },
 {
     "model": "escolas.curso",
     "pk": 2,
     "fields": {
-        "nome": "Educa\u00e7\u00e3o Infantil",
-        "escola": null
+        "nome": "Educa\u00e7\u00e3o Infantil"
+        
     }
 },
 {
     "model": "escolas.curso",
     "pk": 3,
     "fields": {
-        "nome": "Ensino Fundamental 1",
-        "escola": null
+        "nome": "Ensino Fundamental 1"
+        
     }
 },
 {
     "model": "escolas.curso",
     "pk": 4,
     "fields": {
-        "nome": "Ensino Fundamental 2",
-        "escola": null
+        "nome": "Ensino Fundamental 2"
+        
     }
 },
 {
     "model": "escolas.curso",
     "pk": 5,
     "fields": {
-        "nome": "Ensino M\u00e9dio",
-        "escola": null
+        "nome": "Ensino M\u00e9dio"
+        
     }
 },
 {

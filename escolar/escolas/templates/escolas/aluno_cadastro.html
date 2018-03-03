@@ -32,16 +32,18 @@
         <div class="col-md-4">
           <h3><b>Ano</b> : {{ aluno.ano }}</h3>
           <p><b>RA</b>: {{ aluno.ra }}</p>
+          <p><b>Sexo</b>: {{ aluno.get_sexo_display }}</p>
+          <p><b>Curso</b>: {{ aluno.curso.nome }}</p>
+          <small>Dados do Aluno:</small>
           <p><b>Nome</b>: {{ aluno.nome }}</p>
-          <p><b>sexo</b>: {{ aluno.get_sexo_display }}</p>
           <p><b>CPF</b>: {{ aluno.cpf|default:"--" }}</p>
           <p><b>RG</b>: {{ aluno.rg|default:"--" }} </p>
+        </div>
+        <div class="col-md-4">
           <p><small>Nascimento</small></p>
           <p><b>Nacionalidade</b>: {{ aluno.nacionalidade }}</p>
           <p><b>Natural de</b>: {{ aluno.natural_municipio }}</p>
           <p><b>data de nascimento</b>: {{ aluno.nascimento }}</p>
-        </div>
-        <div class="col-md-4">
           <h3>Contato</h3>
           <p><b>Email</b>: {{ aluno.email|default:"--" }} </p>
           <p><b>Celular</b>: {{ aluno.celular|default:"--" }} </p>
