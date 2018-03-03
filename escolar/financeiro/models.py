@@ -131,8 +131,7 @@ class ContratoAluno(UserAdd, UserUpd):
     # fim parametros
     responsavel = models.ForeignKey('escolas.MembroFamilia')
     aluno = models.ForeignKey('escolas.Aluno', related_name='contrato_aluno')
-    serie = models.CharField('série', null=True, blank=True, max_length=20)
-    curso = models.CharField('curso', null=True, blank=True, max_length=120)
+    serie = models.ForeignKey('escolas.Serie', null=True, blank=True,)
     matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
     data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
     contrato = models.FileField(upload_to=escola_contrato_path, null=True, blank=True)

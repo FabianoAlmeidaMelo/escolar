@@ -62,7 +62,7 @@
               <td>{{ aluno.nome }}</td>
             {% endif %}
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
-            <td>{{ aluno.get_serie|default:"--" }} /<br>{{ aluno.get_curso|default:'--' }}</td>
+            <td>{{ aluno.get_serie|default:"--" }} </td>
             <td>{{ aluno.get_data_matricula|date:'d/m/Y' }}</td>
           </tr>
         {% empty %}

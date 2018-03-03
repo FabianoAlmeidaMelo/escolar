@@ -11,6 +11,7 @@ from escolar.financeiro.models import (
     Pagamento,
     ParametrosContrato,
 )
+from escolar.escolas.models import Serie
 
 from datetime import date
 from calendar import monthrange
@@ -134,14 +135,15 @@ class ParametrosContratoForm(forms.ModelForm):
         return instance
 
 class ContratoAlunoForm(forms.ModelForm):
-    serie = forms.CharField(required=True)
-
+    
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
         self.fields['responsavel'].queryset = self.aluno.responsaveis.filter(responsavel_financeiro=True)
         self.fields['data_assinatura'].required = True
+        self.fields['serie'].required = True
+        self.fields['serie'].queryset = Serie.objects.filter(curso=self.aluno.curso)
         if not self.instance.pk:
             escola = self.aluno.escola
             parametros = escola.parametroscontrato_set.last()

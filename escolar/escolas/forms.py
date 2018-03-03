@@ -13,12 +13,13 @@ from escolar.escolas.models import (
     ANO,
     Autorizado,
     AutorizadoAluno,
-    Curso,
-    Escola,
     Classe,
     ClasseAluno,
     ClasseProfessor,
+    Curso,
+    Escola,
     MembroFamilia,
+    Serie,
 )
 
 from escolar.core.models import User, UserGrupos
@@ -192,13 +193,14 @@ class AlunoSearchForm(forms.Form):
     # responsavel = forms.CharField(label=u'Responsável', required=False)
     nome = forms.CharField(label=u'Nome', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
-    serie = forms.CharField(label=u'Série', required=False)
-    curso = forms.CharField(label=u'Curso', required=False)
-
+    serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
+    curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(AlunoSearchForm, self).__init__(*args, **kargs)
-       
+        cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
+        self.fields['serie'].queryset = Serie.objects.filter(curso__id__in=cursos_ids)
+        self.fields['curso'].queryset = self.escola.cursos.all()
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
@@ -216,11 +218,11 @@ class AlunoSearchForm(forms.Form):
 
             serie = self.cleaned_data['serie']
             if serie and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie__icontains=serie)
+                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie=serie)
 
             curso = self.cleaned_data['curso']
             if curso and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__curso__icontains=curso)
+                q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
         return Aluno.objects.filter(q)
 
