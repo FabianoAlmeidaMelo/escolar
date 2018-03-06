@@ -4,7 +4,7 @@
 {% block css %}
   <style type="text/css">
     #id_tipo,
-    #id_data_prevista,
+    #id_data,
     #id_data_pag,
     #id_valor,
     #id_valor_pag {
@@ -56,7 +56,7 @@
              {% bootstrap_field form.categoria %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
-             {% bootstrap_field form.data_prevista %}
+             {% bootstrap_field form.data %}
              {% bootstrap_field form.valor %}
              {% bootstrap_field form.tipo %}
              {% bootstrap_field form.efet %}
@@ -73,7 +73,7 @@
           <input type="submit" value="Salvar" class="btn btn-primary">
         {% endif %}
         {% if contrato %}
-          <a href="{% url 'pagamentos_aluno_list' contrato.aluno.id %}" class="btn btn-secondary">Pagamentos do aluno {{ contrato.ano }}</a>
+          <a href="{% url 'pagamentos_aluno_list' contrato.contratoaluno.aluno.id %}" class="btn btn-secondary">Pagamentos do aluno {{ contrato.ano }}</a>
         {% endif %}
         <a href="{% url 'pagamentos_list' escola.id %}" class="btn btn-secondary">Lista de pagamentoss</a>
       </div>

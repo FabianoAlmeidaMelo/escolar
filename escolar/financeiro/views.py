@@ -285,7 +285,7 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
         msg = u'Pagamento alterado com sucesso.'
         contrato = pagamento.contrato
         if contrato:
-            aluno = contrato.aluno
+            aluno = contrato.contratoaluno.aluno
     else:
         pagamento = None
         msg = u'Pagamento criado.' 
@@ -395,8 +395,8 @@ def pagamentos_list(request, escola_pk):
     else:
         data_ini = date(ano_corrente, mes_corrnete, 1)
         data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
-        pagamentos = form.get_result_queryset().filter(data_prevista__gte=data_ini,
-                                                       data_prevista__lte=data_fim )
+        pagamentos = form.get_result_queryset().filter(data__gte=data_ini,
+                                                       data__lte=data_fim )
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()

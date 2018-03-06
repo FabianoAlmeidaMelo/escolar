@@ -199,7 +199,7 @@ class ContratoAlunoSearchForm(forms.Form):
     '''
     responsavel = forms.CharField(label=u'Responsável', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    # ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
     serie = forms.CharField(label=u'Série', required=False)
     curso = forms.CharField(label=u'Curso', required=False)
 
@@ -217,9 +217,9 @@ class ContratoAlunoSearchForm(forms.Form):
             aluno = self.cleaned_data['aluno']
             if aluno:
                 q = q & Q(aluno__nome__icontains=aluno)
-            ano = self.cleaned_data['ano']
-            if ano:
-                q = q & Q(ano=ano)
+            # ano = self.cleaned_data['ano']
+            # if ano:
+            #     q = q & Q(ano=ano)
 
             serie = self.cleaned_data['serie']
             if serie:
@@ -252,9 +252,7 @@ class PagamentoForm(forms.ModelForm):
 
     class Meta:
         model = Pagamento
-        exclude = ('valor_pag',
-                   'data_pag',
-                   'escola', 
+        exclude = ('escola', 
                    'contrato',
                    'parcela',
                    'nr_parcela',
@@ -295,7 +293,7 @@ class PagamentoEscolaSearchForm(forms.Form):
        
 
     def get_result_queryset(self, mes=None):
-        q = Q(escola=self.escola)
+        q = Q(escola=self.escola, )
         if self.is_valid():
             # responsavel = self.cleaned_data['responsavel']
             # if responsavel:
@@ -314,18 +312,18 @@ class PagamentoEscolaSearchForm(forms.Form):
                 data_ini = date(year, month, 1)
                 data_fim = date(year, month, monthrange(year, month)[1])
                 print('\n FORM:\n',data_ini, data_fim)
-                q = q & Q(data_prevista__gte=data_ini, data_prevista__lte=data_fim)
+                q = q & Q(data__gte=data_ini, data__lte=data_fim)
 
             titulo = self.cleaned_data['titulo']
             if titulo:
                 q = q & Q(titulo__icontains=titulo)
 
-            # serie = self.cleaned_data['serie']
+            serie = self.cleaned_data['serie']
             # if serie:
-            #     q = q & Q(contrato__serie__icontains=serie)
+            #     q = q & Q(contrato__contratoaluno__serie__icontains=serie)
             # curso = self.cleaned_data['curso']
             # if curso:
-            #     q = q & Q(contrato__curso__icontains=curso)
+            #     q = q & Q(contrato__contratoaluno__aluno__curso__icontains=curso)
 
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
@@ -351,7 +349,7 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
  
 
     def get_result_queryset(self):
-        q = Q(escola=self.escola, contrato__aluno=self.aluno)
+        q = Q(escola=self.escola, contrato__contratoaluno__aluno=self.aluno)
         if self.is_valid():
             ano = self.cleaned_data['ano']
             if ano:

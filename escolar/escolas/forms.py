@@ -56,16 +56,16 @@ class AutorizadoForm(forms.ModelForm):
         self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
-        autorizado, create = Autorizado.objects.get_or_create(documento=self.instance.documento,
-                                                              defaults={'email': self.instance.email,
-                                                                        'nome': self.instance.nome, 
-                                                                        'celular': self.instance.celular})
+        autorizado, create = Autorizado.objects.update_or_create(documento=self.instance.documento,
+                                                                 defaults={'email': self.instance.email,
+                                                                           'nome': self.instance.nome, 
+                                                                           'celular': self.instance.celular})
         
-        autorizado_aluno, created = AutorizadoAluno.objects.get_or_create(escola=self.escola,
-                                                                          aluno=self.aluno,
-                                                                          autorizado=autorizado,
-                                                                          defaults={'responsavel': self.responsavel,
-                                                                                    'status': True})
+        autorizado_aluno, created = AutorizadoAluno.objects.update_or_create(escola=self.escola,
+                                                                             aluno=self.aluno,
+                                                                             autorizado=autorizado,
+                                                                             defaults={'responsavel': self.responsavel,
+                                                                                       'status': True})
         instance = autorizado
         instance.save()
         return instance
@@ -204,7 +204,6 @@ class AlunoSearchForm(forms.Form):
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
-        # import pdb; pdb.set_trace()
         if self.is_valid():
             # responsavel = self.cleaned_data['responsavel']
             # if responsavel:
