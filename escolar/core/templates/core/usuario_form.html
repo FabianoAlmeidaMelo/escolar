@@ -36,9 +36,11 @@
         {% if form.instance.id %}
           <div class="row">
             <div class="col-xs-9 col-sm-6 col-md-3">
-              <p>Esse usuário já pertence ao(s) grupo(s):</p>
+              <p>
+                 <b>username:</b> {{ form.instance.username }}
+              </p>
+              <p>Esse usuário já pertence ao(s) <b>grupo(s):</b></p>
               <ul>
-                <li>username: {{ form.instance.username }}</li>
                 {% for user_grupo in form.instance.usergrupos_set.all %}
                   {% if user_grupo.escola == escola %}
                   <li>{{ user_grupo.grupo.name }}</li>
