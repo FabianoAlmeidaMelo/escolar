@@ -45,7 +45,13 @@
         <tbody>
         {% for usuario in object_list %}
           <tr>
-            <td><a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a></td>
+            <td>
+              {% if can_edit or usuario.id == user.id %}
+              <a href="{% url 'usuario_form' escola.pk usuario.id %}">{{ usuario.nome }}</a>
+              {% else %}
+              {{ usuario.nome }}
+              {% endif %}
+            </td>
             <td>
               {{ usuario.email }}
             </td>

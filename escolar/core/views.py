@@ -158,11 +158,11 @@ def usuarios_list(request, escola_pk):
     except EmptyPage:
         usuarios = paginator.page(paginator.num_pages)
     # ### paginação ####
-
+    context['user'] = user
     context['form'] = form
     context['escola'] = escola
     context['object_list'] = usuarios
-    context['can_edit'] = diretor or admin
+    context['can_edit'] = admin
     context['tab_usuarios'] = "active"
 
     return render(request, 'core/usuarios_list.html', context)
@@ -183,6 +183,10 @@ def usuario_form(request, escola_pk, pk=None):
     else:
         usuario = None
         msg = u'Usuário cadastrado.'
+
+    can_edit = user.is_admin() or user.id == usuario.id
+    if not can_edit:
+        raise Http404
 
     form = UserForm(request.POST or None, instance=usuario, user=user, escola=escola)
     context = {}
