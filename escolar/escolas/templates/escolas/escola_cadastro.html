@@ -44,6 +44,14 @@
             Logo: 
               <p><a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a></p>
           {% endif %}
+          <p>
+            <b>Cursos:</b>
+            <ul>
+              {% for curso in escola.cursos.all %}
+                <li>{{ curso.nome }}</li>
+              {% endfor %}
+            </ul>
+          </p>
         </div>
     </div>
         {% if can_edit %}

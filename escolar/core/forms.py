@@ -120,7 +120,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        exclude = ('date_joined', 'is_active', 'password', 'grupos')
+        exclude = ('date_joined', 'is_active', 'password', 'grupos', 'username')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -133,7 +133,7 @@ class UserForm(forms.ModelForm):
             self.fields['escola'].widget = forms.HiddenInput()
 
 
-        if self.auto_edicao and not any([self.user.is_admin(), self.user.is_diretor(self.escola.id)]):
+        if self.auto_edicao and not any([self.user.is_admin()]):
             self.fields['grupo'].widget = forms.HiddenInput()
             self.fields['escola'].widget = forms.HiddenInput()
             self.fields['grupo'].required = False
@@ -152,27 +152,16 @@ class UserForm(forms.ModelForm):
         '''
         TODO:
         permitir salvar senha de user SE
-        - for criação
         - user for o próprio
-        - user for do grupo Diretor
+        - user for admin
             - nesse caso, enviar email com nova senha, para o user e o responsável pelo aluno (se for o caso)
         '''
-        created = False
-        email = self.cleaned_data['email']
-        group = self.cleaned_data["grupo"] or None
-        escola = self.cleaned_data["escola"] or self.escola
-        nome = self.cleaned_data['nome']
-        if not self.auto_edicao:
-            user, created = User.objects.get_or_create(email=email, defaults={'nome': nome})
-        else:
-            user = self.user
 
         password2 = self.cleaned_data.get("password2", False)
-        if password2 and created or self.auto_edicao:
+        if password2:
             self.instance.set_password(password2)
-        user.save()
-        if all([self.auto_edicao is False, group, escola]):
-            user_grupo, grupo_criado = UserGrupos.objects.get_or_create(escola=escola, grupo=group, user=user, ativo=True)
+        self.instance.save()
+        
         return self.instance
 
 

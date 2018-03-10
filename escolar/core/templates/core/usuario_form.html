@@ -38,11 +38,12 @@
             <div class="col-xs-9 col-sm-6 col-md-3">
               <p>Esse usuário já pertence ao(s) grupo(s):</p>
               <ul>
-              {% for user_grupo in form.instance.usergrupos_set.all %}
-                {% if user_grupo.escola == escola %}
-                <li>{{ user_grupo.grupo.name }}</li>
-                {% endif%}
-              {% endfor %}
+                <li>username: {{ form.instance.username }}</li>
+                {% for user_grupo in form.instance.usergrupos_set.all %}
+                  {% if user_grupo.escola == escola %}
+                  <li>{{ user_grupo.grupo.name }}</li>
+                  {% endif%}
+                {% endfor %}
               </ul>
             </div>
           </div>

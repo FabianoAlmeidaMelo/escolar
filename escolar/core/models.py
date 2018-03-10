@@ -93,6 +93,7 @@ class User(AbstractBaseUser):
     '''
     '''
     email = models.EmailField('e-mail', unique=True)
+    username = models.CharField('username', max_length=100, unique=True)
     nome = models.CharField(verbose_name=u'Nome', max_length=100)
     is_active = models.BooleanField('ativo', default=True,)
     date_joined = models.DateTimeField(
@@ -102,8 +103,8 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('nome', )
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ('nome', 'email', )
 
     class Meta:
         verbose_name = u'Usuário'

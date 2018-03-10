@@ -13,11 +13,13 @@ from escolar.escolas.models import (
     ANO,
     Autorizado,
     AutorizadoAluno,
-    Escola,
     Classe,
     ClasseAluno,
     ClasseProfessor,
+    Curso,
+    Escola,
     MembroFamilia,
+    Serie,
 )
 
 from escolar.core.models import User, UserGrupos
@@ -54,16 +56,16 @@ class AutorizadoForm(forms.ModelForm):
         self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
-        autorizado, create = Autorizado.objects.get_or_create(documento=self.instance.documento,
-                                                              defaults={'email': self.instance.email,
-                                                                        'nome': self.instance.nome, 
-                                                                        'celular': self.instance.celular})
+        autorizado, create = Autorizado.objects.update_or_create(documento=self.instance.documento,
+                                                                 defaults={'email': self.instance.email,
+                                                                           'nome': self.instance.nome, 
+                                                                           'celular': self.instance.celular})
         
-        autorizado_aluno, created = AutorizadoAluno.objects.get_or_create(escola=self.escola,
-                                                                          aluno=self.aluno,
-                                                                          autorizado=autorizado,
-                                                                          defaults={'responsavel': self.responsavel,
-                                                                                    'status': True})
+        autorizado_aluno, created = AutorizadoAluno.objects.update_or_create(escola=self.escola,
+                                                                             aluno=self.aluno,
+                                                                             autorizado=autorizado,
+                                                                             defaults={'responsavel': self.responsavel,
+                                                                                       'status': True})
         instance = autorizado
         instance.save()
         return instance
@@ -75,6 +77,8 @@ class AutorizadoForm(forms.ModelForm):
 
 class EscolaForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo', required=False)
+    cursos = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                            queryset=Curso.objects.all())
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -105,6 +109,7 @@ class AlunoForm(forms.ModelForm):
         self.escola = kwargs.pop('escola', None)
         self.user = kwargs.pop('user', None)
         super(AlunoForm, self).__init__(*args, **kwargs)
+        self.fields['curso'].queryset = self.escola.cursos.all()
 
     class Meta:
         model = Aluno
@@ -188,17 +193,17 @@ class AlunoSearchForm(forms.Form):
     # responsavel = forms.CharField(label=u'Responsável', required=False)
     nome = forms.CharField(label=u'Nome', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
-    serie = forms.CharField(label=u'Série', required=False)
-    curso = forms.CharField(label=u'Curso', required=False)
-
+    serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
+    curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(AlunoSearchForm, self).__init__(*args, **kargs)
-       
+        cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
+        self.fields['serie'].queryset = Serie.objects.filter(curso__id__in=cursos_ids)
+        self.fields['curso'].queryset = self.escola.cursos.all()
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
-        # import pdb; pdb.set_trace()
         if self.is_valid():
             # responsavel = self.cleaned_data['responsavel']
             # if responsavel:
@@ -212,11 +217,11 @@ class AlunoSearchForm(forms.Form):
 
             serie = self.cleaned_data['serie']
             if serie and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie__icontains=serie)
+                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie=serie)
 
             curso = self.cleaned_data['curso']
             if curso and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__curso__icontains=curso)
+                q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
         return Aluno.objects.filter(q)
 

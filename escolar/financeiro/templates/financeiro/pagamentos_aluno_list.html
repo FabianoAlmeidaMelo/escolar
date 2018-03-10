@@ -66,16 +66,16 @@
             {{ pagamento.titulo|default:'--' }}
           {% endif %}
         </td>
-        <td>{{ pagamento.data_prevista|date:'d/m/Y' }}</td>
-       <!--  <td>{{ pagamento.data_pag|date:'d/m/Y'|default:"--" }}</td> -->
+        <td>{{ pagamento.data|date:'d/m/Y' }}</td>
+
         <td>
           <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
           {% if pagamento.categoria.id == 1 and not pagamento.efet %}
             <br>
-            <small>R$ {{ pagamento.get_valor_com_desconto|numberformat_br }}</small>
+            <small>R$ {{ pagamento.get_valor_com_desconto|numberformat_br }} </small>
           {% endif %}
         </td>
-        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>{{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>{{ pagamento.contrato.contratoaluno.aluno.nome }}</td>
         <td>
           {% if pagamento.efet %}
               Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>

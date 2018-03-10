@@ -23,8 +23,8 @@
       <div class="row">
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3><b>Ano</b> : {{ contrato.ano }}</h3>
-          <p><b>Responsável</b>: {{ contrato.responsavel.nome }}</p>
-          <p><b>Aluno</b>: {{ contrato.aluno.nome }}</p>
+          <p><b>Responsável</b>: {{ contrato.contratoaluno.responsavel.nome }}</p>
+          <p><b>Aluno</b>: {{ contrato.contratoaluno.aluno.nome }}</p>
           <p><b>Série</b>: {{ contrato.serie }}</p>
           <p><b>Valor do contrato</b>: R$ {{ contrato.valor|numberformat_br }}</p>
           <p>({{ contrato.get_valor_extenso }})</p>

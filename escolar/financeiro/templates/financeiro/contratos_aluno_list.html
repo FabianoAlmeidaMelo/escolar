@@ -19,8 +19,14 @@
     {% include "base_aluno.html" %}
     <table class="table table-striped">
       {% if can_edit %}
-        {% if aluno.count_responsavel_financeiro == 0 %}
-          <div class="alert alert-warning">Necessário definir um Responsável Financeiro</div>
+        {% if  aluno.list_pendencias_contrato %}
+        <div class="alert alert-warning">
+          <ul>
+            {% for pendencia in aluno.list_pendencias_contrato %}
+            <li>{{ pendencia }}</li>
+            {% endfor %}
+          </ul>
+        </div>
         {% else %}
           <caption>
             <div style="float:right; margin-right:10px">

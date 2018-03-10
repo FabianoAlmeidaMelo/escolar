@@ -55,6 +55,7 @@ class Escola(models.Model):
     site = models.URLField('website', blank=True, null=True)
     description = models.TextField('descrição', blank=True, null=True)
     publica = models.BooleanField(u'Escola pública', default=False)
+    cursos = models.ManyToManyField('Curso')
 
     class Meta:
         verbose_name = 'escola'
@@ -72,6 +73,36 @@ class Escola(models.Model):
         se estiver válido, retorna True
         '''
         return True
+
+
+class Curso(models.Model):
+    '''
+    cursos básicos, default para todas escolas,
+    balizados pela Lei e Mec, criados geridos pelo admin.
+    cursos customizados e ou livres: criados e gerenciados por escola
+    Berçário  0 A 2 ANOS
+    '''
+    nome = models.CharField(max_length=100)
+    # escola = models.ForeignKey(Escola, null=True, blank=True)
+
+    def __str__(self):
+        return self.nome
+
+class Serie(models.Model):
+    '''
+    séries default, para todos os cursos e
+    possibilidade de Escola criar uma 'série' especial
+    '''
+    curso = models.ForeignKey(Curso)
+    serie = models.CharField(max_length=30)
+
+    def __str__(self):
+        return "%s - %s" % (self.serie, self.curso.nome)
+    
+    class Meta:
+        verbose_name = 'série'
+        verbose_name_plural = 'séries'
+        ordering = ('id',)
 
 def escola_aluno_directory_path(instance, documento):
     '''
@@ -109,6 +140,7 @@ class Aluno(UserAdd, UserUpd):
     celular = models.CharField(max_length=11, null=True, blank=True)
     telefone = models.CharField(max_length=11, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo')
+    curso = models.ForeignKey('Curso', null=True, blank=True)
 
     class Meta:
         verbose_name = 'aluno'
@@ -117,6 +149,14 @@ class Aluno(UserAdd, UserUpd):
 
     def __str__(self):
         return self.nome
+
+    def list_pendencias_contrato(self):
+        pendencias = []
+        if self.count_responsavel_financeiro() == 0:
+            pendencias.append('Necessário definir um Responsável Financeiro no cadastro dos Familiares')
+        if not self.curso:
+            pendencias.append('Necessário definir o Curso no cadastro do Aluno')
+        return pendencias
 
     def count_responsavel_financeiro(self):
         return self.responsaveis.filter(responsavel_financeiro=True).count()
