@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  {% include "base_adm.html" %}
+    <div class="row-fluid span10">
+     {% include "base_aluno.html" %}
+      <div class="row">
+        <br>
+        <!-- {# Celular, Tablet, Computador #} -->
+        
+          <p align="center">{{ escola.nome }}</p>
+          <p align="center">{{ escola.razao_social }}</p>
+          <p align="center">{{ escola.endereco }}, {{ escola.numero}}, {{ escola.bairro }}</p>
+          <p align="center">{{ escola.municipio }}</p>
+          <p align="center">{{ escola.telefone }}</p>
+          <table class="table table-striped">
+          <thead>
+            <tr>
+            </tr>
+          </thead>
+        <tbody>
+          <tr>
+            <td><b>RA:</b> {{ aluno.ra }}<br> <b>Classe:</b> <br><b>Curso:</b> {{ aluno.curso }} <br><b>Turma:</b>  <br> {{ aluno.ano }}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <b>Nome completo do aluno(a) sem abreviação</b><br>{{ aluno.nome }}:
+            </td>
+          </tr>
+          <tr>
+            <td><b>Naturalidade</b><br>{{ aluno.natural_municipio|default:'--' }}</td>
+            <td><b>Nacionalidade</b><br>{{ aluno.nacionalidade|default:'--' }}</td>
+            <td><b>Data de Nascimento</b><br>{{ aluno.nascimento|date:"d/m/Y" }}</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Endereço</b> <br>{{ aluno.endereco.logradouro }}, {{ aluno.endereco.numero }}
+            </td>
+          </tr>
+          <tr>
+            <td><b>Bairro</b><br>{{ aluno.endereco.bairro|default:'--' }}</td>
+            <td><b>Município - estado</b><br>{{ aluno.endereco.municipio|default:'--' }}</td>
+            <td><b>CEP</b><br>{{ aluno.endereco.cep|default:"--" }}</td>
+          </tr>
+          <tr><td ><b>Responsáveis:</b></td></tr>
+          {% for responsavel in aluno.responsaveis.all %}
+            <tr>
+              <td><b>Nome: </b><br>{{ responsavel.nome }}</td>
+              <td><b>Parentesco:</b><br>{{ responsavel.parentesco }}</td>
+              <td><b>celular:</b><br>{{ responsavel.celular }}</td>
+              <td><b>profissão:</b><br>{{ responsavel.profissao }}</td>
+            </tr>
+            <tr >
+              <td ><b>Empresa em que trabalha: </b><br>{{ responsavel.empresa }}</td>
+              <td ><b>Tel de contato:</b><br>{{ responsavel.telefone_empresa }}</td>
+            </tr>
+            <tr>
+              <td><b>Data de nascimento: </b><br>{{ responsavel.nascimento }}</td>
+              <td><b>RG:</b><br>{{ responsavel.rg }}</td>
+              <td><b>CPF:</b><br>{{ responsavel.cpf }}</td>
+            </tr>
+          {% endfor %}
+
+       </tbody>
+    </table>
+
+      </div>
+  </div>
+
+  <br>
+  <a href="" class="btn btn-default">
+    <span class="glyphicon glyphicon-print" aria-hidden="true" ></span>Imprimir</a>
+
+  <!-- aluno_ficha_matricula -->
+    <div class="form-actions">
+      <a href="{% url 'aluno_cadastro' aluno.id %}" class="btn btn-secondary">Voltar para o cadastro {{ aluno.nome }}</a>
+    </div>
+
+</div>
+{% endblock content %}
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

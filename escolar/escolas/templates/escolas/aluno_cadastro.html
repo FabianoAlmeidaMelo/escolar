@@ -66,9 +66,8 @@
         <br>
         {% if can_edit %}
           <a href="{% url 'aluno_form' escola.id aluno.id %}" class="btn btn-mini btn-success">Editar</a>
-          <button type="button" class="btn btn-default btn" title="imprimir ..." aligin="left">
-            <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Ficha Matrícula
-          </button>
+          <a href="{% url 'aluno_ficha_matricula' aluno.id %}" class="btn btn-default">Ficha Matrícula</a>
+
         {% endif %}
         <a href="{% url 'alunos_list' escola.pk %}" class="btn btn-secondary">Voltar para listagem de alunos</a>
       </div>

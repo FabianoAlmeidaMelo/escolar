@@ -304,6 +304,25 @@ def alunos_list(request, escola_pk):
 
     return render(request, 'escolas/alunos_list.html', context)
 
+
+@login_required
+def aluno_ficha_matricula(request, aluno_pk):
+    user = request.user
+    aluno = Aluno.objects.get(id=aluno_pk)
+    escola = aluno.escola
+    
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+
+    context = {}
+    context['escola'] = escola
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_aluno'] = "active"
+
+    return render(request, 'escolas/aluno_ficha_matricula.html', context)
+
+
 @login_required
 def aluno_form(request, escola_pk, aluno_pk=None):
     '''
