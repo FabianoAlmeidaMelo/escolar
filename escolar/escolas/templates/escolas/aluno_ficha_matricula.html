@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 
+{% block css %}
+{% endblock %}
+
 {% block page_title %}
-  <div class="page-header">
-  <!-- TODO erver esse br -->
-  <br>
-    {% if aluno.id %}
-        Aluno: {{ aluno.nome }}
-    {% else %}
-       Aluno
-    {% endif %}
+  <div class="page-header esconde_na_impressao">
+    <!-- TODO erver esse br -->
+    <br>
+      {% if aluno.id %}
+          Aluno: {{ aluno.nome }}
+      {% else %}
+         Aluno
+      {% endif %}
   </div>
 {% endblock page_title %}
 
@@ -97,7 +100,6 @@
      </tbody>
     </table>
   </fieldset>
-  </div>
   <fieldset style="margin-top:2px; border:2px;">
     <legend align="center"></legend>
     <table style="width: 100%;" class="listing">
@@ -117,10 +119,11 @@
      </tbody>
    </table>
  </fieldset>
+  </div>
 </div>
 
   <br>
-  <div class="form-actions">
+  <div class="form-actions esconde_na_impressao">
     <a href="" class="btn btn-default">
     <span class="glyphicon glyphicon-print" aria-hidden="true" ></span>Imprimir</a>
     <a href="{% url 'aluno_cadastro' aluno.id %}" class="btn btn-secondary">Voltar para o cadastro {{ aluno.nome }}</a>
