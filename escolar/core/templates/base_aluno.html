@@ -1,4 +1,17 @@
-<ul class="nav nav-tabs">
+  <style type="text/css">
+    @media print {
+        div, td {
+                position: relative;
+          }
+          .esconde_na_impressao {
+            display: none;
+          }
+          .apresenta_na_impressao{
+            display: block;
+          }
+  </style>
+
+<ul class="nav nav-tabs esconde_na_impressao">
   {% if escola.id %}
     {% if aluno.pk %}
       <li class="{{ tab_aluno }}"><a href="{% url 'aluno_cadastro' aluno.pk %}" id='id_escola'>Aluno</a></li>
