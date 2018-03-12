@@ -42,7 +42,7 @@
     <table style="width: 100%;" class="listing">
         <tbody>
           <tr>
-            <td><b>RA:</b> {{ aluno.ra }}<br> <b>Classe:</b> <br><b>Curso:</b> {{ aluno.curso }} <br><b>Turma:</b>  <br> {{ aluno.ano }}</td>
+            <td><b>RA:</b> {{ aluno.ra|default:'' }}<br> <b>Classe:</b> <br><b>Curso:</b> {{ aluno.curso|default:'' }} <br><b>Turma:</b>  <br> {{ aluno.ano|default:'' }}</td>
             <td></td>
           </tr>
         </tbody>
