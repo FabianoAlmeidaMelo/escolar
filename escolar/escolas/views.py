@@ -418,6 +418,8 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None, responsavel_pk=None)
         msg = u'Membro da família.'
     if responsavel_pk:
         responsavel = get_object_or_404(Responsavel, pk=responsavel_pk)
+        if responsavel.membro != membro or responsavel.aluno != aluno:
+            raise Http404
 
     form = MembroFamiliaForm(request.POST or None, request.FILES or None, instance=membro, user=user, aluno=aluno)
     resp_form = ResponsavelForm(request.POST or None, instance=responsavel, aluno=aluno, membro=membro)
@@ -463,7 +465,9 @@ def membro_familia_cadastro(request,  aluno_pk, membro_pk, responsavel_pk):
     membro = get_object_or_404(MembroFamilia, pk=membro_pk)
     responsavel = get_object_or_404(Responsavel, pk=responsavel_pk)
 
-    
+    if responsavel.membro != membro or responsavel.aluno != aluno:
+        raise Http404
+
     context = {}
     context['aluno'] = aluno
     context['membro'] = membro
