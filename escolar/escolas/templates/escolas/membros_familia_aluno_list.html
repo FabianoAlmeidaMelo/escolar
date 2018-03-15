@@ -53,9 +53,9 @@
             {% else %}
               <td>{{ membro.nome }}</td>
             {% endif %}
-            <td>{{ membro.parentesco }}</td>
-            <td>{{ membro.responsavel_financeiro|yesno:"Sim,Não" }}</td>
-            <td>{{ membro.responsavel_pedagogico|yesno:"Sim,Não" }}</td>
+            <td>{{ membro.responsavel.parentesco }}</td>
+            <td>{{ membro.responsavel.responsavel_financeiro|yesno:"Sim,Não" }}</td>
+            <td>{{ membro.responsavel.responsavel_pedagogico|yesno:"Sim,Não" }}</td>
             <td>{{ membro.celular|default:"" }}</td>
             <td>{{ membro.email|default:"" }}</td>
           </tr>

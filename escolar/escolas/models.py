@@ -197,7 +197,7 @@ class Responsavel(models.Model):
         verbose_name_plural = 'Responsáveis'
 
     def __str__(self):
-        return 'Aluno: %s - Responsável: %s' % (self.aluno, self.membro)
+        return '%s' % self.membro.nome
 
 def escola_aluno_parente_directory_path(instance, arquivo):
     '''

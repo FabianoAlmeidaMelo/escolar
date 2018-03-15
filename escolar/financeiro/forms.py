@@ -11,7 +11,7 @@ from escolar.financeiro.models import (
     Pagamento,
     ParametrosContrato,
 )
-from escolar.escolas.models import Serie
+from escolar.escolas.models import MembroFamilia, Serie
 
 from datetime import date
 from calendar import monthrange
@@ -140,7 +140,8 @@ class ContratoAlunoForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
-        self.fields['responsavel'].queryset = self.aluno.responsaveis.filter(responsavel_financeiro=True)
+        responsaveis_ids = self.aluno.responsavel_set.filter(responsavel_financeiro=True).values_list('membro_id', flat=True)
+        self.fields['responsavel'].queryset = MembroFamilia.objects.filter(id__in=responsaveis_ids)
         self.fields['data_assinatura'].required = True
         self.fields['serie'].required = True
         self.fields['serie'].queryset = Serie.objects.filter(curso=self.aluno.curso)
