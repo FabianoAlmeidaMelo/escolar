@@ -27,15 +27,15 @@
           <!-- {# Celular, Tablet, Computador #} -->
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.nome %}
-            {% bootstrap_field form.parentesco %}
             {% bootstrap_field form.nascimento %}
-            {% bootstrap_field form.responsavel_financeiro %}
-            {% bootstrap_field form.responsavel_pedagogico %}
             {% bootstrap_field form.sexo %}
-          </div>
-          <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.cpf %}
             {% bootstrap_field form.rg %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field resp_form.parentesco %}
+            {% bootstrap_field resp_form.responsavel_financeiro %}
+            {% bootstrap_field resp_form.responsavel_pedagogico %}
             {% bootstrap_field form.email %}
             {% bootstrap_field form.celular %}
             {% bootstrap_field form.telefone %}
@@ -51,8 +51,8 @@
       </div>
       <div class="form-actions">
         <input type="submit" value="Salvar" class="btn btn-primary">
-        {% if membro %}
-          <a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk %}" class="btn btn-secondary">Voltar para o cadastro {{ membro.nome }}</a>
+        {% if membro and responsavel %}
+          <a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk responsavel.pk %}" class="btn btn-secondary">Voltar para o cadastro {{ membro.nome }}</a>
         {% else %}
           <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary">Cancelar</a>
         {% endif %}

@@ -16,21 +16,23 @@ from escolar.escolas.models import (
     Aluno,
     Autorizado,
     AutorizadoAluno,
-    Escola,
     Classe,
     ClasseAluno,
+    Escola,
     MembroFamilia,
+    Responsavel,
 )
 from escolar.escolas.forms import (
     AlunoForm,
     AlunoSearchForm,
     AutorizadoForm,
-    ClasseForm,
     ClasseAlunoForm,
+    ClasseForm,
     ClasseProfessorForm,
     EscolaForm,
     MembroFamiliaForm,
     ProfessorForm,
+    ResponsavelForm,
 )
 
 from escolar.financeiro.models import ContratoAluno
@@ -394,7 +396,7 @@ def aluno_cadastro(request, aluno_pk):
 
 
 @login_required
-def membro_familia_form(request,  aluno_pk, membro_pk=None):
+def membro_familia_form(request,  aluno_pk, membro_pk=None, responsavel_pk=None):
     '''
     #33
     são os responsáveis pelo aluno, se Menor de Idade
@@ -406,28 +408,40 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     if not can_edit:
         raise Http404
-    
+
+    responsavel = None
     if membro_pk:
         membro = get_object_or_404(MembroFamilia, pk=membro_pk)
         msg = u'Membro da família alterado com sucesso.'
     else:
         membro = None
         msg = u'Membro da família.'
+    if responsavel_pk:
+        responsavel = get_object_or_404(Responsavel, pk=responsavel_pk)
+        if responsavel.membro != membro or responsavel.aluno != aluno:
+            raise Http404
 
     form = MembroFamiliaForm(request.POST or None, request.FILES or None, instance=membro, user=user, aluno=aluno)
+    resp_form = ResponsavelForm(request.POST or None, instance=responsavel, aluno=aluno, membro=membro)
 
     if request.method == 'POST':
-        if form.is_valid():
+        if form.is_valid() and resp_form.is_valid():
             membro = form.save()
+            resp_form.instance.membro = membro
+            resp_form.save()
             messages.success(request, msg)
-            return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk, 'membro_pk': membro.id}))
+            return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk,
+                                                                       'membro_pk': membro.id,
+                                                                       'responsavel_pk': responsavel_pk}))
         else:
             messages.warning(request, u'Falha no cadastro do membro família')
 
     context = {}
     context['form'] = form
-    context['membro'] = membro
+    context['resp_form'] = resp_form
     context['aluno'] = aluno
+    context['membro'] = membro
+    context['responsavel'] = responsavel
     context['escola'] = escola
     context['tab_alunos'] = "active"
     context['tab_responsaveis_aluno'] = "active"
@@ -435,7 +449,7 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None):
     return render(request, 'escolas/membro_familia_form.html', context)
 
 @login_required
-def membro_familia_cadastro(request,  aluno_pk, membro_pk):
+def membro_familia_cadastro(request,  aluno_pk, membro_pk, responsavel_pk):
     '''
     #33
     são os responsáveis pelo aluno, se Menor de Idade
@@ -449,11 +463,15 @@ def membro_familia_cadastro(request,  aluno_pk, membro_pk):
         raise Http404
     
     membro = get_object_or_404(MembroFamilia, pk=membro_pk)
+    responsavel = get_object_or_404(Responsavel, pk=responsavel_pk)
 
-    
+    if responsavel.membro != membro or responsavel.aluno != aluno:
+        raise Http404
+
     context = {}
-    context['membro'] = membro
     context['aluno'] = aluno
+    context['membro'] = membro
+    context['responsavel'] = responsavel
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['tab_alunos'] = "active"
@@ -468,10 +486,14 @@ def membros_familia_list(request, aluno_pk):
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
 
+    membros = MembroFamilia.objects.filter(aluno=aluno)
+    for m in membros:
+        m.responsavel = get_object_or_404(Responsavel, membro=m, aluno=aluno)
+
     context = {}
     context['escola'] = escola 
     context['can_edit'] = can_edit
-    context['object_list'] = MembroFamilia.objects.filter(aluno=aluno)
+    context['object_list'] = membros
     context['user'] = user
     context['aluno'] = aluno
     context['tab_alunos'] = "active"

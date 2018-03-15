@@ -25,11 +25,11 @@
         <!-- {# Celular, Tablet, Computador #} -->
         <div class="col-xs-9 col-sm-6 col-md-3">
           <p><b>Nome</b>: {{ membro.nome }}</p>
-          <p><b>Parentesco</b>: {{ membro.parentesco }}</p>
           <p><b>Data Nascimento</b>: {{ membro.nascimento }}</p>
-          <p><b>Responsavel financeiro</b>: {{ membro.responsavel_financeiro|yesno:"Sim,Não" }}</p>
-          <p><b>Responsavel pedagógico</b>: {{ membro.responsavel_pedagogico|yesno:"Sim,Não"  }}</p>
           <p><b>Sexo</b>: {{ membro.get_sexo_display }}</p>
+          <p><b>Parentesco</b>: {{ responsavel.parentesco }}</p>
+          <p><b>Responsavel financeiro</b>: {{ responsavel.responsavel_financeiro|yesno:"Sim,Não" }}</p>
+          <p><b>Responsavel pedagógico</b>: {{ responsavel.responsavel_pedagogico|yesno:"Sim,Não"  }}</p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <p><b>Cpf</b>: {{ membro.cpf }}</p>
@@ -50,7 +50,7 @@
   {% if can_edit %}
   <br>
     <div class="form-actions">
-      <a href="{% url 'membro_familia_form' aluno.id membro.pk %}" class="btn btn-mini btn-success">Editar</a>
+      <a href="{% url 'membro_familia_form' aluno.id membro.pk responsavel.pk %}" class="btn btn-mini btn-success">Editar</a>
       <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de familiares do aluno">Familiares do aluno</a>
     </div>
   {% endif %}

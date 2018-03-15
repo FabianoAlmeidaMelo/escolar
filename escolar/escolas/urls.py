@@ -47,13 +47,13 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/classes_list/$', classes_list, name='classes_list'),
     url(r'^escola/aluno/classe/(?P<classe_pk>\d)/$', classe_aluno_form, name='classe_aluno_form'),
     url(r'^escola/professor/classe/(?P<classe_pk>\d)/$', classe_professor_form, name='classe_professor_form'),
-    # Autorizado   responsaveis_list
+    # responsaveis_list
     url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel_form/$', membro_familia_form, name='membro_familia_form'),
-    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel_edit/(?P<membro_pk>\d+)/$', membro_familia_form, name='membro_familia_form'),
-    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel/(?P<membro_pk>\d+)/$', membro_familia_cadastro, name='membro_familia_cadastro'),
+    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel_edit/(?P<membro_pk>\d+)/(?P<responsavel_pk>\d+)/$', membro_familia_form, name='membro_familia_form'),
+    url(r'^escola/aluno/(?P<aluno_pk>\d+)/responsavel/(?P<membro_pk>\d+)/(?P<responsavel_pk>\d+)/$', membro_familia_cadastro, name='membro_familia_cadastro'),
     url(r'^escola/(?P<aluno_pk>\d+)/responsaveis_list/$', membros_familia_list, name='membros_familia_list'),
 
-
+    # Autorizados
     url(r'^escola/(?P<aluno_pk>\d+)/autorizado_form/$', autorizado_form, name='autorizado_form'),
     url(r'^escola/(?P<aluno_pk>\d+)/autorizado/(?P<autorizado_pk>\d+)/$', autorizado_cadastro, name='autorizado_cadastro'),
     url(r'^escola/(?P<aluno_pk>\d+)/autorizado_form/(?P<autorizado_pk>\d+)/$', autorizado_form, name='autorizado_form'),
