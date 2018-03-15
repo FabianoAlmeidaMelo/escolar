@@ -50,7 +50,7 @@
   {% if can_edit %}
   <br>
     <div class="form-actions">
-      <a href="{% url 'membro_familia_form' aluno.id membro.pk %}" class="btn btn-mini btn-success">Editar</a>
+      <a href="{% url 'membro_familia_form' aluno.id membro.pk responsavel.pk %}" class="btn btn-mini btn-success">Editar</a>
       <a href="{% url 'membros_familia_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de familiares do aluno">Familiares do aluno</a>
     </div>
   {% endif %}

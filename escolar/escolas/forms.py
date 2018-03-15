@@ -19,6 +19,7 @@ from escolar.escolas.models import (
     Curso,
     Escola,
     MembroFamilia,
+    Responsavel,
     Serie,
 )
 
@@ -141,10 +142,8 @@ class AlunoForm(forms.ModelForm):
 
 
 class MembroFamiliaForm(forms.ModelForm):
-    cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
+    cpf = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
-    # celular = BRPhoneNumberField(label='Celular', required=False)
-    # telefone = BRPhoneNumberField(label='Telefone', required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -158,33 +157,56 @@ class MembroFamiliaForm(forms.ModelForm):
         return
 
     def save(self, *args, **kwargs):
-        if not self.instance.pk:
-            self.instance.user_add = self.user
-        self.instance.user_upd = self.user
-        instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
-        instance.save()
+        # ## SE o membro já existe no BD, não vai criar, vai só adicionar 'no' Aluno
+        # ## pois pode estar cadastrado em outro Aluno ('irmão')
+        membro = MembroFamilia.objects.filter(cpf=self.instance.cpf).first()
+        if not membro:
+            if not self.instance.pk:
+                self.instance.user_add = self.user
+            self.instance.user_upd = self.user
+            instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
+            instance.save()
+        else:
+            instance = membro
         instance.aluno_set.add(self.aluno)
+        instance.user_upd = self.user
+        instance.save()
         return instance
 
     class Meta:
         model = MembroFamilia
+        fields = ['celular',
+                  'cpf',
+                  'documento',
+                  'email',
+                  'empresa',
+                  'nascimento',
+                  'nome',
+                  'obs_empresa',
+                  'profissao',
+                  'rg',
+                  'sexo',
+                  'telefone',
+                  'telefone_empresa']
+
+class ResponsavelForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.aluno = kwargs.pop('aluno', None)
+        self.membro = kwargs.pop('membro', None)
+        super(ResponsavelForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Responsavel
         fields = ['parentesco',
                   'responsavel_financeiro',
-                  'responsavel_pedagogico',
-                  'nome',
-                  'nascimento',
-                  'profissao',
-                  'sexo',
-                  'cpf',
-                  'rg',
-                  'email',
-                  'celular',
-                  'empresa',
-                  'obs_empresa',
-                  'documento',
-                  'telefone_empresa',
-                  'telefone']
+                  'responsavel_pedagogico']
 
+    def save(self, *args, **kwargs):
+        self.instance.aluno = self.aluno
+        instance = super(ResponsavelForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
 
 class AlunoSearchForm(forms.Form):
     '''

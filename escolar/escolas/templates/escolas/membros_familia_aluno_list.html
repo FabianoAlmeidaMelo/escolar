@@ -49,7 +49,7 @@
         {% for membro in object_list %}
           <tr>
             {% if can_edit %}
-              <td><a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk %}">{{ membro.nome }}</a></td>
+              <td><a href="{% url 'membro_familia_cadastro' aluno.pk membro.pk membro.responsavel.id %}">{{ membro.nome }}</a></td>
             {% else %}
               <td>{{ membro.nome }}</td>
             {% endif %}

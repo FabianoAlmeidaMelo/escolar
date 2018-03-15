@@ -48,6 +48,7 @@
         <thead>
           <tr>
               <th>Nome</th>
+              <th>RA</th>
               <th>Nascimento</th>
               <th>Série / <br>Curso</th>
               <th>Matrícula<br>data</th>
@@ -61,6 +62,7 @@
             {% else %}
               <td>{{ aluno.nome }}</td>
             {% endif %}
+            <td>{{ aluno.ra }}</td>
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
             <td>{{ aluno.get_serie|default:"--" }} </td>
             <td>{{ aluno.get_data_matricula|date:'d/m/Y' }}</td>

@@ -124,7 +124,7 @@ class Aluno(UserAdd, UserUpd):
     user = models.ForeignKey('core.User', null=True, blank=True)
     ano = models.SmallIntegerField(default=ano_corrente)
     ra = models.CharField('RA', max_length=20, null=True, blank=True)
-    responsaveis = models.ManyToManyField('MembroFamilia')
+    responsaveis = models.ManyToManyField('MembroFamilia')  # through='AlunoMembroFamilia')
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
@@ -141,6 +141,7 @@ class Aluno(UserAdd, UserUpd):
     telefone = models.CharField(max_length=11, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo')
     curso = models.ForeignKey('Curso', null=True, blank=True)
+    #irmao = models.ForeignKey('Aluno', null=True, blank=True)
 
     class Meta:
         verbose_name = 'aluno'
@@ -183,12 +184,28 @@ class Aluno(UserAdd, UserUpd):
         if self.contrato_aluno.count():
             return self.contrato_aluno.filter(ano=ano_corrente)[0].data_assinatura
 
+
+class Responsavel(models.Model):
+    aluno = models.ForeignKey(Aluno)
+    membro = models.ForeignKey('MembroFamilia')
+    parentesco = models.CharField(max_length=100, null=True, blank=True)
+    responsavel_financeiro = models.BooleanField(default=False)
+    responsavel_pedagogico = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Responsável'
+        verbose_name_plural = 'Responsáveis'
+
+    def __str__(self):
+        return 'Aluno: %s - Responsável: %s' % (self.aluno, self.membro)
+
 def escola_aluno_parente_directory_path(instance, arquivo):
     '''
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
     return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.aluno.escola.nome, instance.aluno.nome, arquivo)
+
 
 class MembroFamilia(UserAdd, UserUpd):
     '''
@@ -198,7 +215,6 @@ class MembroFamilia(UserAdd, UserUpd):
     é um doc da Escola, diferente do Perfil que "é" do User 
     '''
     parentesco = models.CharField(max_length=100)
-    # aluno = models.ForeignKey(Aluno)
     user = models.ForeignKey('core.User', null=True, blank=True)
     responsavel_financeiro = models.BooleanField(default=False)
     responsavel_pedagogico = models.BooleanField(default=False)
