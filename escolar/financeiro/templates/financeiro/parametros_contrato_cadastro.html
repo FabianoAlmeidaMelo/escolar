@@ -33,7 +33,7 @@
               <p><b>Ano</b>: {{ parametros.ano }}</p>
               <p><b>Da desconto</b>: {{ parametros.tem_desconto|yesno:"Sim,Não" }}</p>
               <p><b>Dia de pagar a mensalidade</b>: {{ parametros.vencimento }}</p>
-              <p><b>Desconto</b>: {{ parametros.desconto|default:"" }}</p>
+              <p><b>Desconto (%)</b>: {{ parametros.desconto|default:"" }} </p>
               <p><b>Condição para ter desconto</b>: {{ parametros.get_condicao_desconto_display }}</p>
               <p><b>Pagamento até</b>: {{ parametros.get_dia_util_display }} dia útil</p>
             </div>

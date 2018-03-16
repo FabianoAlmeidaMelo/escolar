@@ -145,6 +145,7 @@ class ContratoAlunoForm(forms.ModelForm):
         self.fields['data_assinatura'].required = True
         self.fields['serie'].required = True
         self.fields['serie'].queryset = Serie.objects.filter(curso=self.aluno.curso)
+        self.fields['valor'].label = 'Valor total do contrato'
         if not self.instance.pk:
             escola = self.aluno.escola
             parametros = escola.parametroscontrato_set.last()
