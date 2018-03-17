@@ -32,18 +32,18 @@
           <p><b>Responsavel pedagógico</b>: {{ responsavel.responsavel_pedagogico|yesno:"Sim,Não"  }}</p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
-          <p><b>Cpf</b>: {{ membro.cpf }}</p>
-          <p><b>RG</b>: {{ membro.rg }}</p>
-          <p><b>E-mail</b>: {{ membro.email }}</p>
-          <p><b>Celular</b>: {{ membro.celular }}</p>
-          <p><b>telefone</b>: {{ membro.telefone }}</p>
+          <p><b>Cpf</b>: {{ membro.cpf|default:"--" }}</p>
+          <p><b>RG</b>: {{ membro.rg|default:"--" }}</p>
+          <p><b>E-mail</b>: {{ membro.email|default:"--" }}</p>
+          <p><b>Celular</b>: {{ membro.celular|default:"--" }}</p>
+          <p><b>telefone</b>: {{ membro.telefone|default:"--" }}</p>
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
-          <p><b>Profissão</b>: {{ membro.profissao }}</p>
-          <p><b>Empresa</b>: {{ membro.empresa }}</p>
-          <p><b>Telefone empresa</b>: {{ membro.telefone_empresa }}</p>
-          <p><b>Obs empresa</b>: {{ membro.obs_empresa }}</p>
-          <p><b>RG e ou CPF</b>: {{ membro.documento }}</p>
+          <p><b>Profissão</b>: {{ membro.profissao|default:"--" }}</p>
+          <p><b>Empresa</b>: {{ membro.empresa|default:"--" }}</p>
+          <p><b>Telefone empresa</b>: {{ membro.telefone_empresa|default:"--" }}</p>
+          <p><b>Obs empresa</b>: {{ membro.obs_empresa|default:"--" }}</p>
+          <p><b>RG e ou CPF</b>: {{ membro.documento|default:"--" }}</p>
         </div>
       </div>
     </div>
