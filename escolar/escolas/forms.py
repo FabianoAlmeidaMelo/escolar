@@ -149,6 +149,9 @@ class MembroFamiliaForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(MembroFamiliaForm, self).__init__(*args, **kwargs)
+        membro = MembroFamilia.objects.filter(cpf=self.instance.cpf).first()
+        if membro:
+            self.instance = membro
 
     def clean_rg(self):
         rg = self.cleaned_data['rg']
@@ -159,17 +162,11 @@ class MembroFamiliaForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         # ## SE o membro já existe no BD, não vai criar, vai só adicionar 'no' Aluno
         # ## pois pode estar cadastrado em outro Aluno ('irmão')
-        membro = MembroFamilia.objects.filter(cpf=self.instance.cpf).first()
-        if not membro:
-            if not self.instance.pk:
-                self.instance.user_add = self.user
-            self.instance.user_upd = self.user
-            instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
-            instance.save()
-        else:
-            instance = membro
+        if not self.instance.pk:
+            self.instance.user_add = self.user
+        self.instance.user_upd = self.user
+        instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
         instance.aluno_set.add(self.aluno)
-        instance.user_upd = self.user
         instance.save()
         return instance
 
