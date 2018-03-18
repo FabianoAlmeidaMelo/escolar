@@ -129,7 +129,6 @@ class Aluno(UserAdd, UserUpd):
     user = models.ForeignKey('core.User', null=True, blank=True)
     ano = models.SmallIntegerField(default=ano_corrente)
     ra = models.CharField('RA', max_length=20, null=True, blank=True)
-    responsaveis = models.ManyToManyField('MembroFamilia')  # through='AlunoMembroFamilia')
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
     nome = models.CharField(max_length=100)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
