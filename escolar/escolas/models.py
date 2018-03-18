@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 from django.db import models
 from django.utils import timezone
 # from django.contrib.auth.models import User
@@ -73,6 +74,10 @@ class Escola(models.Model):
         se estiver válido, retorna True
         '''
         return True
+
+    def get_docs_name(self):
+
+        return os.path.basename(self.logo.name)
 
 
 class Curso(models.Model):
@@ -204,7 +209,7 @@ def escola_aluno_parente_directory_path(instance, arquivo):
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
-    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(instance.aluno.escola.nome, instance.aluno.nome, arquivo)
+    return 'documento/responsaveis/{0}/'.format(arquivo)
 
 
 class MembroFamilia(UserAdd, UserUpd):
@@ -212,7 +217,7 @@ class MembroFamilia(UserAdd, UserUpd):
     ref #33
     Aluno tem Ficha de Matrícula, fica arquivada na Escola
     não está ao 'alcance' do aluno e ou pais para edição
-    é um doc da Escola, diferente do Perfil que "é" do User 
+    é um doc da Escola
     '''
     parentesco = models.CharField(max_length=100)
     user = models.ForeignKey('core.User', null=True, blank=True)
@@ -244,6 +249,10 @@ class MembroFamilia(UserAdd, UserUpd):
 
     def __str__(self):
         return self.nome
+
+    def get_docs_name(self):
+
+        return os.path.basename(self.documento.name)
 
 
 class Classe(models.Model):

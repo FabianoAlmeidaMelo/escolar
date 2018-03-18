@@ -43,7 +43,9 @@
           <p><b>Empresa</b>: {{ membro.empresa|default:"--" }}</p>
           <p><b>Telefone empresa</b>: {{ membro.telefone_empresa|default:"--" }}</p>
           <p><b>Obs empresa</b>: {{ membro.obs_empresa|default:"--" }}</p>
-          <p><b>RG e ou CPF</b>: {{ membro.documento|default:"--" }}</p>
+          {% if membro.documento %}
+          <p><b>RG e ou CPF</b>:<a href="{{ membro.documento.url }}">{{ membro.get_docs_name }}</a></p>
+          {% endif %}
         </div>
       </div>
     </div>

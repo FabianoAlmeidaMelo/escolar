@@ -42,7 +42,7 @@
           {% endif %} 
           {% if escola.logo %}
             Logo: 
-              <p><a href="{{ escola.logo.url }}">{{ escola.logo.url }}</a></p>
+              <p><a href="{{ escola.logo.url }}">{{ escola.get_docs_name }}</a></p>
           {% endif %}
           <p>
             <b>Cursos:</b>

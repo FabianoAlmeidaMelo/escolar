@@ -159,6 +159,12 @@ class MembroFamiliaForm(forms.ModelForm):
             return set_only_number(rg)
         return
 
+    # def clean_documento(self):
+    #     arquivo = self.cleaned_data['documento']
+    #     if arquivo:
+    #         print('TEM')
+    #     return arquivo
+
     def save(self, *args, **kwargs):
         # ## SE o membro já existe no BD, não vai criar, vai só adicionar 'no' Aluno
         # ## pois pode estar cadastrado em outro Aluno ('irmão')
