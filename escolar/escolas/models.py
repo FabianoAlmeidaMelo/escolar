@@ -164,7 +164,7 @@ class Aluno(UserAdd, UserUpd):
         return pendencias
 
     def count_responsavel_financeiro(self):
-        return self.responsavel.filter(responsavel_financeiro=True).count()
+        return self.responsavel_set.filter(responsavel_financeiro=True).count()
 
     def get_responsavel_financeiro(self):
         first_resp = self.responsavel_set.filter(responsavel_financeiro=True).first()
