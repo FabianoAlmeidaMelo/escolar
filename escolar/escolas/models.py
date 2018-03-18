@@ -164,13 +164,17 @@ class Aluno(UserAdd, UserUpd):
         return pendencias
 
     def count_responsavel_financeiro(self):
-        return self.responsaveis.filter(responsavel_financeiro=True).count()
+        return self.responsavel.filter(responsavel_financeiro=True).count()
 
     def get_responsavel_financeiro(self):
-        return self.responsaveis.filter(responsavel_financeiro=True).first()
+        first_resp = self.responsavel_set.filter(responsavel_financeiro=True).first()
+        if first_resp:
+            return first_resp.membro
 
     def get_responsavel_pedagogico(self):
-        return self.responsaveis.filter(responsavel_pedagogico=True).first()
+        first_resp = self.responsavel_set.filter(responsavel_pedagogico=True).first()
+        if first_resp:
+            return first_resp.membro
 
     def get_sexo_display(self):
         sexo = {1: 'masculino', 2: 'feminino'}
