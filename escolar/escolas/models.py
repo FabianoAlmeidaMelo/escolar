@@ -147,7 +147,7 @@ class Aluno(UserAdd, UserUpd):
     telefone = models.CharField(max_length=11, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo')
     curso = models.ForeignKey('Curso', null=True, blank=True)
-    #irmao = models.ForeignKey('Aluno', null=True, blank=True)
+
 
     class Meta:
         verbose_name = 'aluno'
