@@ -354,9 +354,14 @@ class Pagamento(models.Model):
                 desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
                 return self.valor - desconto
             else:
-                multa = self.contrato.contratoaluno.multa / Decimal('100.') + 1
-                return self.valor * multa
+                return self.valor + self.get_multa()
         return self.valor
+
+    def get_multa(self):
+        if date.today() > self.get_bizday():
+            multa = self.contrato.contratoaluno.multa / Decimal('100.')
+            return self.valor * multa
+        return 0
 
     def get_context_alert(self):
         '''

@@ -442,7 +442,13 @@ def set_pagamento_status(request, pagamento_pk):
         valor_previsto = pagamento.valor
         pagamento.valor = pagamento.get_valor_com_desconto() # vai entrar a regra aqui
         pagamento.data_pag = data_hora
-        pagamento.observacao += '\n Marcado pago por: %s;\n em %s. \n O valor previsto era: %s' % (user.nome, str(data_hora), valor_previsto)
+        multa = ''
+        if pagamento.get_multa():
+            multa = round(pagamento.get_multa(), 2)
+        pagamento.observacao += '\n Marcado pago por: %s;\n em %s. \n O valor previsto era: R$ %s' % (user.nome, str(data_hora), valor_previsto)
+        pagamento.observacao += '\n Valor pago: R$ %s ' % round(pagamento.valor, 2)
+        if multa:
+            pagamento.observacao += '\n Multa por atraso: R$ %s ' % multa
         pagamento.efet = True
     pagamento.save()
 
