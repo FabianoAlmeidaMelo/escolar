@@ -485,8 +485,8 @@ def membros_familia_list(request, aluno_pk):
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
-
-    membros = MembroFamilia.objects.filter(aluno=aluno)
+    membros_ids = aluno.responsavel_set.all().values_list('membro', flat=True)
+    membros = MembroFamilia.objects.filter(id__in=membros_ids)
     for m in membros:
         m.responsavel = get_object_or_404(Responsavel, membro=m, aluno=aluno)
 

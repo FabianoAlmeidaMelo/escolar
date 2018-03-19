@@ -172,7 +172,7 @@ class MembroFamiliaForm(forms.ModelForm):
             self.instance.user_add = self.user
         self.instance.user_upd = self.user
         instance = super(MembroFamiliaForm, self).save(*args, **kwargs)
-        instance.aluno_set.add(self.aluno)
+
         instance.save()
         return instance
 

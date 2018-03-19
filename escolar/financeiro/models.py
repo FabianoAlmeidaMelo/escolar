@@ -1,4 +1,5 @@
 # coding: utf-8
+from decimal import Decimal
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
@@ -352,6 +353,9 @@ class Pagamento(models.Model):
             if date.today() <= self.get_bizday():
                 desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
                 return self.valor - desconto
+            else:
+                multa = self.contrato.contratoaluno.multa / Decimal('100.') + 1
+                return self.valor * multa
         return self.valor
 
     def get_context_alert(self):

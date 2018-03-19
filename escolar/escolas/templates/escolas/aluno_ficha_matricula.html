@@ -85,22 +85,23 @@
     <legend align="center">Responsáveis</legend>
     <table style="width: 100%;" class="listing">
      <tbody>
-      {% for responsavel in aluno.responsaveis.all %}
+      {% for responsavel in aluno.responsavel_set.all %}
         <tr>
-          <td><b>Nome: </b><br>{{ responsavel.nome|default:"" }}</td>
+          <td><b>Nome: </b><br>{{ responsavel.membro.nome|default:"" }}</td>
           <td><b>Parentesco:</b><br>{{ responsavel.parentesco|default:"" }}</td>
-          <td><b>celular:</b><br>{{ responsavel.celular|default:"" }}</td>
-          <td><b>profissão:</b><br>{{ responsavel.profissao|default:"" }}</td>
+          <td><b>celular:</b><br>{{ responsavel.membro.celular|default:"" }}</td>
+          <td><b>profissão:</b><br>{{ responsavel.membro.profissao|default:"" }}</td>
         </tr>
         <tr >
-          <td ><b>Empresa em que trabalha: </b><br>{{ responsavel.empresa|default:"" }}</td>
-          <td ><b>Tel de contato:</b><br>{{ responsavel.telefone_empresa|default:"" }}</td>
+          <td ><b>Empresa em que trabalha: </b><br>{{ responsavel.membro.empresa|default:"" }}</td>
+          <td ><b>Tel de contato:</b><br>{{ responsavel.membro.telefone_empresa|default:"" }}</td>
         </tr>
         <tr>
-          <td><b>Data de nascimento: </b><br>{{ responsavel.nascimento|default:"" }}</td>
-          <td><b>RG:</b><br>{{ responsavel.rg|default:""  }}</td>
-          <td><b>CPF:</b><br>{{ responsavel.cpf|default:""  }}</td>
+          <td><b>Data de nascimento: </b><br>{{ responsavel.membro.nascimento|default:"" }}</td>
+          <td><b>RG:</b><br>{{ responsavel.membro.rg|default:""  }}</td>
+          <td><b>CPF:</b><br>{{ responsavel.membro.cpf|default:""  }}</td>
         </tr>
+        <tr><td><td></tr>
       {% endfor %}
      </tbody>
     </table>
