@@ -151,6 +151,8 @@ class MembroFamiliaForm(forms.ModelForm):
         super(MembroFamiliaForm, self).__init__(*args, **kwargs)
         membro = MembroFamilia.objects.filter(cpf=self.instance.cpf).first()
         if membro:
+            # Não cria um 'novo' o vínculo será criado
+            # para o memnbro da família existente
             self.instance = membro
 
     def clean_rg(self):
@@ -158,12 +160,6 @@ class MembroFamiliaForm(forms.ModelForm):
         if rg:
             return set_only_number(rg)
         return
-
-    # def clean_documento(self):
-    #     arquivo = self.cleaned_data['documento']
-    #     if arquivo:
-    #         print('TEM')
-    #     return arquivo
 
     def save(self, *args, **kwargs):
         # ## SE o membro já existe no BD, não vai criar, vai só adicionar 'no' Aluno

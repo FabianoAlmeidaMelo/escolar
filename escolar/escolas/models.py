@@ -114,7 +114,9 @@ def escola_aluno_directory_path(instance, documento):
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
-    return 'escola_{0}/secretaria/aluno_{1}'.format(instance.escola.nome, documento)
+    escola = instance.escola.nome
+    aluno = instance.nome
+    return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(escola, aluno, documento)
 
 class Aluno(UserAdd, UserUpd):
     '''
@@ -138,8 +140,8 @@ class Aluno(UserAdd, UserUpd):
     observacao = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField('e-mail', null=True, blank=True)
     endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
-    documento = models.FileField('RG e ou CPF', upload_to=escola_directory_path, null=True, blank=True)
-    foto = models.ImageField('Foto', upload_to=escola_directory_path, null=True, blank=True)
+    documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_directory_path, null=True, blank=True)
+    foto = models.ImageField('Foto', upload_to=escola_aluno_directory_path, null=True, blank=True)
     profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
     celular = models.CharField(max_length=11, null=True, blank=True)
     telefone = models.CharField(max_length=11, null=True, blank=True)
@@ -154,6 +156,10 @@ class Aluno(UserAdd, UserUpd):
 
     def __str__(self):
         return self.nome
+
+
+    def get_docs_name(self):
+        return os.path.basename(self.documento.name)
 
     def list_pendencias_contrato(self):
         pendencias = []
@@ -212,7 +218,9 @@ def escola_aluno_parente_directory_path(instance, arquivo):
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
     '''
-    return 'documento/responsaveis/{0}/'.format(arquivo)
+    escola = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.escola.nome
+    aluno = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.nome
+    return 'escola_{0}/secretaria/aluno_{1}/responsavel/{2}'.format(escola, aluno, arquivo)
 
 
 class MembroFamilia(UserAdd, UserUpd):
