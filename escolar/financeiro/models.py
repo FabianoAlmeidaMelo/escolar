@@ -1,4 +1,5 @@
 # coding: utf-8
+from calendar import monthrange
 from decimal import Decimal
 from django.apps import apps
 from django.db import models
@@ -354,13 +355,26 @@ class Pagamento(models.Model):
                 desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
                 return self.valor - desconto
             else:
-                return self.valor + self.get_multa()
+                return self.valor + self.get_multa() + self.get_juros()
         return self.valor
 
     def get_multa(self):
-        if date.today() > self.get_bizday():
+        if date.today() > self.data:
             multa = self.contrato.contratoaluno.multa / Decimal('100.')
-            return self.valor * multa
+            return round(self.valor * multa, 2)
+        return 0
+
+    def get_juros(self):
+        if all([self.categoria,
+                self.categoria.id == 1,
+                self.contrato, 
+                self.contrato.contratoaluno.juros,
+                 date.today() > self.data]):
+            nr, nr_dias = monthrange(ano_corrente, self.data.month)
+            juros_mensal = self.contrato.contratoaluno.juros
+            juros_por_dia = juros_mensal / nr_dias
+            dias_atrasado = (date.today() - self.data).days
+            return round(self.valor * (juros_por_dia * dias_atrasado / 100), 2)
         return 0
 
     def get_context_alert(self):
