@@ -409,10 +409,19 @@ def pagamentos_list(request, escola_pk):
         data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
         pagamentos = form.get_result_queryset().filter(data__gte=data_ini,
                                                        data__lte=data_fim )
+
+    hj = date.today()
+    # pgtos atrasados
+    # tem Juros e Multa
+    pagamentos = pagamentos.all().annotate(
+                    atrasado=Case(
+                        When(efet=False,
+                             data__lte=hj,
+                             categoria_id=1,
+                             then=Value(True)), output_field=BooleanField()))
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
-    
     page = request.GET.get('page', 1)
     paginator = Paginator(pagamentos, 15)
     try:

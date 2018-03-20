@@ -29,6 +29,7 @@
       <div class="form-group">
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.mes %}
+        {% bootstrap_field form.categoria %}
         {% bootstrap_field form.titulo %}
         {% bootstrap_field form.efet %}
       </div>
@@ -49,7 +50,7 @@
         <th>Título</th>
         <th>Data</th>
         <th>Valor</th>
-        <th>Responsavel/<br>Aluno</th>
+        <th>CAtegoria</th>
         <th>Status</th>
       </tr>
     </thead>
@@ -58,15 +59,38 @@
       <tr class="{{ pagamento.get_context_alert }}">
         <td>
           {% if can_edit %}
-            <a href="{% url 'pagamento_edit' escola.pk pagamento.id  %}">{{ pagamento.titulo|default:'--' }}</a>
+          <a href="{% url 'pagamento_edit' escola.id pagamento.id %}">{{ pagamento.titulo|default:'--' }}</a>
           {% else %}
             {{ pagamento.titulo|default:'--' }}
           {% endif %}
+          {% if  pagamento.atrasado %}
+            <br>
+            <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small>
+          {% endif%}
         </td>
-        <td>{{ pagamento.data|date:'d/m/Y' }}</td>
-        <td valor_id="valor_id_{{ pagamento.id }}"><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br|default:"--" }} {{ pagamento.get_tipo_display }}</font></td>
-        <td><font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor_pag|numberformat_br|default:"--" }}</font></td>
-        <td>{{ pagamento.contrato.responsavel.nome }}/<br>{{ pagamento.contrato.aluno.nome }}</td>
+        <td>
+          {{ pagamento.data|date:'d/m/Y' }}
+          {% if pagamento.atrasado %}
+            <br>
+            <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>
+          {% endif %}
+        </td>
+
+        <td>
+          <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
+          {% if pagamento.categoria.id == 1 and not pagamento.efet %}
+            <br>
+            <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
+          {% endif %}
+        </td>
+        <td>
+          {% if pagamento.contrato %}
+            {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
+            {{ pagamento.contrato.contratoaluno.aluno.nome }}
+          {% else %}
+            {{ pagamento.categoria }}
+          {% endif %}
+        </td>
         <td>
           {% if pagamento.efet %}
               Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>

@@ -286,8 +286,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     aluno = forms.CharField(label=u'Aluno', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
-    serie = forms.CharField(label=u'Série', required=False)
-    curso = forms.CharField(label=u'Curso', required=False)
+    categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -305,7 +304,7 @@ class PagamentoEscolaSearchForm(forms.Form):
             #     q = q & Q(contrato__aluno__nome__icontains=aluno)
             ano = self.cleaned_data['ano']
             if ano:
-                q = q & Q(contrato__ano=ano)
+                q = q & Q(data__year=ano)
 
             mes = self.cleaned_data['mes']
             if mes and ano:
@@ -320,12 +319,9 @@ class PagamentoEscolaSearchForm(forms.Form):
             if titulo:
                 q = q & Q(titulo__icontains=titulo)
 
-            serie = self.cleaned_data['serie']
-            # if serie:
-            #     q = q & Q(contrato__contratoaluno__serie__icontains=serie)
-            # curso = self.cleaned_data['curso']
-            # if curso:
-            #     q = q & Q(contrato__contratoaluno__aluno__curso__icontains=curso)
+            categoria = self.cleaned_data['categoria']
+            if categoria:
+                q = q & Q(categoria=categoria)
 
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
