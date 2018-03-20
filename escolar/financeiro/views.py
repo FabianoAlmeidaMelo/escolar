@@ -1,16 +1,17 @@
 # coding: utf-8
+
+from calendar import monthrange
+from datetime import date, datetime
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.db.models import BooleanField, Case, Value, When
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
-
 from escolar.core.models import UserGrupos, User
-from datetime import date, datetime
-from calendar import monthrange
 
 from escolar.financeiro.models import (
     ContratoAluno,
@@ -343,6 +344,16 @@ def pagamentos_aluno_list(request, aluno_pk):
     else:
         pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
 
+    hj = date.today()
+    # pgtos atrasados
+    # tem Juros e Multa
+    pagamentos = pagamentos.all().annotate(
+                    atrasado=Case(
+                        When(efet=False,
+                             data__lte=hj,
+                             categoria_id=1,
+                             then=Value(True)), output_field=BooleanField()))
+ 
     ano_valido = list(set(pagamentos.values_list('contrato__ano', flat=True)))
 
     # o pgto tem de estar vinculado a um contrato
@@ -363,6 +374,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
+
 
     context['form'] = form
     context['can_create'] = can_create
@@ -440,7 +452,7 @@ def set_pagamento_status(request, pagamento_pk):
         pagamento.efet = False
     else:
         valor_previsto = pagamento.valor
-        pagamento.valor = pagamento.get_valor_com_desconto() # Entra juros e multa se houver
+        pagamento.valor = pagamento.get_valor_a_pagar() # Entra juros e multa se houver
         pagamento.data_pag = data_hora
         multa = ''
         juros = ''

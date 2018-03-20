@@ -347,7 +347,7 @@ class Pagamento(models.Model):
             return dias_uteis[numero - 1]
 
 
-    def get_valor_com_desconto(self):
+    def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data - date.today()).days
         if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.tem_desconto: # só Prestação de Serviços
