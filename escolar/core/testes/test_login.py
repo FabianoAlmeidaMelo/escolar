@@ -2,6 +2,10 @@ from django.test import TestCase
 from django.shortcuts import resolve_url
 from escolar.core.forms import AuthenticationForm
 
+'''
+python manage.py test escolar.core.testes.test_login
+'''
+
 class LoginTest(TestCase):
 
     def setUp(self):
@@ -19,9 +23,10 @@ class LoginTest(TestCase):
 
     def test_html(self):
         """Must conatain input tags"""
-        tags = (('<form', 2),
-                ('<input', 7),
-                ('type="text"', 2),
+        tags = (('<form', 1),
+                ('<input', 3),
+                ('type="text"', 1),
+                ('type="password"', 1),
                 ('type="submit"', 1),
             )
         for txt, count in tags:
@@ -44,8 +49,7 @@ class LoginTest(TestCase):
         self.assertSequenceEqual(['username', 'password', 'keep_me_logged_in'], list(form.fields))
 
 
-
-    # def test_talks_link(self):
-    #     """Must show keynote talks link"""
-    #     expected = 'href="{}"'.format(resolve_url('talk_list'))
-    #     self.assertContains(self.response, expected)
+    def test_home_link(self):
+        """Must show keynote talks link"""
+        expected = 'href="{}"'.format(resolve_url('home'))
+        self.assertContains(self.response, expected)
