@@ -9,12 +9,10 @@ python manage.py test escolar.core.testes.test_models_user
 
 class UserModelTest(TestCase):
     def setUp(self):
-        self.obj = User(
-                        email='email@usuario.com',
+        self.obj = User(email='email@usuario.com',
                         username='email@usuario.com',
                         nome='usuario nome',
-                        is_active=True,
-                        )
+                        is_active=True,)
         self.obj.save()
 
     def test_create(self):
