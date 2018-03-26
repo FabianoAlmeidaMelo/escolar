@@ -2,6 +2,9 @@ from django.test import TestCase
 from django.shortcuts import resolve_url
 from escolar.escolas.models import Escola
 
+'''
+python manage.py test escolar.escolas.testes.test_views_escola_list
+'''
 
 class EscolaTest(TestCase):
 
@@ -13,9 +16,9 @@ class EscolaTest(TestCase):
         # response = self.client.get('/')
         self.assertEqual(302, self.response.status_code)
 
-    def test_template(self):
-        """Must use escolas_list.html"""
-        self.assertTemplateUsed(self.response, 'escolas_list.html')
+    # def test_template(self):
+    #     """Must use escolas_list.html"""
+    #     self.assertTemplateUsed(self.response, 'escolas_list.html')
 
 
     # def test_speackers_link(self):
