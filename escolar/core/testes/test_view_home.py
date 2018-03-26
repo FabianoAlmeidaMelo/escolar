@@ -1,6 +1,10 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url
 
+'''
+python manage.py test escolar.core.testes.test_view_home
+'''
+
 class HomeTest(TestCase):
     # fixtures = ['keynotes.json']
     def setUp(self):
@@ -16,12 +20,12 @@ class HomeTest(TestCase):
         self.assertTemplateUsed(self.response, 'index.html')
 
 
-    # def test_speackers_link(self):
-    #     """Must show keynote speakers  link"""
-    #     expected = 'href="{}#speakers"'.format(resolve_url('home'))
-    #     self.assertContains(self.response, expected)
+    def test_login_link(self):
+        """Must show login  link"""
+        expected = 'href="{}"'.format(resolve_url('login'))
+        self.assertContains(self.response, expected)
 
-    # def test_talks_link(self):
-    #     """Must show keynote talks link"""
-    #     expected = 'href="{}"'.format(resolve_url('talk_list'))
-    #     self.assertContains(self.response, expected)
+    def test_home_link(self):
+        """Must show keynote talks link"""
+        expected = 'href="{}"'.format(resolve_url('home'))
+        self.assertContains(self.response, expected)
