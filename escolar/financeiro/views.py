@@ -322,7 +322,7 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
 @login_required
 def print_recibo(request, pagamento_pk):
     pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
-    contrato = pagamento.contrato
+    contrato = pagamento.contrato.contratoaluno
     escola = pagamento.escola
     aluno = contrato.contratoaluno.aluno
     context = {}

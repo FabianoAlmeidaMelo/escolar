@@ -306,6 +306,9 @@ class Pagamento(models.Model):
     def __str__(self):
         return self.titulo
 
+    def get_valor_extenso(self):
+        return numero_extenso(self.valor)
+
     def get_tipo_display(self):
         tipo = {1: '(+)', 2: '(-)'}
         return tipo[self.tipo]

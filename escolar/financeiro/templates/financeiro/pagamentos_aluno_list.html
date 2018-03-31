@@ -86,7 +86,9 @@
         <td>{{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>{{ pagamento.contrato.contratoaluno.aluno.nome }}</td>
         <td>
           {% if pagamento.efet %}
-              Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+              Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>
+              <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
+
             {% else %}
               <label>
                 <input type="checkbox"
