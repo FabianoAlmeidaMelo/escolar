@@ -330,6 +330,7 @@ def print_recibo(request, pagamento_pk):
     context['pagamento'] = pagamento
     context['escola'] = escola
     context['contrato'] = contrato
+    context['data'] = date.today
 
     return render(request, 'financeiro/recibo.html', context)
 
