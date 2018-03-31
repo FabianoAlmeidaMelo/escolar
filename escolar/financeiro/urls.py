@@ -2,16 +2,17 @@
 from django.conf.urls import url
 
 from escolar.financeiro.views import (
+    contratos_list,
+    pagamentos_list,
+    responsaveis_list,
     contrato_cadastro,
     contrato_form,
-	contratos_list,
     contratos_aluno_list,
     pagamento_form,
-	pagamentos_list,
     pagamentos_aluno_list,
     parametro_cadastro,
     parametros_contrato_form,
-	responsaveis_list,
+    print_recibo,
     set_pagamento_status,
 )
 
@@ -34,6 +35,6 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/pagamento/(?P<pagamento_pk>\d+)/$', pagamento_form, name='pagamento_edit'),
     url(r'^escola/(?P<escola_pk>\d+)/contrato/(?P<contrato_pk>\d+)/pagamento_form/$', pagamento_form, name='pagamento_contrato_form'),
     url(r'^escola/(?P<escola_pk>\d+)/contrato/(?P<contrato_pk>\d+)pagamento/(?P<pagamento_pk>\d+)/$', pagamento_form, name='pagamento_aluno_edit'),
-    url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/set_status/$', set_pagamento_status, name="set_pagamento_status"
-        ),
+    url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/set_status/$', set_pagamento_status, name="set_pagamento_status"),
+    url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/print_recibo/$', print_recibo, name="print_recibo"),
 ]

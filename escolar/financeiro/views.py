@@ -1,5 +1,4 @@
 # coding: utf-8
-
 from calendar import monthrange
 from datetime import date, datetime
 from django.apps import apps
@@ -318,6 +317,22 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
         context['tab_parcelas'] = "active"
 
     return render(request, 'financeiro/pagamento_form.html', context)
+
+
+@login_required
+def print_recibo(request, pagamento_pk):
+    pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
+    contrato = pagamento.contrato
+    escola = pagamento.escola
+    aluno = contrato.contratoaluno.aluno
+    context = {}
+    context['aluno'] = aluno
+    context['pagamento'] = pagamento
+    context['escola'] = escola
+    context['contrato'] = contrato
+
+    return render(request, 'financeiro/recibo.html', context)
+
 
 @login_required
 def pagamentos_aluno_list(request, aluno_pk):
