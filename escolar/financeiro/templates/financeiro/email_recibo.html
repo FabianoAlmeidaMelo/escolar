@@ -1,0 +1,26 @@
+{% load numberformat_br %}
+<!DOCTYPE html>
+<html>
+
+<head><title>Recibo</title></head>
+  <img src="{{ escola.logo.url }}" height="50"/>
+  <p>Prezado {{ contrato.responsavel|default:"---" }}</p>
+  <body>
+    <h2 align="center">Recibo</h2>
+    <h6 class="center">{{ escola }} CNPJ: {{ escola.cnpj }}</h6>
+    <h5><small>Rua {{ escola.endereco|default:"--" }}, nr {{ escola.numero|default:"--" }}, {{ escola.bairro|default:"--" }}</small>
+    <h5><small>tel. {{ escola.telefone|default:"--" }}</small></h5>
+    <h5><small>email {{ escola.email|default:"--" }}</small></h5>
+
+    <p>
+      Recebemos de : <b>{{ contrato.responsavel|default:"---" }}</b> 
+      CPF: {{ contrato.responsavel.cpf }},
+      a quantida de: <b>R$ {{ pagamento.valor|numberformat_br }}</b> ( {{ pagamento.get_valor_extenso }} ),
+      em <b>{{ pagamento.data|date:"d/m/Y" }}</b>,
+      referente o pagamento da <b>{{ pagamento.titulo|default:"---" }}</b>
+      do contrato de serviços educacionais, ano <b>{{ contrato.ano|default:"---" }}</b>
+      do(a) aluno(a) <b>{{ contrato.aluno }}</b>
+    </p>
+    <p>{{ escola.municipio }}, {{ data|date:"d/m/Y" }}</p>
+  </body>
+</html>
