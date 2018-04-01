@@ -12,7 +12,7 @@ email {{ escola.email|default:"--" }}
    
 Recebemos de {{ contrato.responsavel|default:"---" }}
 CPF: {{ contrato.responsavel.cpf }},
-a quantida de: <b>R$ {{ pagamento.valor|numberformat_br }}</b> ( {{ pagamento.get_valor_extenso }} ),
+a quantida de: <b>R$ {{ pagamento.valor }}</b> ( {{ pagamento.get_valor_extenso }} ),
 em {{ pagamento.data|date:"d/m/Y" }},
 referente o pagamento da {{ pagamento.titulo|default:"---" }}
 do contrato de serviços educacionais, ano {{ contrato.ano|default:"---" }}

@@ -1,15 +1,19 @@
 # coding: utf-8
 from calendar import monthrange
+from datetime import date
+from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.apps import apps
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
-from escolar.escolas.models import ANO
+from django.template.loader import render_to_string
 from escolar.core.models import UserAdd, UserUpd
-from datetime import date
-from dateutil.relativedelta import relativedelta
+from escolar.core.utils import add_email_embed_image
+from escolar.escolas.models import ANO
+from escolar.settings import DEFAULT_FROM_EMAIL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso
-from datetime import datetime, timedelta, date
 
 
 ano_corrente = date.today().year
@@ -399,3 +403,44 @@ class Pagamento(models.Model):
                 return "danger"
         return ""
 
+
+    def send_email_recibo(self, user=None):
+        '''
+        #64 envia email com recibo
+
+        Sò pode chegar aqui, se o responsavel.user Tiver email.
+      
+        '''
+        LOGO_SOS = MEDIA_ROOT + '/images/Logo_Colorido_LetraPreta_Horiz.png'
+        emails = [self.contrato.contratoaluno.responsavel.email]
+        if emails and self.efet:
+            url = ''
+            # context (body) vars
+            context = {}
+            context['escola'] = self.escola
+            context['contrato'] = self.contrato.contratoaluno
+            context['url'] = url
+            # context['usuario'] = user
+            
+            # conteúdo txt:
+            template = 'financeiro/email_recibo.txt'
+            text_content = render_to_string(template, context)
+            # conteúdo html:
+            html_template = 'financeiro/email_recibo.html'
+            html_content = render_to_string(html_template, context)
+            # email instance:
+            assunto = u'Receibo de pagamento/ %s ' % self.escola
+            email_kwargs = {}
+            email_kwargs['subject'] = assunto
+            email_kwargs['body'] = text_content
+            email_kwargs['from_email'] = DEFAULT_FROM_EMAIL
+            email_kwargs['to'] = emails
+            email = EmailMultiAlternatives(**email_kwargs)
+            # Imagem anexada embebida no e-mail
+            # instância do e-mail, precisa do img_data para ler o logo e
+            # colocálo como anexo no e-mail.
+            img_data = open(self.escola.logo.path, 'rb').read()
+            img_content_id = 'main_image'  # content id para add o logo sos
+            add_email_embed_image(email, img_content_id, img_data)
+            email.attach_alternative(html_content, 'text/html')
+            return email.send()

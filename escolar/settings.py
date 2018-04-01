@@ -28,6 +28,8 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
+DEFAULT_FROM_EMAIL = u'contato@smartiscool.online'
+
 # Application definition
 
 INSTALLED_APPS = [
