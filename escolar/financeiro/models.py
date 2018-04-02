@@ -421,6 +421,7 @@ class Pagamento(models.Model):
             context['contrato'] = self.contrato.contratoaluno
             context['url'] = url
             context['pagamento'] = self
+            context['data'] = date.today()
             # context['usuario'] = user
             
             # conteúdo txt:

@@ -2,7 +2,7 @@ Recibo
   
 Prezado {{ contrato.responsavel|default:"---" }}
 
-Segue recibo de pagamento
+Segue recibo de pagamento:
 
 {{ escola }} CNPJ: {{ escola.cnpj }}
 Rua {{ escola.endereco|default:"--" }}, nr {{ escola.numero|default:"--" }}, {{ escola.bairro|default:"--" }}
