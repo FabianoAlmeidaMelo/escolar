@@ -420,6 +420,7 @@ class Pagamento(models.Model):
             context['escola'] = self.escola
             context['contrato'] = self.contrato.contratoaluno
             context['url'] = url
+            context['pagamento'] = self
             # context['usuario'] = user
             
             # conteúdo txt:
@@ -429,7 +430,7 @@ class Pagamento(models.Model):
             html_template = 'financeiro/email_recibo.html'
             html_content = render_to_string(html_template, context)
             # email instance:
-            assunto = u'Receibo de pagamento/ %s ' % self.escola
+            assunto = u'Recibo de pagamento/ %s ' % self.escola
             email_kwargs = {}
             email_kwargs['subject'] = assunto
             email_kwargs['body'] = text_content
