@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 
-<head><title>Recibo</title></head>
+<head><title>Recibo: {{ pagamento.titulo|default:"---" }}</title></head>
   <img src="cid:main_image" height="50" />
   <p>Prezado {{ contrato.responsavel|default:"---" }}</p>
   <p>Segue recibo de pagamento:</p>
