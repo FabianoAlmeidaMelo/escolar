@@ -321,17 +321,27 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
 
 @login_required
 def print_recibo(request, pagamento_pk):
-    pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
-    contrato = pagamento.contrato.contratoaluno
+    # from django.db import connection
+    # pagamento = get_object_or_404(Pagamento, pk=pagamento_pk)
+    user = request.user
+    pagamento = Pagamento.objects.select_related('escola',
+                                                 'contrato__contratoaluno',
+                                                 'contrato__contratoaluno__aluno',
+                                                 'contrato__contratoaluno__responsavel').filter(pk=pagamento_pk).last()
     escola = pagamento.escola
-    aluno = contrato.contratoaluno.aluno
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    contrato = pagamento.contrato.contratoaluno
+    aluno = pagamento.contrato.contratoaluno.aluno
     context = {}
     context['aluno'] = aluno
     context['pagamento'] = pagamento
     context['escola'] = escola
     context['contrato'] = contrato
     context['data'] = date.today
-
+    # print('=====================')
+    # print(len(connection.queries))
+    # print('=====================')
     return render(request, 'financeiro/recibo.html', context)
 
 

@@ -26,7 +26,7 @@
     {% if pagamento.efet %}
       <div class="form-actions esconde_na_impressao">
        <a href=""  value="Imprimir" onclick="window.print()" class="btn btn-default">
-        <span class="glyphicon glyphicon-print" aria-hidden="true" ></span>Imprimir</a>
+        <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Imprimir</a> 
       </div>
       <div class="form-inline well">
         <img src="{{ escola.logo.url }}" height="50"/>
@@ -47,8 +47,17 @@
          </p>
          <p>{{ escola.municipio }}, {{ data|date:"d/m/Y" }}</p>
       </div>
+      <div class="form-actions esconde_na_impressao">
+        {% if contrato.responsavel.email %}
+          Você pode enviar esse recibo para o email: {{ contrato.responsavel.email|default:"---" }} 
+          <a href="" value="enviar_email_responsavel" onclick="window.print()" class="btn btn-default">
+          <span class="glyphicon glyphicon-envelope" aria-hidden="true" ></span> e-mail</a>
+        {% else %}
+          <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign"></i>Responsável financeirto não tem email cadastrado.</div>
+        {% endif %}
+      </div>
     {% else %}
-      <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign"></i> Esse Pagamento ainda não foi efetivado.</div>
+      <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign "></i> Esse Pagamento ainda não foi efetivado.</div>
     {% endif %}
 </div>
 
