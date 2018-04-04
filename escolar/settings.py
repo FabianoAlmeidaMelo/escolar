@@ -26,6 +26,11 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+ADMINS = (
+    ('Admin Smart Is Cool', 'falmeidamelo@uol.com.br'),
+)
+
+
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
 DEFAULT_FROM_EMAIL = u'contato@smartiscool.online'

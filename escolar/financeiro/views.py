@@ -344,8 +344,6 @@ def print_recibo(request, pagamento_pk):
             else:
                 msg = 'Falha no envio do email!'
                 messages.warning(request, msg)
-        else:
-            print('\nFAIL\n')
     context = {}
     context['aluno'] = aluno
     context['pagamento'] = pagamento
