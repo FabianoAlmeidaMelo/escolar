@@ -25,12 +25,12 @@
   {% include "base_aluno.html" %}
     {% if pagamento.efet %}
       <div class="form-actions esconde_na_impressao">
-       <a href=""  value="Imprimir" onclick="window.print()" class="btn btn-default">
+       <a href=""  value="Imprimir" onclick="window.print()" class="btn btn-default" title="click para para imprimir ou gerar um pdf">
         <span class="glyphicon glyphicon-print" aria-hidden="true" ></span> Imprimir</a> 
       </div>
       <div class="form-inline well">
         <img src="{{ escola.logo.url }}" height="50"/>
-         <h2 align="center">Recibo</h2>
+         <h2 align="center">Recibo: {{ pagamento.titulo|default:"---" }}</h2>
          <h6 class="center">{{ escola }} CNPJ: {{ escola.cnpj }}</h6>
          <h5><small>Rua {{ escola.endereco|default:"--" }}, nr {{ escola.numero|default:"--" }}, {{ escola.bairro|default:"--" }}</small>
          <h5><small>tel. {{ escola.telefone|default:"--" }}</small></h5>
@@ -49,9 +49,12 @@
       </div>
       <div class="form-actions esconde_na_impressao">
         {% if contrato.responsavel.email %}
-          Você pode enviar esse recibo para o email: {{ contrato.responsavel.email|default:"---" }} 
-          <a href="" value="enviar_email_responsavel" onclick="window.print()" class="btn btn-default">
-          <span class="glyphicon glyphicon-envelope" aria-hidden="true" ></span> e-mail</a>
+          <form id="sendMail" method="POST">
+            {% csrf_token %}
+            <!-- <input type="submit" name=atualizar_data_conclusao class="button-small" value="Atualizar" /> -->
+              Você pode enviar esse recibo para o email: <b>{{ contrato.responsavel.email|default:"---" }} </b>
+              <input type="submit"  name="enviar_email_responsavel" title="click para enviar o recibo" class="glyphicon glyphicon-envelope"> 
+          </form>
         {% else %}
           <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign"></i>Responsável financeirto não tem email cadastrado.</div>
         {% endif %}

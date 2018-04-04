@@ -23,6 +23,6 @@
       do(a) aluno(a) <b>{{ contrato.aluno }}</b>
     </p>
     <p>{{ escola.municipio }}, {{ data|date:"d/m/Y" }}</p>
-    <p></p>
+    <p>{% if user %}{{ user.nome }}{% endif %}</p>
   </body>
 </html>

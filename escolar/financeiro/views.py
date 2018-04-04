@@ -333,12 +333,27 @@ def print_recibo(request, pagamento_pk):
         raise Http404
     contrato = pagamento.contrato.contratoaluno
     aluno = pagamento.contrato.contratoaluno.aluno
+
+    #  ## VERIFICA E MANADA EMAIL COM O RECIBO
+    if request.method == 'POST':
+        if 'enviar_email_responsavel' in request.POST:
+            enviado = pagamento.send_email_recibo(user)
+            if enviado:
+                msg = 'Email enviado com sucesso!'
+                messages.success(request, msg)
+            else:
+                msg = 'Falha no envio do email!'
+                messages.warning(request, msg)
+        else:
+            print('\nFAIL\n')
     context = {}
     context['aluno'] = aluno
     context['pagamento'] = pagamento
     context['escola'] = escola
     context['contrato'] = contrato
     context['data'] = date.today
+    context['tab_alunos'] = "active"
+    context['tab_pagamentos_aluno'] = "active"
     # print('=====================')
     # print(len(connection.queries))
     # print('=====================')
