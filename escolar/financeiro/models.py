@@ -411,10 +411,11 @@ class Pagamento(models.Model):
         Sò pode chegar aqui, se o responsavel.user Tiver email.
       
         '''
-        if DEBUG:
-            LOGO_ESCOLA = '%s/%s' % (MEDIA_ROOT, self.escola.logo.name)
-        else:
-            LOGO_ESCOLA = '%s/%s' %  (MEDIA_URL[:-1], self.escola.logo.name)
+        LOGO_ESCOLA = ''
+        # if DEBUG:
+        #     LOGO_ESCOLA = '%s/%s' % (MEDIA_ROOT, self.escola.logo.name)
+        # else:
+        #     LOGO_ESCOLA = '%s/%s' %  (MEDIA_URL[:-1], self.escola.logo.name)
 
         emails = [self.contrato.contratoaluno.responsavel.email]
         if emails and self.efet:
@@ -446,8 +447,8 @@ class Pagamento(models.Model):
             # Imagem anexada embebida no e-mail
             # instância do e-mail, precisa do img_data para ler o logo e
             # colocálo como anexo no e-mail.
-            img_data = open(LOGO_ESCOLA, 'rb').read()
-            img_content_id = 'main_image'  # content id para add o logo sos
-            add_email_embed_image(email, img_content_id, img_data)
+            # img_data = open(LOGO_ESCOLA, 'rb').read()
+            # img_content_id = 'main_image'  # content id para add o logo sos
+            # add_email_embed_image(email, img_content_id, img_data)
             email.attach_alternative(html_content, 'text/html')
             return email.send()

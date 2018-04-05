@@ -171,7 +171,6 @@ if DEBUG is False:
     STATIC_URL = "//%s/staticfile/"  % AWS_S3_CUSTON_DOMAIN
     MEDIA_URL= "//%s/media/"  % AWS_S3_CUSTON_DOMAIN
 
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
 # Ex  Local: /home/fabiano/projetos/escolar/escolar/staticfile
 
