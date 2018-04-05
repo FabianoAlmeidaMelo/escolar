@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from escolar.core.models import UserAdd, UserUpd
 from escolar.core.utils import add_email_embed_image
 from escolar.escolas.models import ANO
-from escolar.settings import DEFAULT_FROM_EMAIL, MEDIA_ROOT
+from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso
 
 
@@ -411,7 +411,11 @@ class Pagamento(models.Model):
         Sò pode chegar aqui, se o responsavel.user Tiver email.
       
         '''
-        LOGO_SOS = MEDIA_ROOT + '/images/Logo_Colorido_LetraPreta_Horiz.png'
+        if DEBUG:
+            LOGO_ESCOLA = '%s/%s' % (MEDIA_ROOT, self.escola.logo.name)
+        else:
+            LOGO_ESCOLA = '%s/%s' %  (MEDIA_URL[:-1], self.escola.logo.name)
+
         emails = [self.contrato.contratoaluno.responsavel.email]
         if emails and self.efet:
             url = ''
@@ -442,7 +446,7 @@ class Pagamento(models.Model):
             # Imagem anexada embebida no e-mail
             # instância do e-mail, precisa do img_data para ler o logo e
             # colocálo como anexo no e-mail.
-            img_data = open(self.escola.logo.path, 'rb').read()
+            img_data = open(LOGO_ESCOLA, 'rb').read()
             img_content_id = 'main_image'  # content id para add o logo sos
             add_email_embed_image(email, img_content_id, img_data)
             email.attach_alternative(html_content, 'text/html')
