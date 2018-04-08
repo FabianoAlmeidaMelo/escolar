@@ -391,7 +391,9 @@ class Pagamento(models.Model):
         '''
         hoje = date.today()
         # import pdb; pdb.set_trace()
-        if self.data <= hoje and self.tipo == 1:
+        if self.efet:
+            return "success"
+        elif self.data <= hoje and self.tipo == 1:
             if self.efet is True:
                 return "success"
             elif self.efet is None or self.efet is False:
