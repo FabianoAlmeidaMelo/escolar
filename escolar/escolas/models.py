@@ -29,12 +29,26 @@ ANO = (
 meses = list(range(1,13))
 MESES = tuple(zip(meses, meses))
 
+
+def escola_aluno_parente_directory_path(instance, arquivo):
+    '''
+    Escola que fez o upload do arquivo
+    file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
+    '''
+    escola = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.escola.nome
+    aluno = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.nome
+    return 'escola_{0}/secretaria/aluno_{1}/responsavel/{2}'.format(escola, aluno, arquivo)
+
+
+
 def escola_directory_path(instance, logo):
     '''
     Escola que fez o upload do arquivo
     file will be uploaded to MEDIA_ROOT/conta_<id>/<filename>
     '''
     return 'escola_{0}/{1}'.format(instance.nome, logo)
+
+
 
 class Escola(models.Model):
     '''
@@ -119,6 +133,81 @@ def escola_aluno_directory_path(instance, documento):
     return 'escola_{0}/secretaria/aluno_{1}/{2}'.format(escola, aluno, documento)
 
 
+class ResponsavelDeprecated(models.Model):
+    aluno = models.ForeignKey('Aluno')
+    membro = models.ForeignKey('MembroFamilia')
+    parentesco = models.CharField(max_length=100, null=True, blank=True)
+    responsavel_financeiro = models.BooleanField(default=False)
+    responsavel_pedagogico = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Responsável'
+        verbose_name_plural = 'Responsáveis'
+
+    def __str__(self):
+        return '%s' % self.membro.nome
+
+
+class AlunoDeprecated(UserAdd, UserUpd):
+    '''
+    ref #33
+    Aluno tem Ficha de Matrícula, fica arquivada na Escola
+    não está ao 'alcance' do aluno e ou pais para edição
+    é um doc da Escola, diferente do Perfil que "é" do User
+    Nesse caso, acho que vou optar por ligar o user
+    no aluno e membro, assim p último é o perfil
+    '''
+    celular = models.CharField(max_length=11, null=True, blank=True)
+    cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
+    documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_directory_path, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
+    escola = models.ForeignKey(Escola)
+    nacionalidade = models.CharField(max_length=50)
+    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    nome = models.CharField(max_length=100)
+    profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
+    rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
+    sexo = models.SmallIntegerField(u'Sexo')
+    telefone = models.CharField(max_length=11, null=True, blank=True)
+    user = models.ForeignKey('core.User', null=True, blank=True)
+    
+    ano = models.SmallIntegerField(default=ano_corrente)
+    curso = models.ForeignKey('Curso', null=True, blank=True)
+    foto = models.ImageField('Foto', upload_to=escola_aluno_directory_path, null=True, blank=True)
+    observacao = models.CharField(max_length=200, null=True, blank=True)
+    ra = models.CharField('RA', max_length=20, null=True, blank=True)
+
+
+class MembroFamiliaDeprecated(UserAdd, UserUpd):
+    '''
+    ref #33
+    Aluno tem Ficha de Matrícula, fica arquivada na Escola
+    não está ao 'alcance' do aluno e ou pais para edição
+    é um doc da Escola
+    '''
+    celular = models.CharField(max_length=11, null=True, blank=True)
+    cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
+    documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
+    nome = models.CharField(max_length=100)
+    profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
+    rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
+    sexo = models.SmallIntegerField(u'Sexo')
+    telefone = models.CharField(max_length=11, null=True, blank=True)
+    user = models.ForeignKey('core.User', null=True, blank=True)
+    
+    # comrecial
+    empresa = models.CharField(max_length=100, null=True, blank=True)
+    obs_empresa = models.CharField(max_length=100, null=True, blank=True)
+    parentesco = models.CharField(max_length=100)
+    responsavel_financeiro = models.BooleanField(default=False)
+    responsavel_pedagogico = models.BooleanField(default=False)
+    telefone_empresa = models.CharField(max_length=11, null=True, blank=True)
+
+
 class Pessoa(UserAdd, UserUpd):
     # comum
     celular = models.CharField(max_length=11, null=True, blank=True)
@@ -138,10 +227,6 @@ class Pessoa(UserAdd, UserUpd):
     user = models.ForeignKey('core.User', null=True, blank=True)
 
 
-
-
-
-
 class Responsavel(models.Model):
     aluno = models.ForeignKey('Aluno')
     membro = models.ForeignKey('MembroFamilia')
@@ -156,37 +241,6 @@ class Responsavel(models.Model):
     def __str__(self):
         return '%s' % self.membro.nome
 
-
-# class Aluno(UserAdd, UserUpd):
-#     '''
-#     ref #33
-#     Aluno tem Ficha de Matrícula, fica arquivada na Escola
-#     não está ao 'alcance' do aluno e ou pais para edição
-#     é um doc da Escola, diferente do Perfil que "é" do User
-#     Nesse caso, acho que vou optar por ligar o user
-#     no aluno e membro, assim p último é o perfil
-#     '''
-#     celular = models.CharField(max_length=11, null=True, blank=True)
-#     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
-#     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_directory_path, null=True, blank=True)
-#     email = models.EmailField('e-mail', null=True, blank=True)
-#     endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
-#     escola = models.ForeignKey(Escola)
-#     nacionalidade = models.CharField(max_length=50)
-#     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-#     natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
-#     nome = models.CharField(max_length=100)
-#     profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
-#     rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
-#     sexo = models.SmallIntegerField(u'Sexo')
-#     telefone = models.CharField(max_length=11, null=True, blank=True)
-#     user = models.ForeignKey('core.User', null=True, blank=True)
-    
-#     ano = models.SmallIntegerField(default=ano_corrente)
-#     curso = models.ForeignKey('Curso', null=True, blank=True)
-#     foto = models.ImageField('Foto', upload_to=escola_aluno_directory_path, null=True, blank=True)
-#     observacao = models.CharField(max_length=200, null=True, blank=True)
-#     ra = models.CharField('RA', max_length=20, null=True, blank=True)
 
 class Aluno(Pessoa):
     '''
@@ -252,57 +306,6 @@ class Aluno(Pessoa):
         if self.contrato_aluno.count():
             return self.contrato_aluno.filter(ano=ano_corrente)[0].data_assinatura
 
-
-# class Responsavel(models.Model):
-#     aluno = models.ForeignKey(Aluno)
-#     membro = models.ForeignKey('MembroFamilia')
-#     parentesco = models.CharField(max_length=100, null=True, blank=True)
-#     responsavel_financeiro = models.BooleanField(default=False)
-#     responsavel_pedagogico = models.BooleanField(default=False)
-
-#     class Meta:
-#         verbose_name = 'Responsável'
-#         verbose_name_plural = 'Responsáveis'
-
-#     def __str__(self):
-#         return '%s' % self.membro.nome
-
-def escola_aluno_parente_directory_path(instance, arquivo):
-    '''
-    Escola que fez o upload do arquivo
-    file will be uploaded to MEDIA_ROOT/escola_<id>/<aluno_nome>
-    '''
-    escola = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.escola.nome
-    aluno = instance.responsavel_set.filter(aluno__ano=2018).order_by('aluno_id').first().aluno.nome
-    return 'escola_{0}/secretaria/aluno_{1}/responsavel/{2}'.format(escola, aluno, arquivo)
-
-
-# class MembroFamilia(UserAdd, UserUpd):
-#     '''
-#     ref #33
-#     Aluno tem Ficha de Matrícula, fica arquivada na Escola
-#     não está ao 'alcance' do aluno e ou pais para edição
-#     é um doc da Escola
-#     '''
-#     celular = models.CharField(max_length=11, null=True, blank=True)
-#     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
-#     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
-#     email = models.EmailField('e-mail', null=True, blank=True)
-#     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-#     nome = models.CharField(max_length=100)
-#     profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
-#     rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
-#     sexo = models.SmallIntegerField(u'Sexo')
-#     telefone = models.CharField(max_length=11, null=True, blank=True)
-#     user = models.ForeignKey('core.User', null=True, blank=True)
-    
-#     # comrecial
-#     empresa = models.CharField(max_length=100, null=True, blank=True)
-#     obs_empresa = models.CharField(max_length=100, null=True, blank=True)
-#     parentesco = models.CharField(max_length=100)
-#     responsavel_financeiro = models.BooleanField(default=False)
-#     responsavel_pedagogico = models.BooleanField(default=False)
-#     telefone_empresa = models.CharField(max_length=11, null=True, blank=True)
 
 
 class MembroFamilia(Pessoa):
