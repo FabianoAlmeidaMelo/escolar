@@ -5,9 +5,10 @@ from datetime import date, datetime, timedelta
 
 from django.core.management.base import BaseCommand, CommandError
 from escolar.escolas.models import (
-    Escola,
     Aluno,
+    Escola,
     MembroFamilia,
+    Responsavel,
 )
 from escolar.core.models import Endereco
 from escolar.escolas.forms import set_only_number
@@ -30,6 +31,7 @@ class Command(BaseCommand):
 
         comando:
         python manage.py import_alunos SLUG_ESCOLA SALA escolar/escolas/migrations/PLANILHA.xls
+        **
         python manage.py import_alunos crescer_sjc setima escolar/escolas/migrations/alunos_e_responsaveis.xls
         '''
         slug = options['slug']
@@ -63,7 +65,9 @@ class Command(BaseCommand):
         criando um Alno ou MembroFamilia para cada linha da planilha
        
         """
-        user = User.objects.filter(email='colegio.crescer.contabil@gmail.com').last()
+        # USER
+        # TODO: DEVE SER O DONO DA ESCOLA OU DIRETOR:
+        user = User.objects.filter(username='colegio.crescer.contabil@gmail.com').last()
         print('importa_alunos_e_responsaveis')
         escola = Escola.objects.get(slug=slug)
         municipio = Municipio.objects.get(id_ibge=3549904)  # são josé dos campos
@@ -74,7 +78,7 @@ class Command(BaseCommand):
         print("\nResponsáveis (antes da importação):", responsaveis.count())
         print("\nEndereços (antes da importação):", enderecos.count())
         try:
-            print("\nID da última Aluno no BD: ", alunos.all().order_by('-id')[0].id, "\n")
+            print("\nID do última Aluno no BD: ", alunos.all().order_by('-id')[0].id, "\n")
         except:
             print(" --- ")
 
@@ -160,21 +164,23 @@ class Command(BaseCommand):
                     aluno.save()
             else:
                 aluno = Aluno.objects.filter(ra=ra, escola=escola).last()
-                if aluno and aluno.responsaveis.filter(cpf=cpf).count() == 0:
-                    responsavel, responsavel_created = MembroFamilia.objects.update_or_create(parentesco=perfil,
-                                                                                              nome=nome,
-                                                                                              cpf=cpf, defaults={
-                                                                                              'nascimento':nascimento,
-                                                                                              'responsavel_financeiro':responsavel_financeiro,
-                                                                                              'responsavel_pedagogico':responsavel_pedagogico,
-                                                                                              'email':email,
-                                                                                              'rg':rg,
-                                                                                              'sexo':sexo,
-                                                                                              'celular':celular,
-                                                                                              'user_add':user,
-                                                                                              'user_upd':user,
-                                                                                              })
-                    aluno.responsaveis.add(responsavel)
+                if aluno and aluno.responsavel_set.filter(membro__cpf=cpf).count() == 0:
+                    membro, membro_created = MembroFamilia.objects.update_or_create(nome=nome,
+                                                                                    cpf=cpf, defaults={
+                                                                                    'nascimento':nascimento,
+                                                                                    'email':email,
+                                                                                    'rg':rg,
+                                                                                    'sexo':sexo,
+                                                                                    'celular':celular,
+                                                                                    'user_add':user,
+                                                                                    'user_upd':user,
+                                                                                    })
+                    if aluno and membro:
+                        responsavel, resp_created = Responsavel.objects.update_or_create(parentesco=perfil,
+                                                                                         aluno=aluno,
+                                                                                         membro=membro,
+                                                                                         responsavel_financeiro=responsavel_financeiro,
+                                                                                         responsavel_pedagogico=responsavel_pedagogico)
             
 
         print('Adicionado: %s Alunos' % Aluno.objects.all().count())
