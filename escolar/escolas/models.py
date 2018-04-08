@@ -147,8 +147,6 @@ class Aluno(UserAdd, UserUpd):
     Nesse caso, acho que vou optar por ligar o user
     no aluno e membro, assim p último é o perfil
     '''
-    # pessoa = models.OneToOneField(Pessoa, null=True)
-
     celular = models.CharField(max_length=11, null=True, blank=True)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_directory_path, null=True, blank=True)
@@ -253,8 +251,6 @@ class MembroFamilia(UserAdd, UserUpd):
     não está ao 'alcance' do aluno e ou pais para edição
     é um doc da Escola
     '''
-    # pessoa = models.OneToOneField(Pessoa, null=True)
-
     celular = models.CharField(max_length=11, null=True, blank=True)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_parente_directory_path, null=True, blank=True)
