@@ -3,9 +3,9 @@
         "model": "financeiro.contrato",
         "pk": 1,
         "fields": {
-            "user_add": 3,
+            "user_add": 2,
             "date_add": "2018-03-15T11:40:24.887Z",
-            "user_upd": 3,
+            "user_upd": 2,
             "date_upd": "2018-03-15T11:40:24.887Z",
             "ano": 2018,
             "data_assinatura": "2017-10-10T03:00:00Z",
@@ -25,7 +25,7 @@
             "multa": "2.00",
             "juros": "2.00",
             "condicao_juros": 1,
-            "responsavel": 3,
+            "responsavel": 1,
             "aluno": 1,
             "serie": 11,
             "matricula_nr": "",
@@ -35,7 +35,7 @@
             "material_parcelas": 4
         }
     },
-     {
+    {
         "model": "financeiro.pagamento",
         "pk": 1,
         "fields": {
@@ -342,3 +342,4 @@
         }
     }
 ]
+
