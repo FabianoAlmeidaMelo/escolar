@@ -5,10 +5,10 @@ from datetime import date, datetime, timedelta
 
 from django.core.management.base import BaseCommand, CommandError
 from escolar.escolas.models import (
-    AlunoEscola,
+    Aluno,
     Escola,
-    MembroFamiliaEscola,
-    ResponsavelEscola,
+    MembroFamilia,
+    Responsavel,
 )
 from escolar.core.models import Endereco
 from escolar.escolas.forms import set_only_number
@@ -71,8 +71,8 @@ class Command(BaseCommand):
         print('importa_alunos_e_responsaveis')
         escola = Escola.objects.get(slug=slug)
         municipio = Municipio.objects.get(id_ibge=3549904)  # são josé dos campos
-        alunos = AlunoEscola.objects.all()
-        responsaveis = MembroFamiliaEscola.objects.all()
+        alunos = Aluno.objects.all()
+        responsaveis = MembroFamilia.objects.all()
         enderecos = Endereco.objects.all()
         print("\nAlunos (antes da importação):", alunos.count())
         print("\nResponsáveis (antes da importação):", responsaveis.count())
@@ -141,7 +141,7 @@ class Command(BaseCommand):
             # print(perfil, logradouro, numero, bairro, cep)
 
             if perfil == 'aluno':
-                aluno, aluno_created = AlunoEscola.objects.update_or_create(escola=escola,
+                aluno, aluno_created = Aluno.objects.update_or_create(escola=escola,
                                                                             ra=ra, defaults={
                                                                             'nascimento':nascimento,
                                                                             'nome':nome,
@@ -163,9 +163,9 @@ class Command(BaseCommand):
                     aluno.endereco = endereco
                     aluno.save()
             else:
-                aluno = AlunoEscola.objects.filter(ra=ra, escola=escola).last()
-                if aluno and aluno.responsavelescola_set.filter(membro__cpf=cpf).count() == 0:
-                    membro, membro_created = MembroFamiliaEscola.objects.update_or_create(escola=escola,
+                aluno = Aluno.objects.filter(ra=ra, escola=escola).last()
+                if aluno and aluno.responsavel_set.filter(membro__cpf=cpf).count() == 0:
+                    membro, membro_created = MembroFamilia.objects.update_or_create(escola=escola,
                                                                                           nome=nome,
                                                                                           cpf=cpf, defaults={
                                                                                           'nascimento':nascimento,
@@ -177,13 +177,13 @@ class Command(BaseCommand):
                                                                                           'user_upd':user,
                                                                                           })
                     if aluno and membro:
-                        responsavel, resp_created = ResponsavelEscola.objects.update_or_create(parentesco=perfil,
+                        responsavel, resp_created = Responsavel.objects.update_or_create(parentesco=perfil,
                                                                                                aluno=aluno,
                                                                                                membro=membro,
                                                                                                responsavel_financeiro=responsavel_financeiro,
                                                                                                responsavel_pedagogico=responsavel_pedagogico)
             
 
-        print('Adicionado: %s Alunos' % AlunoEscola.objects.all().count())
-        print('Adicionado: %s Responsáveis' % MembroFamiliaEscola.objects.all().count())
+        print('Adicionado: %s Alunos' % Aluno.objects.all().count())
+        print('Adicionado: %s Responsáveis' % MembroFamilia.objects.all().count())
         print(80 * '-')
