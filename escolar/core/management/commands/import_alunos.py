@@ -30,9 +30,9 @@ class Command(BaseCommand):
         ref #50: importar alunos e responsaveis: especies_ alunos_e_responsaveis.odf'
 
         comando:
-        python manage.py import_alunos SLUG_ESCOLA SALA escolar/escolas/migrations/PLANILHA.xls
+        python manage.py import_alunos_v2 SLUG_ESCOLA SALA escolar/escolas/migrations/PLANILHA.xls
         **
-        python manage.py import_alunos crescer_sjc setima escolar/escolas/migrations/alunos_e_responsaveis.xls
+        python manage.py import_alunos_v2 crescer_sjc setima escolar/escolas/migrations/alunos_e_responsaveis.xls
         '''
         slug = options['slug']
         sheet_name = options['sala']
@@ -144,6 +144,7 @@ class Command(BaseCommand):
                 aluno, aluno_created = Aluno.objects.update_or_create(escola=escola,
                                                                       ra=ra, defaults={
                                                                       'nascimento':nascimento,
+                                                                      'natural_municipio': municipio,
                                                                       'nome':nome,
                                                                       'nacionalidade':'brasileira',
                                                                       'email':email,
@@ -165,9 +166,11 @@ class Command(BaseCommand):
             else:
                 aluno = Aluno.objects.filter(ra=ra, escola=escola).last()
                 if aluno and aluno.responsavel_set.filter(membro__cpf=cpf).count() == 0:
-                    membro, membro_created = MembroFamilia.objects.update_or_create(nome=nome,
+                    membro, membro_created = MembroFamilia.objects.update_or_create(escola=escola,
+                                                                                    nome=nome,
                                                                                     cpf=cpf, defaults={
                                                                                     'nascimento':nascimento,
+                                                                                    'natural_municipio': municipio,
                                                                                     'email':email,
                                                                                     'rg':rg,
                                                                                     'sexo':sexo,
