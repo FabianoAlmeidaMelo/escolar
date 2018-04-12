@@ -241,7 +241,10 @@ class ContratoAluno(Contrato):
         if self.pagamento_set.count() == 0:
             self.set_matricula()
             self.set_parcelas_material()
-            valor = (self.valor - self.matricula_valor) / self.nr_parcela
+            valor_bolsa = 0
+            if self.bolsa:
+                valor_bolsa = self.valor * (self.bolsa / 100)
+            valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
             for p in range(1, self.nr_parcela + 1):
                 data =  date(self.ano, p, self.vencimento)
