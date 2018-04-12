@@ -132,7 +132,6 @@ class Contrato(UserAdd, UserUpd):
     # fim: comum a qualquer contrato ???
     
 
-
 class ContratoAluno(Contrato):
     '''
     ref #31
@@ -141,6 +140,11 @@ class ContratoAluno(Contrato):
     python manage.py dumpdata financeiro.contratoescola --indent=4
     '''
     # INI  CONTRATOS de prestação de serviços para Alunos:
+    bolsa = models.DecimalField('Bolsa (%)',
+        max_digits=3,
+        decimal_places=2,
+        blank=True,
+        null=True)
     tem_desconto = models.BooleanField('tem desconto', default=False)
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
     dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)

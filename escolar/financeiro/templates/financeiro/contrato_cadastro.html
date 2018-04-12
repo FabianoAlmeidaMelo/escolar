@@ -33,6 +33,9 @@
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Condições</h3>
           <p><b>Número de parcelas</b>:{{ contrato.nr_parcela }}</p>
+          {% if contrato.bolsa %}
+            <p><b> Bolsa</b>: {{ contrato.bolsa }} (%)</p>
+          {% endif %}
           <p><b> Desconto</b>: {{ contrato.desconto }} (%)</p>
           <p><b>matricula nr</b>: {{ contrato.matricula_nr|default:"--" }}</p>
           <p><b>matricula valor</b>:R$ {{ contrato.matricula_valor|numberformat_br|default:"--" }}</p>

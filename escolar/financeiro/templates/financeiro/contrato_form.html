@@ -4,6 +4,7 @@
   <style type="text/css">
     #id_serie,
     #id_ano,
+    #id_bolsa,
     #id_vencimento,
     #id_desconto,
     #id_material_parcelas,
@@ -51,6 +52,7 @@
               <p>{% bootstrap_field form.valor %}</p>
             </div>
             <div class="col-xs-9 col-sm-6 col-md-3">
+              <p>{% bootstrap_field form.bolsa %}</p>
               <p>{% bootstrap_field form.vencimento %}</p>
               <p>{% bootstrap_field form.tem_desconto %}</p>
               <p>{% bootstrap_field form.desconto %}</p>
