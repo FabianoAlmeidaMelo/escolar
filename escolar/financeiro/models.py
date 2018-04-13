@@ -141,7 +141,7 @@ class ContratoAluno(Contrato):
     '''
     # INI  CONTRATOS de prestação de serviços para Alunos:
     bolsa = models.DecimalField('Bolsa (%)',
-        max_digits=3,
+        max_digits=5,
         decimal_places=2,
         blank=True,
         null=True)

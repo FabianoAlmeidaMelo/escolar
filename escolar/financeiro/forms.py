@@ -135,7 +135,7 @@ class ParametrosContratoForm(forms.ModelForm):
         return instance
 
 class ContratoAlunoForm(forms.ModelForm):
-    bolsa = forms.DecimalField(max_value=100, min_value=0, max_digits=3, decimal_places=2, required=False)
+    bolsa = forms.DecimalField(max_value=100, min_value=0, max_digits=5, decimal_places=2, required=False)
     valor = forms.DecimalField(min_value=0)
     
     def __init__(self, *args, **kwargs):
