@@ -242,9 +242,6 @@ class MembroFamilia(Pessoa):
     # comrecial
     empresa = models.CharField(max_length=100, null=True, blank=True)
     obs_empresa = models.CharField(max_length=100, null=True, blank=True)
-    parentesco = models.CharField(max_length=100)
-    responsavel_financeiro = models.BooleanField(default=False)
-    responsavel_pedagogico = models.BooleanField(default=False)
     telefone_empresa = models.CharField(max_length=11, null=True, blank=True)
 
 

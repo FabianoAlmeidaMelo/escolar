@@ -428,11 +428,11 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None, responsavel_pk=None)
         if form.is_valid() and resp_form.is_valid():
             membro = form.save()
             resp_form.instance.membro = membro
-            resp_form.save()
+            responsavel = resp_form.save()
             messages.success(request, msg)
             return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk,
                                                                        'membro_pk': membro.id,
-                                                                       'responsavel_pk': responsavel_pk}))
+                                                                       'responsavel_pk': responsavel.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do membro família')
 

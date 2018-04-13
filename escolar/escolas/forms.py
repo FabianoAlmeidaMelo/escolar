@@ -164,6 +164,7 @@ class MembroFamiliaForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         # ## SE o membro já existe no BD, não vai criar, vai só adicionar 'no' Aluno
         # ## pois pode estar cadastrado em outro Aluno ('irmão')
+        self.instance.escola = self.aluno.escola
         if not self.instance.pk:
             self.instance.user_add = self.user
         self.instance.user_upd = self.user
