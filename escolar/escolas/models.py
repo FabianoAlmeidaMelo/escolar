@@ -209,6 +209,13 @@ class Aluno(Pessoa):
         if first_resp:
             return first_resp.membro
 
+    def get_alunos_relacionados(self):
+        '''
+        alunos com o mesmo responsavel financeiro
+        '''
+        membro_id = self.responsavel_set.filter(membro__escola=self.escola, responsavel_financeiro=True).values_list('membro', flat=True)
+        return Responsavel.objects.filter(membro__escola=self.escola, membro_id=membro_id).values_list('aluno', flat=True)
+
     def get_responsavel_pedagogico(self):
         first_resp = self.responsavel_set.filter(responsavel_pedagogico=True).first()
         if first_resp:
