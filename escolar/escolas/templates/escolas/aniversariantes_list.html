@@ -1,0 +1,83 @@
+
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_serie, #id_ano {
+      width: 75px;
+      height: 35px;
+    }
+   </style>
+{% endblock css %}
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        Alunos / Escola: {{ escola.nome }}
+    {% else %}
+       Alunos
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  {% include "base_adm.html" %}
+  <div class="row-fluid span10">
+    {% if can_edit %}
+      <form class="form-inline well" method="GET" >
+        <div class="form-group">
+          {% bootstrap_field form.nome %}
+ 
+        </div>
+        <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
+        <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+      </form>
+    {% endif%}
+  </div>
+    <table class="table table-striped">
+      {% if can_edit %}
+        <caption>
+           <div style="float:right; margin-right:10px">
+              <a href="{% url 'aluno_form' escola.id %}" class="btn btn-mini btn-success">Novo Aluno</a>
+           </div>
+        </caption>
+      {% endif %}
+        <thead>
+          <tr>
+              <th>Nome</th>
+
+              <th>Nascimento</th>
+
+          </tr>
+        </thead>
+        <tbody>
+        {% for aluno in object_list %}
+          <tr>
+            {% if can_edit or user.id == aluno.user.id %}
+              <td>{{ aluno.nome }}</a></td>
+            {% else %}
+              <td>{{ aluno.nome }}</td>
+            {% endif %}
+
+            <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
+
+          </tr>
+        {% empty %}
+        <tr>
+          <td>
+              Nenhum aluno encontrado
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if can_edit %}
+    {% include 'pagination.html' %}
+    {% endif %}
+</div>
+
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js%}

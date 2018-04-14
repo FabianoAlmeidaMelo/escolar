@@ -20,6 +20,7 @@ from escolar.escolas.models import (
     ClasseAluno,
     Escola,
     MembroFamilia,
+    Pessoa,
     Responsavel,
 )
 from escolar.escolas.forms import (
@@ -31,6 +32,7 @@ from escolar.escolas.forms import (
     ClasseProfessorForm,
     EscolaForm,
     MembroFamiliaForm,
+    PessoaSearchForm,
     ProfessorForm,
     ResponsavelForm,
 )
@@ -268,6 +270,43 @@ def professor_form(request, escola_pk, professor_pk=None):
 
     return render(request, 'escolas/professor_form.html', context)
 
+
+@login_required
+def aniversariantes_list(request, escola_pk):
+    user = request.user
+    if not user.can_access_escola(escola_pk):
+        raise Http404
+
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    context = {}
+    
+    form = PessoaSearchForm(request.GET or None, escola=escola)
+    if form.is_valid():
+        pessoas = form.get_result_queryset()
+    else:
+        pessoas = form.get_result_queryset().filter()
+
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(pessoas, 15)
+    try:
+        pessoas = paginator.page(page)
+    except PageNotAnInteger:
+        pessoas = paginator.page(1)
+    except EmptyPage:
+        pessoas = paginator.page(paginator.num_pages)
+    # ### paginação ####
+
+    context['form'] = form
+    context['escola'] = escola 
+    context['can_edit'] = can_edit = True
+    context['object_list'] = pessoas
+    context['user'] = user
+    context['tab_pessoas'] = "active"
+
+    return render(request, 'escolas/aniversariantes_list.html', context)
 
 @login_required
 def alunos_list(request, escola_pk):
