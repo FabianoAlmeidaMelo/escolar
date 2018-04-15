@@ -4,6 +4,7 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.db.models import Q
 from django import forms
 from municipios.widgets import SelectMunicipioWidget
+from django.db.models.functions import Extract
 
 from localbr.formfields import BRCPFField, BRCNPJField, BRPhoneNumberField
 from escolar.financeiro.models import ParametrosContrato
@@ -249,7 +250,9 @@ class PessoaSearchForm(forms.Form):
             # if curso and ano:
             #     q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
-        return Pessoa.objects.filter(q).order_by('nascimento')
+        # return Pessoa.objects.filter(q).order_by('nascimento')
+        return Pessoa.objects.annotate(month=Extract('nascimento', 'month'), day=Extract('nascimento', 'day')).filter(q).order_by('month', 'day')
+
         #select nome, nascimento from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);
         #Pessoa.objects.raw('select * from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);')
 
