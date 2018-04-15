@@ -305,7 +305,8 @@ def aniversariantes_list(request, escola_pk):
     context['can_edit'] = can_edit = True
     context['object_list'] = pessoas
     context['user'] = user
-    context['tab_pessoas'] = "active"
+    context['tab_administracao'] = "active"
+    context['tab_aniversariantes'] = "active"
 
     return render(request, 'escolas/aniversariantes_list.html', context)
 
