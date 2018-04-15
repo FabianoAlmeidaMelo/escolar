@@ -31,6 +31,7 @@ from escolar.escolas.forms import (
     ClasseForm,
     ClasseProfessorForm,
     EscolaForm,
+    INITIAL_MONTH,
     MembroFamiliaForm,
     PessoaSearchForm,
     ProfessorForm,
@@ -284,7 +285,7 @@ def aniversariantes_list(request, escola_pk):
     if form.is_valid():
         pessoas = form.get_result_queryset()
     else:
-        pessoas = form.get_result_queryset().filter()
+        pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH)
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -304,7 +305,8 @@ def aniversariantes_list(request, escola_pk):
     context['can_edit'] = can_edit = True
     context['object_list'] = pessoas
     context['user'] = user
-    context['tab_pessoas'] = "active"
+    context['tab_administracao'] = "active"
+    context['tab_aniversariantes'] = "active"
 
     return render(request, 'escolas/aniversariantes_list.html', context)
 
