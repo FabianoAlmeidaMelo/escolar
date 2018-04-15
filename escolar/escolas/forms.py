@@ -230,13 +230,15 @@ CHOICE_MONTH = (
     (12, 'Dez'),
 )
 
+INITIAL_MONTH = date.today().month
+
 class PessoaSearchForm(forms.Form):
     '''
     #33
     '''
     # responsavel = forms.CharField(label=u'Responsável', required=False)
     nome = forms.CharField(label=u'Nome', required=False)
-    month = forms.ChoiceField(label='month', choices=CHOICE_MONTH, required=False)
+    month = forms.ChoiceField(label='month', choices=CHOICE_MONTH, initial=INITIAL_MONTH, required=False)
     # serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     # curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
 
