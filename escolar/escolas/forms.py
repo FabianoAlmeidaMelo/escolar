@@ -214,22 +214,36 @@ class ResponsavelForm(forms.ModelForm):
         instance.save()
         return instance
 
+CHOICE_MONTH = (
+    (None, '--'),
+    (1, 'Jan'),
+    (2, 'Fev'),
+    (3, 'Mar'),
+    (4, 'Abr'),
+    (5, 'Mai'),
+    (6, 'Jun'),
+    (7, 'Jul'),
+    (8, 'Ago'),
+    (9, 'Set'),
+    (10, 'Out'),
+    (11, 'Nov'),
+    (12, 'Dez'),
+)
+
 class PessoaSearchForm(forms.Form):
     '''
     #33
     '''
     # responsavel = forms.CharField(label=u'Responsável', required=False)
     nome = forms.CharField(label=u'Nome', required=False)
-    # ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
+    month = forms.ChoiceField(label='month', choices=CHOICE_MONTH, required=False)
     # serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     # curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(PessoaSearchForm, self).__init__(*args, **kargs)
-        # cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
-        # self.fields['serie'].queryset = Serie.objects.filter(curso__id__in=cursos_ids)
-        # self.fields['curso'].queryset = self.escola.cursos.all()
+
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
@@ -238,9 +252,9 @@ class PessoaSearchForm(forms.Form):
             nome = self.cleaned_data['nome']
             if nome:
                 q = q & Q(nome__icontains=nome)
-            # ano = self.cleaned_data['ano']
-            # if ano:
-            #     q = q & Q(ano=int(ano))
+            month = self.cleaned_data['month']
+            if month:
+                q = q & Q(month=int(month))
 
             # serie = self.cleaned_data['serie']
             # if serie and ano:
@@ -251,7 +265,8 @@ class PessoaSearchForm(forms.Form):
             #     q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
         # return Pessoa.objects.filter(q).order_by('nascimento')
-        return Pessoa.objects.annotate(month=Extract('nascimento', 'month'), day=Extract('nascimento', 'day')).filter(q).order_by('month', 'day')
+        return Pessoa.objects.annotate(month=Extract('nascimento', 'month'),
+                                       day=Extract('nascimento', 'day')).filter(q).order_by('month', 'day')
 
         #select nome, nascimento from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);
         #Pessoa.objects.raw('select * from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);')
