@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import date
+from django.apps import apps
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.db.models import Q
 from django import forms
@@ -237,19 +238,34 @@ class PessoaSearchForm(forms.Form):
     #33
     '''
     # responsavel = forms.CharField(label=u'Responsável', required=False)
-    nome = forms.CharField(label=u'Nome', required=False)
-    month = forms.ChoiceField(label='month', choices=CHOICE_MONTH, initial=INITIAL_MONTH, required=False)
+    nome = forms.CharField(label=u'Nome: ', required=False)
+    month = forms.ChoiceField(label='mês: ', choices=CHOICE_MONTH, initial=INITIAL_MONTH, required=False)
+    ano = forms.ChoiceField(label='ano: ', choices=ANO, initial=ano_corrente, required=False)
     # serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     # curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
 
-    def __init__(self, *args, **kargs):
-        self.escola = kargs.pop('escola', None)
-        super(PessoaSearchForm, self).__init__(*args, **kargs)
+    def __init__(self, *args, **kwargs):
+        self.escola = kwargs.pop('escola', None)
+        super(PessoaSearchForm, self).__init__(*args, **kwargs)
+
+        self.contratos = apps.get_model('financeiro', 'ContratoAluno')
 
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
+        # TODAS as PESSOA s que tem algum CONTRATO com a ESCOLA
+        alunos_ativos_ids = self.contratos.objects.all().values_list('aluno__id', flat=True)
+        resp_ativos_ids = self.contratos.objects.all().values_list('responsavel__id', flat=True)
+        q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)
+        
         if self.is_valid():
+
+            ano = self.cleaned_data['ano']
+            if ano:
+                # COM ANO só 'pega' as PESSOA s  que tem contrato naquele ano
+                alunos_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True)
+                resp_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('responsavel__id', flat=True)
+                q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)
 
             nome = self.cleaned_data['nome']
             if nome:
@@ -257,7 +273,6 @@ class PessoaSearchForm(forms.Form):
             month = self.cleaned_data['month']
             if month:
                 q = q & Q(month=int(month))
-
             # serie = self.cleaned_data['serie']
             # if serie and ano:
             #     q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie=serie)
@@ -269,9 +284,6 @@ class PessoaSearchForm(forms.Form):
         # return Pessoa.objects.filter(q).order_by('nascimento')
         return Pessoa.objects.annotate(month=Extract('nascimento', 'month'),
                                        day=Extract('nascimento', 'day')).filter(q).order_by('month', 'day')
-
-        #select nome, nascimento from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);
-        #Pessoa.objects.raw('select * from escolas_pessoa ORDER BY EXTRACT(MONTH FROM nascimento);')
 
 
 class AlunoSearchForm(forms.Form):

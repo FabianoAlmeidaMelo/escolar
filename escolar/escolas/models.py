@@ -160,10 +160,24 @@ class Pessoa(UserAdd, UserUpd):
     telefone = models.CharField(max_length=11, null=True, blank=True)
     user = models.ForeignKey('core.User', null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'pessoa'
+        verbose_name_plural = 'pessoas'
+        ordering = ('nome',)
+
+    def __str__(self):
+        return self.nome
 
     def get_docs_name(self):
 
         return os.path.basename(self.documento.name)
+
+    def get_modelo_filho(self):
+        if hasattr(self, 'aluno'):
+            return "Aluno"
+        elif hasattr(self, 'membrofamilia'):
+            return "Responsável"
+        return ""
 
 
 class Aluno(Pessoa):

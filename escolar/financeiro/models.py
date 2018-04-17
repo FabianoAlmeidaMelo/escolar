@@ -178,7 +178,7 @@ class ContratoAluno(Contrato):
     def set_matricula(self):
         data = self.data_assinatura or date.today()
         categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
-        Pagamento.objects.get_or_create(titulo='Matrícula %s' % (self.ano) ,
+        Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
                                         contrato=self,
                                         escola=self.aluno.escola,
                                         data=data,
@@ -192,7 +192,7 @@ class ContratoAluno(Contrato):
         return numero_extenso(self.valor)
 
     def get_datas_parcelas_material(self):
-        parametros = ParametrosContrato.objects.get(escola=self.aluno.escola, ano=self.ano)
+        parametros = ParametrosContrato.objects.get(escola=self.aluno.escola) #, ano=self.ano)
 
         dates = [parametros.data_um_material,
                  parametros.data_dois_material,
@@ -220,7 +220,7 @@ class ContratoAluno(Contrato):
         count = 0
         for data in datas:
             count += 1
-            Pagamento.objects.get_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
+            Pagamento.objects.update_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
                                             contrato=self,
                                             escola=self.aluno.escola,
                                             data=data,
@@ -248,7 +248,7 @@ class ContratoAluno(Contrato):
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
             for p in range(1, self.nr_parcela + 1):
                 data =  date(self.ano, p, self.vencimento)
-                Pagamento.objects.get_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
+                Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
                                                 contrato=self,
                                                 escola=self.aluno.escola,
                                                 data=data,

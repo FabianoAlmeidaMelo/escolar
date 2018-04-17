@@ -14,7 +14,7 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        Alunos / Escola: {{ escola.nome }}
+        Aniversariantes/ Escola: {{ escola.nome }} <small>Alunos e Responsáveis</small>
     {% else %}
        Alunos
     {% endif %}
@@ -30,7 +30,7 @@
         <div class="form-group">
           {% bootstrap_field form.nome %}
           {% bootstrap_field form.month %}
- 
+          {% bootstrap_field form.ano %} 
         </div>
         <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
         <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
@@ -41,9 +41,8 @@
         <thead>
           <tr>
               <th>Nome</th>
-
+              <th>Perfil</th>
               <th>Nascimento</th>
-
           </tr>
         </thead>
         <tbody>
@@ -54,14 +53,14 @@
             {% else %}
               <td>{{ aluno.nome }}</td>
             {% endif %}
-
+            <td>{{ aluno.get_modelo_filho }}</td>
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
 
           </tr>
         {% empty %}
         <tr>
           <td>
-              Nenhum aluno encontrado
+              Nenhum aniversariante encontrado
           </td>
         </tr>
         {% endfor %}
