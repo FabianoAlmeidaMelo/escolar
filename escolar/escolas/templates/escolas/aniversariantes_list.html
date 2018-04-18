@@ -41,6 +41,8 @@
         <thead>
           <tr>
               <th>Nome</th>
+              <th>email</th>
+              <th>celular <br>telene</th>
               <th>Perfil</th>
               <th>Nascimento</th>
           </tr>
@@ -48,11 +50,13 @@
         <tbody>
         {% for aluno in object_list %}
           <tr>
-            {% if can_edit or user.id == aluno.user.id %}
               <td>{{ aluno.nome }}</a></td>
+            {% if can_edit or user.id == aluno.user.id %}
+              <td> <a href="">{{ aluno.email|default:"--" }}</a></td>
             {% else %}
-              <td>{{ aluno.nome }}</td>
+              <td>{{ aluno.email|default:"--" }}</td>
             {% endif %}
+            <td>{{ aluno.celular|default:"--" }} <br>{{ aluno.telefone|default:"--" }}</td>
             <td>{{ aluno.get_modelo_filho }}</td>
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
 
