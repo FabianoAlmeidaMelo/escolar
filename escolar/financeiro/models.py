@@ -8,6 +8,7 @@ from django.apps import apps
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from escolar.core.models import UserAdd, UserUpd
 from escolar.core.utils import add_email_embed_image
@@ -411,6 +412,26 @@ class Pagamento(models.Model):
             elif self.efet is None or self.efet is False:
                 return "danger"
         return ""
+
+
+    def get_alteracao(self, old_instance, instance):
+        '''
+        ref #69
+        '''
+        dados_alterados = []
+        anterior_dict = model_to_dict(old_instance)
+        atual_dict = model_to_dict(instance)
+
+        dados_alterados = []
+        if anterior_dict != atual_dict:
+            for i in atual_dict.items():
+                if i not in anterior_dict.items():
+                    dados_alterados.append(str(i[0]))
+                    dados_alterados.append(' = ')
+                    dados_alterados.append(str(i[1]))
+                    dados_alterados.append('; ')
+
+        return ''.join(dados_alterados)
 
 
     def send_email_recibo(self, user=None):

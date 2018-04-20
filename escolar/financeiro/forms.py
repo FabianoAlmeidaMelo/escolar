@@ -1,7 +1,8 @@
 # coding: utf-8
+from copy import deepcopy
 from localbr.formfields import BRDateField, BRDecimalField
-
 from django import forms
+from django.apps import apps
 from django.db.models import Q
 from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
@@ -247,6 +248,7 @@ class PagamentoForm(forms.ModelForm):
         self.escola = kwargs.pop('escola', None)
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
+        self.old_instance = deepcopy(self.instance)
         if self.contrato:
             self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
         if self.instance.pk and self.instance.categoria:
@@ -275,6 +277,13 @@ class PagamentoForm(forms.ModelForm):
             self.instance.contrato = self.contrato
         instance = super(PagamentoForm, self).save(*args, **kwargs)
         instance.save()
+        # GUARDA no HISTORICO:
+        AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+        historico = AlunoHistorico()
+        historico.aluno = self.contrato.contratoaluno.aluno
+        historico.descricao = self.instance.get_alteracao(self.old_instance, instance)
+        historico.usuario = self.user
+        historico.save()
         return instance
 
 
