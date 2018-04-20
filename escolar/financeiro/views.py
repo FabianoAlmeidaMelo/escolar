@@ -494,6 +494,7 @@ def set_pagamento_status(request, pagamento_pk):
     pagamento = get_object_or_404(Pagamento, id=pagamento_pk)
     escola = pagamento.escola
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    observacao = ''
     if not can_edit:
         raise Http404
     if pagamento.efet is True:
@@ -507,12 +508,21 @@ def set_pagamento_status(request, pagamento_pk):
         if pagamento.get_multa():
             multa = pagamento.get_multa()
             juros = pagamento.get_juros()
-        pagamento.observacao += '\n Marcado pago por: %s;\n em %s. \n O valor previsto era: R$ %s' % (user.nome, str(data_hora), valor_previsto)
-        pagamento.observacao += '\n Valor pago: R$ %s ' % pagamento.valor
+        observacao += '\n Marcado pago por: %s;\n em %s. \n O valor previsto era: R$ %s' % (user.nome, str(data_hora), valor_previsto)
+        observacao += '\n Valor pago: R$ %s ' % pagamento.valor
         if multa:
-            pagamento.observacao += '\n Multa por atraso: R$ %s ' % multa
-            pagamento.observacao += '\n juros por atraso: R$ %s ' % juros
+            observacao += '\n Multa por atraso: R$ %s ' % multa
+            observacao += '\n juros por atraso: R$ %s ' % juros
+        pagamento.observacao = observacao
         pagamento.efet = True
-    pagamento.save()
+        pagamento.save()
+        # GUARDA no HISTORICO:
+        AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+        historico = AlunoHistorico()
+        historico.aluno = pagamento.contrato.contratoaluno.aluno
+        historico.descricao = 'Pagamento: %s  | ' % pagamento.titulo
+        historico.descricao += observacao
+        historico.usuario = user
+        historico.save()
 
     return HttpResponse('Ok')
