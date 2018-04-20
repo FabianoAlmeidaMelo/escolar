@@ -29,7 +29,7 @@
       <tbody>
       {% for historico in object_list %}
         <tr>
-          <td>{{ historico.data|date:"d/m/Y" }}</td>
+          <td>{{ historico.data|date:"d/m/Y" }} <br> <small>{{ historico.data|time:"H:i" }} h</small></td>
           <td>{{ historico.usuario }}</td>
           <td>{{ historico.descricao }}</td>
         </tr>

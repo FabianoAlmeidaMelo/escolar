@@ -431,7 +431,7 @@ class Pagamento(models.Model):
                     dados_alterados.append(str(i[1]))
                     dados_alterados.append('; ')
 
-        return ''.join(dados_alterados)
+        return ' '.join(dados_alterados)
 
 
     def send_email_recibo(self, user=None):
