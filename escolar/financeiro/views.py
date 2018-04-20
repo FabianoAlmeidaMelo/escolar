@@ -517,12 +517,13 @@ def set_pagamento_status(request, pagamento_pk):
         pagamento.efet = True
         pagamento.save()
         # GUARDA no HISTORICO:
-        AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
-        historico = AlunoHistorico()
-        historico.aluno = pagamento.contrato.contratoaluno.aluno
-        historico.descricao = 'Pagamento: %s  | ' % pagamento.titulo
-        historico.descricao += observacao
-        historico.usuario = user
-        historico.save()
+        if pagamento.contrato:
+            AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+            historico = AlunoHistorico()
+            historico.aluno = pagamento.contrato.contratoaluno.aluno
+            historico.descricao = 'Pagamento: %s  | ' % pagamento.titulo
+            historico.descricao += observacao
+            historico.usuario = user
+            historico.save()
 
     return HttpResponse('Ok')

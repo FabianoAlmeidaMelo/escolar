@@ -278,13 +278,14 @@ class PagamentoForm(forms.ModelForm):
         instance = super(PagamentoForm, self).save(*args, **kwargs)
         instance.save()
         # GUARDA no HISTORICO:
-        AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
-        historico = AlunoHistorico()
-        historico.aluno = self.contrato.contratoaluno.aluno
-        historico.descricao = 'Pagamento: %s  | ' % self.instance.titulo
-        historico.descricao += self.instance.get_alteracao(self.old_instance, instance)
-        historico.usuario = self.user
-        historico.save()
+        if self.contrato:
+            AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+            historico = AlunoHistorico()
+            historico.aluno = self.contrato.contratoaluno.aluno
+            historico.descricao = 'Pagamento: %s  | ' % self.instance.titulo
+            historico.descricao += self.instance.get_alteracao(self.old_instance, instance)
+            historico.usuario = self.user
+            historico.save()
         return instance
 
 
