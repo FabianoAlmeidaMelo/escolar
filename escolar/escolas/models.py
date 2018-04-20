@@ -294,6 +294,22 @@ class Responsavel(models.Model):
         return '%s' % self.membro.nome
 
 
+class AlunoHistorico(models.Model):
+    aluno = models.ForeignKey(Aluno)
+    usuario = models.ForeignKey('core.User', blank=True, null=True)
+    data = models.DateTimeField(auto_now_add=True)
+    descricao = models.CharField(max_length=500)
+
+    class Meta:
+        ordering = ('-data',)
+
+    def __str__(self):
+        """
+        TESTES:
+        """
+        return u'Por %s em %s: %s' % (self.usuario.get_full_name(), self.data.strftime("%d/%m/%Y %H:%M"), self.descricao)
+
+
 class Classe(models.Model):
     escola = models.ForeignKey(Escola)
     ano = models.SmallIntegerField('Ano', choices=ANO)

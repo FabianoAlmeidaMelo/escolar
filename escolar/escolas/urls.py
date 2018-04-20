@@ -6,6 +6,7 @@ from escolar.escolas.views import (
     aluno_ficha_matricula,
     aluno_form,
     alunos_list,
+    aluno_historico,
     aniversariantes_list,
     autorizado_cadastro,
     autorizado_form,
@@ -36,12 +37,13 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/professor_form/(?P<professor_pk>\d+)/$', professor_form, name='professor_form'),
     url(r'^escola/(?P<escola_pk>\d+)/professores_list/$', professores_list, name='professores_list'),
 
-    #  Alunos
+    #  Alunos  aluno_historico
     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/$', aluno_form, name='aluno_form'),
     url(r'^escola/(?P<escola_pk>\d+)/aluno_form/(?P<aluno_pk>\d+)/$', aluno_form, name='aluno_form'),
     url(r'^escola/aluno_cadastro/(?P<aluno_pk>\d+)/$', aluno_cadastro, name='aluno_cadastro'),
     url(r'^escola/(?P<escola_pk>\d+)/alunos_list/$', alunos_list, name='alunos_list'),
     url(r'^escola/ficha_matricula/aluno/(?P<aluno_pk>\d+)$', aluno_ficha_matricula, name='aluno_ficha_matricula'),
+    url(r'^escola/historico/aluno/(?P<aluno_pk>\d+)/$', aluno_historico, name='aluno_historico'),
     #  Classes
     url(r'^escola/(?P<escola_pk>\d+)/classe_form/$', classe_form, name='classe_form'),
     url(r'^escola/(?P<escola_pk>\d+)/classe_form/(?P<classe_pk>\d+)/$', classe_form, name='classe_form'),

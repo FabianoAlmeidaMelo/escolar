@@ -22,7 +22,7 @@
       <li class=""><a href="#" id='id_professores'>Agenda</a></li> -->
       <li class="{{ tab_aluno_contratos }}"><a href="{% url 'contratos_aluno_list' aluno.id %}" id='id_contratos_aluno'>Contratos</a></li>
       <li class="{{ tab_pagamentos_aluno }}"><a href="{% url 'pagamentos_aluno_list' aluno.id %}" id='id_pagamentos_aluno'>Pagamentos</a></li>
-      <li class=""><a href="#" id='id_historico'>Histórico</a></li>
+      <li class="{{ tab_aluno_historico }}"><a href="{% url 'aluno_historico' aluno.id %}" id='id_historico'>Histórico</a></li>
     {% else %}
       <li class="{{ tab_aluno }}"><a href="{% url 'aluno_form' escola.pk %}" id='id_escola'>Ficha de Matrícula</a></li>
       <li class="disabled"><a href="#" id='id_professores'>Contrato</a></li>

@@ -14,6 +14,7 @@ from escolar.core.forms import (
 
 from escolar.escolas.models import (
     Aluno,
+    AlunoHistorico,
     Autorizado,
     AutorizadoAluno,
     Classe,
@@ -541,6 +542,45 @@ def membros_familia_list(request, aluno_pk):
     context['tab_responsaveis_aluno'] = "active"
 
     return render(request, 'escolas/membros_familia_aluno_list.html', context)
+
+
+@login_required
+def aluno_historico(request, aluno_pk):
+    user = request.user
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    
+    context = {}
+    
+    # form = AlunoSearchForm(request.GET or None, escola=escola)
+    # if form.is_valid():
+    #     alunos = form.get_result_queryset()
+    # else:
+    #     alunos = form.get_result_queryset().filter(ano=ano_corrente)
+
+    historicos = AlunoHistorico.objects.filter(aluno=aluno)
+    # ### PAGINAÇÃO ####
+    get_copy = request.GET.copy()
+    context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(historicos, 15)
+    try:
+        historicos = paginator.page(page)
+    except PageNotAnInteger:
+        historicos = paginator.page(1)
+    except EmptyPage:
+        historicos = paginator.page(paginator.num_pages)
+    # ### paginação ####
+
+    context = {}
+    context['escola'] = escola 
+    context['object_list'] = historicos
+    context['user'] = user
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_aluno_historico'] = "active"
+
+    return render(request, 'escolas/aluno_historico_list.html', context)
 
 
 @login_required
