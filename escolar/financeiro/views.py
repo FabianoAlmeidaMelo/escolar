@@ -377,7 +377,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
-    # data_ini = date(ano_corrente, mes_corrnete, 1)
+
     data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
     if form.is_valid():
         pagamentos = form.get_result_queryset()
@@ -398,7 +398,6 @@ def pagamentos_aluno_list(request, aluno_pk):
                     can_pay=Case(
                              When(efet=False,
                                   data__lte=data_fim,
-                                  categoria_id=1,
                                   then=Value(True)), output_field=BooleanField()))
  
     ano_valido = list(set(pagamentos.values_list('contrato__ano', flat=True)))
@@ -471,9 +470,8 @@ def pagamentos_list(request, escola_pk):
     pagamentos = pagamentos.all().annotate(
                     can_pay=Case(
                          When(efet=False,
-                              data__gte=data_ini,
+                              # data__gte=data_ini,
                               data__lte=data_fim,
-                              categoria_id=1,
                               then=Value(True)), output_field=BooleanField()))
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()

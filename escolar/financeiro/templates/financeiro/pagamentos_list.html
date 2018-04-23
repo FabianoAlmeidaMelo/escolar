@@ -51,7 +51,7 @@
         <th>Data</th>
         <th>Valor</th>
         <th>Categoria</th>
-        <th>Status</th>
+        <th>Pagar</th>
       </tr>
     </thead>
     <tbody>
@@ -91,7 +91,7 @@
             {{ pagamento.categoria }}
           {% endif %}
         </td>
-        <td>
+<!--         <td>
           {% if pagamento.efet %}
               Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
             {% else %}
@@ -104,7 +104,48 @@
                        > Pagar
               </label>
             {% endif %}
+        </td> -->
+        <td>
+            {% if pagamento.can_pay %}
+              <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pagamento_{{ pagamento.id }}">Pagar</button>
+            {% else %}
+              {% if pagamento.efet %}
+                Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>
+                <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
+              {% endif %}
+            {% endif %}
+        {% if pagamento.can_pay %}
         </td>
+            <!-- Modal -->
+            <div class="modal fade" id="pagamento_{{ pagamento.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"
+                        id="myModalLabel">{{ pagamento.contrato.contratoaluno.aluno.nome }} -
+                                          {{ pagamento.contrato.contratoaluno.serie.serie }} -
+                                          {{ pagamento.contrato.contratoaluno.ano }}
+                    </h4>
+                  </div>
+                  <div class="modal-body">
+                    Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
+                    data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
+                    no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
+                    {% if pagamento.atrasado %}
+                      <br>
+                      <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small><br>
+                      <small>Juros: R$ {{ pagamento.get_juros|numberformat_br }} </small>
+                    {% endif %}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" button_id="{{ pagamento.id }}" onclick="set_pago(this)">Marcar pago</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
       </tr>
     {% empty %}
     <tr>
@@ -121,20 +162,29 @@
 {% endblock content %}
 {% block extra_js %}
    <script type="text/javascript">
-    function set_pagamento_status(field){
-      if($(field).is(':checked')){
-        var pagamento_id = $(field).attr('checkbox_id')
-        // alert(pagamento_id)
-        // Zero: 0, é um id válido
-        // não quebra a url ao carregar a página
-        if (confirm('Tem certeza? ' + pagamento_id)) {
-            $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
-              location.reload();
-              });
-        } else {
-          $(field).prop('checked', false);
-        }
-      }      
+    function set_pago(field){
+      var pagamento_id = $(field).attr('button_id')
+      // Zero: 0, é um id válido
+      // não quebra a url ao carregar a página
+      $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+        location.reload();
+        });
     }
+    
+    // function set_pagamento_status(field){
+    //   if($(field).is(':checked')){
+    //     var pagamento_id = $(field).attr('checkbox_id')
+    //     // alert(pagamento_id)
+    //     // Zero: 0, é um id válido
+    //     // não quebra a url ao carregar a página
+    //     if (confirm('Tem certeza? ' + pagamento_id)) {
+    //         $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+    //           location.reload();
+    //           });
+    //     } else {
+    //       $(field).prop('checked', false);
+    //     }
+    //   }      
+    // }
   </script>
 {% endblock extra_js%}
