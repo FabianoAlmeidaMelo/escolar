@@ -374,7 +374,7 @@ class Pagamento(models.Model):
         return self.valor
 
     def get_multa(self):
-        if date.today() > self.data:
+        if date.today() > self.data and self.contrato:
             multa = self.contrato.contratoaluno.multa / Decimal('100.')
             return round(self.valor * multa, 2)
         return 0
