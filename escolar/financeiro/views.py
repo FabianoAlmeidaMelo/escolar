@@ -31,6 +31,8 @@ from escolar.financeiro.forms import (
 
 from escolar.escolas.models import Escola
 
+from escolar.escolas.forms import EmailRespensavelForm
+
 
 @login_required
 def responsaveis_list(request, escola_pk):
@@ -333,19 +335,24 @@ def print_recibo(request, pagamento_pk):
         raise Http404
     contrato = pagamento.contrato.contratoaluno
     aluno = pagamento.contrato.contratoaluno.aluno
+    resp_financeiro = pagamento.contrato.contratoaluno.responsavel
+    form = EmailRespensavelForm(request.POST or None, instance=resp_financeiro)
 
     #  ## VERIFICA E MANADA EMAIL COM O RECIBO
     if request.method == 'POST':
-        if 'enviar_email_responsavel' in request.POST:
-            enviado = pagamento.send_email_recibo(user)
-            if enviado:
-                msg = 'Email enviado com sucesso!'
-                messages.success(request, msg)
-            else:
-                msg = 'Falha no envio do email!'
-                messages.warning(request, msg)
+        if form.is_valid():
+            form.save()
+            if 'enviar_email_responsavel' in request.POST:
+                enviado = pagamento.send_email_recibo(user)
+                if enviado:
+                    msg = 'Email enviado com sucesso!'
+                    messages.success(request, msg)
+        else:
+            msg = 'Falha no envio do email!'
+            messages.warning(request, msg)
     context = {}
     context['aluno'] = aluno
+    context['form'] = form
     context['pagamento'] = pagamento
     context['escola'] = escola
     context['contrato'] = contrato

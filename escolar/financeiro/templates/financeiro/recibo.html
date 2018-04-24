@@ -48,16 +48,18 @@
          <p>{{ escola.municipio }}, {{ data|date:"d/m/Y" }}</p>
       </div>
       <div class="form-actions esconde_na_impressao">
-        {% if contrato.responsavel.email %}
           <form id="sendMail" method="POST">
             {% csrf_token %}
             <!-- <input type="submit" name=atualizar_data_conclusao class="button-small" value="Atualizar" /> -->
-              Você pode enviar esse recibo para o email: <b>{{ contrato.responsavel.email|default:"---" }} </b>
+              Você pode enviar esse recibo para o(a) responsável financeiro do contrato:  </b>
+              <div class="row">
+                <div class="col-md-6">
+                  {% bootstrap_field form.email %}
+                </div>
+              </div>
               <input type="submit"  name="enviar_email_responsavel" title="click para enviar o recibo" class="glyphicon glyphicon-envelope"> 
           </form>
-        {% else %}
-          <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign"></i>Responsável financeirto não tem email cadastrado.</div>
-        {% endif %}
+
       </div>
     {% else %}
       <div class="alert alert-warning" role="alert"><i class="glyphicon glyphicon-exclamation-sign "></i> Esse Pagamento ainda não foi efetivado.</div>

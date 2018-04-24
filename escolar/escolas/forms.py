@@ -47,6 +47,7 @@ def set_only_number(txt):
     return only_numeros
 
 
+
 class AutorizadoForm(forms.ModelForm):
     '''#22'''
     documento = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
@@ -142,6 +143,19 @@ class AlunoForm(forms.ModelForm):
         instance.save()
 
         return instance
+
+class EmailRespensavelForm(forms.ModelForm):
+    email = forms.EmailField(label='Email', required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(EmailRespensavelForm, self).__init__(*args, **kwargs)
+
+        self.fields['email'].label = 'Email do(a) resp. financeiro: %s ' % self.instance.nome
+        
+
+    class Meta:
+        model = MembroFamilia
+        fields = ['email',]
 
 
 class MembroFamiliaForm(forms.ModelForm):
