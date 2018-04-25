@@ -294,6 +294,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     #31
     '''
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
+    tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
     responsavel = forms.CharField(label=u'Responsável', required=False)
     titulo = forms.CharField(label=u'Título', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
@@ -341,6 +342,11 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(efet=True)
             if efet and efet == '0':
                 q = q & Q(efet=False)
+            tipo = self.cleaned_data['tipo']
+            if tipo and tipo == '1':
+                q = q & Q(tipo=1)
+            if tipo and tipo == '2':
+                q = q & Q(tipo=2)
             print(Pagamento.objects.filter(q).count())
         return Pagamento.objects.filter(q)
 
