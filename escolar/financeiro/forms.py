@@ -326,7 +326,6 @@ class PagamentoEscolaSearchForm(forms.Form):
                 month = int(mes)
                 data_ini = date(year, month, 1)
                 data_fim = date(year, month, monthrange(year, month)[1])
-                print('\n FORM:\n',data_ini, data_fim)
                 q = q & Q(data__gte=data_ini, data__lte=data_fim)
 
             titulo = self.cleaned_data['titulo']

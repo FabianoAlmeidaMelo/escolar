@@ -55,106 +55,122 @@
         <th>Pagar</th>
       </tr>
     </thead>
+    <tfoot>
+      <tr>
+        <td><small>entradas <br>R$ {{ entradas|numberformat_br }}</small></td>
+        <td><small>saídas <br>R$ {{ saidas|numberformat_br }}</small></td>
+        <td span="4" ><small>Total</small><br>
+          {% if total > 0 %}
+            <font color="blue">R$ {{ total|numberformat_br }}</font>
+          {% else %}
+            <font color="red">R$ {{ total|numberformat_br }}</font>
+          {% endif %}
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tfoot>
     <tbody>
-    {% for pagamento in object_list %}
-      <tr class="{{ pagamento.get_context_alert }}">
-        <td>
-          {% if can_edit %}
-          <a href="{% url 'pagamento_edit' escola.id pagamento.id %}">{{ pagamento.titulo|default:'--' }}</a>
-          {% else %}
-            {{ pagamento.titulo|default:'--' }}
-          {% endif %}
-          {% if  pagamento.atrasado %}
-            <br>
-            <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small>
-          {% endif%}
-        </td>
-        <td>
-          {{ pagamento.data|date:'d/m/Y' }}
-          {% if pagamento.atrasado %}
-            <br>
-            <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>
-          {% endif %}
-        </td>
+      {% for pagamento in object_list %}
+        <tr class="{{ pagamento.get_context_alert }}">
+          <td>
+            {% if can_edit %}
+            <a href="{% url 'pagamento_edit' escola.id pagamento.id %}">{{ pagamento.titulo|default:'--' }}</a>
+            {% else %}
+              {{ pagamento.titulo|default:'--' }}
+            {% endif %}
+            {% if  pagamento.atrasado %}
+              <br>
+              <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small>
+            {% endif%}
+          </td>
+          <td>
+            {{ pagamento.data|date:'d/m/Y' }}
+            {% if pagamento.atrasado %}
+              <br>
+              <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>
+            {% endif %}
+          </td>
 
-        <td>
-          <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
-          {% if pagamento.categoria.id == 1 and not pagamento.efet %}
-            <br>
-            <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
-          {% endif %}
-        </td>
-        <td>
-          {% if pagamento.contrato %}
-            {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
-            {{ pagamento.contrato.contratoaluno.aluno.nome }}
-          {% else %}
-            {{ pagamento.categoria }}
-          {% endif %}
-        </td>
-<!--         <td>
-          {% if pagamento.efet %}
-              Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
-            {% else %}
-              <label>
-                <input type="checkbox"
-                       checkbox_id="{{ pagamento.id }}"
-                       value="pagamento_{{ pagamento.id }}"
-                       name="set_status"
-                       onchange="set_pagamento_status(this)" 
-                       > Pagar
-              </label>
+          <td>
+            <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
+            {% if pagamento.categoria.id == 1 and not pagamento.efet %}
+              <br>
+              <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
             {% endif %}
-        </td> -->
-        <td>
-            {% if pagamento.can_pay %}
-              <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pagamento_{{ pagamento.id }}">Pagar</button>
+          </td>
+          <td>
+            {% if pagamento.contrato %}
+              {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
+              {{ pagamento.contrato.contratoaluno.aluno.nome }}
             {% else %}
+              {{ pagamento.categoria }}
+            {% endif %}
+          </td>
+         <!--<td>
               {% if pagamento.efet %}
-                Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>
-                <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
+                  Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+                {% else %}
+                  <label>
+                    <input type="checkbox"
+                           checkbox_id="{{ pagamento.id }}"
+                           value="pagamento_{{ pagamento.id }}"
+                           name="set_status"
+                           onchange="set_pagamento_status(this)" 
+                           > Pagar
+                  </label>
               {% endif %}
-            {% endif %}
-        {% if pagamento.can_pay %}
-        </td>
-            <!-- Modal -->
-            <div class="modal fade" id="pagamento_{{ pagamento.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"
-                        id="myModalLabel">{{ pagamento.contrato.contratoaluno.aluno.nome }} -
-                                          {{ pagamento.contrato.contratoaluno.serie.serie }} -
-                                          {{ pagamento.contrato.contratoaluno.ano }}
-                    </h4>
-                  </div>
-                  <div class="modal-body">
-                    Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
-                    data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
-                    no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
-                    {% if pagamento.atrasado %}
-                      <br>
-                      <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small><br>
-                      <small>Juros: R$ {{ pagamento.get_juros|numberformat_br }} </small>
-                    {% endif %}
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" button_id="{{ pagamento.id }}" onclick="set_pago(this)">Marcar pago</button>
+            </td> -->
+          <td>
+              {% if pagamento.can_pay %}
+                   <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pagamento_{{ pagamento.id }}">Pagar</button>
+              {% else %}
+                  {% if pagamento.efet %}
+                    Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>
+                    <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
+                  {% endif %}
+              {% endif %}
+          </td>
+          {% if pagamento.can_pay %}
+            <tr>
+              <!-- Modal -->
+              <div class="modal fade" id="pagamento_{{ pagamento.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title"
+                          id="myModalLabel">{{ pagamento.contrato.contratoaluno.aluno.nome }} -
+                                            {{ pagamento.contrato.contratoaluno.serie.serie }} -
+                                            {{ pagamento.contrato.contratoaluno.ano }}
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                      Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
+                      data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
+                      no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
+                      {% if pagamento.atrasado %}
+                        <br>
+                        <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small><br>
+                        <small>Juros: R$ {{ pagamento.get_juros|numberformat_br }} </small>
+                      {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary" button_id="{{ pagamento.id }}" onclick="set_pago(this)">Marcar pago</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </tr>
           {% endif %}
-      </tr>
-    {% empty %}
-    <tr>
-      <td>
-        Nenhum pagamento encontrado
-      </td>
-    </tr>
-    {% endfor %}
+          {% empty %}
+        <tr>
+          <td>
+            Nenhum pagamento encontrado
+          </td>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
   {% include 'pagination.html' %}
@@ -162,30 +178,52 @@
 
 {% endblock content %}
 {% block extra_js %}
-   <script type="text/javascript">
-    function set_pago(field){
-      var pagamento_id = $(field).attr('button_id')
-      // Zero: 0, é um id válido
-      // não quebra a url ao carregar a página
-      $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
-        location.reload();
-        });
-    }
-    
-    // function set_pagamento_status(field){
-    //   if($(field).is(':checked')){
-    //     var pagamento_id = $(field).attr('checkbox_id')
-    //     // alert(pagamento_id)
-    //     // Zero: 0, é um id válido
-    //     // não quebra a url ao carregar a página
-    //     if (confirm('Tem certeza? ' + pagamento_id)) {
-    //         $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
-    //           location.reload();
-    //           });
-    //     } else {
-    //       $(field).prop('checked', false);
-    //     }
-    //   }      
-    // }
-  </script>
+  {{ form.media.js}}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- pie 3D -->
+      <script type="text/javascript">
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['Entradas',  {{ entradas }}],
+            ['Saídas',  {{ saidas }}],
+          ]);
+
+          var options = {
+            title: 'Entradas x Saídas',
+            is3D: true,
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+          chart.draw(data, options);
+        }
+     </script>
+     <script type="text/javascript">
+      function set_pago(field){
+        var pagamento_id = $(field).attr('button_id')
+        // Zero: 0, é um id válido
+        // não quebra a url ao carregar a página
+        $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+          location.reload();
+          });
+      }
+        // function set_pagamento_status(field){
+        //   if($(field).is(':checked')){
+        //     var pagamento_id = $(field).attr('checkbox_id')
+        //     // alert(pagamento_id)
+        //     // Zero: 0, é um id válido
+        //     // não quebra a url ao carregar a página
+        //     if (confirm('Tem certeza? ' + pagamento_id)) {
+        //         $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+        //           location.reload();
+        //           });
+        //     } else {
+        //       $(field).prop('checked', false);
+        //     }
+        //   }      
+        // }
+      </script>
+  
 {% endblock extra_js%}

@@ -55,6 +55,22 @@
         <th>Pagar</th>
       </tr>
     </thead>
+    <tfoot>
+      <tr>
+        <td><small>entradas <br>R$ {{ entradas|numberformat_br }}</small></td>
+        <td><small>saídas <br>R$ {{ saidas|numberformat_br }}</small></td>
+        <td span="4" ><small>Total</small><br>
+          {% if total > 0 %}
+            <font color="blue">R$ {{ total|numberformat_br }}</font>
+          {% else %}
+            <font color="red">R$ {{ total|numberformat_br }}</font>
+          {% endif %}
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tfoot>
+    <tbody>
     <tbody>
     {% for pagamento in object_list %}
       <tr class="{{ pagamento.get_context_alert }}">
