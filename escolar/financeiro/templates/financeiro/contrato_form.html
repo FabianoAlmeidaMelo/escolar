@@ -54,7 +54,13 @@
             <div class="col-xs-9 col-sm-6 col-md-3">
               <p>{% bootstrap_field form.bolsa %}</p>
               <p>{% bootstrap_field form.vencimento %}</p>
-              <p>{% bootstrap_field form.tem_desconto %}</p>
+             <!--  <p>{% bootstrap_field form.tem_desconto %}</p> -->
+             <small>Descontos</small>
+                <a href="">
+                  <i class="glyphicon glyphicon-question-sign" 
+                     title="Concedido para pagamentos efetuados até uma determinada data. Se você não selecionar um dia útil, o sistema irá considerar a data prevista para o : 'Dia de Pagar'">
+                  </i>
+                </a>
               <p>{% bootstrap_field form.desconto %}</p>
               <p>{% bootstrap_field form.condicao_desconto %}</p>
               <p>{% bootstrap_field form.dia_util %}</p>
