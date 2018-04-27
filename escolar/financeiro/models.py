@@ -211,25 +211,26 @@ class ContratoAluno(Contrato):
         das apostilas E
         Cria os pagamentos
         '''
-        datas = self.get_datas_parcelas_material()
+        if self.material_valor and self.matricula_valor > 0:
+            datas = self.get_datas_parcelas_material()
+            nr_parcelas = self.material_parcelas or 1
 
-        month_range = 12 // self.material_parcelas
-        valor = self.material_valor / self.material_parcelas
+            valor = self.material_valor / nr_parcelas
 
-        datas.sort()
-        categoria = CategoriaPagamento.objects.get(id=9) # Material Didático
-        count = 0
-        for data in datas:
-            count += 1
-            Pagamento.objects.update_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
-                                            contrato=self,
-                                            escola=self.aluno.escola,
-                                            data=data,
-                                            valor=valor,
-                                            observacao='',
-                                            nr_parcela=None,
-                                            categoria=categoria,
-                                            tipo=1)
+            datas.sort()
+            categoria = CategoriaPagamento.objects.get(id=9) # Material Didático
+            count = 0
+            for data in datas:
+                count += 1
+                Pagamento.objects.update_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
+                                                contrato=self,
+                                                escola=self.aluno.escola,
+                                                data=data,
+                                                valor=valor,
+                                                observacao='',
+                                                nr_parcela=None,
+                                                categoria=categoria,
+                                                tipo=1)
 
         # print(datas)
 

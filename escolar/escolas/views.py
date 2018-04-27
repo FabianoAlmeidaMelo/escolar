@@ -637,7 +637,7 @@ def classes_list(request, escola_pk):
         classes = user.get_professor_classes(escola)
     else:
         classes = Classe.objects.filter(escola__pk=escola_pk)
-    print(classes.count())
+    # print(classes.count())
     context = {}
     context['classes'] = classes
     context['escola'] = escola

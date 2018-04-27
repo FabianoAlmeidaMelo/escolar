@@ -186,6 +186,13 @@ class ContratoAlunoForm(forms.ModelForm):
         
         return cleaned_data
 
+    def clean_ano(self):
+        ano = self.cleaned_data['ano']
+        if ContratoAluno.objects.filter(aluno=self.aluno, ano=ano).count() == 0:
+            return ano
+        else:
+            raise forms.ValidationError("Esse aluno já tem contrato para esse ano")
+
     def save(self, *args, **kwargs):
         if not self.instance.pk:
             self.instance.user_add = self.user
@@ -346,7 +353,6 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(tipo=1)
             if tipo and tipo == '2':
                 q = q & Q(tipo=2)
-            print(Pagamento.objects.filter(q).count())
         return Pagamento.objects.filter(q)
 
 
