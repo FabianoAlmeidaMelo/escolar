@@ -138,11 +138,13 @@ class ParametrosContratoForm(forms.ModelForm):
 class ContratoAlunoForm(forms.ModelForm):
     bolsa = forms.DecimalField(max_value=100, min_value=0, max_digits=5, decimal_places=2, required=False)
     valor = forms.DecimalField(min_value=0)
+    nr_parcela = forms.ChoiceField(label='Nr de Parcelas', choices=MESES, initial=12, required=True)
     
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
+        self.old_instance = deepcopy(self.instance)
         responsaveis_ids = self.aluno.responsavel_set.filter(responsavel_financeiro=True).values_list('membro_id', flat=True)
         self.fields['responsavel'].queryset = MembroFamilia.objects.filter(id__in=responsaveis_ids)
         self.fields['data_assinatura'].required = True
@@ -190,8 +192,16 @@ class ContratoAlunoForm(forms.ModelForm):
         ano = self.cleaned_data['ano']
         if ContratoAluno.objects.filter(aluno=self.aluno, ano=ano).count() == 0:
             return ano
+        elif self.instance.pk and ContratoAluno.objects.filter(aluno=self.aluno, ano=ano).exclude(pk=self.instance.pk).count() == 0:
+            return ano
         else:
             raise forms.ValidationError("Esse aluno já tem contrato para esse ano")
+
+    def clena_nr_parcela(self):
+        parcelas = self.cleaned_data['nr_parcela']
+        if 1 <= parcela <= 12:
+            return parcela
+        raise forms.ValidationError("O número de parcelas deve ser de 1 a 12 ")
 
     def save(self, *args, **kwargs):
         if not self.instance.pk:
@@ -200,7 +210,7 @@ class ContratoAlunoForm(forms.ModelForm):
         self.instance.aluno = self.aluno
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
         instance.save()
-        if instance.pagamento_set.count() == 0:
+        if instance.pagamento_set.filter(efet=True).count() == 0:
             instance.set_parcelas()
         return instance
 
@@ -278,6 +288,8 @@ class PagamentoForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         if not self.instance.pk:
             self.instance.user_add = self.user
+        if self.instance.pk and self.instance.categoria.id in [1, 2]:
+            self.instance.titulo = self.old_instance.titulo
         self.instance.user_upd = self.user
         self.instance.escola = self.escola
         if self.contrato:

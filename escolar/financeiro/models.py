@@ -240,7 +240,7 @@ class ContratoAluno(Contrato):
         ref #51
         chamado no ContratoAlunoForm().save()
         '''
-        if self.pagamento_set.count() == 0:
+        if self.pagamento_set.filter(efet=True).count() == 0:
             self.set_matricula()
             self.set_parcelas_material()
             valor_bolsa = 0
@@ -248,17 +248,23 @@ class ContratoAluno(Contrato):
                 valor_bolsa = self.valor * (self.bolsa / 100)
             valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
-            for p in range(1, self.nr_parcela + 1):
+            mes_ini = 13 - self.nr_parcela
+            n = 1
+            for p in range(mes_ini, 12 + 1):
+                print('xxx', n, list(range(mes_ini, 12 + 1)))
                 data =  date(self.ano, p, self.vencimento)
-                Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (p, self.nr_parcela) ,
-                                                contrato=self,
-                                                escola=self.aluno.escola,
-                                                data=data,
-                                                valor=valor,
-                                                observacao='',
-                                                nr_parcela=p,
-                                                categoria=categoria,
-                                                tipo=1)
+                Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
+                                                   contrato=self,
+                                                   escola=self.aluno.escola,
+                                                   data=data,
+                                                   observacao='',
+                                                   nr_parcela=p,
+                                                   categoria=categoria,
+                                                   tipo=1, 
+                                                   defaults={
+                                                   'valor': valor,
+                                                   })
+                n += 1
 
 class CategoriaPagamento(models.Model):
     # Categorias default para os Contratos, serve para todas Escolas
