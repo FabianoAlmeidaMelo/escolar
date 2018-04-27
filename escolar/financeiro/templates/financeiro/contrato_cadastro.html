@@ -45,14 +45,16 @@
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Apostilas</h3>
-            <p><b>Valor</b>: R$ {{ contrato.material_valor }}</p>
-            <p><b>Número de parcelas</b>: {{ contrato.material_parcelas }}</p>
-            <p><b>Data das parcelas</b>:</p>
-              <ul>
-                {% for data in contrato.get_datas_parcelas_material %}
-                <li>{{ data|date:"d/m/Y" }}</li>
-                {% endfor %}
-              </ul>
+            <p><b>Valor</b>: R$ {{ contrato.material_valor|numberformat_br|default:"--" }}</p>
+            <p><b>Número de parcelas</b>: {{ contrato.material_parcelas|default:"--" }}</p>
+            {% if contrato.material_valor %}
+              <p><b>Data das parcelas</b>:</p>
+                <ul>
+                  {% for data in contrato.get_datas_parcelas_material %}
+                  <li>{{ data|date:"d/m/Y" }}</li>
+                  {% endfor %}
+                </ul>
+            {% endif %}
         </div>
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Arquivo</h3>

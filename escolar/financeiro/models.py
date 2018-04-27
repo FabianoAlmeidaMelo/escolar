@@ -89,7 +89,7 @@ class ParametrosContrato(models.Model):
     )
     # TODO: desconto irmãos
     # no form, limita de 0 a 6, e serve para validar a quantidade de datas das parcelas  
-    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ apostilas', null=True, blank=True)
+    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas da apostilas', null=True, blank=True)
     data_um_material = models.DateField('1ª parcela em', blank=True, null=True)
     data_dois_material = models.DateField('2ª parcela em', blank=True, null=True)
     data_tres_material = models.DateField('3ª parcela em', blank=True, null=True)
@@ -165,8 +165,8 @@ class ContratoAluno(Contrato):
     matricula_valor = models.DecimalField('Valor Matrícula',
         max_digits=7,
         decimal_places=2)
-    material_valor = models.DecimalField('valor material', max_digits=5, decimal_places=2, null=True, blank=True)
-    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas/ material', null=True, blank=True)
+    material_valor = models.DecimalField('valor total das apostilas', max_digits=5, decimal_places=2, null=True, blank=True)
+    material_parcelas = models.PositiveSmallIntegerField('Nr de Parcelas da apostila', null=True, blank=True)
 
     class Meta:
         verbose_name = 'contrato'
@@ -349,9 +349,8 @@ class Pagamento(models.Model):
         # significa  o 5º dia útil
         # numero = self.escola.parametroscontrato_set.last().dia_util
         dias_uteis = []
-        if self.contrato:
-            # import pdb; pdb.set_trace()
-            numero = self.contrato.contratoaluno.dia_util if self.contrato else 0
+        if self.contrato and self.contrato.contratoaluno.dia_util:
+            numero = self.contrato.contratoaluno.dia_util if self.contrato.contratoaluno.dia_util else 1
             feriados = self.get_feriados()
             start, end = date(self.data.year, self.data.month, 1), self.data
             i = 0
@@ -361,7 +360,8 @@ class Pagamento(models.Model):
                     dias_uteis.append(data)
                 i += 1
             return dias_uteis[numero - 1]
-
+        else:  # a data prevista do pagamento
+            return self.data
 
     def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
