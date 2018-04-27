@@ -251,7 +251,6 @@ class ContratoAluno(Contrato):
             mes_ini = 13 - self.nr_parcela
             n = 1
             for p in range(mes_ini, 12 + 1):
-                print('xxx', n, list(range(mes_ini, 12 + 1)))
                 data =  date(self.ano, p, self.vencimento)
                 Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
                                                    contrato=self,
