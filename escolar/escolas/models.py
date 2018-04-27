@@ -198,7 +198,7 @@ class Aluno(Pessoa):
     class Meta:
         verbose_name = 'aluno'
         verbose_name_plural = 'alunos'
-        ordering = ('nome',)
+        ordering = ('curso', 'nome',)
 
     def __str__(self):
         return self.nome
