@@ -366,7 +366,7 @@ class Pagamento(models.Model):
     def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data - date.today()).days
-        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.tem_desconto: # só Prestação de Serviços
+        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.desconto: # só Prestação de Serviços
             if date.today() <= self.get_bizday():
                 desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
                 return self.valor - desconto
