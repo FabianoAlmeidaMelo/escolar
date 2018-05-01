@@ -61,10 +61,12 @@ class AutorizadoForm(forms.ModelForm):
         self.fields['documento'].label = 'CPF'
 
     def save(self, *args, **kwargs):
-        autorizado, create = Autorizado.objects.update_or_create(documento=self.instance.documento,
-                                                                 defaults={'email': self.instance.email,
-                                                                           'nome': self.instance.nome, 
-                                                                           'celular': self.instance.celular})
+        instance = self.instance
+        autorizado, create = Autorizado.objects.update_or_create(documento=instance.documento,
+                                                                 defaults={'email': instance.email,
+                                                                           'nome': instance.nome, 
+                                                                           'celular': instance.celular,
+                                                                           'telefone': instance.telefone})
         
         autorizado_aluno, created = AutorizadoAluno.objects.update_or_create(escola=self.escola,
                                                                              aluno=self.aluno,
@@ -78,7 +80,7 @@ class AutorizadoForm(forms.ModelForm):
 
     class Meta:
         model = Autorizado
-        fields = ('nome', 'email', 'celular', 'documento') 
+        fields = ('nome', 'email', 'celular', 'telefone', 'documento') 
 
 class EscolaForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo', required=False)

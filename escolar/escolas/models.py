@@ -351,11 +351,12 @@ class Autorizado(models.Model):
     pessoas autorizadas a buscar alunos na escola
     '''
     nome = models.CharField('Nome', max_length=200)
-    email = models.EmailField('email', max_length=200, unique=True)
-    celular = models.CharField('celular', max_length=14)
+    email = models.EmailField('email', max_length=200, blank=True, null=True)
+    celular = models.CharField('celular', max_length=14, blank=True, null=True)
+    telefone = models.CharField('telefone', max_length=14, blank=True, null=True)
     documento = models.CharField(max_length=25, unique=True)
-    # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
     # ativo = models.BooleanField('Autorizado', default=False)
+    # foto = models.ImageField(upload_to='%s' % (settings.MEDIA_URL), max_length=300, blank=True, null=True)
 
     def __str__ (self):
         return self.nome

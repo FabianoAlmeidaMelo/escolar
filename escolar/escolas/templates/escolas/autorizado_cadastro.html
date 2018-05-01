@@ -23,8 +23,9 @@
         <!-- {# Celular, Tablet, Computador #} -->
         <div class="col-xs-9 col-sm-6 col-md-3">
           <p><b>nome</b>: {{ autorizado.nome }}</p>
-          <p><b>email</b>: {{ autorizado.email }}</p>
-          <p><b>cel./tel.</b>: {{ autorizado.celular }}</p>
+          <p><b>email</b>: {{ autorizado.email|default:'' }}</p>
+          <p><b>cel.</b>: {{ autorizado.celular|default:'' }}</p>
+          <p><b>tel.</b>: {{ autorizado.telefone|default:'' }}</p>
           <p><b>documento</b>: {{ autorizado.documento }}</p>
         </div>
       </div>
