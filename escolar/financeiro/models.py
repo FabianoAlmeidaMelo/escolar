@@ -180,14 +180,14 @@ class ContratoAluno(Contrato):
         data = self.data_assinatura or date.today()
         categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
         Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
-                                        contrato=self,
-                                        escola=self.aluno.escola,
-                                        data=data,
-                                        valor=self.matricula_valor,
-                                        observacao='',
-                                        nr_parcela=None,
-                                        categoria=categoria,
-                                        tipo=1)
+                                           contrato=self,
+                                           escola=self.aluno.escola,
+                                           data=data,
+                                           observacao='',
+                                           nr_parcela=None,
+                                           categoria=categoria,
+                                           tipo=1,
+                                           defaults={'valor': self.matricula_valor})
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
@@ -223,14 +223,14 @@ class ContratoAluno(Contrato):
             for data in datas:
                 count += 1
                 Pagamento.objects.update_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
-                                                contrato=self,
-                                                escola=self.aluno.escola,
-                                                data=data,
-                                                valor=valor,
-                                                observacao='',
-                                                nr_parcela=None,
-                                                categoria=categoria,
-                                                tipo=1)
+                                                   data=data,
+                                                   contrato=self,
+                                                   escola=self.aluno.escola,
+                                                   categoria=categoria,
+                                                   observacao='',
+                                                   nr_parcela=None,
+                                                   tipo=1, defaults={
+                                                   'valor':valor})
 
         # print(datas)
 
@@ -245,7 +245,7 @@ class ContratoAluno(Contrato):
             self.set_parcelas_material()
             valor_bolsa = 0
             if self.bolsa:
-                valor_bolsa = self.valor * (self.bolsa / 100)
+                valor_bolsa = (self.valor - self.matricula_valor) * (self.bolsa / Decimal('100'))
             valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
             mes_ini = 13 - self.nr_parcela
@@ -371,7 +371,7 @@ class Pagamento(models.Model):
     def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data - date.today()).days
-        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.desconto: # só Prestação de Serviços
+        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
             if date.today() <= self.get_bizday():
                 desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
                 return self.valor - desconto
