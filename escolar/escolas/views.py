@@ -318,12 +318,14 @@ def alunos_list(request, escola_pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
+    # import pdb; pdb.set_trace()
     context = {}
     
     form = AlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         alunos = form.get_result_queryset()
     else:
+        print('\nano_corrente\n', ano_corrente)
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
     # ### PAGINAÇÃO ####

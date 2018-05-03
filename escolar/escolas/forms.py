@@ -342,14 +342,6 @@ class AlunoSearchForm(forms.Form):
         return Aluno.objects.filter(q)
 
 
-# class AlunoForm(forms.ModelForm):
-#     ativo = forms.BooleanField(label='Matriculado', required=False)
-
-#     class Meta:
-#         model = UserGrupos
-#         # exclude = ('date_joined', 'escola', 'grupo')
-#         fields = ('ativo',)
-
 class ProfessorForm(forms.ModelForm):
     ativo = forms.BooleanField(label='Ativo', required=False)
 

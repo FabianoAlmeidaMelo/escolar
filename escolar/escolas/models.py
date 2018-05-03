@@ -17,6 +17,7 @@ PERIODO = (
 
 ano_corrente = date.today().year
 ano_seguinte = ano_corrente + 1
+ano_seguintes = ano_corrente + 2
 ano_anterior = ano_corrente - 1
  
 ANO = (
@@ -24,6 +25,7 @@ ANO = (
     (ano_anterior, ano_anterior),
     (ano_corrente, ano_corrente),
     (ano_seguinte, ano_seguinte),
+    (ano_seguintes, ano_seguintes),
 )
 
 meses = list(range(1,13))
@@ -240,16 +242,16 @@ class Aluno(Pessoa):
         return sexo[self.sexo]
 
     def get_curso(self):
-        if self.contrato_aluno.count():
-            return self.contrato_aluno.filter(ano=ano_corrente)[0].curso
+        if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
+            return self.contrato_aluno.filter(ano=ano_corrente).first().curso
 
     def get_serie(self):
-        if self.contrato_aluno.count():
-            return self.contrato_aluno.filter(ano=ano_corrente)[0].serie
+        if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
+            return self.contrato_aluno.filter(ano=ano_corrente).first().serie
 
     def get_data_matricula(self):
-        if self.contrato_aluno.count():
-            return self.contrato_aluno.filter(ano=ano_corrente)[0].data_assinatura
+        if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
+            return self.contrato_aluno.filter(ano=ano_corrente).first().data_assinatura
 
 
 
