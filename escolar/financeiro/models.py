@@ -239,13 +239,17 @@ class ContratoAluno(Contrato):
         '''
         ref #51
         chamado no ContratoAlunoForm().save()
+        O valor total do contrato, inclui o valor da Matrícula
+        que é um adiantamento da anuidade e
+        é descontado das parcelas
         '''
         if self.pagamento_set.filter(efet=True).count() == 0:
+            self.pagamento_set.all().delete()
             self.set_matricula()
             self.set_parcelas_material()
             valor_bolsa = 0
             if self.bolsa:
-                valor_bolsa = (self.valor - self.matricula_valor) * (self.bolsa / Decimal('100'))
+                valor_bolsa = self.valor  * (self.bolsa / Decimal('100'))
             valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
             categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
             mes_ini = 13 - self.nr_parcela
