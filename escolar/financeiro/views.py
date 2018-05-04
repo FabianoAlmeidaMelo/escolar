@@ -380,8 +380,10 @@ def pagamentos_aluno_list(request, aluno_pk):
         raise Http404
 
     context = {}
-
-    can_edit = all([user.is_diretor(escola.pk), not contrato.rescindido])
+    if contrato:
+        can_edit = all([user.is_diretor(escola.pk), contrato, not contrato.rescindido])
+    else:
+        can_edit = all([user.is_diretor(escola.pk)])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
 
