@@ -13,7 +13,10 @@
     #id_juros,
     #id_condicao_juros,
     #id_dia_util,
-    #id_nr_parcela {
+    #id_nr_parcela,
+    #id_valor,
+    #id_matricula_nr,
+    #id_material_valor {
       width: 100px;
       height: 35px;
     }
@@ -51,10 +54,10 @@
               <p>{% bootstrap_field form.responsavel %}</p>
               <small>Valor total do contrato</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="Valor total do contrato (anuidade, semestralidade) + &#10 o valor da matrícula. &#10 &#10  Eventuais descontos devem ser colocados em &#10 Bolsa (%) ou &#10 no Desconto  por pontualidade (%)"></i></a>
               <p>{% bootstrap_field form.valor %}</p>
-            </div>
-            <div class="col-xs-9 col-sm-6 col-md-3">
               <p>{% bootstrap_field form.bolsa %}</p>
               <p>{% bootstrap_field form.vencimento %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
              <!--  <p>{% bootstrap_field form.tem_desconto %}</p> -->
              <small>Descontos</small>
                 <a href="">
@@ -65,22 +68,25 @@
               <p>{% bootstrap_field form.desconto %}</p>
               <p>{% bootstrap_field form.condicao_desconto %}</p>
               <p>{% bootstrap_field form.dia_util %}</p>
-            </div>
-            <div class="col-xs-9 col-sm-6 col-md-3">
               <p>{% bootstrap_field form.multa %}</p>
               <p>{% bootstrap_field form.juros %}</p>
               <p>{% bootstrap_field form.condicao_juros %}</p>
-              <small>Parcelas</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="12 = de janeiro a dezembro; &#10 11 = de fevereiro a dezembro; &#10 10 = de março a dezembro; &#10 9 = de  abril a dezembro; &#10 8 = de maio a dezembro; &#10 7 = de junho a dezembro; &#10 ..."></i></a>
-              <p>{% bootstrap_field form.nr_parcela %}</p>
             </div>
             <div class="col-xs-9 col-sm-6 col-md-3">
+              <small>Parcelas</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="12 = de janeiro a dezembro; &#10 11 = de fevereiro a dezembro; &#10 10 = de março a dezembro; &#10 9 = de  abril a dezembro; &#10 8 = de maio a dezembro; &#10 7 = de junho a dezembro; &#10 ..."></i></a>
+              <p>{% bootstrap_field form.nr_parcela %}</p>
               <p>{% bootstrap_field form.matricula_nr %}</p>
               <p>{% bootstrap_field form.matricula_valor %}</p>
               <p>{% bootstrap_field form.data_assinatura %}</p>
               <p>{% bootstrap_field form.arquivo %}</p>
+            </div>
+            <div class="col-xs-9 col-sm-6 col-md-3">
               <small>Apostilas</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="Se preencher 1 campo o outro será requerido"></i></a>
               <p>{% bootstrap_field form.material_valor %}</p>
               <p>{% bootstrap_field form.material_parcelas %}</p>
+              <small>Recisão</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="Se marcar como Rescindido a &#10 Observação será requerida. &#10 &#10 As parcelas não pagas, deixarão de ser contabilizadas e &#10 todas parcelas deixarão de ser ediáveis. "></i></a>
+              <p>{% bootstrap_field form.rescindido %}</p>
+              <p>{% bootstrap_field form.observacao %}</p>
             </div>
           </div>
         </div>

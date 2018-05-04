@@ -59,17 +59,19 @@
         <div class="col-xs-9 col-sm-6 col-md-3">
           <h3>Arquivo</h3>
           <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
+          <p><b>Rescindido</b>: {{ contrato.rescindido|yesno:'sim,não' }}</p>
+          <p><b>Observação</b>: {{ contrato.observacao }}</p>
           </div>
       </div>
 
-      {% if can_edit %}
         <br>
           <div class="form-actions">
+          {% if can_edit %}
             <a href="{% url 'contrato_edit' aluno.id contrato.id %}" class="btn btn-mini btn-success">Editar</a>
-            <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
-            <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
-          </div>
-      {% endif %}
+          {% endif %}
+          <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
+          <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
+      </div>
   </div>
 </div>
 

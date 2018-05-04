@@ -208,6 +208,15 @@ class ContratoAlunoForm(forms.ModelForm):
             self.instance.user_add = self.user
         self.instance.user_upd = self.user
         self.instance.aluno = self.aluno
+        if self.old_instance.rescindido != self.instance.rescindido:
+            AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+            historico = AlunoHistorico()
+            historico.aluno = self.aluno
+            ato = 'Sim' if self.instance.rescindido else 'Retomado'
+            historico.descricao = 'Rescisão: %s do contrato ano %s , obs: ' % (ato, self.ano) 
+            historico.descricao += self.instance.observacao
+            historico.usuario = self.user
+            historico.save()
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
         instance.save()
         if instance.pagamento_set.filter(efet=True).count() == 0:

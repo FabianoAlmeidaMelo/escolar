@@ -117,7 +117,8 @@
             {% endif %}
         </td> -->
         <td>
-            {% if pagamento.can_pay %}
+          
+            {% if pagamento.can_pay and can_edit %}
               <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pagamento_{{ pagamento.id }}">Pagar</button>
             {% else %}
               {% if pagamento.efet %}
@@ -125,6 +126,7 @@
                 <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
               {% endif %}
             {% endif %}
+          
         {% if pagamento.can_pay %}
         </td>
             <!-- Modal -->

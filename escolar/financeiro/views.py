@@ -215,9 +215,6 @@ def contrato_form(request, aluno_pk, contrato_pk=None):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    if not can_edit:
-        raise Http404
     if not user.can_access_escola(escola.pk):
         raise Http404
     if contrato_pk:
@@ -226,6 +223,9 @@ def contrato_form(request, aluno_pk, contrato_pk=None):
     else:
         contrato = None
         msg = u'Contrato criado.' 
+    can_edit = all([user.is_diretor(escola.id)])
+    if not can_edit:
+        raise Http404
 
     form = ContratoAlunoForm(request.POST or None, request.FILES or None, instance=contrato, aluno=aluno, user=user)
     context = {}
@@ -257,7 +257,7 @@ def contrato_cadastro(request, contrato_pk):
     if not user.can_access_escola(escola.pk):
         raise Http404
     aluno = contrato.aluno
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = all([user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
     context["contrato"] = contrato
@@ -381,7 +381,7 @@ def pagamentos_aluno_list(request, aluno_pk):
 
     context = {}
 
-    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    can_edit = all([user.is_diretor(escola.pk), not contrato.rescindido])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
 
@@ -406,6 +406,15 @@ def pagamentos_aluno_list(request, aluno_pk):
                              When(efet=False,
                                   data__lte=data_fim,
                                   then=Value(True)), output_field=BooleanField()))
+    # SE Contrato Rescindido
+    pagamentos = pagamentos.all().annotate(
+                    invalido=Case(
+                             When(contrato__rescindido=True,
+                                  efet=False,
+                                  then=Value(True)), output_field=BooleanField()))
+
+    pagamentos = pagamentos.all().filter(invalido=None)
+
  
     ano_valido = list(set(pagamentos.values_list('contrato__ano', flat=True)))
 
@@ -485,9 +494,21 @@ def pagamentos_list(request, escola_pk):
     pagamentos = pagamentos.all().annotate(
                     can_pay=Case(
                          When(efet=False,
-                              # data__gte=data_ini,
                               data__lte=data_fim,
                               then=Value(True)), output_field=BooleanField()))
+
+
+    # SE Contrato Rescindido
+    pagamentos = pagamentos.all().annotate(
+                                invalido=Case(
+                                    When(contrato__isnull=False,
+                                        contrato__rescindido=True,
+                                        efet=False,
+                                        then=Value(True)), output_field=BooleanField()))
+
+    pagamentos = pagamentos.all().filter(invalido=None)
+
+
     total_pos = sum(pagamentos.filter(tipo=1).values_list('valor', flat=True))
     total_neg = sum(pagamentos.filter(tipo=2).values_list('valor', flat=True))
     total = total_pos - total_neg

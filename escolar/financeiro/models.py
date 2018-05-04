@@ -130,7 +130,8 @@ class Contrato(UserAdd, UserUpd):
         u'Dia de Pagar',
         validators=[validate_vencimento],
         null=True, blank=True)
-    # fim: comum a qualquer contrato ???
+    rescindido = models.BooleanField(default=False)
+    observacao = models.CharField('Observação', max_length=300, null=True, blank=True)
     
 
 class ContratoAluno(Contrato):
@@ -375,12 +376,13 @@ class Pagamento(models.Model):
     def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data - date.today()).days
-        if self.categoria and self.categoria.id == 1 and self.contrato and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
-            if date.today() <= self.get_bizday():
-                desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
-                return self.valor - desconto
-            else:
-                return self.valor + self.get_multa() + self.get_juros()
+        if self.contrato and not self.contrato.contratoaluno.rescindido:
+            if self.categoria and self.categoria.id == 1 and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
+                if date.today() <= self.get_bizday():
+                    desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
+                    return self.valor - desconto
+                else:
+                    return self.valor + self.get_multa() + self.get_juros()
         return self.valor
 
     def get_multa(self):
