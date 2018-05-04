@@ -213,7 +213,7 @@ class ContratoAlunoForm(forms.ModelForm):
             historico = AlunoHistorico()
             historico.aluno = self.aluno
             ato = 'Sim' if self.instance.rescindido else 'Retomado'
-            historico.descricao = 'Rescisão: %s do contrato ano %s , obs: ' % (ato, self.ano) 
+            historico.descricao = 'Rescisão: %s do contrato ano %s , obs: ' % (ato, self.instance.ano) 
             historico.descricao += self.instance.observacao
             historico.usuario = self.user
             historico.save()
