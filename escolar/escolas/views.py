@@ -325,7 +325,6 @@ def alunos_list(request, escola_pk):
     if form.is_valid():
         alunos = form.get_result_queryset()
     else:
-        print('\nano_corrente\n', ano_corrente)
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
 
     # ### PAGINAÇÃO ####

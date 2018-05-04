@@ -502,9 +502,9 @@ def pagamentos_list(request, escola_pk):
     pagamentos = pagamentos.all().annotate(
                                 invalido=Case(
                                     When(contrato__isnull=False,
-                                        contrato__rescindido=True,
-                                        efet=False,
-                                        then=Value(True)), output_field=BooleanField()))
+                                         contrato__rescindido=True,
+                                         efet=False,
+                                         then=Value(True)), output_field=BooleanField()))
 
     pagamentos = pagamentos.all().filter(invalido=None)
 

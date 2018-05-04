@@ -205,7 +205,6 @@ class Aluno(Pessoa):
     def __str__(self):
         return self.nome
 
-
     def get_foto_name(self):
         return os.path.basename(self.foto.name)
 
@@ -252,6 +251,16 @@ class Aluno(Pessoa):
     def get_data_matricula(self):
         if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
             return self.contrato_aluno.filter(ano=ano_corrente).first().data_assinatura
+
+    def get_contrato_ativo(self):
+        if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
+            return not self.contrato_aluno.filter(ano=ano_corrente).first().rescindido
+        return False
+
+    def get_contrato(self):
+        if self.contrato_aluno.count() and self.contrato_aluno.filter(ano=ano_corrente).first():
+            return self.contrato_aluno.filter(ano=ano_corrente).first()
+        return None
 
 
 

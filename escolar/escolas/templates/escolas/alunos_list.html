@@ -57,12 +57,19 @@
         <tbody>
         {% for aluno in object_list %}
           <tr>
-            {% if can_edit or user.id == aluno.user.id %}
-              <td><a href="{% url 'aluno_cadastro' aluno.id %}">{{ aluno.nome }}</a></td>
-            {% else %}
-              <td>{{ aluno.nome }}</td>
-            {% endif %}
-            <td>{{ aluno.ra }}</td>
+              <td>
+                {% if not aluno.get_contrato_ativo %}
+                  <a href=""><i class="glyphicon glyphicon-question-sign" title="{{ aluno.get_contrato.observacao|default:'Sem contrato' }}"></i></a>
+                {% endif %}
+                {% if can_edit or user.id == aluno.user.id %}
+                  <a href="{% url 'aluno_cadastro' aluno.id %}">{{ aluno.nome }}</a>
+                {% else %}
+                  {{ aluno.nome }}
+                {% endif %}
+            </td>
+            <td>
+              {{ aluno.ra }}
+            </td>
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
             <td>{{ aluno.get_serie|default:"--" }} </td>
             <td>{{ aluno.get_data_matricula|date:'d/m/Y' }}</td>
