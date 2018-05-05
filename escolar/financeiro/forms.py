@@ -176,6 +176,8 @@ class ContratoAlunoForm(forms.ModelForm):
         cleaned_data = super(ContratoAlunoForm, self).clean()
         material_valor = cleaned_data['material_valor']
         material_parcelas = cleaned_data['material_parcelas']
+        rescindido = cleaned_data['rescindido']
+        observacao = cleaned_data['observacao']
  
         if any([material_valor, material_parcelas]):
             errors_list = []
@@ -185,6 +187,16 @@ class ContratoAlunoForm(forms.ModelForm):
                 errors_list.append("material_parcelas")
             for error in errors_list:
                 self._errors[error] = ErrorList([u'Campo obrigatório.'])
+
+        if any([rescindido, observacao]):
+            errors_list = []
+            if not rescindido:
+                errors_list.append("rescindido")
+            if not observacao:
+                errors_list.append("observacao")
+            for error in errors_list:
+                self._errors[error] = ErrorList([u'Campo obrigatório.'])
+
         
         return cleaned_data
 
