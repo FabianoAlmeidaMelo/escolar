@@ -60,7 +60,7 @@
           <h3>Arquivo</h3>
           <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
           <p><b>Rescindido</b>: {{ contrato.rescindido|yesno:'sim,não' }}</p>
-          <p><b>Observação</b>: {{ contrato.observacao }}</p>
+          <p><b>Observação</b>: {{ contrato.observacao|default:"" }}</p>
           </div>
       </div>
 

@@ -178,17 +178,18 @@ class ContratoAluno(Contrato):
         return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
     def set_matricula(self):
-        data = self.data_assinatura or date.today()
-        categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
-        Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
-                                           contrato=self,
-                                           escola=self.aluno.escola,
-                                           data=data,
-                                           observacao='',
-                                           nr_parcela=None,
-                                           categoria=categoria,
-                                           tipo=1,
-                                           defaults={'valor': self.matricula_valor})
+        if self.matricula_valor and self.matricula_valor > 0:
+            data = self.data_assinatura or date.today()
+            categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
+            Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
+                                               contrato=self,
+                                               escola=self.aluno.escola,
+                                               data=data,
+                                               observacao='',
+                                               nr_parcela=None,
+                                               categoria=categoria,
+                                               tipo=1,
+                                               defaults={'valor': self.matricula_valor})
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
@@ -212,7 +213,7 @@ class ContratoAluno(Contrato):
         das apostilas E
         Cria os pagamentos
         '''
-        if self.material_valor and self.matricula_valor > 0:
+        if self.material_valor and self.material_valor > 0:
             datas = self.get_datas_parcelas_material()
             nr_parcelas = self.material_parcelas or 1
 
@@ -251,24 +252,26 @@ class ContratoAluno(Contrato):
             valor_bolsa = 0
             if self.bolsa:
                 valor_bolsa = self.valor  * (self.bolsa / Decimal('100'))
-            valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
-            categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
-            mes_ini = 13 - self.nr_parcela
-            n = 1
-            for p in range(mes_ini, 12 + 1):
-                data =  date(self.ano, p, self.vencimento)
-                Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
-                                                   contrato=self,
-                                                   escola=self.aluno.escola,
-                                                   data=data,
-                                                   observacao='',
-                                                   nr_parcela=p,
-                                                   categoria=categoria,
-                                                   tipo=1, 
-                                                   defaults={
-                                                   'valor': valor,
-                                                   })
-                n += 1
+            if valor_bolsa < self.valor:
+                valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
+                categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
+                mes_ini = 13 - self.nr_parcela
+                n = 1
+                for p in range(mes_ini, 12 + 1):
+                    data =  date(self.ano, p, self.vencimento)
+                    Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
+                                                       contrato=self,
+                                                       escola=self.aluno.escola,
+                                                       data=data,
+                                                       observacao='',
+                                                       nr_parcela=p,
+                                                       categoria=categoria,
+                                                       tipo=1, 
+                                                       defaults={
+                                                       'valor': valor,
+                                                       })
+                    n += 1
+
 
 class CategoriaPagamento(models.Model):
     # Categorias default para os Contratos, serve para todas Escolas
