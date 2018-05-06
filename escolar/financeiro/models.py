@@ -389,7 +389,11 @@ class Pagamento(models.Model):
         return self.valor
 
     def get_multa(self):
-        if date.today() > self.data and self.contrato:
+        if all([self.categoria,
+                self.categoria.id == 1,
+                self.contrato, 
+                self.contrato.contratoaluno.juros,
+                 date.today() > self.data]):
             multa = self.contrato.contratoaluno.multa / Decimal('100.')
             return round(self.valor * multa, 2)
         return 0
