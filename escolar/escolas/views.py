@@ -143,7 +143,9 @@ def autorizados_aluno_list(request, aluno_pk):
     autorizados = AutorizadoAluno.objects.filter(aluno=aluno)
     # autorizados = Autorizado.objects.filter(id__in=autorizados_ids)
 
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = any([user.is_admin()])
+    if not can_edit:
+        raise Http404
     context = {}
     context['escola'] = escola
     context['aluno'] = aluno
