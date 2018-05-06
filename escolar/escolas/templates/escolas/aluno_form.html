@@ -5,7 +5,8 @@
   <style type="text/css">
     #id_serie,
     #id_ano,
-    #id_ra {
+    #id_ra,
+    #id_sexo {
       width: 100px;
       height: 35px;
     }
@@ -47,15 +48,18 @@
             <small>Dados do Aluno:</small>
             {% bootstrap_field form.nome %}
             {% bootstrap_field form.cpf %}
-            {% bootstrap_field form.rg %}
+            {% bootstrap_field form.documento %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
+            {% bootstrap_field form.rg %}
             <small>
             Natural de:
             </small>
             {{ form.natural_municipio }}
             {% bootstrap_field form.nascimento %}
             {% bootstrap_field form.nacionalidade %}
+            <small>Meios de contato do aluno</small>
+            <a href=""><i class="glyphicon glyphicon-question-sign" title="tel, cel, email, do Aluno, não dos familiares"></i></a>
             {% bootstrap_field form.email %}
             {% bootstrap_field form.celular %}
             {% bootstrap_field form.telefone %}
@@ -63,7 +67,6 @@
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.observacao %}
             {% bootstrap_field form.profissao %}
-            {% bootstrap_field form.documento %}
             {% bootstrap_field form.foto %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">

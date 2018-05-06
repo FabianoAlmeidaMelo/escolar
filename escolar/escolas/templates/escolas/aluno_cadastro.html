@@ -48,20 +48,20 @@
           <p><b>Nacionalidade</b>: {{ aluno.nacionalidade|default:"--" }}</p>
           <p><b>Natural de</b>: {{ aluno.natural_municipio|default:"--"  }}</p>
           <p><b>data de nascimento</b>: {{ aluno.nascimento|date:"d/m/Y"|default:"--" }}</p>
-          <h3>Contato</h3>
+          <p><small>Meios de contatos do aluno</small></p>
           <p><b>Email</b>: {{ aluno.email|default:"--" }} </p>
           <p><b>Celular</b>: {{ aluno.celular|default:"--" }} </p>
           <p><b>Telefone</b>: {{ aluno.telefone|default:"--" }} </p>
-          <p><b>Observação</b>: {{ aluno.observacao|default:"--" }} </p>
           <p></p>
         </div>
         <div class="col-md-4">
-          <h3>Endereço</h3>
+          <p><small>Endereço do aluno</small></p>
           <p><b>Logradouro</b>: {{ aluno.endereco.logradouro|default:"--" }}</p>
           <p><b>número</b>: {{ aluno.endereco.numero|default:"--" }}</p>
           <p><b>bairro</b>: {{ aluno.endereco.bairro|default:"--" }}</p>
           <p><b>CEP</b>: {{ aluno.endereco.cep|default:"--" }}</p>
           <p><b>Município</b>: {{ aluno.endereco.municipio|default:"--" }}</p>
+          <p><b>Observação</b>: {{ aluno.observacao|default:"--" }} </p>
         </div>
       </div>
       <!-- glyphicon glyphicon-print  {% url 'aluno_form' escola.id aluno.id %} -->
