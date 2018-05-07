@@ -300,6 +300,7 @@ class Responsavel(models.Model):
     class Meta:
         verbose_name = 'Responsável'
         verbose_name_plural = 'Responsáveis'
+        unique_together = ("aluno", "membro")
 
     def __str__(self):
         return '%s' % self.membro.nome

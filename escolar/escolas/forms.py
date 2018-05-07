@@ -185,7 +185,7 @@ class MembroFamiliaForm(forms.ModelForm):
             membro = MembroFamilia.objects.filter(cpf=cpf).first()
             if membro:
                 # Não cria um 'novo' o vínculo será criado
-                # para o memnbro da família existente
+                # para o membro da família existente
                 self.instance = membro
         self.instance.escola = self.aluno.escola
         if not self.instance.pk:
