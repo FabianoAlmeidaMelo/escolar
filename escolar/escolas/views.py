@@ -471,13 +471,18 @@ def membro_familia_form(request,  aluno_pk, membro_pk=None, responsavel_pk=None)
 
     if request.method == 'POST':
         if form.is_valid() and resp_form.is_valid():
-            membro = form.save()
-            resp_form.instance.membro = membro
-            responsavel = resp_form.save()
-            messages.success(request, msg)
-            return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk,
+            try:
+                membro = form.save()
+                resp_form.instance.membro = membro
+                responsavel = resp_form.save()
+                messages.success(request, msg)
+                return redirect(reverse('membro_familia_cadastro', kwargs={'aluno_pk': aluno.pk,
                                                                        'membro_pk': membro.id,
                                                                        'responsavel_pk': responsavel.pk}))
+            except:
+                if Responsavel.objects.filter(aluno=aluno, membro=form.instance).count():
+                    msg = "Esse Familiar já tem uma relação com esse aluno"
+                    messages.warning(request, msg)
         else:
             messages.warning(request, u'Falha no cadastro do membro família')
 
