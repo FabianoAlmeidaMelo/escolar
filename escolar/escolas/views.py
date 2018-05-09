@@ -322,12 +322,15 @@ def alunos_list(request, escola_pk):
     escola = get_object_or_404(Escola, pk=escola_pk)
     # import pdb; pdb.set_trace()
     context = {}
+    total_alunos = 0
     
     form = AlunoSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         alunos = form.get_result_queryset()
+        total_alunos = alunos.count()
     else:
         alunos = form.get_result_queryset().filter(ano=ano_corrente)
+        total_alunos = alunos.count()
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -346,6 +349,7 @@ def alunos_list(request, escola_pk):
     context['escola'] = escola 
     context['can_edit'] = can_edit
     context['object_list'] = alunos
+    context['total_alunos'] = total_alunos
     context['user'] = user
     context['tab_alunos'] = "active"
 

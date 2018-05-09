@@ -13,7 +13,7 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        Alunos / Escola: {{ escola.nome }}
+        Alunos / Escola: {{ escola.nome }} <small>{% if total_alunos%} Total: {{ total_alunos }}{% endif %}</small>
     {% else %}
        Alunos
     {% endif %}
