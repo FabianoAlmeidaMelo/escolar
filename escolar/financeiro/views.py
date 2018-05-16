@@ -175,7 +175,7 @@ def parametros_contrato_form(request, escola_pk):
     context['escola'] = escola
     context['can_edit'] = can_edit
 
-    context['tab_administracao'] = "active"
+    context['tab_sistema'] = "active"
     context['tab_parametros'] = "active"
 
     if request.method == 'POST':
@@ -204,7 +204,7 @@ def parametro_cadastro(request, escola_pk):
     context["parametros"] = parametros
 
     context['can_edit'] = can_edit
-    context['tab_administracao'] = "active"
+    context['tab_sistema'] = "active"
     context['tab_parametros'] = "active"
     return render(request, 'financeiro/parametros_contrato_cadastro.html', context)
 

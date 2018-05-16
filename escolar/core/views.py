@@ -222,6 +222,7 @@ def grupos_list(request, escola_pk=None):
     context['grupos'] = grupos
     context['can_edit'] = can_edit
     context['escola'] = escola
+    context['tab_sistema'] = "active"
     context['tab_grupos'] = "active"
     return render(request, 'core/grupos_list.html', context)
 

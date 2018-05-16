@@ -345,6 +345,8 @@ class PagamentoEscolaSearchForm(forms.Form):
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
+
+        self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(Q(escola=None)|Q(escola=self.escola))
        
 
     def get_result_queryset(self, mes=None):
