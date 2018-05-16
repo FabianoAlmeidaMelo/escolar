@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
 
 from escolar.financeiro.models import (
+    CategoriaPagamento,
     ContratoAluno,
     Pagamento,
     ParametrosContrato,
@@ -175,7 +176,7 @@ def parametros_contrato_form(request, escola_pk):
     context['escola'] = escola
     context['can_edit'] = can_edit
 
-    context['tab_administracao'] = "active"
+    context['tab_sistema'] = "active"
     context['tab_parametros'] = "active"
 
     if request.method == 'POST':
@@ -204,7 +205,7 @@ def parametro_cadastro(request, escola_pk):
     context["parametros"] = parametros
 
     context['can_edit'] = can_edit
-    context['tab_administracao'] = "active"
+    context['tab_sistema'] = "active"
     context['tab_parametros'] = "active"
     return render(request, 'financeiro/parametros_contrato_cadastro.html', context)
 
@@ -363,6 +364,29 @@ def print_recibo(request, pagamento_pk):
     # print(len(connection.queries))
     # print('=====================')
     return render(request, 'financeiro/recibo.html', context)
+
+
+@login_required
+def categorias_list(request, escola_pk):
+    '''
+    Lista todas as categrias
+    as básicas não são editáveis
+    1º as suas
+    '''
+    escola = None
+    if escola_pk:
+        escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = user.is_admin()
+    categorias = CategoriaPagamento.objects.all()
+
+    context = {}
+    context['categorias'] = categorias
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_sistema'] = "active"
+    context['tab_categorias'] = "active"
+    return render(request, 'financeiro/categorias_list.html', context)
 
 
 @login_required

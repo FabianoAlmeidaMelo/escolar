@@ -279,6 +279,7 @@ class CategoriaPagamento(models.Model):
     # Matrícula
     escola = models.ForeignKey('escolas.Escola', null=True, blank=True)
     nome = models.CharField('Categoria', max_length=50)
+    # descricao = models.CharField('Descrição', max_length=150)
 
     def __str__(self):
         if self.escola:
