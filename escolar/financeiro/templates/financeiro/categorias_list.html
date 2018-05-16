@@ -13,21 +13,23 @@
 <div class="container">
   <div class="row-fluid span10">
     {% if can_edit %}
-    <a class="btn btn-success" href="{% url 'grupo_form' %}" class="btn btn-mini btn-success">Nova Categoria</a>
+    <a class="btn btn-success" href="#" class="btn btn-mini btn-success">Nova Categoria</a>
     {% endif %}
       <table class="table table-striped">
         <thead>
           <tr>
             <th>Categorias</th>
+            <th>Descrição</th>
           </tr>
         </thead>
         {% for object in categorias %}
           <tr>
-          {% if can_edit %}
-            <td> <a href="{% url 'grupo_form' object.pk %}">{{ object.name }}</a></td>
+          {% if object.can_edit %}
+            <td> <a href="#">{{ object.nome }}</a></td>
           {% else %}
             <td>{{ object.nome }}</td>
           {% endif %}
+            <td>{{ object.descricao }}</td>
           </tr>
         {% empty %}
           <tr><td colspan="100%">Nenhum item disponível</td></tr>

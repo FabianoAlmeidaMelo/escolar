@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import BooleanField, Case, Value, When
+from django.db.models import BooleanField, Case, Value, When, Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
@@ -378,11 +378,14 @@ def categorias_list(request, escola_pk):
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
     can_edit = user.is_admin()
-    categorias = CategoriaPagamento.objects.all()
+    categorias = CategoriaPagamento.objects.filter(Q(escola=None) | Q(escola=escola))
+
+    categorias = categorias.annotate(can_edit=Case(When(escola=escola,
+                                                        then=Value(True)), output_field=BooleanField()))
 
     context = {}
     context['categorias'] = categorias
-    context['can_edit'] = can_edit
+    context['can_edit'] = True #can_edit
     context['escola'] = escola
     context['tab_sistema'] = "active"
     context['tab_categorias'] = "active"
