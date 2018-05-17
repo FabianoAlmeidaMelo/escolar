@@ -22,6 +22,7 @@ from escolar.financeiro.models import (
 from escolar.financeiro.forms import (
     ano_corrente,
     mes_corrnete,
+    CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
     PagamentoAlunoEscolaSearchForm,
@@ -188,7 +189,6 @@ def parametros_contrato_form(request, escola_pk):
             messages.warning(request, u'Falha na edição dos parâmetros.')
 
     return render(request, 'financeiro/parametros_contrato_form.html', context)
-
 
 
 @login_required
@@ -367,6 +367,48 @@ def print_recibo(request, pagamento_pk):
 
 
 @login_required
+def categoria_form(request, escola_pk, categoria_pk=None):
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_create = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 9
+
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    if categoria_pk:
+        categoria = get_object_or_404(CategoriaPagamento, pk=categoria_pk)
+        msg = u'Categoria alterada com sucesso.'
+    else:
+        categoria = None
+        msg = u'Categoria criada.' 
+
+    if categoria_pk and not can_edit:
+        raise Http404
+    elif not categoria_pk and not can_create:
+        raise Http404
+
+    form = CategoriaPagamentoForm(request.POST or None, request.FILES or None, instance=categoria, escola=escola, user=user)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            categoria = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('categorias_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha na edição dos parâmetros.')
+    context = {}
+    context['form'] = form
+    context['categoria'] = categoria
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+
+    context['tab_sistema'] = "active"
+    context['tab_categorias'] = "active"
+
+    return render(request, 'financeiro/categoriapagamento_form.html', context)
+
+
+@login_required
 def categorias_list(request, escola_pk):
     '''
     Lista todas as categrias
@@ -377,7 +419,7 @@ def categorias_list(request, escola_pk):
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
-    can_edit = user.is_admin()
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 9
     categorias = CategoriaPagamento.objects.filter(Q(escola=None) | Q(escola=escola))
 
     categorias = categorias.annotate(can_edit=Case(When(escola=escola,
@@ -385,7 +427,7 @@ def categorias_list(request, escola_pk):
 
     context = {}
     context['categorias'] = categorias
-    context['can_edit'] = True #can_edit
+    context['can_edit'] = can_edit
     context['escola'] = escola
     context['tab_sistema'] = "active"
     context['tab_categorias'] = "active"

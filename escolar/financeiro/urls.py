@@ -3,6 +3,7 @@ from django.conf.urls import url
 
 from escolar.financeiro.views import (
     categorias_list,
+    categoria_form,
     contratos_list,
     pagamentos_list,
     responsaveis_list,
@@ -41,4 +42,6 @@ urlpatterns = [
     url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/print_recibo/$', print_recibo, name="print_recibo"),
 
     url(r'^escola/(?P<escola_pk>\d+)/categorias_pagamento/$', categorias_list, name="categorias_list"),
+    url(r'^escola/(?P<escola_pk>\d+)/categoria_form/$', categoria_form, name="categoria_form"),
+    url(r'^escola/(?P<escola_pk>\d+)/categoria_edit/(?P<categoria_pk>\d+)/$', categoria_form, name="categoria_edit"),
 ]

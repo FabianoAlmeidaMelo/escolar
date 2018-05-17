@@ -5,7 +5,8 @@
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
-  Categorias de pagamentos
+  Categorias de pagamentos: <small> O sistema tem 11 categorias básicas</small> <a href=""><i class="glyphicon glyphicon-question-sign" title="essas categorias não são editáveis"></i></a><br>
+  <small>Você pode criar até mais 9 categorias. Ter muitas categorias pode deixar seu sistema inadministrável</small>
   </div>
 {% endblock page_title %}
 
@@ -13,7 +14,7 @@
 <div class="container">
   <div class="row-fluid span10">
     {% if can_edit %}
-    <a class="btn btn-success" href="#" class="btn btn-mini btn-success">Nova Categoria</a>
+      <a class="btn btn-success" href="{% url 'categoria_form' escola.pk %}" class="btn btn-mini btn-success">Nova Categoria</a>
     {% endif %}
       <table class="table table-striped">
         <thead>
@@ -25,7 +26,7 @@
         {% for object in categorias %}
           <tr>
           {% if object.can_edit %}
-            <td> <a href="#">{{ object.nome }}</a></td>
+            <td> <a href="{% url 'categoria_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
           {% else %}
             <td>{{ object.nome }}</td>
           {% endif %}
