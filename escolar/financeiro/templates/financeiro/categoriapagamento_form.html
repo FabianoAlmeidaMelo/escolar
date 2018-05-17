@@ -49,7 +49,11 @@
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-9 col-sm-6 col-md-3">
-              <p>{% bootstrap_field form.nome %}</p>
+              <p>{% bootstrap_field form.nome %}
+                {% if not form.can_edit %}
+                  {{ form.instance.nome }} <a href=""><i class="glyphicon glyphicon-question-sign" title="Essas categoria já tem: {{ form.instance.pagamento_set.count }} lançamentos vinculados a ela."></i></a>
+                {% endif %}
+              </p>
               <p>{% bootstrap_field form.descricao %}</p>
             </div>
         </div>

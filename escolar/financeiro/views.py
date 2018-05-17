@@ -371,7 +371,7 @@ def categoria_form(request, escola_pk, categoria_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    can_create = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 9
+    can_create = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 10
 
     if not user.can_access_escola(escola.pk):
         raise Http404
@@ -419,11 +419,10 @@ def categorias_list(request, escola_pk):
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 9
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 10
     categorias = CategoriaPagamento.objects.filter(Q(escola=None) | Q(escola=escola))
 
-    categorias = categorias.annotate(can_edit=Case(When(escola=escola,
-                                                        then=Value(True)), output_field=BooleanField()))
+    categorias = categorias.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
 
     context = {}
     context['categorias'] = categorias

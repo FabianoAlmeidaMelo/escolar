@@ -280,11 +280,17 @@ class CategoriaPagamentoForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         super(CategoriaPagamentoForm, self).__init__(*args, **kwargs)
-        
+        self.can_edit = True
+
+        if self.instance.id and self.instance.pagamento_set.count():
+            self.can_edit = False
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
 
     class Meta:
         model = CategoriaPagamento
-        exclude = ('escola', ) 
+        exclude = ('escola', )
+
 
     def save(self, *args, **kwargs):
         self.instance.escola = self.escola
