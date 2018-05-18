@@ -274,6 +274,31 @@ class ContratoAlunoSearchForm(forms.Form):
         return ContratoAluno.objects.filter(q)
 
 
+class CategoriaPagamentoForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(CategoriaPagamentoForm, self).__init__(*args, **kwargs)
+        self.can_edit = True
+
+        if self.instance.id and self.instance.pagamento_set.count():
+            self.can_edit = False
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
+
+    class Meta:
+        model = CategoriaPagamento
+        exclude = ('escola', )
+
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(CategoriaPagamentoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
     valor = BRDecimalField(label="Valor", required=True)
@@ -281,6 +306,7 @@ class PagamentoForm(forms.ModelForm):
     efet = forms.BooleanField(label="Pago", required=False)
     # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
