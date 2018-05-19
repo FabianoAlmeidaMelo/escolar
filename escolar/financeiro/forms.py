@@ -366,6 +366,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     aluno = forms.CharField(label=u'Aluno', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
+    mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
 
     def __init__(self, *args, **kargs):
@@ -393,8 +394,14 @@ class PagamentoEscolaSearchForm(forms.Form):
                 year = int(ano)
                 month = int(mes)
                 data_ini = date(year, month, 1)
+                q = q & Q(data__gte=data_ini)
+
+            mes_fim = self.cleaned_data['mes_fim']
+            if mes_fim and ano:
+                year = int(ano)
+                month = int(mes_fim)
                 data_fim = date(year, month, monthrange(year, month)[1])
-                q = q & Q(data__gte=data_ini, data__lte=data_fim)
+                q = q & Q(data__lte=data_fim)
 
             titulo = self.cleaned_data['titulo']
             if titulo:
