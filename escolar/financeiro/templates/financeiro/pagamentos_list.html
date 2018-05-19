@@ -26,6 +26,7 @@
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
     <form class="form-inline well" method="GET" >
+      {{ form.errors }}
       <div class="form-group">
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.mes %} a

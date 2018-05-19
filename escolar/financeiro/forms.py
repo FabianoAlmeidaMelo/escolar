@@ -374,7 +374,25 @@ class PagamentoEscolaSearchForm(forms.Form):
         super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
 
         self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(Q(escola=None)|Q(escola=self.escola))
-       
+    
+
+    def clean(self):
+        cleaned_data = super(PagamentoEscolaSearchForm, self).clean()
+        ano = cleaned_data['ano']
+        mes = cleaned_data['mes']
+        mes_fim = cleaned_data['mes_fim']
+        # errors_list = []
+        if not ano and any([mes, mes_fim]):
+            raise forms.ValidationError("Ano é requerido para filtrar por mês")
+        elif mes and mes_fim:
+            if int(mes_fim) < int(mes):
+                raise forms.ValidationError("Mês inicial não pode ser maior que o mês final")
+
+
+        # for error in errors_list:
+        #     self._errors[error] = ErrorList([])
+
+        return cleaned_data
 
     def get_result_queryset(self, mes=None):
         q = Q(escola=self.escola, )
