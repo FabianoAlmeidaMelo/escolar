@@ -368,12 +368,18 @@ class PagamentoEscolaSearchForm(forms.Form):
     mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
     mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
+    serie = forms.ModelChoiceField(queryset=Serie.objects.all(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
 
         self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(Q(escola=None)|Q(escola=self.escola))
+
+        cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
+
+        self.fields['categoria'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
+    
     
 
     def clean(self):
@@ -381,17 +387,14 @@ class PagamentoEscolaSearchForm(forms.Form):
         ano = cleaned_data['ano']
         mes = cleaned_data['mes']
         mes_fim = cleaned_data['mes_fim']
-        # errors_list = []
+
         if not ano and any([mes, mes_fim]):
             raise forms.ValidationError("Ano é requerido para filtrar por mês")
         elif mes and mes_fim:
             if int(mes_fim) < int(mes):
                 raise forms.ValidationError("Mês inicial não pode ser maior que o mês final")
 
-
-        # for error in errors_list:
-        #     self._errors[error] = ErrorList([])
-
+ 
         return cleaned_data
 
     def get_result_queryset(self, mes=None):

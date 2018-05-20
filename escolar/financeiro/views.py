@@ -550,7 +550,7 @@ def pagamentos_list(request, escola_pk):
     else:
         pagamentos = form.get_result_queryset().filter(data__gte=data_ini,
                                                        data__lte=data_fim )
-
+        # import pdb; pdb.set_trace()
     hj = date.today()
     # pgtos atrasados
     # tem Juros e Multa
