@@ -3,8 +3,12 @@
 {% load numberformat_br %}
 {% block css %}
   <style type="text/css">
-    #id_serie, #id_ano {
+    #id_ano {
       width: 80px;
+      height: 35px;
+    }
+    #id_serie{
+      width: 250px;
       height: 35px;
     }
    </style>
@@ -32,10 +36,11 @@
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.mes %} a
         {% bootstrap_field form.mes_fim %}
-        {% bootstrap_field form.serie %}
-      </div>
-      <div class="form-group">
         {% bootstrap_field form.categoria %}
+      </div>
+      <p></p>
+      <div class="form-group">
+        {% bootstrap_field form.serie %}
         {% bootstrap_field form.titulo %}
         {% bootstrap_field form.efet %}
         {% bootstrap_field form.tipo  %}

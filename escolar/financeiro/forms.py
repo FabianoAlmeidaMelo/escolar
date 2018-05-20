@@ -368,7 +368,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
     mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
-    serie = forms.ModelChoiceField(queryset=Serie.objects.all(), required=False)
+    serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -378,7 +378,7 @@ class PagamentoEscolaSearchForm(forms.Form):
 
         cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
 
-        self.fields['categoria'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
+        self.fields['serie'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
     
     
 
@@ -409,6 +409,9 @@ class PagamentoEscolaSearchForm(forms.Form):
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(data__year=ano)
+            serie = self.cleaned_data['serie']
+            if serie:
+                q = q & Q(contrato__contratoaluno__serie=serie)
 
             mes = self.cleaned_data['mes']
             if mes and ano:
