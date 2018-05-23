@@ -53,7 +53,13 @@ class ParametrosContratoForm(forms.ModelForm):
     material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)
     multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
     juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
-
+    data_um_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_dois_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_tres_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_quatro_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_cinco_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_seis_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)

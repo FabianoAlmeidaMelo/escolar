@@ -1,6 +1,8 @@
 {% extends 'base.html'%}
 {% load bootstrap3 %}
 {% block css %}
+  <link href="/static/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" media="all" rel="stylesheet" />
+  {{ form.media.css }}
   <style type="text/css">
     #id_ano,
     #id_vencimento,
@@ -14,7 +16,7 @@
       width: 100px;
       height: 35px;
     }
-    #id_data_um_material,
+    /*#id_data_um_material,
     #id_data_dois_material,
     #id_data_tres_material,
     #id_data_quatro_material,
@@ -22,7 +24,7 @@
     #id_data_seis_material {
       width: 120px;
       height: 35px;
-    }
+    }*/
    </style>
 {% endblock css %}
 {% block page_title %}
@@ -90,5 +92,8 @@
 {% endblock content %}
 
 {% block extra_js %}
-    {{ form.media }}
+    <script type="text/javascript" src="/static/datetimepicker/js/moment.min.js"></script>
+    <script type="text/javascript" src="/static/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/static/datetimepicker/js/locales/bootstrap-datetimepicker.pt-BR.js"></script>
+    {{ form.media.js }}
 {% endblock extra_js %}
