@@ -2,9 +2,11 @@
 {% extends 'base.html'%}
 {% load bootstrap3 %}
 {% block css %}
+   <link href="/static/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" media="all" rel="stylesheet" />
+   {{ form.media.css }}
   <style type="text/css">
     #id_tipo,
-    #id_data,
+    /*#id_data,*/
     #id_data_pag,
     #id_valor,
     #id_valor_pag {
@@ -84,5 +86,8 @@
 {% endblock content %}
 
 {% block extra_js %}
-    {{ form.media }}
+    <script type="text/javascript" src="/static/datetimepicker/js/moment.min.js"></script>
+    <script type="text/javascript" src="/static/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/static/datetimepicker/js/locales/bootstrap-datetimepicker.pt-BR.js"></script>
+    {{ form.media.js }}
 {% endblock extra_js %}

@@ -13,6 +13,7 @@ from escolar.financeiro.models import (
     ParametrosContrato,
 )
 from escolar.escolas.models import MembroFamilia, Serie
+from escolar.core.widgets import DateTimePicker
 
 from datetime import date
 from calendar import monthrange
@@ -306,6 +307,7 @@ class PagamentoForm(forms.ModelForm):
     efet = forms.BooleanField(label="Pago", required=False)
     # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
+    data = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
