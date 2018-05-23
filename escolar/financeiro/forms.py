@@ -59,7 +59,7 @@ class ParametrosContratoForm(forms.ModelForm):
     data_quatro_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     data_cinco_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     data_seis_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
-    
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
@@ -313,7 +313,7 @@ class PagamentoForm(forms.ModelForm):
     efet = forms.BooleanField(label="Pago", required=False)
     # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
-    data = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data = forms.DateField(label='Data', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
