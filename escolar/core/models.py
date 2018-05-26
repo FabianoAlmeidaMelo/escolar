@@ -216,6 +216,10 @@ class Pais(models.Model):
     def __str__(self):
         return '%s - %s' % (self.nome, self.sigla)
 
+    def get_nacionalidade(self):
+        dict_nacionalidade = {'Brasil': 'brasileira'}
+        return dict_nacionalidade[self.nome]
+
 
 class UserAdd(models.Model):
     user_add = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_created_by")

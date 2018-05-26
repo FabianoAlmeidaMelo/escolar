@@ -117,6 +117,9 @@ class AlunoForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super(AlunoForm, self).__init__(*args, **kwargs)
         self.fields['curso'].queryset = self.escola.cursos.all()
+        self.fields['natural_municipio'].initial = self.escola.municipio
+        self.fields['nacionalidade'].initial = self.escola.pais.get_nacionalidade()
+
 
     class Meta:
         model = Aluno
