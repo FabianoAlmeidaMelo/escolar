@@ -83,18 +83,20 @@ class PerfilForm(forms.ModelForm):
      
 
 class EnderecoForm(forms.ModelForm):
-    cep = BRZipCodeField(label='CEP', required=False)
+    cep = BRZipCodeField(label='CEP', required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         self.perfil = kwargs.pop('perfil', None)
         super(EnderecoForm, self).__init__(*args, **kwargs)
+        self.fields['municipio'].initial = self.escola.municipio
 
     class Meta:
         model = Endereco
         widgets = {'municipio': SelectMunicipioWidget}
         fields = ['cep', 'logradouro', 'numero', 'complemento', 'bairro', 'municipio']
+
 
     def save(self, *args, **kwargs):
         self.instance.perfil = self.perfil
