@@ -233,7 +233,7 @@ class ContratoAlunoForm(forms.ModelForm):
             historico.aluno = self.aluno
             ato = 'Sim' if self.instance.rescindido else 'Retomado'
             historico.descricao = 'Rescisão: %s do contrato ano %s , obs: ' % (ato, self.instance.ano) 
-            historico.descricao += self.instance.observacao
+            historico.descricao += self.instance.observacao or 'Reativado'
             historico.usuario = self.user
             historico.save()
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
