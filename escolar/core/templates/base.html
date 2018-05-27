@@ -14,6 +14,9 @@
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="{% static 'css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+    <!-- DTAEPICKER -->
+    <link href="{% static 'datetimepicker/css/bootstrap-datetimepicker.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+
     <!-- Custom styles for this template -->
     <!-- <link href="starter-template.css" rel="stylesheet"> -->
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -86,7 +89,10 @@
         });
     </script>
 
-
+    <!-- DATEPICKER -->
+    <script type="text/javascript" src="{% static 'datetimepicker/js/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'datetimepicker/js/locales/bootstrap-datetimepicker.pt-BR.js' %}"></script>
     {% block extra_js %} {% endblock extra_js%}
 </body>
 
