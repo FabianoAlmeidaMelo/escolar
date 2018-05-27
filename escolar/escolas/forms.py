@@ -168,6 +168,7 @@ class EmailRespensavelForm(forms.ModelForm):
 class MembroFamiliaForm(forms.ModelForm):
     cpf = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
+    nascimento = forms.DateField(label='Data Nascimento', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

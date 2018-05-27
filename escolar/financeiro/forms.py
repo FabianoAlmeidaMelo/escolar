@@ -146,7 +146,8 @@ class ContratoAlunoForm(forms.ModelForm):
     bolsa = forms.DecimalField(label='Bolsa (%)', max_value=100, min_value=0, max_digits=5, decimal_places=2, required=False)
     valor = forms.DecimalField(min_value=0)
     nr_parcela = forms.ChoiceField(label='Nr de Parcelas', choices=MESES, initial=12, required=True)
-    
+    data_assinatura = forms.DateField(label='Data da Matrícula', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
