@@ -9,6 +9,7 @@ from django.db.models.functions import Extract
 
 from localbr.formfields import BRCPFField, BRCNPJField, BRPhoneNumberField
 from escolar.financeiro.models import ParametrosContrato
+from escolar.core.widgets import DateTimePicker
 
 from escolar.escolas.models import (
     Aluno,
@@ -111,6 +112,7 @@ class AlunoForm(forms.ModelForm):
     ra = forms.CharField(label='RA', required=False)
     cpf = BRCPFField(required=False, always_return_formated=True, return_format=u'%s%s%s%s', help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
+    nascimento = forms.DateField(label='Data Nascimento', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.escola = kwargs.pop('escola', None)
@@ -166,6 +168,7 @@ class EmailRespensavelForm(forms.ModelForm):
 class MembroFamiliaForm(forms.ModelForm):
     cpf = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)
+    nascimento = forms.DateField(label='Data Nascimento', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

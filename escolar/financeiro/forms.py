@@ -13,6 +13,7 @@ from escolar.financeiro.models import (
     ParametrosContrato,
 )
 from escolar.escolas.models import MembroFamilia, Serie
+from escolar.core.widgets import DateTimePicker
 
 from datetime import date
 from calendar import monthrange
@@ -52,6 +53,12 @@ class ParametrosContratoForm(forms.ModelForm):
     material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)
     multa = BRDecimalField(label='Multa por atraso mensalidade (%)', required=False)
     juros = BRDecimalField(label='Juros por atraso mensalidade (%)', required=False)
+    data_um_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_dois_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_tres_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_quatro_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_cinco_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_seis_material = forms.DateField(label='Data', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -139,7 +146,8 @@ class ContratoAlunoForm(forms.ModelForm):
     bolsa = forms.DecimalField(label='Bolsa (%)', max_value=100, min_value=0, max_digits=5, decimal_places=2, required=False)
     valor = forms.DecimalField(min_value=0)
     nr_parcela = forms.ChoiceField(label='Nr de Parcelas', choices=MESES, initial=12, required=True)
-    
+    data_assinatura = forms.DateField(label='Data da Matrícula', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
@@ -306,6 +314,7 @@ class PagamentoForm(forms.ModelForm):
     efet = forms.BooleanField(label="Pago", required=False)
     # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
+    data = forms.DateField(label='Data', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
