@@ -119,7 +119,8 @@ class Contrato(UserAdd, UserUpd):
     '''
     # INI: comum a qualquer contrato ???
     ano = models.SmallIntegerField()
-    data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
+    data_assinatura = models.DateTimeField('Data da Matrícula', null=True, blank=True)
+    assinado = models.BooleanField('Assinado', default=False)
     valor = models.DecimalField(
         'valor',
         max_digits=7,

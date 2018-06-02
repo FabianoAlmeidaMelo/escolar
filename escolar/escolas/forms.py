@@ -316,7 +316,7 @@ class AlunoSearchForm(forms.Form):
     nome = forms.CharField(label=u'Nome', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
-    curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
+    curso = forms.ModelChoiceField(label=u'Curso', queryset=Curso.objects.all(), required=False)
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(AlunoSearchForm, self).__init__(*args, **kargs)
