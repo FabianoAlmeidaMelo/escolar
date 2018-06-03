@@ -42,6 +42,7 @@
     <thead>
       <tr>
         <th>Contrato Ano</th>
+        <th>Assinado</th>
         <th>Responsável</th>
         <th>Aluno</th>
         <th>Série</th>
@@ -53,6 +54,21 @@
       <tr>
         <td>
           <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
+        </td>
+        <td>
+          {% if contrato.assinado %}
+            <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+                {% else %}
+                  <label>
+                    <input type="checkbox"
+                           checkbox_id="{{ contrato.id }}"
+                           responsavel="{{ contrato.responsavel.nome }}"
+                           value="contrato_{{ contrato.id }}"
+                           name="set_status"
+                           onchange="set_contrato_assinado(this)" 
+                           > Assinado
+                  </label>
+              {% endif %}
         </td>
         <td><a href="{% url 'membro_familia_cadastro' contrato.aluno.pk contrato.responsavel.id contrato.get_resp.id %}">{{ contrato.responsavel.nome }}</a></td>
         {% if can_edit or user.id == contrato.aluno.id %}
@@ -77,4 +93,22 @@
 
 {% endblock content %}
 {% block extra_js %}
+  <script type="text/javascript">
+    function set_contrato_assinado(field){
+      if($(field).is(':checked')){
+        var contrato_id = $(field).attr('checkbox_id')
+        var responsavel = $(field).attr('responsavel')
+        // alert(contrato_id)
+        // Zero: 0, é um id válido
+        // não quebra a url ao carregar a página
+        if (confirm('Quer marcar o contrato com: ' + responsavel + ' Como assinado?')) {
+            $.get("{% url 'set_contrato_assinado' 0 %}".replace('0', contrato_id), function(){
+              location.reload();
+              });
+        } else {
+          $(field).prop('checked', false);
+        }
+      }
+    }
+  </script>
 {% endblock extra_js%}
