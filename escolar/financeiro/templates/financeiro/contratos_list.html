@@ -54,9 +54,9 @@
         <td>
           <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
         </td>
-        <td><a href="#">{{ contrato.responsavel.nome }}</a></td>
+        <td><a href="{% url 'membro_familia_cadastro' contrato.aluno.pk contrato.responsavel.id contrato.get_resp.id %}">{{ contrato.responsavel.nome }}</a></td>
         {% if can_edit or user.id == contrato.aluno.id %}
-          <td><a href="{% url 'aluno_form' escola.pk  contrato.aluno.pk %}">{{ contrato.aluno.nome }}</a></td>
+          <td><a href="{% url 'aluno_cadastro' contrato.aluno.id %}">{{ contrato.aluno.nome }}</a></td>
         {% else %}
           <td>{{ contrato.aluno.nome }}</td>
         {% endif %}

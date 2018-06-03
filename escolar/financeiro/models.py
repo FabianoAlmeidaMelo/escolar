@@ -192,6 +192,9 @@ class ContratoAluno(Contrato):
                                                tipo=1,
                                                defaults={'valor': self.matricula_valor})
 
+    def get_resp(self):
+        return self.responsavel.responsavel_set.filter(aluno=self.aluno).first()
+
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
 
