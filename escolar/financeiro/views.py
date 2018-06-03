@@ -656,3 +656,37 @@ def set_pagamento_status(request, pagamento_pk):
             historico.save()
 
     return HttpResponse('Ok')
+
+
+@login_required
+def set_contrato_assinado(request, contrato_pk):
+    '''
+    ref #85 - ajax
+    altera contrato.assinado
+        para: True
+    '''
+    user = request.user
+    data_hora = datetime.today()
+    contrato = get_object_or_404(ContratoAluno, id=contrato_pk)
+    escola = contrato.aluno.escola
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    observacao = ''
+    if not can_edit:
+        raise Http404
+    if contrato.assinado is True:
+        contrato.assinado = False
+    else:
+        contrato.assinado = True
+        observacao += '\n Marcado assinado por: %s;\n em %s. \n' % (user.nome, str(data_hora))
+        contrato.observacao = observacao
+        contrato.save()
+        # GUARDA no HISTORICO:
+        if contrato:
+            AlunoHistorico = apps.get_model('escolas', 'AlunoHistorico')
+            historico = AlunoHistorico()
+            historico.aluno = contrato.aluno
+            historico.descricao = 'Contrato: %s  | ' % observacao
+            historico.usuario = user
+            historico.save()
+
+    return HttpResponse('Ok')

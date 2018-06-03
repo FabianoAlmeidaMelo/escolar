@@ -16,6 +16,7 @@ from escolar.financeiro.views import (
     parametros_contrato_form,
     print_recibo,
     set_pagamento_status,
+    set_contrato_assinado,
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     url(r'^escola/aluno/(?P<aluno_pk>\d+)/contrato/form/$', contrato_form, name='contrato_form'),
     url(r'^escola/aluno/(?P<aluno_pk>\d+)/contrato/(?P<contrato_pk>\d+)/$', contrato_form, name='contrato_edit'),
     url(r'^escola/contrato/(?P<contrato_pk>\d+)/$', contrato_cadastro, name='contrato_cadastro'),
+    url(r'^escola/contrato/(?P<contrato_pk>\d+)/set_assinado/$', set_contrato_assinado, name="set_contrato_assinado"),
     # Pagamentos
     url(r'^escola/(?P<escola_pk>\d+)/pagamentos_list/$', pagamentos_list, name='pagamentos_list'),
     url(r'^escola/pagamentos_aluno_list/(?P<aluno_pk>\d+)/$', pagamentos_aluno_list, name='pagamentos_aluno_list'),

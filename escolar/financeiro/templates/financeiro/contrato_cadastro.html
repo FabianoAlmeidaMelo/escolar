@@ -61,6 +61,7 @@
           <p><b>arquivo</b>: {{ contrato.arquivo }}</p>
           <p><b>Rescindido</b>: {{ contrato.rescindido|yesno:'sim,não' }}</p>
           <p><b>Observação</b>: {{ contrato.observacao|default:"" }}</p>
+          <p><b>Assinado</b>: {{ contrato.assinado|yesno:"Sim, Não" }}</p>
           </div>
       </div>
 

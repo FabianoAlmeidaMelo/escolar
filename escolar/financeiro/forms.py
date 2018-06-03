@@ -12,7 +12,7 @@ from escolar.financeiro.models import (
     Pagamento,
     ParametrosContrato,
 )
-from escolar.escolas.models import MembroFamilia, Serie
+from escolar.escolas.models import Curso, MembroFamilia, Serie
 from escolar.core.widgets import DateTimePicker
 
 from datetime import date
@@ -31,6 +31,11 @@ mes_corrnete = hoje.month
 PAGAMENTO_STATUS_CHOICES=( 
     (1,'Pago'),
     (0,'Em Aberto'),
+)
+
+CONTRATO_STATUS_CHOICES=( 
+    (1,'Assinado'),
+    (0,'Não Assinado'),
 )
 
 TIPO_CHOICES = (
@@ -250,13 +255,17 @@ class ContratoAlunoSearchForm(forms.Form):
     '''
     responsavel = forms.CharField(label=u'Responsável', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
-    # ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
-    serie = forms.CharField(label=u'Série', required=False)
-    curso = forms.CharField(label=u'Curso', required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
+    curso = forms.ModelChoiceField(label=u'Curso', queryset=Curso.objects.all(), required=False)
+    assinado = forms.ChoiceField(label="Assinado", choices=CONTRATO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(ContratoAlunoSearchForm, self).__init__(*args, **kargs)
+        cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
+        self.fields['serie'].queryset = Serie.objects.filter(curso__id__in=cursos_ids)
+        self.fields['curso'].queryset = self.escola.cursos.all()
        
 
     def get_result_queryset(self):
@@ -268,16 +277,23 @@ class ContratoAlunoSearchForm(forms.Form):
             aluno = self.cleaned_data['aluno']
             if aluno:
                 q = q & Q(aluno__nome__icontains=aluno)
-            # ano = self.cleaned_data['ano']
-            # if ano:
-            #     q = q & Q(ano=ano)
+            ano = self.cleaned_data['ano']
+            if ano:
+                q = q & Q(ano=ano)
 
             serie = self.cleaned_data['serie']
-            if serie:
-                q = q & Q(serie__icontains=serie)
+            if serie and ano:
+                q = q & Q(aluno__ano=int(ano), serie=serie)
+
             curso = self.cleaned_data['curso']
-            if curso:
-                q = q & Q(curso__icontains=curso)
+            if curso and ano:
+                q = q & Q(aluno__ano=int(ano), aluno__curso=curso)
+
+            assinado = self.cleaned_data['assinado']
+            if assinado and assinado == '1':
+                q = q & Q(assinado=True)
+            if assinado and assinado == '0':
+                q = q & Q(assinado=False)
 
         return ContratoAluno.objects.filter(q)
 

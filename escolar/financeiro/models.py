@@ -119,7 +119,8 @@ class Contrato(UserAdd, UserUpd):
     '''
     # INI: comum a qualquer contrato ???
     ano = models.SmallIntegerField()
-    data_assinatura = models.DateTimeField('Data assinatura', null=True, blank=True)
+    data_assinatura = models.DateTimeField('Data da Matrícula', null=True, blank=True)
+    assinado = models.BooleanField('Assinado', default=False)
     valor = models.DecimalField(
         'valor',
         max_digits=7,
@@ -190,6 +191,9 @@ class ContratoAluno(Contrato):
                                                categoria=categoria,
                                                tipo=1,
                                                defaults={'valor': self.matricula_valor})
+
+    def get_resp(self):
+        return self.responsavel.responsavel_set.filter(aluno=self.aluno).first()
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)

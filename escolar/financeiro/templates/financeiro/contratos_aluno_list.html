@@ -38,6 +38,7 @@
       <thead>
         <tr>
           <th>Contrato Ano</th>
+          <th>Assinado</th>
           <th>Responsável</th>
           <th>Aluno</th>
           <th>Série</th>
@@ -50,6 +51,11 @@
           <td>
             <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
           </td>
+          <td>{% if contrato.assinado %}
+            <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+            {% else %}
+              {{ contrato.assinado|yesno:"Sim, Não" }}</td>
+            {% endif %}
           <td>{{ contrato.responsavel.nome }}</td>
           <td>{{ contrato.aluno.nome }}</td>
           <td>{{ contrato.serie|default:'--' }}</td>
