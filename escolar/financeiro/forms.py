@@ -33,6 +33,11 @@ PAGAMENTO_STATUS_CHOICES=(
     (0,'Em Aberto'),
 )
 
+CONTRATO_STATUS_CHOICES=( 
+    (1,'Assinado'),
+    (0,'Não Assinado'),
+)
+
 TIPO_CHOICES = (
     (1, u'(+)'),
     (2, u'(-)'),
@@ -253,6 +258,7 @@ class ContratoAlunoSearchForm(forms.Form):
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
     serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     curso = forms.ModelChoiceField(label=u'Curso', queryset=Curso.objects.all(), required=False)
+    assinado = forms.ChoiceField(label="Assinado", choices=CONTRATO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -282,6 +288,12 @@ class ContratoAlunoSearchForm(forms.Form):
             curso = self.cleaned_data['curso']
             if curso and ano:
                 q = q & Q(aluno__ano=int(ano), aluno__curso=curso)
+
+            assinado = self.cleaned_data['assinado']
+            if assinado and assinado == '1':
+                q = q & Q(assinado=True)
+            if assinado and assinado == '0':
+                q = q & Q(assinado=False)
 
         return ContratoAluno.objects.filter(q)
 
