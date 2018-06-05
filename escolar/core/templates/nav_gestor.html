@@ -64,7 +64,12 @@
                 <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' escola.pk request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
               {% endif %}
             {% endif %}
-            <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
+            {% if escola and escola.site %}
+              <li><a href="{% url 'auth_logout_next' escola.site %}"><i class="glyphicon glyphicon-off"></i> Sair Site</a></li>
+            {% else %}
+              <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
+            {% endif %}
+
           {% else %}
             <li><a href="{% url 'login' %}"><i class="glyphicon glyphicon-log-in"></i> Entrar </a></li>
             <!-- <li><a href="#"><i class="icon-arrow-right"></i> Cadastrar </a></li> -->

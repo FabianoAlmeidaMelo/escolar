@@ -24,7 +24,8 @@ urlpatterns = [
     url(r'^', include('escolar.financeiro.urls')),
 
     # Logins
-    url(r'^logout/$', logout, {"next_page": "/"}, name="logout"),
+    url(r'^logout/$', logout, {"next_page": None}, name="logout"),
+    url(r'^logout/(?P<next_page>.*)/$', logout, name='auth_logout_next'),
     url(r'^login/$', login,
         {"template_name": 'login.html', "authentication_form": AuthenticationForm,},
         name="login"),
