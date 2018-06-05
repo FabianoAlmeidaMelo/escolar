@@ -65,7 +65,7 @@
               {% endif %}
             {% endif %}
             {% if escola and escola.site %}
-              <li><a href="{% url 'auth_logout_next' escola.site %}"><i class="glyphicon glyphicon-off"></i> Sair Site</a></li>
+              <li><a href="{% url 'auth_logout_next' escola.site %}"><i class="glyphicon glyphicon-off"></i> Sair</a></li>
             {% else %}
               <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-off"></i> Sair </a></li>
             {% endif %}
