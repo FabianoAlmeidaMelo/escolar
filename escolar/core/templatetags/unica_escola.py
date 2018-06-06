@@ -20,3 +20,12 @@ def get_escola(user):
 @register.filter
 def get_grupos_escola(user, escola):
     return user.usergrupos_set.filter(escola=escola).exclude(grupo__name='Admin')
+
+@register.filter
+def get_logo(slug):
+
+    if slug:
+        escola = Escola.objects.get(slug=slug)
+        if escola.logo:
+            return escola.logo.url
+    return None

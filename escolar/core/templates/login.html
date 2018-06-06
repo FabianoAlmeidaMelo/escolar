@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+{% load unica_escola %}
 
 {% block extra_css %}
 <style type="text/css">
@@ -72,5 +73,9 @@
    <button class="btn btn-default btn-small btn-primary" type="submit">Login</button>
     <a href="{% url 'password_reset' %}" class="btn btn-default">Esqueci minha Senha</a>
   </form>
+  <br>
+  {% if request.GET.slug %}
+    <img src="{{ request.GET.slug|get_logo }}" height="50" />
+  {% endif %}
 </div>
 {% endblock content %}
