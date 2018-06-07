@@ -25,7 +25,7 @@ def get_grupos_escola(user, escola):
 def get_logo(slug):
 
     if slug:
-        escola = Escola.objects.get(slug=slug)
-        if escola.logo:
+        escola = Escola.objects.filter(slug=slug).first()
+        if escola and escola.logo:
             return escola.logo.url
     return None
