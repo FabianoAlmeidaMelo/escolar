@@ -128,27 +128,35 @@ class UserForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         super(UserForm, self).__init__(*args, **kwargs)
-        grupos = UserGrupos.objects.filter(escola=self.escola, user=self.instance).values_list('grupo__id', flat=True)
-        self.fields['grupo'].queryset = Group.objects.exclude(id__in=grupos).exclude(id=5)
+
+        self.fields['escola'].queryset = Escola.objects.filter(id=self.escola.id)
+        self.fields['escola'].initial = self.escola
+        self.instance.grupo = None
         self.auto_edicao = self.instance == self.user
+
         if not self.user.is_admin():
             self.fields['escola'].widget = forms.HiddenInput()
-
-
+        
         if self.auto_edicao and not any([self.user.is_admin()]):
             self.fields['grupo'].widget = forms.HiddenInput()
             self.fields['escola'].widget = forms.HiddenInput()
             self.fields['grupo'].required = False
 
-
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2") 
+        password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords diferentes")
         elif password1 and not password2:
             raise forms.ValidationError("Confirme a senha")
         return password2
+
+    def clean_grupo(self):
+        grupo = self.cleaned_data.get("grupo") 
+        if grupo:
+            self.instance.grupo = grupo
+            return self.instance.grupo
+        return None
 
     def save(self, commit=False):
         '''
@@ -158,12 +166,17 @@ class UserForm(forms.ModelForm):
         - user for admin
             - nesse caso, enviar email com nova senha, para o user e o responsável pelo aluno (se for o caso)
         '''
-
+        grupo = self.instance.grupo
+        self.instance.username = self.instance.email
         password2 = self.cleaned_data.get("password2", False)
         if password2:
             self.instance.set_password(password2)
         self.instance.save()
-        
+        if self.user.is_admin() and grupo:
+            UserGrupos.objects.get_or_create(escola=self.escola,
+                                             grupo=grupo,
+                                             user=self.instance,
+                                             defaults={'ativo':True})
         return self.instance
 
 

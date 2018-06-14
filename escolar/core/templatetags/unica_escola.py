@@ -23,6 +23,13 @@ def get_grupos_escola(user, escola):
 
 @register.filter
 def get_logo(slug):
+    """
+    TODO
+    se tem a escola mas não tem o logo
+    entrega o nome
+    se não tem a escola
+    entrega uma imagme padrão, um logo do sistema
+    """
 
     if slug:
         escola = Escola.objects.filter(slug=slug).first()
