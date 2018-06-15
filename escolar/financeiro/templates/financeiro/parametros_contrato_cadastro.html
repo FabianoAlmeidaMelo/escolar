@@ -39,8 +39,8 @@
             </div>
             <div class="col-xs-9 col-sm-6 col-md-3">
               <p><b>Matrícula</b>: R$ {{ parametros.matricula_valor }}</p>
-              <p><b>Multa por atraso mensalidade (%)</b>: {{ parametros.multa }}</p>
-              <p><b>Juros por atraso mensalidade (%)</b>: {{ parametros.juros }}</p>
+              <p><b>Multa por atraso mensalidade (%)</b>: {{ parametros.multa|default:'' }}</p>
+              <p><b>Juros por atraso mensalidade (%)</b>: {{ parametros.juros|default:'' }}</p>
               <p>juros: {{ parametros.get_condicao_juros_display }}</p>
               <p><b>Pgamento das Apostilas em</b>: {{ parametros.material_parcelas }} parcelas</p>
             </div>
