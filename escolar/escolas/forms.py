@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import date
+from decimal import Decimal
 from django.apps import apps
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.db.models import Q
@@ -104,7 +105,9 @@ class EscolaForm(forms.ModelForm):
         instance.save()
         if not instance.parametroscontrato_set.count() and instance.publica is False:
             ParametrosContrato.objects.get_or_create(escola=instance,
-                                                     defaults={'ano':ano_corrente})
+                                                     defaults={'ano':ano_corrente,
+                                                               'matricula_valor': Decimal('0'),
+                                                               'vencimento':10})
         return instance
 
 
