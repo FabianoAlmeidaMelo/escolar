@@ -182,7 +182,7 @@ def parametros_contrato_form(request, escola_pk):
 
     if request.method == 'POST':
         if form.is_valid():
-            contrato = form.save()
+            parametros = form.save()
             messages.success(request, msg)
             return redirect(reverse('parametro_cadastro', kwargs={'escola_pk': escola.pk}))
         else:

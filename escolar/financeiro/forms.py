@@ -82,9 +82,9 @@ class ParametrosContratoForm(forms.ModelForm):
         desconto = cleaned_data['desconto']
         condicao_desconto = cleaned_data['condicao_desconto']
         dia_util = cleaned_data['dia_util']
-        juros = cleaned_data['juros']
+        juros = cleaned_data['juros'] or 0
         condicao_juros = cleaned_data['condicao_juros']
-        material_parcelas = cleaned_data['material_parcelas']
+        material_parcelas = cleaned_data['material_parcelas'] or 0
         data_um = cleaned_data['data_um_material']
         data_dois = cleaned_data['data_dois_material']
         data_tres = cleaned_data['data_tres_material']
@@ -107,8 +107,8 @@ class ParametrosContratoForm(forms.ModelForm):
             errors_list.append("Condição do desconto é requerida")
         if tem_desconto and not desconto:
             errors_list.append("Valor do desconto é requerido")
-        if condicao_desconto and not tem_desconto:
-            errors_list.append("Deve marcar que tem desconto")
+        # if condicao_desconto and not tem_desconto:
+        #     errors_list.append("Deve marcar que tem desconto")
         if condicao_desconto == 1 and dia_util: # até a data vencimento
             errors_list.append("Dia útil não é válido para 'Pagamento até a data do vencimento'")
         if dia_util and condicao_desconto != 2: # Pagamento até determinado dia útil
@@ -126,15 +126,20 @@ class ParametrosContratoForm(forms.ModelForm):
                 data_cinco,
                 data_seis]) and not material_parcelas:
             errors_list.append("Expecifique o números de parcelas correspondente às datas das parcelas das apostilas")
+        if any([data_um,
+                data_dois,
+                data_tres,
+                data_quatro,
+                data_cinco,
+                data_seis]):
+            for k in data_dict.keys():
+                if k <= int(material_parcelas) and data_dict[k] is False:
+                    errors_list.append("Número de datas abaixo do Nr das parcelas")
+                if k > int(material_parcelas) and data_dict[k] is True:
+                    errors_list.append("Número de datas acima do Nr das parcelas")
 
-        for k in data_dict.keys():
-            if k <= int(material_parcelas) and data_dict[k] is False:
-                errors_list.append("Número de datas abaixo do Nr das parcelas")
-            if k > int(material_parcelas) and data_dict[k] is True:
-                errors_list.append("Número de datas acima do Nr das parcelas")
-        # import pdb; pdb.set_trace()
-        if ano_list.count(ano) != int(material_parcelas):
-            errors_list.append("o Ano das datas, deve ser igual o ano do formulário")
+            if ano_list.count(ano) != int(material_parcelas):
+                errors_list.append("o Ano das datas, deve ser igual o ano do formulário")
 
         for error in errors_list:
             self._errors[error] = ErrorList([])
