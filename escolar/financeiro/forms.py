@@ -53,6 +53,15 @@ PARCELAS_MATERIAL = (
     (6, 6),
 )
 
+PARCELAS_MATRICULA = (
+    # (None, 'Zero'),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+)
 
 class ParametrosContratoForm(forms.ModelForm):
     material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)
@@ -157,12 +166,14 @@ class ContratoAlunoForm(forms.ModelForm):
     valor = forms.DecimalField(min_value=0)
     nr_parcela = forms.ChoiceField(label='Nr de Parcelas', choices=MESES, initial=12, required=True)
     data_assinatura = forms.DateField(label='Data da Matrícula', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    parcelas = forms.ChoiceField(label='Nr de Parcelas da Matrícula', choices=PARCELAS_MATRICULA, required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
         self.old_instance = deepcopy(self.instance)
+        self.instance.parcelas = None
         responsaveis_ids = self.aluno.responsavel_set.filter(responsavel_financeiro=True).values_list('membro_id', flat=True)
         self.fields['responsavel'].queryset = MembroFamilia.objects.filter(id__in=responsaveis_ids)
         self.fields['data_assinatura'].required = True
@@ -188,7 +199,11 @@ class ContratoAlunoForm(forms.ModelForm):
 
     class Meta:
         model = ContratoAluno
-        exclude = ('aluno', 'date_add', 'date_upd', 'user_add', 'user_upd') 
+        exclude = ('aluno',
+                   'date_add',
+                   'date_upd',
+                   'user_add',
+                   'user_upd') 
 
     def clean(self):
         cleaned_data = super(ContratoAlunoForm, self).clean()
@@ -227,11 +242,20 @@ class ContratoAlunoForm(forms.ModelForm):
         else:
             raise forms.ValidationError("Esse aluno já tem contrato para esse ano")
 
-    def clena_nr_parcela(self):
+    def clean_nr_parcela(self):
         parcelas = self.cleaned_data['nr_parcela']
-        if 1 <= parcela <= 12:
-            return parcela
+        if parcelas and 1 <= int(parcelas) <= 12:
+            return parcelas
         raise forms.ValidationError("O número de parcelas deve ser de 1 a 12 ")
+
+    def clean_parcelas(self):
+        '''
+        NR de PARCELAS da MATRÌCULA
+        '''
+        parcelas = self.cleaned_data['parcelas']
+        if parcelas:
+            self.instance.parcelas = parcelas
+            return self.instance.parcelas
 
     def save(self, *args, **kwargs):
         if not self.instance.pk:
@@ -250,7 +274,7 @@ class ContratoAlunoForm(forms.ModelForm):
         instance = super(ContratoAlunoForm, self).save(*args, **kwargs)
         instance.save()
         if instance.pagamento_set.filter(efet=True).count() == 0:
-            instance.set_parcelas()
+            instance.set_parcelas(instance.parcelas)
         return instance
 
 

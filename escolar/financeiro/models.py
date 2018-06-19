@@ -178,19 +178,23 @@ class ContratoAluno(Contrato):
     def __str__(self):
         return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
-    def set_matricula(self):
+    def set_matricula(self, nr_parcelas):
         if self.matricula_valor and self.matricula_valor > 0:
-            data = self.data_assinatura or date.today()
-            categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
-            Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
-                                               contrato=self,
-                                               escola=self.aluno.escola,
-                                               data=data,
-                                               observacao='',
-                                               nr_parcela=None,
-                                               categoria=categoria,
-                                               tipo=1,
-                                               defaults={'valor': self.matricula_valor})
+            valor = self.matricula_valor / nr_parcelas
+            datas = [self.data_assinatura or date.today()]
+            if nr_parcelas and nr_parcelas > 1:
+                datas = []
+            for data in datas:
+                categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
+                Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
+                                                   contrato=self,
+                                                   escola=self.aluno.escola,
+                                                   data=data,
+                                                   observacao='',
+                                                   nr_parcela=None,
+                                                   categoria=categoria,
+                                                   tipo=1,
+                                                   defaults={'valor': valor})
 
     def get_resp(self):
         return self.responsavel.responsavel_set.filter(aluno=self.aluno).first()
@@ -241,7 +245,7 @@ class ContratoAluno(Contrato):
         # print(datas)
 
 
-    def set_parcelas(self):
+    def set_parcelas(self, parcelas_matricula):
         '''
         ref #51
         chamado no ContratoAlunoForm().save()
@@ -251,7 +255,7 @@ class ContratoAluno(Contrato):
         '''
         if self.pagamento_set.filter(efet=True).count() == 0:
             self.pagamento_set.all().delete()
-            self.set_matricula()
+            self.set_matricula(parcelas_matricula)
             self.set_parcelas_material()
             valor_bolsa = 0
             if self.bolsa:
