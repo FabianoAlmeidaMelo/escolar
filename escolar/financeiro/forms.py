@@ -173,7 +173,8 @@ class ContratoAlunoForm(forms.ModelForm):
         self.aluno = kwargs.pop('aluno', None)
         super(ContratoAlunoForm, self).__init__(*args, **kwargs)
         self.old_instance = deepcopy(self.instance)
-        self.instance.parcelas = None
+        if self.instance.pk:
+            self.fields['parcelas'].initial = self.instance.pagamento_set.filter(categoria__id=2).count()
         responsaveis_ids = self.aluno.responsavel_set.filter(responsavel_financeiro=True).values_list('membro_id', flat=True)
         self.fields['responsavel'].queryset = MembroFamilia.objects.filter(id__in=responsaveis_ids)
         self.fields['data_assinatura'].required = True

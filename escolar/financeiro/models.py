@@ -178,12 +178,32 @@ class ContratoAluno(Contrato):
     def __str__(self):
         return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
+    def date_list(self, nr_parcelas):
+        datas = [self.data_assinatura or datetime.today()]
+        if nr_parcelas > 1:
+            dia = self.data_assinatura.day
+            mes = self.data_assinatura.month
+            year = ano = self.data_assinatura.year
+            meses = range(1, nr_parcelas)
+            mes_list = list(range(13, 18))
+            months = list(range(13, 20))  # máxino 6
+            for m in meses:
+                mes = self.data_assinatura.month + m
+                if mes in months:
+                    mes = months.index(mes) + 1
+                    year = ano + 1
+                data = date(year, mes, dia)
+                datas.append(data)
+        return datas
+
+
     def set_matricula(self, nr_parcelas):
+        nr_parcelas = int(nr_parcelas)
         if self.matricula_valor and self.matricula_valor > 0:
-            valor = self.matricula_valor / nr_parcelas
-            datas = [self.data_assinatura or date.today()]
-            if nr_parcelas and nr_parcelas > 1:
-                datas = []
+            valor = self.matricula_valor
+            if nr_parcelas > 1:
+                valor = self.matricula_valor / nr_parcelas
+            datas = self.date_list(nr_parcelas)
             for data in datas:
                 categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
                 Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
@@ -263,7 +283,7 @@ class ContratoAluno(Contrato):
             if valor_bolsa < self.valor:
                 valor = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
                 categoria = CategoriaPagamento.objects.get(id=1)  # serviços educacionais
-                mes_ini = 13 - self.nr_parcela
+                mes_ini = 13 - self.nr_parcela  # ex: 10 parcelas, vai começar em março
                 n = 1
                 for p in range(mes_ini, 12 + 1):
                     data =  date(self.ano, p, self.vencimento)
