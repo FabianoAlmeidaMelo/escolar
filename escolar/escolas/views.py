@@ -31,6 +31,7 @@ from escolar.escolas.forms import (
     ClasseAlunoForm,
     ClasseForm,
     ClasseProfessorForm,
+    EmailPessoaForm,
     EscolaForm,
     INITIAL_MONTH,
     MembroFamiliaForm,
@@ -286,7 +287,7 @@ def aniversariantes_list(request, escola_pk):
     
     form = PessoaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
-        pessoas = form.get_result_queryset()
+        pessoas = form.get_result_queryset().filter(escola=escola)
     else:
         pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH)
 
@@ -313,6 +314,41 @@ def aniversariantes_list(request, escola_pk):
 
     return render(request, 'escolas/aniversariantes_list.html', context)
 
+
+@login_required
+def parabens_form(request, pessoa_pk):
+    user = request.user
+    pessoa = get_object_or_404(Pessoa, pk=pessoa_pk)
+    escola = pessoa.escola
+
+    form = EmailPessoaForm(request.POST or None, instance=pessoa)
+
+    #  ## VERIFICA E MANADA EMAIL COM O RECIBO
+    if request.method == 'POST':
+        if form.is_valid():
+            titulo = form.cleaned_data['titulo']
+            mensagem = form.cleaned_data['mensagem']
+            form.save()
+            
+            enviado = pessoa.send_email_niver(titulo, mensagem, user)
+
+            if enviado:
+                msg = 'Email de aniversário enviado com sucesso!'
+                messages.success(request, msg)
+            return redirect(reverse('aniversariantes_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            msg = 'Falha no envio do email!'
+            messages.warning(request, msg)
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['pessoa'] = pessoa
+    context['tab_administracao'] = "active"
+    context['can_edit'] = can_edit = True
+
+    return render(request, 'escolas/parabens_form.html', context)
+
 @login_required
 def alunos_list(request, escola_pk):
     user = request.user
@@ -320,7 +356,7 @@ def alunos_list(request, escola_pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
-    # import pdb; pdb.set_trace()
+
     context = {}
     total_alunos = 0
     

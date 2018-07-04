@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 # from django.contrib.auth.models import User
@@ -180,6 +181,29 @@ class Pessoa(UserAdd, UserUpd):
         elif hasattr(self, 'membrofamilia'):
             return "Responsável"
         return ""
+
+    def get_artigo(self):
+        artigo = 'a' if self.sexo == 2 else 'o'
+        return artigo
+
+
+    def send_email_niver(self, titulo, msg, user):
+
+        emails = [self.email]
+        if emails:
+            mensagem = titulo
+            mensagem += '\n\n%s' % self.nome
+            mensagem += '\n\n%s' % msg
+            mensagem += '\n\n%s' % user.nome
+            
+            send_mail(
+                'Feliz Aniversário',
+                mensagem,
+                settings.DEFAULT_FROM_EMAIL,
+                emails,
+                fail_silently=False
+            )
+            return True
 
 
 class Aluno(Pessoa):

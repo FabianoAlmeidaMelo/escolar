@@ -5,8 +5,8 @@ from escolar.escolas.views import (
     aluno_cadastro,
     aluno_ficha_matricula,
     aluno_form,
-    alunos_list,
     aluno_historico,
+    alunos_list,
     aniversariantes_list,
     autorizado_cadastro,
     autorizado_form,
@@ -22,6 +22,7 @@ from escolar.escolas.views import (
     membro_familia_cadastro,
     membro_familia_form,
     membros_familia_list,
+    parabens_form,
     professor_form,
     professores_list,
     )
@@ -64,4 +65,5 @@ urlpatterns = [
     url(r'^escola/autorizados_aluno_list/(?P<aluno_pk>\d+)/$', autorizados_aluno_list, name='autorizados_aluno_list'),
     # aniversariantes, Pessoas
     url(r'^escola/(?P<escola_pk>\d+)/aniversariantes_list/$', aniversariantes_list, name='aniversariantes_list'),
+    url(r'^escola/(?P<pessoa_pk>\d+)/parabens_form/$', parabens_form, name='parabens_form'),
 ]

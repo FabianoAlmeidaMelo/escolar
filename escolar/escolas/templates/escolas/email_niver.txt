@@ -1,0 +1,20 @@
+Recibo
+  
+Prezad{{ pessoa.get_artigo }} {{ contrato.responsavel|default:"---" }}
+
+Segue recibo de pagamento:
+
+{{ escola }} CNPJ: {{ escola.cnpj }}
+Rua {{ escola.endereco|default:"--" }}, nr {{ escola.numero|default:"--" }}, {{ escola.bairro|default:"--" }}
+tel. {{ escola.telefone|default:"--" }}
+email {{ escola.email|default:"--" }}
+
+   
+Recebemos de {{ contrato.responsavel|default:"---" }}
+CPF: {{ contrato.responsavel.cpf }},
+a quantida de: <b>R$ {{ pagamento.valor }}</b> ( {{ pagamento.get_valor_extenso }} ),
+em {{ pagamento.data|date:"d/m/Y" }},
+referente o pagamento da {{ pagamento.titulo|default:"---" }}
+do contrato de serviços educacionais, ano {{ contrato.ano|default:"---" }}
+do(a) aluno(a) <b>{{ contrato.aluno }}
+{{ escola.municipio }}, {{ data|date:"d/m/Y" }}

@@ -168,6 +168,22 @@ class EmailRespensavelForm(forms.ModelForm):
         fields = ['email',]
 
 
+class EmailPessoaForm(forms.ModelForm):
+    email = forms.EmailField(label='Email', required=True)
+    titulo = forms.CharField(label='Título', required=True)
+    mensagem = forms.CharField(label='Mensagem', required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(EmailPessoaForm, self).__init__(*args, **kwargs)
+
+        self.fields['email'].label = 'Email do(a) aniversariante: %s ' % self.instance.nome
+        
+
+    class Meta:
+        model = Pessoa
+        fields = ['email',]
+
+
 class MembroFamiliaForm(forms.ModelForm):
     cpf = BRCPFField(required=True, always_return_formated=True, return_format=u'%s%s%s%s',help_text='Somente números')
     sexo = forms.ChoiceField(label= 'Sexo',choices=SEXO_CHOICES)

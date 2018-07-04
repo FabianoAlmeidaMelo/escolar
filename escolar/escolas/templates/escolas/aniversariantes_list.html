@@ -50,12 +50,8 @@
         <tbody>
         {% for aluno in object_list %}
           <tr>
-              <td>{{ aluno.nome }}</a></td>
-            {% if can_edit or user.id == aluno.user.id %}
-              <td> <a href="">{{ aluno.email|default:"--" }}</a></td>
-            {% else %}
-              <td>{{ aluno.email|default:"--" }}</td>
-            {% endif %}
+            <td><a href="{% url 'parabens_form' aluno.id %}">{{ aluno.nome }}</a></td>
+            <td>{{ aluno.email|default:"--" }}</td>
             <td>{{ aluno.celular|default:"--" }} <br>{{ aluno.telefone|default:"--" }}</td>
             <td>{{ aluno.get_modelo_filho }}</td>
             <td>{{ aluno.nascimento|date:"d/m/Y"|default:'--' }}</td>
