@@ -195,6 +195,7 @@ class Pessoa(UserAdd, UserUpd):
             mensagem += '\n\n%s' % self.nome
             mensagem += '\n\n%s' % msg
             mensagem += '\n\n%s' % user.nome
+            mensagem += '\n%s' % self.escola
             
             send_mail(
                 'Feliz Aniversário',
