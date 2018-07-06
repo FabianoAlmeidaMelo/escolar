@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
     ANO,
+    FORMA_PGTO,
     CategoriaPagamento,
     ContratoAluno,
     Pagamento,
@@ -424,6 +425,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
     serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
+    forma_pgto = forms.MultipleChoiceField(choices=FORMA_PGTO[1:], widget=forms.CheckboxSelectMultiple, required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -489,6 +491,10 @@ class PagamentoEscolaSearchForm(forms.Form):
             categoria = self.cleaned_data['categoria']
             if categoria:
                 q = q & Q(categoria=categoria)
+
+            forma_pgto = self.cleaned_data['forma_pgto']
+            if forma_pgto:
+                q = q & Q(forma_pgto__in=forma_pgto)
 
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
