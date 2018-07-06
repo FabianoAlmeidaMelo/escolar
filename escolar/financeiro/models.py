@@ -28,6 +28,16 @@ ANO = (
     (ano_seguinte, ano_seguinte),
 )
 
+FORMA_PGTO = (
+    (None, '--'),
+    (1, 'boleto bancário'),
+    (2, 'cartão de crédito'),
+    (3, 'cartão de débito'),
+    (4, 'cheque'),
+    (5, 'dinheiro'),
+    (6, 'permuta'),
+    (7, 'transferência bancária'),
+    )
 
 def escola_contrato_path(instance, logo):
     '''
@@ -350,6 +360,7 @@ class Pagamento(models.Model):
     )
     nr_documento = models.CharField(verbose_name=u'Nr Documento', max_length=20, null=True, blank=True)
     categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
+    forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
 
 

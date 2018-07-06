@@ -52,10 +52,11 @@
              {% bootstrap_field form.titulo %}
              {% bootstrap_field form.nr_documento %}
              {% if form.instance.categoria.id == 1 or form.instance.categoria.id == 2 or form.instance.categoria.id == 9 %}
-             <b>Categoira</b><br>
+             <b>Categoria</b><br>
                 {{ form.instance.categoria }}
              {% endif %} 
              {% bootstrap_field form.categoria %}
+             {% bootstrap_field form.forma_pgto %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.data %}

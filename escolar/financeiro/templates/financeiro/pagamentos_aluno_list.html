@@ -51,7 +51,7 @@
         <th>Data</th>
         <th>Valor</th>
         <th>Responsavel/<br>Aluno</th>
-        <!-- <th>Status</th> -->
+        <th>Forma de <br>Pagamento</th>
         <th>Pagar</th>
       </tr>
     </thead>
@@ -100,6 +100,7 @@
           {% endif %}
         </td>
         <td>{{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>{{ pagamento.contrato.contratoaluno.aluno.nome }}</td>
+        <td>{{ pagamento.get_forma_pgto_display }}</td>
         <!-- <td>
           {% if pagamento.efet %}
               Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>

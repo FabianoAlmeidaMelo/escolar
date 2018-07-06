@@ -64,6 +64,8 @@
         <th>Data</th>
         <th>Valor</th>
         <th>Categoria</th>
+        <th>Responsavel/<br>Aluno</th>
+        <th>Forma de <br>Pagamento</th>
         <th>Pagar</th>
       </tr>
     </thead>
@@ -111,14 +113,18 @@
               <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
             {% endif %}
           </td>
+          <td>{{ pagamento.categoria }}</td>
           <td>
-            {% if pagamento.contrato %}
-              {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
-              {{ pagamento.contrato.contratoaluno.aluno.nome }}
-            {% else %}
-              {{ pagamento.categoria }}
-            {% endif %}
+            <small>
+              {% if pagamento.contrato %}
+                {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
+                {{ pagamento.contrato.contratoaluno.aluno.nome }}
+              {% else %}
+                {{ pagamento.categoria }}
+              {% endif %}
+            </small>
           </td>
+          <td>{{ pagamento.get_forma_pgto_display }}</td>
          <!--<td>
               {% if pagamento.efet %}
                   Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
