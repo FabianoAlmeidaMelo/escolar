@@ -170,16 +170,18 @@ class EmailRespensavelForm(forms.ModelForm):
 
 class EmailPessoaForm(forms.ModelForm):
     email = forms.EmailField(label='Email', required=True)
-    titulo = forms.CharField(label='Título', initial='Parabéns pelo seu aniversário', required=True)
-    mensagem = forms.CharField(label='Mensagem', required=True)
+    titulo = forms.CharField(label='Título da mensagem', initial='Parabéns pelo seu aniversário', required=True)
+    mensagem = forms.CharField(widget=forms.Textarea, required=True)
+    assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
 
     def __init__(self, *args, **kwargs):
         super(EmailPessoaForm, self).__init__(*args, **kwargs)
 
-        self.fields['email'].label = 'Email do(a) aniversariante: %s, nascido em %s ' % (self.instance.nome, self.instance.nascimento)
+        self.fields['email'].label = 'Email do(a) aniversariante:'
         msg_initial ='Em meu nome e em nome da equipe de nossa escola, desejo muita saúde e muitas alegrias em uma longa vida.'        
-
+        ass_initial = 'Equipe %s' % self.instance.escola
         self.fields['mensagem'].initial = msg_initial
+        self.fields['assinatura'].initial = ass_initial
 
     class Meta:
         model = Pessoa

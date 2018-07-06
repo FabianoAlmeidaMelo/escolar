@@ -328,9 +328,10 @@ def parabens_form(request, pessoa_pk):
         if form.is_valid():
             titulo = form.cleaned_data['titulo']
             mensagem = form.cleaned_data['mensagem']
+            assinatura = form.cleaned_data['assinatura']
             form.save()
             
-            enviado = pessoa.send_email_niver(titulo, mensagem, user)
+            enviado = pessoa.send_email_niver(titulo, mensagem, assinatura)
 
             if enviado:
                 msg = 'Email de aniversário enviado com sucesso!'
