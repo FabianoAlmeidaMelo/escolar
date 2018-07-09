@@ -17,6 +17,7 @@ from escolar.financeiro.views import (
     print_recibo,
     set_pagamento_status,
     set_contrato_assinado,
+    pagamentos_gera_xls,
 )
 
 urlpatterns = [
@@ -46,4 +47,6 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/categorias_pagamento/$', categorias_list, name="categorias_list"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_form/$', categoria_form, name="categoria_form"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_edit/(?P<categoria_pk>\d+)/$', categoria_form, name="categoria_edit"),
+
+    url(r'^escola/gera_xls$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
 ]

@@ -1,6 +1,8 @@
 # coding: utf-8
+import xlwt
 from calendar import monthrange
 from datetime import date, datetime
+from decimal import Decimal
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,7 +13,6 @@ from django.db.models import BooleanField, Case, Value, When, Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
-
 from escolar.financeiro.models import (
     CategoriaPagamento,
     ContratoAluno,
@@ -339,7 +340,7 @@ def print_recibo(request, pagamento_pk):
     resp_financeiro = pagamento.contrato.contratoaluno.responsavel
     form = EmailRespensavelForm(request.POST or None, instance=resp_financeiro)
 
-    #  ## VERIFICA E MANADA EMAIL COM O RECIBO
+    #  ## VERIFICA E MANDA EMAIL COM O RECIBO
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -585,6 +586,16 @@ def pagamentos_list(request, escola_pk):
     entradas=int(total_pos)
     saidas=int(total_neg)
 
+    # if request.method == 'POST':
+    #     print('\nPOST\n')
+    #     print(pagamentos.count(), 'post')
+    #     pagamentos_gera_xls(pagamentos)
+    # if request.method == 'GET':
+    #     print(pagamentos.count(), 'get')
+    #     if 'gerar_planilha_xls' in request.GET:
+    #         pagamentos_gera_xls(request, pagamentos)
+    #         print('\nGET gerar_planilha_xls\n')
+
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
@@ -690,3 +701,54 @@ def set_contrato_assinado(request, contrato_pk):
             historico.save()
 
     return HttpResponse('Ok')
+
+
+def pagamentos_gera_xls(request, pagamentos):
+    '''
+    ref #91
+    my_file = open('newimage.jpg','rb').read()
+    return HttpResponse(my_file, content_type = "image/png")
+    '''
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=relatorio-pagamentos.xls'
+
+    book = xlwt.Workbook(encoding='utf8')
+    sheet = book.add_sheet('untitled')
+    # import pdb; pdb.set_trace()
+    default_style = xlwt.Style.default_style
+    title_style = xlwt.easyxf('font: bold 1')
+    monetary_style = xlwt.easyxf(num_format_str='$#,##0.00')
+
+    # campos
+    values_list = [["Data",  # ID
+                    "Valor",
+                    "Categoria",
+                    "Resposável",
+                    "CPF resp.",
+                    "Forma de pagamento"]]
+
+    for pagamento in pagamentos:
+        categoria = pagamento.categoria.nome if pagamento.categoria else ''
+        responsavel = pagamento.contrato.contratoaluno.responsavel.nome if pagamento.contrato.contratoaluno else ''
+        cpf_resp = pagamento.contrato.contratoaluno.responsavel.cpf if pagamento.contrato.contratoaluno else ''
+        values_list.append([pagamento.data,
+                            pagamento.valor,
+                            categoria,
+                            responsavel,
+                            cpf_resp,
+                            pagamento.get_forma_pgto_display(),
+                            ])
+    for row, rowdata in enumerate(values_list):
+        for col, val in enumerate(rowdata):
+            if isinstance(val, Decimal):
+                style = monetary_style
+            else:
+                style = default_style
+            if row == 0:
+                style = title_style
+
+            sheet.write(row, col, val, style=style)
+
+    book.save(response)
+    return response
+
