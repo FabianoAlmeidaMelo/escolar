@@ -698,22 +698,19 @@ def set_contrato_assinado(request, contrato_pk):
 def pagamentos_gera_xls(request):
     '''
     ref #91
-    my_file = open('newimage.jpg','rb').read()
-    return HttpResponse(my_file, content_type = "image/png")
     '''
     pagamentos_ids = request.GET['pagamentos_ids']
     pagamentos_ids = pagamentos_ids.replace('[', '')
     pagamentos_ids = pagamentos_ids.replace(']', '')
     pagamentos_ids = pagamentos_ids.replace(',', '')
     pagamentos_ids =[int(i) for i in pagamentos_ids.split()]
-    pagamentos = Pagamento.objects.filter(id__in=pagamentos_ids)
+    pagamentos = Pagamento.objects.filter(id__in=pagamentos_ids).order_by('data')
 
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename=relatorio-pagamentos.xls'
 
     book = xlwt.Workbook(encoding='utf8')
     sheet = book.add_sheet('untitled')
-    # import pdb; pdb.set_trace()
     default_style = xlwt.Style.default_style
     title_style = xlwt.easyxf('font: bold 1')
     monetary_style = xlwt.easyxf(num_format_str='$#,##0.00')
