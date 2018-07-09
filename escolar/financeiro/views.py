@@ -719,21 +719,22 @@ def pagamentos_gera_xls(request):
     monetary_style = xlwt.easyxf(num_format_str='$#,##0.00')
 
     # campos
-    values_list = [["Data",  # ID
-                    "Valor",
+    values_list = [["Data",
                     "Tipo",
+                    "Valor",
                     "Categoria",
                     "Resposável",
                     "CPF resp.",
                     "Forma de pagamento"]]
 
     for pagamento in pagamentos:
+        data = str(pagamento.data)
         categoria = pagamento.categoria.nome if pagamento.categoria else ''
         responsavel = pagamento.contrato.contratoaluno.responsavel.nome if pagamento.contrato and pagamento.contrato.contratoaluno else ''
         cpf_resp = pagamento.contrato.contratoaluno.responsavel.cpf if pagamento.contrato and pagamento.contrato.contratoaluno else ''
-        values_list.append([pagamento.data,
-                            pagamento.valor,
+        values_list.append([data,
                             pagamento.get_tipo_display(),
+                            pagamento.valor,
                             categoria,
                             responsavel,
                             cpf_resp,
