@@ -578,6 +578,7 @@ def pagamentos_list(request, escola_pk):
                                          then=Value(True)), output_field=BooleanField()))
 
     pagamentos = pagamentos.all().filter(invalido=None)
+    pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 
 
     total_pos = sum(pagamentos.filter(tipo=1).values_list('valor', flat=True))
@@ -585,16 +586,6 @@ def pagamentos_list(request, escola_pk):
     total = total_pos - total_neg
     entradas=int(total_pos)
     saidas=int(total_neg)
-
-    # if request.method == 'POST':
-    #     print('\nPOST\n')
-    #     print(pagamentos.count(), 'post')
-    #     pagamentos_gera_xls(pagamentos)
-    # if request.method == 'GET':
-    #     print(pagamentos.count(), 'get')
-    #     if 'gerar_planilha_xls' in request.GET:
-    #         pagamentos_gera_xls(request, pagamentos)
-    #         print('\nGET gerar_planilha_xls\n')
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -616,6 +607,7 @@ def pagamentos_list(request, escola_pk):
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
+    context['pagamentos_ids'] = pagamentos_ids
     context['tab_administracao'] = "active"
     context['tab_parcelas'] = "active"
 
@@ -703,12 +695,19 @@ def set_contrato_assinado(request, contrato_pk):
     return HttpResponse('Ok')
 
 
-def pagamentos_gera_xls(request, pagamentos):
+def pagamentos_gera_xls(request):
     '''
     ref #91
     my_file = open('newimage.jpg','rb').read()
     return HttpResponse(my_file, content_type = "image/png")
     '''
+    pagamentos_ids = request.GET['pagamentos_ids']
+    pagamentos_ids = pagamentos_ids.replace('[', '')
+    pagamentos_ids = pagamentos_ids.replace(']', '')
+    pagamentos_ids = pagamentos_ids.replace(',', '')
+    pagamentos_ids =[int(i) for i in pagamentos_ids.split()]
+    pagamentos = Pagamento.objects.filter(id__in=pagamentos_ids)
+
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename=relatorio-pagamentos.xls'
 
@@ -722,6 +721,7 @@ def pagamentos_gera_xls(request, pagamentos):
     # campos
     values_list = [["Data",  # ID
                     "Valor",
+                    "Tipo",
                     "Categoria",
                     "Resposável",
                     "CPF resp.",
@@ -729,10 +729,11 @@ def pagamentos_gera_xls(request, pagamentos):
 
     for pagamento in pagamentos:
         categoria = pagamento.categoria.nome if pagamento.categoria else ''
-        responsavel = pagamento.contrato.contratoaluno.responsavel.nome if pagamento.contrato.contratoaluno else ''
-        cpf_resp = pagamento.contrato.contratoaluno.responsavel.cpf if pagamento.contrato.contratoaluno else ''
+        responsavel = pagamento.contrato.contratoaluno.responsavel.nome if pagamento.contrato and pagamento.contrato.contratoaluno else ''
+        cpf_resp = pagamento.contrato.contratoaluno.responsavel.cpf if pagamento.contrato and pagamento.contrato.contratoaluno else ''
         values_list.append([pagamento.data,
                             pagamento.valor,
+                            pagamento.get_tipo_display(),
                             categoria,
                             responsavel,
                             cpf_resp,

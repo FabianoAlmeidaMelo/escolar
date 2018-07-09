@@ -48,5 +48,5 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/categoria_form/$', categoria_form, name="categoria_form"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_edit/(?P<categoria_pk>\d+)/$', categoria_form, name="categoria_edit"),
 
-    url(r'^escola/gera_xls$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
+    url(r'^escola/gera_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
 ]
