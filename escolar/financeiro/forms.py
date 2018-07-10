@@ -168,6 +168,7 @@ class ContratoAlunoForm(forms.ModelForm):
     nr_parcela = forms.ChoiceField(label='Nr de Parcelas', choices=MESES, initial=12, required=True)
     data_assinatura = forms.DateField(label='Data da Matrícula', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     parcelas = forms.ChoiceField(label='Nr de Parcelas da Matrícula', choices=PARCELAS_MATRICULA, required=False)
+    observacao = forms.CharField(label='Motivo da rescisão', required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
