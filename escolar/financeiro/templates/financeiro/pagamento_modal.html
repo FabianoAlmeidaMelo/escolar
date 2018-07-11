@@ -1,0 +1,40 @@
+{% load numberformat_br %}
+<div class="modal fade" id="pagamento_{{ pagamento.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"
+            id="myModalLabel">{{ pagamento.contrato.contratoaluno.aluno.nome }} -
+                              {{ pagamento.contrato.contratoaluno.serie.serie }} -
+                              {{ pagamento.contrato.contratoaluno.ano }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
+        data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
+        no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
+        <label>Forma de Pagamento</label>
+        <select id="select_id_{{ pagamento.id }}">
+          <option value="">--</option>
+          <option value="1">Boleto bancário</option>
+          <option value="2">Cartão de crédito</option>
+          <option value="3">Cartão de débto</option>
+          <option value="4">Cheque</option>
+          <option value="5">Dinheiro</option>
+          <option value="6">Permuta</option>
+          <option value="7">Transferência bancária</option>
+        </select>
+        {% if pagamento.atrasado %}
+          <br>
+          <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small><br>
+          <small>Juros: R$ {{ pagamento.get_juros|numberformat_br }} </small>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" button_id="{{ pagamento.id }}" onclick="set_pago(this)">Marcar pago</button>
+      </div>
+    </div>
+  </div>
+</div>
