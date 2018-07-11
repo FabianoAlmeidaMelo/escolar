@@ -177,9 +177,20 @@
                       </h4>
                     </div>
                     <div class="modal-body">
-                      Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
+                      Pagamento referentesss: <b>{{ pagamento.titulo }}</b><br>
                       data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
                       no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
+                      <label>Forma de Pagamento</label>
+                      <select id="select_id_{{ pagamento.id }}">
+                        <option value="">--</option>
+                        <option value="1">Boleto bancário</option>
+                        <option value="2">Cartão de crédito</option>
+                        <option value="3">Cartão de débto</option>
+                        <option value="4">Cheque</option>
+                        <option value="5">Dinheiro</option>
+                        <option value="6">Permuta</option>
+                        <option value="7">Transferência bancária</option>
+                      </select>
                       {% if pagamento.atrasado %}
                         <br>
                         <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small><br>
@@ -236,9 +247,10 @@
      <script type="text/javascript">
       function set_pago(field){
         var pagamento_id = $(field).attr('button_id')
+        var meio_pgto = $("#select_id_"+pagamento_id).val();
         // Zero: 0, é um id válido
         // não quebra a url ao carregar a página
-        $.get("{% url 'set_pagamento_status' 0 %}".replace('0', pagamento_id), function(){
+        $.get("{% url 'set_pagamento_status' 0 %}?meio_pgto=meio_pgto_id".replace('0', pagamento_id).replace('meio_pgto_id', meio_pgto), function(){
           location.reload();
           });
       }

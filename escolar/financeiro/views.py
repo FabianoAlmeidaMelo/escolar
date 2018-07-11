@@ -621,6 +621,7 @@ def set_pagamento_status(request, pagamento_pk):
     altera pagamento.efet
         para: True ou False
     '''
+    meio_pgto = request.GET['meio_pgto']
     user = request.user
     data_hora = datetime.today()
     pagamento = get_object_or_404(Pagamento, id=pagamento_pk)
@@ -647,6 +648,8 @@ def set_pagamento_status(request, pagamento_pk):
             observacao += '\n juros por atraso: R$ %s ' % juros
         pagamento.observacao = observacao
         pagamento.efet = True
+        if meio_pgto:
+            pagamento.forma_pgto = int(meio_pgto)
         pagamento.save()
         # GUARDA no HISTORICO:
         if pagamento.contrato:
