@@ -15,7 +15,6 @@
 {% endblock css %}
 {% block page_title %}
   <div class="page-header">
-  <!-- TODO erver esse br -->
   <br>
     {% if escola %}
       Pagamentos / Escola: {{ escola.nome }}
@@ -31,7 +30,6 @@
   <div class="row-fluid span10">
     <form class="form-inline well" method="GET" >
      {{ form.errors }}
-      <!-- <p>{{ form.errors }}</p> -->
       <div class="form-group">
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.mes %} a

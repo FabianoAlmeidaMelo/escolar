@@ -30,6 +30,14 @@ from escolar.escolas.models import (
 
 from escolar.core.models import User, UserGrupos
 
+ 
+ANO = (
+    (None, '--'),
+    ('2016', '2016'),
+    ('2017', '2017'),
+    ('2018', '2018'),
+)
+
 hoje = date.today()
 ano_corrente = hoje.year
 
@@ -38,6 +46,25 @@ SEXO_CHOICES = (
     (1, 'Masculino'),
     (2, 'Feminino'),
 )
+
+
+CHOICE_MONTH = (
+    (None, '--'),
+    (1, 'Jan'),
+    (2, 'Fev'),
+    (3, 'Mar'),
+    (4, 'Abr'),
+    (5, 'Mai'),
+    (6, 'Jun'),
+    (7, 'Jul'),
+    (8, 'Ago'),
+    (9, 'Set'),
+    (10, 'Out'),
+    (11, 'Nov'),
+    (12, 'Dez'),
+)
+
+INITIAL_MONTH = date.today().month
 
 def set_only_number(txt):
     txt = str(txt)
@@ -260,23 +287,6 @@ class ResponsavelForm(forms.ModelForm):
         instance.save()
         return instance
 
-CHOICE_MONTH = (
-    (None, '--'),
-    (1, 'Jan'),
-    (2, 'Fev'),
-    (3, 'Mar'),
-    (4, 'Abr'),
-    (5, 'Mai'),
-    (6, 'Jun'),
-    (7, 'Jul'),
-    (8, 'Ago'),
-    (9, 'Set'),
-    (10, 'Out'),
-    (11, 'Nov'),
-    (12, 'Dez'),
-)
-
-INITIAL_MONTH = date.today().month
 
 class PessoaSearchForm(forms.Form):
     '''
