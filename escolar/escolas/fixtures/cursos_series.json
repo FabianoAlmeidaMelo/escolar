@@ -52,7 +52,7 @@
     "pk": 2,
     "fields": {
         "curso": 2,
-        "serie": "N1"
+        "serie": "Infantil 1"
     }
 },
 {
@@ -60,7 +60,7 @@
     "pk": 3,
     "fields": {
         "curso": 2,
-        "serie": "N2"
+        "serie": "Infantil 2"
     }
 },
 {
@@ -68,7 +68,7 @@
     "pk": 4,
     "fields": {
         "curso": 2,
-        "serie": "N3"
+        "serie": "Infantil 3"
     }
 },
 {

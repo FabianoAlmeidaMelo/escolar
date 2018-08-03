@@ -1,5 +1,6 @@
 # coding: utf-8
 from copy import deepcopy
+from decimal import Decimal
 from localbr.formfields import BRDateField, BRDecimalField
 from django import forms
 from django.apps import apps
@@ -425,9 +426,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     '''
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
-    responsavel = forms.CharField(label=u'Responsável', required=False)
     titulo = forms.CharField(label=u'Título', required=False)
-    aluno = forms.CharField(label=u'Aluno', required=False)
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
     mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
@@ -463,14 +462,8 @@ class PagamentoEscolaSearchForm(forms.Form):
         return cleaned_data
 
     def get_result_queryset(self, mes=None):
-        q = Q(escola=self.escola, )
+        q = Q(escola=self.escola)
         if self.is_valid():
-            # responsavel = self.cleaned_data['responsavel']
-            # if responsavel:
-            #     q = q & Q(contrato__responsavel__nome__icontains=responsavel)
-            # aluno = self.cleaned_data['aluno']
-            # if aluno:
-            #     q = q & Q(contrato__aluno__nome__icontains=aluno)
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(data__year=ano)
@@ -514,6 +507,7 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(tipo=1)
             if tipo and tipo == '2':
                 q = q & Q(tipo=2)
+            return Pagamento.objects.filter(q).exclude(valor=Decimal('0'))
         return Pagamento.objects.filter(q)
 
 

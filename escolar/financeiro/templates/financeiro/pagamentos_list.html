@@ -17,7 +17,7 @@
   <div class="page-header">
   <br>
     {% if escola %}
-      Pagamentos / Escola: {{ escola.nome }}
+      Pagamentos / Escola: {{ escola.nome }} <small>Lançamentos: {{ lancamentos }}</small>
     {% else %}
       Pagamentos
     {% endif %}
@@ -34,13 +34,13 @@
         {% bootstrap_field form.ano %}
         {% bootstrap_field form.mes %} a
         {% bootstrap_field form.mes_fim %}
-        {% bootstrap_field form.categoria %}
+        {% bootstrap_field form.serie %}
+        {% bootstrap_field form.efet %}
       </div>
       <p></p>
       <div class="form-group">
-        {% bootstrap_field form.serie %}
+        {% bootstrap_field form.categoria %}
         {% bootstrap_field form.titulo %}
-        {% bootstrap_field form.efet %}
         {% bootstrap_field form.tipo  %}
       </div>
       <p></p>
@@ -129,7 +129,8 @@
             <small>
               {% if pagamento.contrato %}
                 {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
-                {{ pagamento.contrato.contratoaluno.aluno.nome }}
+                {{ pagamento.contrato.contratoaluno.aluno.nome }}/ <br>
+                <small>{{ pagamento.contrato.contratoaluno.serie }}</small>
               {% else %}
                 {{ pagamento.categoria }}
               {% endif %}

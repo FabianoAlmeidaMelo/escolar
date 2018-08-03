@@ -100,6 +100,7 @@ def contratos_list(request, escola_pk):
         contratos = form.get_result_queryset()
     else:
         contratos = form.get_result_queryset().filter(ano=ano_corrente)
+    total = contratos.count()
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -115,6 +116,7 @@ def contratos_list(request, escola_pk):
     context['parameters']= parameters
     # ### paginação ####
 
+    context['total'] = total
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
@@ -145,14 +147,14 @@ def contratos_aluno_list(request, aluno_pk):
     page = request.GET.get('page', 1)
 
     contratos = ContratoAluno.objects.filter(aluno=aluno).order_by('-ano')
-    
+    total = contratos.count()
+
     context = {}
- 
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = contratos
     context['aluno'] = aluno
-
+    context['total'] = total
     context['tab_alunos'] = "active"
     context['tab_aluno_contratos'] = "active"
 
@@ -578,6 +580,7 @@ def pagamentos_list(request, escola_pk):
                                          then=Value(True)), output_field=BooleanField()))
 
     pagamentos = pagamentos.all().filter(invalido=None)
+    lancamentos = pagamentos.count()
     pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 
 
@@ -599,7 +602,7 @@ def pagamentos_list(request, escola_pk):
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
-
+    context['lancamentos'] = lancamentos
     context['total'] = total
     context['entradas'] = entradas
     context['saidas'] = saidas

@@ -119,7 +119,7 @@ class Serie(models.Model):
     serie = models.CharField(max_length=30)
 
     def __str__(self):
-        return "%s - %s" % (self.serie, self.curso.nome)
+        return "%s" % self.serie
     
     class Meta:
         verbose_name = 'série'
