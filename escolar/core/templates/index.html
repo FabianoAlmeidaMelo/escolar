@@ -5,9 +5,29 @@
     <div class="container">
       {% block page_title %}
       <br>
-
       {% endblock page_title %}
-    </div>
+      {% if diretor %}
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+              <div class="panel panel-default" style="height:300px;width:480px;">
+                <div class="panel-heading">Recebimentos mês {{ mes_corrente }} / {{ ano_corrente }} : meio usado para receber</div>
+                  <div class="panel-body">
+                    <div id="chart_div_1"></div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-5">
+              <div class="panel panel-default" style="height:300px;width:480px;">
+                <div class="panel-heading">Pagamentos mês {{ mes_corrente }} / {{ ano_corrente }} : meio usado para pagar</div>
+                <div class="panel-body">
+                  <div id="chart_div_2"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     {% else %}
     <div class="container">
       <h2 align=”right”>A Escola 4.0 começa na gestão da instituição </h2>
@@ -94,3 +114,85 @@
     </div> 
     {% endif %}
 {% endblock content %}
+{% block extra_js %}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+        google.charts.setOnLoadCallback(drawBasic);
+
+          function drawBasic() {
+
+            var data = google.visualization.arrayToDataTable([
+              ['Meios de pgamento', 'R$',],
+              ['Boleto bancário', {{ boleto_bancario }}],
+              ['Cartão de crédito', {{ cartao_credito }} ],
+              ['Cartão de débito', {{ cartao_debto }}],
+              ['Cheque', {{ cheque }}],
+              ['Dinheiro', {{ dinheiro }}],
+              ['Permuta', {{ permuta }}],
+              ['Transferência bancária', {{ transf_bancaria }}],
+              ['Indefinidos', {{ indefinidos }}],
+              ['Entradas', {{ entradas }}]
+            ]);
+
+            var options = {
+              title: 'Entradas',
+              chartArea: {width: '40%'},
+              hAxis: {
+                title: 'Movimentação',
+                minValue: 0.0
+              },
+              vAxis: {
+                title: 'Recebimentos'
+              }
+
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div_1'));
+
+            chart.draw(data, options);
+          }  
+      </script>
+
+      <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+        google.charts.setOnLoadCallback(drawBasic);
+
+          function drawBasic() {
+
+            var data = google.visualization.arrayToDataTable([
+              ['Meios de pgamento', 'R$',],
+              ['Boleto bancário', {{ saidas_boleto_bancario }}],
+              ['Cartão de crédito', {{ saidas_cartao_credito }}],
+              ['Cartão de débito', {{ saidas_cartao_debto }}],
+              ['Cheque', {{ saidas_cheque }}],
+              ['Dinheiro', {{ saidas_dinheiro }}],
+              ['Permuta', {{ saidas_permuta }}],
+              ['Transferência bancária', {{ saidas_transf_bancaria }}],
+              ['Indefinidos', {{ saidas_indefinidos }}],
+              ['Saídas', {{ saidas }}],
+            ]);
+
+            var options = {
+              title: 'Saídas',
+              chartArea: {width: '40%'},
+              hAxis: {
+                title: 'Movimentação',
+                minValue: 0.0
+              },
+              vAxis: {
+                title: 'Pagamentos'
+              },
+              colors: ['#e0440e']
+
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div_2'));
+
+            chart.draw(data, options);
+          }  
+      </script>
+
+{% endblock extra_js%}
+ 

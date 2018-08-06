@@ -14,7 +14,7 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        Aniversariantes/ Escola: {{ escola.nome }} <small>Alunos e Responsáveis</small>
+        Aniversariantes/ Escola: {{ escola.nome }} <small>Alunos e Responsáveis: {{ total }}</small> 
     {% else %}
        Alunos
     {% endif %}
@@ -42,7 +42,7 @@
           <tr>
               <th>Nome</th>
               <th>email</th>
-              <th>celular <br>telene</th>
+              <th>celular <br>telefone</th>
               <th>Perfil</th>
               <th>Nascimento</th>
           </tr>

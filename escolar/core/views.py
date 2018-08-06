@@ -1,4 +1,7 @@
 # coding: utf-8
+from datetime import date
+from calendar import monthrange
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -6,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
+from django.db.models import BooleanField, Case, Value, When, Q, Sum
 
 from escolar.core.models import Perfil, Endereco, User, UserGrupos
 from escolar.core.forms import (
@@ -18,16 +22,93 @@ from escolar.core.forms import (
 )
 
 from escolar.escolas.models import Escola
+from escolar.financeiro.models import Pagamento
+from escolar.financeiro.forms import (
+    ANO_CORRENTE,
+    MES_CORRNETE,
+    )
 
 def home(request):
     escola_pk = None
     user = request.user
     context = {}
+    escola = None
+    context['diretor'] = False
     if user.is_authenticated():
         escola_pk = user.get_unica_escola()
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
         context['escola'] = escola
+        context['diretor'] = user.is_admin() or user.is_diretor(escola_pk)
+
+    data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
+    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
+    pagamentos = Pagamento.objects.filter(escola=escola,
+                                          data__gte=data_ini,
+                                          data__lte=data_fim)
+
+
+    # SE Contrato Rescindido
+    pagamentos = pagamentos.all().annotate(
+                                invalido=Case(
+                                    When(contrato__isnull=False,
+                                         contrato__rescindido=True,
+                                         efet=False,
+                                         then=Value(True)), output_field=BooleanField()))
+
+    pagamentos = pagamentos.all().filter(invalido=None)
+    lancamentos = pagamentos.count()
+    pagamentos_ids = list(pagamentos.values_list('id', flat=True))
+
+
+    total_pos = pagamentos.filter(tipo=1).aggregate(Sum('valor'))['valor__sum'] or 0
+    total_neg = pagamentos.filter(tipo=2).aggregate(Sum('valor'))['valor__sum'] or 0
+    total = total_pos - total_neg
+    entradas=int(total_pos)
+    saidas=int(total_neg)
+
+    # ## gráfico Meios de pgto
+    boleto_bancario = pagamentos.filter(tipo=1, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
+    cartao_credito = pagamentos.filter(tipo=1, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
+    cartao_debto = pagamentos.filter(tipo=1, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
+    cheque = pagamentos.filter(tipo=1, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
+    dinheiro = pagamentos.filter(tipo=1, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
+    permuta = pagamentos.filter(tipo=1, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
+    transf_bancaria = pagamentos.filter(tipo=1, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    indefinidos = pagamentos.filter(tipo=1, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    saidas_boleto_bancario = pagamentos.filter(tipo=2, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cartao_credito = pagamentos.filter(tipo=2, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cartao_debto = pagamentos.filter(tipo=2, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cheque = pagamentos.filter(tipo=2, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_dinheiro = pagamentos.filter(tipo=2, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_permuta = pagamentos.filter(tipo=2, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_transf_bancaria = pagamentos.filter(tipo=2, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_indefinidos = pagamentos.filter(tipo=2, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    ## grafico meios de pgto:
+    context['boleto_bancario'] = int(boleto_bancario)
+    context['cartao_credito'] = int(cartao_credito)
+    context['cartao_debto'] = int(cartao_debto)
+    context['cheque'] = int(cheque)
+    context['dinheiro'] = int(dinheiro)
+    context['permuta'] = int(permuta)
+    context['transf_bancaria'] = int(transf_bancaria)
+    context['indefinidos'] = int(indefinidos)
+
+    context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
+    context['saidas_cartao_credito'] = int(saidas_cartao_credito)
+    context['saidas_cartao_debto'] = int(saidas_cartao_debto)
+    context['saidas_cheque'] = int(saidas_cheque)
+    context['saidas_dinheiro'] = int(saidas_dinheiro)
+    context['saidas_permuta'] = int(saidas_permuta)
+    context['saidas_transf_bancaria'] = int(saidas_transf_bancaria)
+    context['saidas_indefinidos'] = int(saidas_indefinidos)
+    context['entradas'] = entradas
+    context['saidas'] = saidas
+    context['ano_corrente'] = ANO_CORRENTE
+    context['mes_corrente'] = MES_CORRNETE
+    
     return render(request, 'index.html', context)
 
 

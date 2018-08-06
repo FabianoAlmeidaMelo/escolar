@@ -41,7 +41,7 @@ from escolar.escolas.forms import (
 )
 
 from escolar.financeiro.models import ContratoAluno
-from escolar.financeiro.forms import ano_corrente, ContratoAlunoSearchForm
+from escolar.financeiro.forms import ANO_CORRENTE, ContratoAlunoSearchForm
 
 @login_required
 def autorizado_form(request, aluno_pk, autorizado_pk=None):
@@ -290,6 +290,7 @@ def aniversariantes_list(request, escola_pk):
         pessoas = form.get_result_queryset().filter(escola=escola)
     else:
         pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH)
+    total = pessoas.count()
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -305,6 +306,7 @@ def aniversariantes_list(request, escola_pk):
     # ### paginação ####
 
     context['form'] = form
+    context['total'] = total
     context['escola'] = escola 
     context['can_edit'] = can_edit = True
     context['object_list'] = pessoas
@@ -366,7 +368,7 @@ def alunos_list(request, escola_pk):
         alunos = form.get_result_queryset()
         total_alunos = alunos.count()
     else:
-        alunos = form.get_result_queryset().filter(ano=ano_corrente)
+        alunos = form.get_result_queryset().filter(ano=ANO_CORRENTE)
         total_alunos = alunos.count()
 
     # ### PAGINAÇÃO ####
@@ -605,7 +607,7 @@ def aluno_historico(request, aluno_pk):
     # if form.is_valid():
     #     alunos = form.get_result_queryset()
     # else:
-    #     alunos = form.get_result_queryset().filter(ano=ano_corrente)
+    #     alunos = form.get_result_queryset().filter(ano=ANO_CORRENTE)
 
     historicos = AlunoHistorico.objects.filter(aluno=aluno)
     # ### PAGINAÇÃO ####

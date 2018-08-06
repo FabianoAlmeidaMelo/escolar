@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import BooleanField, Case, Value, When, Q
+from django.db.models import BooleanField, Case, Value, When, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
@@ -21,8 +21,8 @@ from escolar.financeiro.models import (
 )
 
 from escolar.financeiro.forms import (
-    ano_corrente,
-    mes_corrnete,
+    ANO_CORRENTE,
+    MES_CORRNETE,
     CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
@@ -52,7 +52,7 @@ def responsaveis_list(request, escola_pk):
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
-        contratos = form.get_result_queryset().filter(ano=ano_corrente)
+        contratos = form.get_result_queryset().filter(ano=ANO_CORRENTE)
     context = {}
 
     # ### PAGINAÇÃO ####
@@ -99,7 +99,7 @@ def contratos_list(request, escola_pk):
     if form.is_valid():
         contratos = form.get_result_queryset()
     else:
-        contratos = form.get_result_queryset().filter(ano=ano_corrente)
+        contratos = form.get_result_queryset().filter(ano=ANO_CORRENTE)
     total = contratos.count()
 
     # ### PAGINAÇÃO ####
@@ -446,7 +446,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ano_corrente).last()
+    contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ANO_CORRENTE).last()
     if not user.can_access_escola(escola.pk):
         raise Http404
 
@@ -458,11 +458,11 @@ def pagamentos_aluno_list(request, aluno_pk):
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
 
-    data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
+    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
     if form.is_valid():
         pagamentos = form.get_result_queryset()
     else:
-        pagamentos = form.get_result_queryset().filter(contrato__ano=ano_corrente)
+        pagamentos = form.get_result_queryset().filter(contrato__ano=ANO_CORRENTE)
 
     hj = date.today()
     # pgtos atrasados
@@ -500,7 +500,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     # o pgto tem de estar vinculado a um contrato
     # o default para isso é o contrato do ano corrente,
     # pagamentos de novos contratos, tem funções do ContratoAluno, que geram todas as parcelas básicas do ano
-    can_create = all([len(ano_valido) == 1, ano_valido[0] == ano_corrente, can_edit]) if ano_valido else False
+    can_create = all([len(ano_valido) == 1, ano_valido[0] == ANO_CORRENTE, can_edit]) if ano_valido else False
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -544,8 +544,8 @@ def pagamentos_list(request, escola_pk):
         raise Http404
     context = {}
 
-    data_ini = date(ano_corrente, mes_corrnete, 1)
-    data_fim = date(ano_corrente, mes_corrnete, monthrange(ano_corrente, mes_corrnete)[1])
+    data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
+    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
 
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
@@ -590,6 +590,26 @@ def pagamentos_list(request, escola_pk):
     entradas=int(total_pos)
     saidas=int(total_neg)
 
+    # ## gráfico Meios de pgto
+    boleto_bancario = pagamentos.filter(tipo=1, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
+    cartao_credito = pagamentos.filter(tipo=1, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
+    cartao_debto = pagamentos.filter(tipo=1, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
+    cheque = pagamentos.filter(tipo=1, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
+    dinheiro = pagamentos.filter(tipo=1, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
+    permuta = pagamentos.filter(tipo=1, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
+    transf_bancaria = pagamentos.filter(tipo=1, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    indefinidos = pagamentos.filter(tipo=1, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    saidas_boleto_bancario = pagamentos.filter(tipo=2, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cartao_credito = pagamentos.filter(tipo=2, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cartao_debto = pagamentos.filter(tipo=2, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_cheque = pagamentos.filter(tipo=2, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_dinheiro = pagamentos.filter(tipo=2, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_permuta = pagamentos.filter(tipo=2, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_transf_bancaria = pagamentos.filter(tipo=2, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_indefinidos = pagamentos.filter(tipo=2, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
+
+
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
@@ -610,6 +630,26 @@ def pagamentos_list(request, escola_pk):
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
+
+    ## grafico meios de pgto:
+    context['boleto_bancario'] = int(boleto_bancario)
+    context['cartao_credito'] = int(cartao_credito)
+    context['cartao_debto'] = int(cartao_debto)
+    context['cheque'] = int(cheque)
+    context['dinheiro'] = int(dinheiro)
+    context['permuta'] = int(permuta)
+    context['transf_bancaria'] = int(transf_bancaria)
+    context['indefinidos'] = int(indefinidos)
+
+    context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
+    context['saidas_cartao_credito'] = int(saidas_cartao_credito)
+    context['saidas_cartao_debto'] = int(saidas_cartao_debto)
+    context['saidas_cheque'] = int(saidas_cheque)
+    context['saidas_dinheiro'] = int(saidas_dinheiro)
+    context['saidas_permuta'] = int(saidas_permuta)
+    context['saidas_transf_bancaria'] = int(saidas_transf_bancaria)
+    context['saidas_indefinidos'] = int(saidas_indefinidos)
+
     context['pagamentos_ids'] = pagamentos_ids
     context['tab_administracao'] = "active"
     context['tab_parcelas'] = "active"

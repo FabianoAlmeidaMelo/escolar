@@ -27,8 +27,8 @@ months.insert(0, None)
 MESES = tuple(zip(months, meses))
 
 hoje = date.today()
-ano_corrente = hoje.year
-mes_corrnete = hoje.month
+ANO_CORRENTE = hoje.year
+MES_CORRNETE = hoje.month
 
 PAGAMENTO_STATUS_CHOICES=( 
     (1,'Pago'),
@@ -295,7 +295,7 @@ class ContratoAlunoSearchForm(forms.Form):
     '''
     responsavel = forms.CharField(label=u'Responsável', required=False)
     aluno = forms.CharField(label=u'Aluno', required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ANO_CORRENTE)
     serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     curso = forms.ModelChoiceField(label=u'Curso', queryset=Curso.objects.all(), required=False)
     assinado = forms.ChoiceField(label="Assinado", choices=CONTRATO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
@@ -427,9 +427,9 @@ class PagamentoEscolaSearchForm(forms.Form):
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
     titulo = forms.CharField(label=u'Título', required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
-    mes = forms.ChoiceField(label='Mês', choices=MESES, initial=mes_corrnete, required=False)
-    mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=mes_corrnete, required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ANO_CORRENTE, required=False)
+    mes = forms.ChoiceField(label='Mês', choices=MESES, initial=MES_CORRNETE, required=False)
+    mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=MES_CORRNETE, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
     serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
     forma_pgto = forms.MultipleChoiceField(choices=FORMA_PGTO[1:], widget=forms.CheckboxSelectMultiple, required=False)
@@ -516,7 +516,7 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
     #35
     '''
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ANO_CORRENTE, required=False)
     titulo = forms.CharField(label=u'Título', required=False)
 
     def __init__(self, *args, **kargs):

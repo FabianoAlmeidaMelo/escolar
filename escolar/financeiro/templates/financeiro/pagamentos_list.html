@@ -177,44 +177,148 @@
     </tbody>
   </table>
   {% include 'pagination.html' %}
-    <!-- th><div id="piechart" style="width: 810px; height: 450px;"></div></th> -->
-  <th><div id="piechart_3d" style="width: 810px; height: 450px;"></div></th>
-</div>
 
+  <div class="panel-group">
+    
+        <div class="row ">
+          <div class="col-md-6">
+              <div class="panel panel-default" style="height:350px;width:500px;">
+                <div class="panel-heading">Comparativo entre Entradas e Saídas</div>
+                  <div class="panel-body">
+                    <div id="piechart_3d"></div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-6">
+              <div class="panel panel-default" style="height:350px;width:500px;">
+                <div class="panel-heading">Entradas: Meios de Pagamentos usados</div>
+                <div class="panel-body">
+                  <div id="chart_div_1"></div>
+                </div>
+              </div>
+          </div>
+
+          <div class="col-md-6">
+              <div class="panel panel-default" style="height:350px;width:500px;">
+                <div class="panel-heading">Saídas: Meios de Pagamentos usados</div>
+                <div class="panel-body">
+                  <div id="chart_div_2"></div>
+                </div>
+              </div>
+          </div>
+     
+  </div>
 {% endblock content %}
 {% block extra_js %}
   {{ form.media.js}}
+ <script type="text/javascript">
+    function set_pago(field){
+      var pagamento_id = $(field).attr('button_id')
+      var meio_pgto = $("#select_id_"+pagamento_id).val();
+      // Zero: 0, é um id válido
+      // não quebra a url ao carregar a página
+      $.get("{% url 'set_pagamento_status' 0 %}?meio_pgto=meio_pgto_id".replace('0', pagamento_id).replace('meio_pgto_id', meio_pgto), function(){
+        location.reload();
+        });
+    }
+  </script>
+
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!-- pie 3D -->
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Entradas',  {{ entradas }}],
+          ['Saídas',  {{ saidas }}],
+        ]);
+
+        var options = {
+          title: 'Entradas x Saídas',
+          is3D: true,
+          minValue: 0.0
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data, options);
+      }
+   </script>
+
       <script type="text/javascript">
-        google.charts.load("current", {packages:["corechart"]});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
-          var data = google.visualization.arrayToDataTable([
-            ['Task', 'Hours per Day'],
-            ['Entradas',  {{ entradas }}],
-            ['Saídas',  {{ saidas }}],
-          ]);
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+        google.charts.setOnLoadCallback(drawBasic);
 
-          var options = {
-            title: 'Entradas x Saídas',
-            is3D: true,
-          };
+          function drawBasic() {
 
-          var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-          chart.draw(data, options);
-        }
-     </script>
-     <script type="text/javascript">
-        function set_pago(field){
-          var pagamento_id = $(field).attr('button_id')
-          var meio_pgto = $("#select_id_"+pagamento_id).val();
-          // Zero: 0, é um id válido
-          // não quebra a url ao carregar a página
-          $.get("{% url 'set_pagamento_status' 0 %}?meio_pgto=meio_pgto_id".replace('0', pagamento_id).replace('meio_pgto_id', meio_pgto), function(){
-            location.reload();
-            });
-        }
+            var data = google.visualization.arrayToDataTable([
+              ['Meios de pgamento', 'R$',],
+              ['Boleto bancário', {{ boleto_bancario }}],
+              ['Cartão de crédito', {{ cartao_credito }} ],
+              ['Cartão de débito', {{ cartao_debto }}],
+              ['Cheque', {{ cheque }}],
+              ['Dinheiro', {{ dinheiro }}],
+              ['Permuta', {{ permuta }}],
+              ['Transferência bancária', {{ transf_bancaria }}],
+              ['Indefinidos', {{ indefinidos }}],
+              ['Entradas', {{ entradas }}]
+            ]);
+
+            var options = {
+              title: 'Entradas',
+              chartArea: {width: '40%'},
+              hAxis: {
+                title: 'Movimentação',
+                minValue: 0.0
+              },
+              vAxis: {
+                title: 'Recebimentos'
+              }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div_1'));
+
+            chart.draw(data, options);
+          }  
+      </script>
+
+      <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+        google.charts.setOnLoadCallback(drawBasic);
+
+          function drawBasic() {
+
+            var data = google.visualization.arrayToDataTable([
+              ['Meios de pgamento', 'R$',],
+              ['Boleto bancário', {{ saidas_boleto_bancario }}],
+              ['Cartão de crédito', {{ saidas_cartao_credito }}],
+              ['Cartão de débito', {{ saidas_cartao_debto }}],
+              ['Cheque', {{ saidas_cheque }}],
+              ['Dinheiro', {{ saidas_dinheiro }}],
+              ['Permuta', {{ saidas_permuta }}],
+              ['Transferência bancária', {{ saidas_transf_bancaria }}],
+              ['Indefinidos', {{ saidas_indefinidos }}],
+              ['Saídas', {{ saidas }}],
+            ]);
+
+            var options = {
+              title: 'Saídas',
+              chartArea: {width: '40%'},
+              hAxis: {
+                title: 'Movimentação',
+                minValue: 0.0
+              },
+              vAxis: {
+                title: 'Pagamentos'
+              },
+              colors: ['#e0440e']
+
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div_2'));
+
+            chart.draw(data, options);
+          }  
       </script>
   
 {% endblock extra_js%}
