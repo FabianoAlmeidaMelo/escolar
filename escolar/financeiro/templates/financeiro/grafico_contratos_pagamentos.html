@@ -28,16 +28,24 @@
 
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
-        ['Year', 'Data Prevista', 'Data efetivada'],
-        ['2013',  1000,      400],
-        ['2014',  1170,      460],
-        ['2015',  660,       1120],
-        ['2016',  1030,      540]
+        ['Datas', 'Data Prevista', 'Data efetivada'],
+        ['2018',   10,      5],
+        ['2018',   10,      5],
+        ['2018',   10,      6],
+        ['2018',   10,      12],
+        ['2018',   10,      15],
+        ['2018',   10,      15],
+        ['2018',   10,      16],
+        ['2018',   10,      12],
+        ['2018',   10,      0],
+        ['2018',   10,      5],
+        ['2018',   10,      6],
+        ['2018',   10,      4]
       ]);
 
       var options = {
         title: 'Performance de pagamentos',
-        hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
+        hAxis: {title: 'Anos',  titleTextStyle: {color: '#333'}},
         vAxis: {minValue: 0}
       };
 
