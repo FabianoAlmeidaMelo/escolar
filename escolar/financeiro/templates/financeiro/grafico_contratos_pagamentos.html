@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}  <small>Total: {{ total }}</small>
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+  <div class="container">
+    <div class="row-fluid span10">
+      {% include "base_aluno.html" %}
+     <div id="chart_div" style="width: 100%; height: 500px;"></div>
+  </div>
+{% endblock content %}
+{% block extra_js %}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Year', 'Data Prevista', 'Data efetivada'],
+        ['2013',  1000,      400],
+        ['2014',  1170,      460],
+        ['2015',  660,       1120],
+        ['2016',  1030,      540]
+      ]);
+
+      var options = {
+        title: 'Performance de pagamentos',
+        hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
+        vAxis: {minValue: 0}
+      };
+
+      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+{% endblock extra_js%}

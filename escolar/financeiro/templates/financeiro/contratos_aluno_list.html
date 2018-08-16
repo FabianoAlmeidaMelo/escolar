@@ -17,59 +17,62 @@
 <div class="container">
   <div class="row-fluid span10">
     {% include "base_aluno.html" %}
-    <table class="table table-striped">
-      {% if can_edit %}
-        {% if  aluno.list_pendencias_contrato %}
-        <div class="alert alert-warning">
-          <ul>
-            {% for pendencia in aluno.list_pendencias_contrato %}
-            <li>{{ pendencia }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        {% else %}
-          <caption>
-            <div style="float:right; margin-right:10px">
-              <a href="{% url 'contrato_form' aluno.id %}" class="btn btn-mini btn-success">Novo Contrato</a>
-            </div>
-          </caption>
+      <div class="form-actions esconde_na_impressao">
+        <a href="{% url 'grafico_contratos_pagamentos' aluno.id %}" class="btn btn-default">Gráfico de Pagamento</a>
+      </div>
+      <table class="table table-striped">
+        {% if can_edit %}
+          {% if  aluno.list_pendencias_contrato %}
+          <div class="alert alert-warning">
+            <ul>
+              {% for pendencia in aluno.list_pendencias_contrato %}
+              <li>{{ pendencia }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+            <caption>
+              <div style="float:right; margin-right:10px">
+                <a href="{% url 'contrato_form' aluno.id %}" class="btn btn-mini btn-success">Novo Contrato</a>
+              </div>
+            </caption>
+          {% endif %}
         {% endif %}
-      {% endif %}
-      <thead>
-        <tr>
-          <th>Contrato Ano</th>
-          <th>Assinado</th>
-          <th>Responsável</th>
-          <th>Aluno</th>
-          <th>Série</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for contrato in object_list %}
+        <thead>
+          <tr>
+            <th>Contrato Ano</th>
+            <th>Assinado</th>
+            <th>Responsável</th>
+            <th>Aluno</th>
+            <th>Série</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for contrato in object_list %}
+          <tr>
+            <td>
+              <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
+            </td>
+            <td>{% if contrato.assinado %}
+              <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
+              {% else %}
+                {{ contrato.assinado|yesno:"Sim, Não" }}</td>
+              {% endif %}
+            <td>{{ contrato.responsavel.nome }}</td>
+            <td>{{ contrato.aluno.nome }}</td>
+            <td>{{ contrato.serie|default:'--' }}</td>
+            <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
+          </tr>
+        {% empty %}
         <tr>
           <td>
-            <a href="{% url 'contrato_cadastro' contrato.id %}">{{ contrato.ano|default:'--' }}</a>
+            Nenhum contrato cadastrado
           </td>
-          <td>{% if contrato.assinado %}
-            <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
-            {% else %}
-              {{ contrato.assinado|yesno:"Sim, Não" }}</td>
-            {% endif %}
-          <td>{{ contrato.responsavel.nome }}</td>
-          <td>{{ contrato.aluno.nome }}</td>
-          <td>{{ contrato.serie|default:'--' }}</td>
-          <td>{{ contrato.data_assinatura|date:'d/m/Y' }}</td>
         </tr>
-      {% empty %}
-      <tr>
-        <td>
-          Nenhum contrato cadastrado
-        </td>
-      </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+        {% endfor %}
+        </tbody>
+      </table>
   </div>
 </div>
 

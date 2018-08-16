@@ -162,6 +162,31 @@ def contratos_aluno_list(request, aluno_pk):
 
 
 @login_required
+def grafico_contratos_pagamentos(request, aluno_pk):
+    user = request.user
+    Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
+    aluno = get_object_or_404(Aluno, pk=aluno_pk)
+    escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
+    page = request.GET.get('page', 1)
+
+    contratos_ids = ContratoAluno.objects.filter(aluno=aluno).values_list('id')
+    pagamentos = Pagamento.objects.filter(contrato__id__in=contratos_ids).order_by('data')
+
+    context = {}
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+    context['object_list'] = pagamentos
+    context['aluno'] = aluno
+    context['tab_alunos'] = "active"
+    context['tab_aluno_contratos'] = "active"
+
+    return render(request, 'financeiro/grafico_contratos_pagamentos.html', context)
+
+
+@login_required
 def parametros_contrato_form(request, escola_pk):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
