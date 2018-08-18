@@ -161,6 +161,14 @@ def contratos_aluno_list(request, aluno_pk):
     return render(request, 'financeiro/contratos_aluno_list.html', context)
 
 
+import cgi
+import sys
+ 
+def output(content):
+    sys.stdout.write('Content-Type: text/plain\n\n')
+    sys.stdout.write(content)
+ 
+
 @login_required
 def grafico_contratos_pagamentos(request, aluno_pk):
     user = request.user
@@ -178,7 +186,30 @@ def grafico_contratos_pagamentos(request, aluno_pk):
     context = {}
     context['escola'] = escola
     context['can_edit'] = can_edit
-    context['object_list'] = pagamentos
+
+    import json
+    from django.core import serializers
+    pgtos = json.dumps([{'data': 2018, 'dia': 10, 'dia_real': 5},
+                        {'data': 2018, 'dia': 10, 'dia_real': 6},
+                        {'data': 2018, 'dia': 10, 'dia_real': 5},
+                        {'data': 2018, 'dia': 10, 'dia_real': 5},
+                        {'data': 2018, 'dia': 10, 'dia_real': 6},
+                        {'data': 2018, 'dia': 10, 'dia_real': 12},
+                        {'data': 2018, 'dia': 10, 'dia_real': 15},
+                        {'data': 2018, 'dia': 10, 'dia_real': 15},
+                        {'data': 2018, 'dia': 10, 'dia_real': 16},
+                        {'data': 2018, 'dia': 10, 'dia_real': 12},
+                        {'data': 2018, 'dia': 10, 'dia_real': 0},
+                        {'data': 2018, 'dia': 10, 'dia_real': 5},
+                        {'data': 2018, 'dia': 10, 'dia_real': 6},
+                        {'data': 2018, 'dia': 10, 'dia_real': 4}])
+   
+    # pgtos = serializers.serialize('json', pagamentos, fields=('data','contrato__vencimento', 'contrato__ano'))
+
+    context['object_list'] = pgtos
+
+    # pagamentos.values('data', 'contrato__vencimento', 'contrato__ano')
+
     context['aluno'] = aluno
     context['tab_alunos'] = "active"
     context['tab_aluno_contratos'] = "active"

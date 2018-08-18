@@ -26,22 +26,31 @@
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
 
+    var str_pgtos = "{{ object_list }}"
+    var pgtos = JSON.parse(str_pgtos.replace(/&quot;/g,'"'));
+
+    console.log(pgtos)
+    // for (i = 0, len = pgtos.length, text = ""; i < len; i++) { 
+    //     console.log(i);
+    //   }; 
+
     function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Datas', 'Data Prevista', 'Data efetivada'],
-        ['2018',   10,      5],
-        ['2018',   10,      5],
-        ['2018',   10,      6],
-        ['2018',   10,      12],
-        ['2018',   10,      15],
-        ['2018',   10,      15],
-        ['2018',   10,      16],
-        ['2018',   10,      12],
-        ['2018',   10,      0],
-        ['2018',   10,      5],
-        ['2018',   10,      6],
-        ['2018',   10,      4]
-      ]);
+      var data = google.visualization.arrayToDataTable(
+        [
+          ['Datas', 'Data Prevista', 'Data efetivada'],
+          ['2018',   10,      5],
+          ['2018',   10,      5],
+          ['2018',   10,      6],
+          ['2018',   10,      12],
+          ['2018',   10,      15],
+          ['2018',   10,      15],
+          ['2018',   10,      16],
+          ['2018',   10,      12],
+          ['2018',   10,      0],
+          ['2018',   10,      5],
+          ['2018',   10,      6],
+          ['2018',   10,      4]]
+        );
 
       var options = {
         title: 'Performance de pagamentos',
