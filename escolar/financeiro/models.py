@@ -328,15 +328,22 @@ class CategoriaPagamento(models.Model):
         ordering = ('nome',)
 
 class PagamentoManager(models.Manager):
-    def get_recebimentos_pendentes(self):
-        pass
-        """Contratos com recebimentos pendentes de parcelas vencidas"""
-        # estagio_valido = ~Q(contrato__estagio__in=[5, 6])
-        # pag_lib = Q(pag_lib=1)  # pagamento liberado
-        # pag_nao_efetuado = Q(efet=False) | Q(efet=None)
-        # query = estagio_valido & pag_lib & pag_nao_efetuado
+    # def get_recebimentos_pendentes(self):
+    #     pass
+    #     """Contratos com recebimentos pendentes de parcelas vencidas"""
+    #     estagio_valido = ~Q(contrato__estagio__in=[5, 6])
+    #     pag_lib = Q(pag_lib=1)  # pagamento liberado
+    #     pag_nao_efetuado = Q(efet=False) | Q(efet=None)
+    #     query = estagio_valido & pag_lib & pag_nao_efetuado
 
-        # return self.filter(query).order_by('-data')
+    #     return self.filter(query).order_by('-data')
+
+    def get_pontualidade_pagamentos(self, aluno):
+        """
+        pagamentos.values('data', 'contrato__vencimento', 'contrato__ano')
+        """
+        return list(self.filter(contrato__contratoaluno__aluno=aluno,
+                                categoria__id=1).values('data', 'contrato__vencimento', 'contrato__ano').order_by('data'))
 
 
 class Pagamento(models.Model):

@@ -2,22 +2,23 @@
 from django.conf.urls import url
 
 from escolar.financeiro.views import (
-    categorias_list,
     categoria_form,
-    contratos_list,
-    pagamentos_list,
-    responsaveis_list,
+    categorias_list,
     contrato_cadastro,
     contrato_form,
     contratos_aluno_list,
+    contratos_list,
+    grafico_contratos_pagamentos,
     pagamento_form,
     pagamentos_aluno_list,
+    pagamentos_gera_xls,
+    pagamentos_list,
     parametro_cadastro,
     parametros_contrato_form,
     print_recibo,
-    set_pagamento_status,
+    responsaveis_list,
     set_contrato_assinado,
-    pagamentos_gera_xls,
+    set_pagamento_status,
 )
 
 urlpatterns = [
@@ -28,6 +29,7 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/contratos_list/$', contratos_list, name='contratos_list'),
     url(r'^escola/(?P<aluno_pk>\d+)/contratos_aluno_list/$', contratos_aluno_list, name='contratos_aluno_list'),
     url(r'^escola/(?P<escola_pk>\d+)/responsaveis_list/$', responsaveis_list, name='responsaveis_list'),
+    url(r'^escola/grafico_contratos_pagamentos(?P<aluno_pk>\d+)/$', grafico_contratos_pagamentos, name='grafico_contratos_pagamentos'),
     
     url(r'^escola/aluno/(?P<aluno_pk>\d+)/contrato/form/$', contrato_form, name='contrato_form'),
     url(r'^escola/aluno/(?P<aluno_pk>\d+)/contrato/(?P<contrato_pk>\d+)/$', contrato_form, name='contrato_edit'),

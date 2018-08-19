@@ -1,0 +1,54 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if aluno.id %}
+        Aluno: {{ aluno.nome }}  <small>Total: {{ total }}</small>
+    {% else %}
+       Aluno
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+  <div class="container">
+    <div class="row-fluid span10">
+      {% include "base_aluno.html" %}
+     <div id="chart_div" style="width: 100%; height: 500px;"></div>
+  </div>
+{% endblock content %}
+{% block extra_js %}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    var str_pgtos = "{{ object_list }}"
+    var pgtos = JSON.parse(str_pgtos.replace(/&quot;/g,'"'));
+    var listas_grafico = [['Datas', 'Data Prevista', 'Data efetivada']]
+
+    // completa a lista de listas usada no gráfico
+    for (i = 0, len = pgtos.length, text = ""; i < len; i++) {
+      dados_list = [pgtos[i]['data'], pgtos[i]['dia'], pgtos[i]['dia_real']]
+      listas_grafico.push(dados_list)
+      }; 
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable(
+        listas_grafico
+        );
+
+      var options = {
+        title: 'Pontualidade dos pagamentos',
+        hAxis: {title: 'Datas',  titleTextStyle: {color: '#333'}},
+        vAxis: {minValue: 0}
+      };
+
+      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+{% endblock extra_js%}

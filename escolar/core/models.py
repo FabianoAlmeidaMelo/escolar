@@ -118,6 +118,8 @@ class User(AbstractBaseUser):
         return can_access_escola
 
     def get_unica_escola(self):
+        if self.is_admin:
+            return None
         if self.usergrupos_set.all().values_list('escola', flat=True).count() == 1:
             return self.usergrupos_set.all().values_list('escola', flat=True)[0]
         return None
