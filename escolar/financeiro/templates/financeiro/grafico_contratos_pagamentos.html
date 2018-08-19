@@ -28,28 +28,17 @@
 
     var str_pgtos = "{{ object_list }}"
     var pgtos = JSON.parse(str_pgtos.replace(/&quot;/g,'"'));
+    var listas_grafico = [['Datas', 'Data Prevista', 'Data efetivada']]
 
-    console.log(pgtos)
-    // for (i = 0, len = pgtos.length, text = ""; i < len; i++) { 
-    //     console.log(i);
-    //   }; 
+    // completa a lista de listas usada no gráfico
+    for (i = 0, len = pgtos.length, text = ""; i < len; i++) {
+      dados_list = [pgtos[i]['data'], pgtos[i]['dia'], pgtos[i]['dia_real']]
+      listas_grafico.push(dados_list)
+      }; 
 
     function drawChart() {
       var data = google.visualization.arrayToDataTable(
-        [
-          ['Datas', 'Data Prevista', 'Data efetivada'],
-          ['2018',   10,      5],
-          ['2018',   10,      5],
-          ['2018',   10,      6],
-          ['2018',   10,      12],
-          ['2018',   10,      15],
-          ['2018',   10,      15],
-          ['2018',   10,      16],
-          ['2018',   10,      12],
-          ['2018',   10,      0],
-          ['2018',   10,      5],
-          ['2018',   10,      6],
-          ['2018',   10,      4]]
+        listas_grafico
         );
 
       var options = {

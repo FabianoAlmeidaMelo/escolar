@@ -189,20 +189,20 @@ def grafico_contratos_pagamentos(request, aluno_pk):
 
     import json
     from django.core import serializers
-    pgtos = json.dumps([{'data': 2018, 'dia': 10, 'dia_real': 5},
-                        {'data': 2018, 'dia': 10, 'dia_real': 6},
-                        {'data': 2018, 'dia': 10, 'dia_real': 5},
-                        {'data': 2018, 'dia': 10, 'dia_real': 5},
-                        {'data': 2018, 'dia': 10, 'dia_real': 6},
-                        {'data': 2018, 'dia': 10, 'dia_real': 12},
-                        {'data': 2018, 'dia': 10, 'dia_real': 15},
-                        {'data': 2018, 'dia': 10, 'dia_real': 15},
-                        {'data': 2018, 'dia': 10, 'dia_real': 16},
-                        {'data': 2018, 'dia': 10, 'dia_real': 12},
-                        {'data': 2018, 'dia': 10, 'dia_real': 0},
-                        {'data': 2018, 'dia': 10, 'dia_real': 5},
-                        {'data': 2018, 'dia': 10, 'dia_real': 6},
-                        {'data': 2018, 'dia': 10, 'dia_real': 4}])
+    pgtos = json.dumps([{'data': '2018', 'dia': 10, 'dia_real': 5},
+                        {'data': '2018', 'dia': 10, 'dia_real': 6},
+                        {'data': '2018', 'dia': 10, 'dia_real': 5},
+                        {'data': '2018', 'dia': 10, 'dia_real': 5},
+                        {'data': '2018', 'dia': 10, 'dia_real': 6},
+                        {'data': '2018', 'dia': 10, 'dia_real': 12},
+                        {'data': '2018', 'dia': 10, 'dia_real': 15},
+                        {'data': '2018', 'dia': 10, 'dia_real': 15},
+                        {'data': '2018', 'dia': 10, 'dia_real': 16},
+                        {'data': '2018', 'dia': 10, 'dia_real': 12},
+                        {'data': '2018', 'dia': 10, 'dia_real': 10},
+                        {'data': '2018', 'dia': 10, 'dia_real': 5},
+                        {'data': '2018', 'dia': 10, 'dia_real': 6},
+                        {'data': '2018', 'dia': 10, 'dia_real': 4}])
    
     # pgtos = serializers.serialize('json', pagamentos, fields=('data','contrato__vencimento', 'contrato__ano'))
 
