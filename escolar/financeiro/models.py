@@ -436,26 +436,28 @@ class Pagamento(models.Model):
         return self.valor
 
     def get_multa(self):
-        if all([self.categoria,
-                self.categoria.id == 1,
-                self.contrato, 
-                self.contrato.contratoaluno.juros,
-                 date.today() > self.data]):
-            multa = self.contrato.contratoaluno.multa / Decimal('100.')
-            return round(self.valor * multa, 2)
+        if self.contrato and self.contrato.contratoaluno:
+            if all([self.categoria,
+                    self.categoria.id == 1,
+                    self.contrato, 
+                    self.contrato.contratoaluno.juros,
+                     date.today() > self.data]):
+                multa = self.contrato.contratoaluno.multa / Decimal('100.')
+                return round(self.valor * multa, 2)
         return 0
 
     def get_juros(self):
-        if all([self.categoria,
-                self.categoria.id == 1,
-                self.contrato, 
-                self.contrato.contratoaluno.juros,
-                 date.today() > self.data]):
-            nr, nr_dias = monthrange(ano_corrente, self.data.month)
-            juros_mensal = self.contrato.contratoaluno.juros
-            juros_por_dia = juros_mensal / nr_dias
-            dias_atrasado = (date.today() - self.data).days
-            return round(self.valor * (juros_por_dia * dias_atrasado / 100), 2)
+        if self.contrato and self.contrato.contratoaluno:
+            if all([self.categoria,
+                    self.categoria.id == 1,
+                    self.contrato, 
+                    self.contrato.contratoaluno.juros,
+                     date.today() > self.data]):
+                nr, nr_dias = monthrange(ano_corrente, self.data.month)
+                juros_mensal = self.contrato.contratoaluno.juros
+                juros_por_dia = juros_mensal / nr_dias
+                dias_atrasado = (date.today() - self.data).days
+                return round(self.valor * (juros_por_dia * dias_atrasado / 100), 2)
         return 0
 
     def get_context_alert(self):
