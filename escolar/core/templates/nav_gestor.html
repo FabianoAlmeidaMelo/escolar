@@ -35,7 +35,7 @@
                   <ul class="dropdown-menu">
                     <li class="{{ tab_categorias }}"><a href="{% url 'categorias_list' escola.id %}" title="{{ section.name }}">Categorias de Pagamentos</a></li>
                     <li class="{{ tab_grupos }}"><a href="{% url 'grupos_list' escola.id %}" id='id_grupos'>Grupos</a></li>
-                    <li class="{{ tab_parametros }}"><a href="{% url 'parametro_cadastro' escola.id %}" title="{{ section.name }}">Parâmetros dos Contratos</a></li>
+                    <li class="{{ tab_parametros }}"><a href="{% url 'parametros_contrato_list' escola.id %}" title="{{ section.name }}">Parâmetros dos Contratos</a></li>
                     </li>
                     <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
                   </ul>

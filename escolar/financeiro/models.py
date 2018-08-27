@@ -85,7 +85,8 @@ class ParametrosContrato(models.Model):
     1 desses por escola
     criado no save() de escolas.EscolaForm()
     '''
-    ano = models.SmallIntegerField('Ano', choices=ANO) # pelo ano valida as datas
+    # ANO corrente e o posterior:
+    ano = models.SmallIntegerField('Ano', choices=ANO[2:]) # pelo ano valida as datas
     escola = models.ForeignKey('escolas.Escola')
     tem_desconto = models.BooleanField('tem desconto', default=False)
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)

@@ -65,12 +65,7 @@ PARCELAS_MATRICULA = (
     (6, 6),
 )
 
-ANO = (
-    (None, '--'),
-    ('2016', '2016'),
-    ('2017', '2017'),
-    ('2018', '2018'),
-)
+
 
 class ParametrosContratoForm(forms.ModelForm):
     material_parcelas = forms.ChoiceField(label='Nr de Parcelas/ apostilas', choices=PARCELAS_MATERIAL, required=False)

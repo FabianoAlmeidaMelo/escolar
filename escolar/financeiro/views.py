@@ -203,12 +203,14 @@ def grafico_contratos_pagamentos(request, aluno_pk):
 
 
 @login_required
-def parametros_contrato_form(request, escola_pk):
+def parametros_contrato_form(request, escola_pk, parametro_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     # no save do EscolaForm, já criou 1 parâmetro para Escola
-    parametros = escola.parametroscontrato_set.last()
+    parametros = None
+    if parametro_pk:
+        parametros = escola.parametroscontrato_set.get(id=parametro_pk)
     if not can_edit:
         raise Http404
 
@@ -228,7 +230,7 @@ def parametros_contrato_form(request, escola_pk):
         if form.is_valid():
             parametros = form.save()
             messages.success(request, msg)
-            return redirect(reverse('parametro_cadastro', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('parametro_cadastro', kwargs={'escola_pk': escola.pk, 'parametro_pk': parametros.pk }))
         else:
             messages.warning(request, u'Falha na edição dos parâmetros.')
 
@@ -236,13 +238,13 @@ def parametros_contrato_form(request, escola_pk):
 
 
 @login_required
-def parametro_cadastro(request, escola_pk):
+def parametro_cadastro(request, escola_pk, parametro_pk):
     user = request.user
 
     escola = get_object_or_404(Escola, pk=escola_pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
-    parametros = escola.parametroscontrato_set.last()
+    parametros = escola.parametroscontrato_set.get(id=parametro_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     context = {}
     context["escola"] = escola
@@ -253,6 +255,28 @@ def parametro_cadastro(request, escola_pk):
     context['tab_parametros'] = "active"
     return render(request, 'financeiro/parametros_contrato_cadastro.html', context)
 
+
+@login_required
+def parametros_contrato_list(request, escola_pk):
+    '''
+    Lista os parametros cadastrados
+    '''
+    escola = None
+    if escola_pk:
+        escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    parametros = ParametrosContrato.objects.filter(Q(escola=None) | Q(escola=escola))
+
+    parametros = parametros.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
+
+    context = {}
+    context['object_list'] = parametros
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_sistema'] = "active"
+    context['tab_parametros'] = "active"
+    return render(request, 'financeiro/parametros_contrato_list.html', context)
 
 @login_required
 def contrato_form(request, aluno_pk, contrato_pk=None):

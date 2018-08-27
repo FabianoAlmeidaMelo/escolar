@@ -82,7 +82,9 @@
         {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
         {% endif %}
-        <a href="{% url 'parametro_cadastro' escola.id %}" class="btn btn-secondary">Voltar para os para os parâmetros de {{ form.instance.ano }}</a>
+        {% if parametros %}
+          <a href="{% url 'parametro_cadastro' escola.id parametros.pk %}" class="btn btn-secondary">Voltar para os para os parâmetros de {{ form.instance.ano }}</a>
+        {% endif %}
       </div>
     </form>
   </div>

@@ -62,7 +62,7 @@
       {% if can_edit %}
         <br>
           <div class="form-actions">
-            <a href="{% url 'parametros_contrato_form' escola.id %}" class="btn btn-mini btn-success">Editar</a>
+            <a href="{% url 'parametros_contrato_edit' escola.id parametros.id %}" class="btn btn-mini btn-success">Editar</a>
           </div>
       {% endif %}
     </form>

@@ -15,6 +15,7 @@ from escolar.financeiro.views import (
     pagamentos_list,
     parametro_cadastro,
     parametros_contrato_form,
+    parametros_contrato_list,
     print_recibo,
     responsaveis_list,
     set_contrato_assinado,
@@ -23,9 +24,11 @@ from escolar.financeiro.views import (
 
 urlpatterns = [
     # Parametros dos Contratos
-    url(r'^escola/(?P<escola_pk>\d+)/parametros_cadastro/$', parametro_cadastro, name='parametro_cadastro'),
+    url(r'^escola/(?P<escola_pk>\d+)/parametros_cadastro/(?P<parametro_pk>\d+)/$', parametro_cadastro, name='parametro_cadastro'),
     url(r'^escola/(?P<escola_pk>\d+)/parametros/$', parametros_contrato_form, name='parametros_contrato_form'),
-    # Contratos
+    url(r'^escola/(?P<escola_pk>\d+)/parametros_edit/(?P<parametro_pk>\d+)/$', parametros_contrato_form, name='parametros_contrato_edit'),
+    url(r'^escola/(?P<escola_pk>\d+)/parametros_contrato_list/$', parametros_contrato_list, name='parametros_contrato_list'),
+    # Contratos  parametros_contrato_list
     url(r'^escola/(?P<escola_pk>\d+)/contratos_list/$', contratos_list, name='contratos_list'),
     url(r'^escola/(?P<aluno_pk>\d+)/contratos_aluno_list/$', contratos_aluno_list, name='contratos_aluno_list'),
     url(r'^escola/(?P<escola_pk>\d+)/responsaveis_list/$', responsaveis_list, name='responsaveis_list'),
