@@ -234,7 +234,7 @@ class ContratoAluno(Contrato):
         return numero_extenso(self.valor)
 
     def get_datas_parcelas_material(self):
-        parametros = ParametrosContrato.objects.get(escola=self.aluno.escola) #, ano=self.ano)
+        parametros = ParametrosContrato.objects.filter(escola=self.aluno.escola, ano=self.ano).last() #, ano=self.ano)
 
         dates = [parametros.data_um_material,
                  parametros.data_dois_material,
