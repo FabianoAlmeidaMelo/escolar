@@ -266,13 +266,15 @@ def parametros_contrato_list(request, escola_pk):
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    parametros = ParametrosContrato.objects.filter(Q(escola=None) | Q(escola=escola))
+    parametros = ParametrosContrato.objects.filter(escola=escola)
+    can_create = parametros.count() < 2
 
     parametros = parametros.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
 
     context = {}
     context['object_list'] = parametros
     context['can_edit'] = can_edit
+    context['can_create'] = can_create
     context['escola'] = escola
     context['tab_sistema'] = "active"
     context['tab_parametros'] = "active"
