@@ -328,6 +328,49 @@ class CategoriaPagamento(models.Model):
     class Meta:
         ordering = ('nome',)
 
+
+class Bandeira(models.Model):
+    """
+    Bandeira de cartões que as Escolas aceitam
+    para recebimentos
+    """
+    nome = models.CharField('Nome', max_length=20, null=False)
+    escola = models.ForeignKey('escolas.Escola', null=True)
+
+    class Meta:
+        ordering = ('nome',)
+
+    def __str__(self):
+        str_obj = '%s ' % self.nome
+        escola = self.escola
+        if escola:
+            str_obj = '%s - %s ' % (self.escola, self.nome,)
+        return str_obj
+
+
+
+class BandeiraEscolaParametro(models.Model):
+    """
+    parâmetros de cada Bandeira de Cartão, por escola
+    as bandeiras ativas, ficam disponíveis no cadastro dos
+    pagamentos
+    """
+    bandeira = models.ForeignKey(Bandeira)
+    escola = models.ForeignKey('escolas.Escola')
+    ativa = models.BooleanField(default=True)
+    taxa_debto = models.DecimalField('Taxa no débto', max_digits=5, decimal_places=2, default=Decimal('0'))
+    taxa_credito = models.DecimalField('Taxa no crédito', max_digits=5, decimal_places=2, default=Decimal('0'))
+    dias_debto = models.SmallIntegerField('Dia(s) para receber no débto', null=True, blank=True)
+    dias_credito = models.SmallIntegerField('Dia(s) para receber no crédito', null=True, blank=True)
+
+    def __str__(self):
+        str_obj = '%s - %s' % (self.bandeira.nome, self.taxa)
+        escola = self.escola
+        if escola:
+            str_obj = '%s - %s - %s' % (self.escola.nome, self.bandeira.nome, self.taxa)
+        return str_obj
+
+
 class PagamentoManager(models.Manager):
     # def get_recebimentos_pendentes(self):
     #     pass
@@ -370,7 +413,7 @@ class Pagamento(models.Model):
     categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
     forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
-
+    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
 
     objects = PagamentoManager()
 

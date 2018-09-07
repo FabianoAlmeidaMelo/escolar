@@ -17,6 +17,7 @@ from escolar.core.models import UserGrupos, User
 from escolar.financeiro.models import (
     CategoriaPagamento,
     ContratoAluno,
+    Bandeira,
     Pagamento,
     ParametrosContrato,
 )
@@ -24,6 +25,7 @@ from escolar.financeiro.models import (
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
     MES_CORRNETE,
+    BandeiraForm,
     CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
@@ -502,6 +504,71 @@ def categorias_list(request, escola_pk):
     context['tab_categorias'] = "active"
     return render(request, 'financeiro/categorias_list.html', context)
 
+
+@login_required
+def bandeira_form(request, escola_pk, bandeira_pk=None):
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_create = any([user.is_admin(), user.is_diretor(escola.id)])
+
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    if bandeira_pk:
+        bandeira = get_object_or_404(Bandeira, pk=bandeira_pk)
+        msg = u'bandeira alterada com sucesso.'
+    else:
+        bandeira = None
+        msg = u'bandeira criada.' 
+
+    if bandeira_pk and not can_edit:
+        raise Http404
+    elif not bandeira_pk and not can_create:
+        raise Http404
+
+    form = BandeiraForm(request.POST or None, request.FILES or None, instance=bandeira, escola=escola, user=user)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            bandeira = form.save()
+            messages.success(request, msg)
+            return redirect(reverse('bandeiras_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha na edição dos parâmetros.')
+    context = {}
+    context['form'] = form
+    context['bandeira'] = bandeira
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+
+    context['tab_sistema'] = "active"
+    context['tab_categorias'] = "active"
+
+    return render(request, 'financeiro/bandeira_form.html', context)
+
+
+@login_required
+def bandeiras_list(request, escola_pk):
+    '''
+    Lista todas as bandeiras de cartões de recebimentos
+    as básicas não são editáveis
+    '''
+    escola = None
+    if escola_pk:
+        escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    bandeiras = Bandeira.objects.filter(Q(escola=None) | Q(escola=escola))
+
+    bandeiras = bandeiras.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
+
+    context = {}
+    context['bandeiras'] = bandeiras
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_sistema'] = "active"
+    context['tab_bandeiras'] = "active"
+    return render(request, 'financeiro/bandeiras_list.html', context)
 
 @login_required
 def pagamentos_aluno_list(request, aluno_pk):

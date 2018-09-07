@@ -9,6 +9,7 @@ from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
     ANO,
     FORMA_PGTO,
+    Bandeira,
     CategoriaPagamento,
     ContratoAluno,
     Pagamento,
@@ -354,6 +355,32 @@ class CategoriaPagamentoForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         self.instance.escola = self.escola
         instance = super(CategoriaPagamentoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+# BandeiraForm
+
+class BandeiraForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(BandeiraForm, self).__init__(*args, **kwargs)
+        self.can_edit = True
+
+        if self.instance.id and self.instance.pagamento_set.count():
+            self.can_edit = False
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
+
+    class Meta:
+        model = Bandeira
+        exclude = ('escola', )
+
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(BandeiraForm, self).save(*args, **kwargs)
         instance.save()
         return instance
 

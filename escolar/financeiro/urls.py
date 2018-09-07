@@ -2,6 +2,8 @@
 from django.conf.urls import url
 
 from escolar.financeiro.views import (
+    bandeiras_list,
+    bandeira_form,
     categoria_form,
     categorias_list,
     contrato_cadastro,
@@ -48,10 +50,15 @@ urlpatterns = [
     url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/set_status/$', set_pagamento_status, name="set_pagamento_status"),
     url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/print_recibo/$', print_recibo, name="print_recibo"),
     url(r'^escola/pagamento/(?P<pagamento_pk>\d+)/print_recibo/$', print_recibo, name="print_recibo"),
-
+    # CATEGORIAS:
     url(r'^escola/(?P<escola_pk>\d+)/categorias_pagamento/$', categorias_list, name="categorias_list"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_form/$', categoria_form, name="categoria_form"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_edit/(?P<categoria_pk>\d+)/$', categoria_form, name="categoria_edit"),
+    # BANDEIRAS:
+    url(r'^escola/(?P<escola_pk>\d+)/bandeiras_recebimento/$', bandeiras_list, name="bandeiras_list"),
+    url(r'^escola/(?P<escola_pk>\d+)/bandeira_form/$', bandeira_form, name="bandeira_form"),
+    url(r'^escola/(?P<escola_pk>\d+)/bandeira_edit/(?P<bandeira_pk>\d+)/$', bandeira_form, name="bandeira_edit"),
+
 
     url(r'^escola/gera_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
 ]
