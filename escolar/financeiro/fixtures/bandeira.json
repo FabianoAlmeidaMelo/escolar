@@ -1,0 +1,58 @@
+[
+{
+    "model": "financeiro.bandeira",
+    "pk": 1,
+    "fields": {
+        "nome": "Visa",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 2,
+    "fields": {
+        "nome": "MasterCard",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 3,
+    "fields": {
+        "nome": "American Express",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 4,
+    "fields": {
+        "nome": "elo",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 5,
+    "fields": {
+        "nome": "Hipercard",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 6,
+    "fields": {
+        "nome": "Diners Club",
+        "escola": null
+    }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 7,
+    "fields": {
+        "nome": "Band x",
+        "escola": 1
+    }
+}
+]

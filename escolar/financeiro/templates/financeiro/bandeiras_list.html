@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load unica_escola %}
 
 {% block page_title %}
   <div class="page-header">
@@ -12,7 +13,9 @@
 <div class="container">
   <div class="row-fluid span10">
     {% if can_edit %}
+
       <a class="btn btn-success" href="{% url 'bandeira_form' escola.pk %}" class="btn btn-mini btn-success">Nova Bandeira</a>
+      
     {% endif %}
       <table class="table table-striped">
         <thead>
@@ -23,10 +26,14 @@
         </thead>
         {% for object in bandeiras %}
           <tr>
-          {% if object.can_edit %}
-            <td> <a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
+          {% if object.can_edit and object|get_bandeira_parametros:escola %}
+            <td><a href="{% url 'bandeira_param_edit' escola.pk object.pk  object|get_bandeira_parametros:escola %}">{{ object.nome }}</a></td>
           {% else %}
-            <td>{{ object.nome }}</td>
+            {% if  object.can_edit %}
+              <td><a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
+            {% else %}
+              <td>{{ object.nome }}</td>
+            {% endif %}
           {% endif %}
             <td>{{ object.taxa }}</td>
           </tr>

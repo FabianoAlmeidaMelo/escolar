@@ -55,10 +55,10 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/categoria_form/$', categoria_form, name="categoria_form"),
     url(r'^escola/(?P<escola_pk>\d+)/categoria_edit/(?P<categoria_pk>\d+)/$', categoria_form, name="categoria_edit"),
     # BANDEIRAS:
-    url(r'^escola/(?P<escola_pk>\d+)/bandeiras_recebimento/$', bandeiras_list, name="bandeiras_list"),
+    url(r'^escola/(?P<escola_pk>\d+)/   /$', bandeiras_list, name="bandeiras_list"),
     url(r'^escola/(?P<escola_pk>\d+)/bandeira_form/$', bandeira_form, name="bandeira_form"),
     url(r'^escola/(?P<escola_pk>\d+)/bandeira_edit/(?P<bandeira_pk>\d+)/$', bandeira_form, name="bandeira_edit"),
-
+    url(r'^escola/(?P<escola_pk>\d+)/bandeira_edit/(?P<bandeira_pk>\d+)/parametros/(?P<parametros_pk>\d+)/$', bandeira_form, name="bandeira_param_edit"),
 
     url(r'^escola/gera_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
 ]

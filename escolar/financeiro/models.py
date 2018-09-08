@@ -348,7 +348,6 @@ class Bandeira(models.Model):
         return str_obj
 
 
-
 class BandeiraEscolaParametro(models.Model):
     """
     parâmetros de cada Bandeira de Cartão, por escola
@@ -358,16 +357,21 @@ class BandeiraEscolaParametro(models.Model):
     bandeira = models.ForeignKey(Bandeira)
     escola = models.ForeignKey('escolas.Escola')
     ativa = models.BooleanField(default=True)
-    taxa_debto = models.DecimalField('Taxa no débto', max_digits=5, decimal_places=2, default=Decimal('0'))
+    taxa_debito = models.DecimalField('Taxa no débto', max_digits=5, decimal_places=2, default=Decimal('0'))
     taxa_credito = models.DecimalField('Taxa no crédito', max_digits=5, decimal_places=2, default=Decimal('0'))
-    dias_debto = models.SmallIntegerField('Dia(s) para receber no débto', null=True, blank=True)
+    dias_debito = models.SmallIntegerField('Dia(s) para receber no débto', null=True, blank=True)
     dias_credito = models.SmallIntegerField('Dia(s) para receber no crédito', null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Bandeira Paraâmetros'
+        verbose_name_plural = 'Bandeiras Paraâmetros'
+        unique_together = ("escola", "bandeira")
+
     def __str__(self):
-        str_obj = '%s - %s' % (self.bandeira.nome, self.taxa)
+        str_obj = '%s - %s' % (self.bandeira.nome, self.taxa_debito)
         escola = self.escola
         if escola:
-            str_obj = '%s - %s - %s' % (self.escola.nome, self.bandeira.nome, self.taxa)
+            str_obj = '%s - %s - %s' % (self.escola.nome, self.bandeira.nome, self.taxa_debito)
         return str_obj
 
 
@@ -414,6 +418,7 @@ class Pagamento(models.Model):
     forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
     bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
+    # taxa = models.DecimalField('Taxa', max_digits=5, decimal_places=2, default=Decimal('0'))
 
     objects = PagamentoManager()
 

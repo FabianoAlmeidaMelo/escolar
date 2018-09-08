@@ -18,6 +18,7 @@ from escolar.financeiro.models import (
     CategoriaPagamento,
     ContratoAluno,
     Bandeira,
+    BandeiraEscolaParametro,
     Pagamento,
     ParametrosContrato,
 )
@@ -26,6 +27,7 @@ from escolar.financeiro.forms import (
     ANO_CORRENTE,
     MES_CORRNETE,
     BandeiraForm,
+    BandeiraEscolaParametroForm,
     CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
@@ -506,7 +508,7 @@ def categorias_list(request, escola_pk):
 
 
 @login_required
-def bandeira_form(request, escola_pk, bandeira_pk=None):
+def bandeira_form(request, escola_pk, bandeira_pk=None, parametros_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
@@ -519,24 +521,30 @@ def bandeira_form(request, escola_pk, bandeira_pk=None):
         msg = u'bandeira alterada com sucesso.'
     else:
         bandeira = None
-        msg = u'bandeira criada.' 
+        msg = u'bandeira criada.'
+    parametros = None
+    if parametros_pk:
+        parametros = get_object_or_404(BandeiraEscolaParametro, pk=parametros_pk)
 
     if bandeira_pk and not can_edit:
         raise Http404
     elif not bandeira_pk and not can_create:
         raise Http404
 
-    form = BandeiraForm(request.POST or None, request.FILES or None, instance=bandeira, escola=escola, user=user)
+    form = BandeiraForm(request.POST or None, instance=bandeira, escola=escola, user=user)
+    form_param = BandeiraEscolaParametroForm(request.POST or None, instance=parametros, escola=escola, bandeira=bandeira)
 
     if request.method == 'POST':
-        if form.is_valid():
+        if form.is_valid() and form_param.is_valid():
             bandeira = form.save()
+            form_param.save()
             messages.success(request, msg)
             return redirect(reverse('bandeiras_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha na edição dos parâmetros.')
     context = {}
     context['form'] = form
+    context['form_param'] = form_param
     context['bandeira'] = bandeira
     context['escola'] = escola
     context['can_edit'] = can_edit
@@ -553,9 +561,7 @@ def bandeiras_list(request, escola_pk):
     Lista todas as bandeiras de cartões de recebimentos
     as básicas não são editáveis
     '''
-    escola = None
-    if escola_pk:
-        escola = get_object_or_404(Escola, pk=escola_pk)
+    escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
     bandeiras = Bandeira.objects.filter(Q(escola=None) | Q(escola=escola))
