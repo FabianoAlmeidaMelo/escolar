@@ -41,6 +41,6 @@ def get_logo(slug):
 @register.filter
 def get_bandeira_parametros(bandeira, escola):
     param = BandeiraEscolaParametro.objects.filter(escola=escola, bandeira=bandeira).first()
-    if param:
-        param = param.id
+    # if param:
+    #     param = param.id
     return param

@@ -21,24 +21,35 @@
         <thead>
           <tr>
             <th>Bandeira</th>
-            <th>Taxa</th>
+            <th>Ativa</th>
+            <th>Taxa Débto (%)</th>
+            <th>Dias para receber<br>Débito</th>
+            <th>Taxa Crédito(%)</th>
+            <th>Dias para receber<br>Crédito</th>
           </tr>
         </thead>
         {% for object in bandeiras %}
-          <tr>
-          {% if object.can_edit and object|get_bandeira_parametros:escola %}
-            <td><a href="{% url 'bandeira_param_edit' escola.pk object.pk  object|get_bandeira_parametros:escola %}">{{ object.nome }}</a></td>
-          {% else %}
-            {% if  object.can_edit %}
-              <td><a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
+          {% with object|get_bandeira_parametros:escola as params %}
+            <tr>
+            {% if object.can_edit and object|get_bandeira_parametros:escola %}
+              <td><a href="{% url 'bandeira_param_edit' escola.pk object.pk  params.id %}">{{ object.nome }}</a></td>
             {% else %}
-              <td>{{ object.nome }}</td>
+              {% if  object.can_edit %}
+                <td><a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
+              {% else %}
+                <td>{{ object.nome }}</td>
+              {% endif %}
             {% endif %}
-          {% endif %}
-            <td>{{ object.taxa }}</td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="100%">Nenhum item disponível</td></tr>
+            <td>{{ params.ativa|yesno:"Sim,Não" }}</td>
+            <td>{{ params.taxa_debito|default:'--' }}</td>
+            <td>{{ params.dias_debito|default:'--' }}</td>
+            <td>{{ params.taxa_credito|default:'--' }}</td>
+            <td>{{ params.dias_credito|default:'--' }}</td>
+
+            </tr>
+            {% endwith %}
+          {% empty %}
+            <tr><td colspan="100%">Nenhum item disponível</td></tr>
         {% endfor %}
       </table>
   </div>
