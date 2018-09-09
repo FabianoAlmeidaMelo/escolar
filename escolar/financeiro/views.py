@@ -537,6 +537,7 @@ def bandeira_form(request, escola_pk, bandeira_pk=None, parametros_pk=None):
     if request.method == 'POST':
         if form.is_valid() and form_param.is_valid():
             bandeira = form.save()
+            form_param.bandeira = bandeira
             form_param.save()
             messages.success(request, msg)
             return redirect(reverse('bandeiras_list', kwargs={'escola_pk': escola.pk}))
