@@ -367,6 +367,11 @@ class BandeiraForm(forms.ModelForm):
         self.escola = kwargs.pop('escola', None)
         super(BandeiraForm, self).__init__(*args, **kwargs)
         self.can_edit = True
+        if self.instance.pk and self.instance.pk in [1, 2, 3, 4, 5, 6]:
+            self.can_edit = False
+            self.escola = None
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
 
         if self.instance.id and self.instance.pagamento_set.count():
             self.can_edit = False

@@ -31,10 +31,10 @@
         {% for object in bandeiras %}
           {% with object|get_bandeira_parametros:escola as params %}
             <tr>
-            {% if object.can_edit and object|get_bandeira_parametros:escola %}
+            {% if object|get_bandeira_parametros:escola %}
               <td><a href="{% url 'bandeira_param_edit' escola.pk object.pk  params.id %}">{{ object.nome }}</a></td>
             {% else %}
-              {% if  object.can_edit %}
+              {% if 1 > 0 %}
                 <td><a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
               {% else %}
                 <td>{{ object.nome }}</td>

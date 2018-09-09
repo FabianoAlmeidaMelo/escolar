@@ -48,6 +48,9 @@
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-9 col-sm-6 col-md-3">
+            {% if not form.can_edit %}
+              <h3>{{ form.instance.nome }}</h3>
+            {% endif %}
               <p>{% bootstrap_field form.nome %}</p>
             </div>
         </div>
@@ -63,9 +66,7 @@
       </div>
       <!-- glyphicon glyphicon-print -->
       <div class="form-actions">
-        {% if can_edit %}
           <input type="submit" value="Salvar" class="btn btn-primary">
-        {% endif %}
         <a href="{% url 'bandeiras_list' escola.id %}" class="btn btn-secondary">Voltar para lista de categorias</a>
       </div>
     </form>
