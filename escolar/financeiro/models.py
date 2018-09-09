@@ -329,6 +329,15 @@ class CategoriaPagamento(models.Model):
         ordering = ('nome',)
 
 
+class BandeiraManager(models.Manager):
+
+    def get_bandeiras_ativas(self, escola):
+        """
+        """
+        bandeiras_ids = BandeiraEscolaParametro.objects.filter(escola=escola).values_list('bandeira__id', flat=True)
+        return self.filter(id__in=bandeiras_ids)
+
+
 class Bandeira(models.Model):
     """
     Bandeira de cartões que as Escolas aceitam
@@ -336,6 +345,8 @@ class Bandeira(models.Model):
     """
     nome = models.CharField('Nome', max_length=20, null=False)
     escola = models.ForeignKey('escolas.Escola', null=True)
+
+    objects = BandeiraManager()
 
     class Meta:
         ordering = ('nome',)
@@ -418,7 +429,9 @@ class Pagamento(models.Model):
     forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
     bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
-    # taxa = models.DecimalField('Taxa', max_digits=5, decimal_places=2, default=Decimal('0'))
+    # taxa que a bandeira do cartão cobra da escola:
+    taxa_cartao = models.DecimalField('Taxa do cartão', max_digits=5, decimal_places=2, default=Decimal('0'))
+    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
 
     objects = PagamentoManager()
 

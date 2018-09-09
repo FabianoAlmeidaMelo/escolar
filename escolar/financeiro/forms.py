@@ -426,12 +426,28 @@ class PagamentoForm(forms.ModelForm):
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
         self.old_instance = deepcopy(self.instance)
+
+        self.fields['bandeira'].queryset=Bandeira.objects.get_bandeiras_ativas(self.escola)
+
         if self.contrato:
             self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
         if self.instance.pk and self.instance.categoria:
             if self.instance.categoria.id in [1, 2, 9]:
                 self.fields['categoria'].widget = forms.HiddenInput()
-        
+    
+
+    def clean(self):
+        cleaned_data = super(PagamentoForm, self).clean()
+        forma_pgto = cleaned_data['forma_pgto']
+        bandeira = cleaned_data['bandeira']
+        # import pdb; pdb.set_trace()
+
+        if forma_pgto in [2, 3] and not bandeira:
+            raise forms.ValidationError("selecione a Bandeira do Cartão")
+        elif bandeira and not forma_pgto:
+            raise forms.ValidationError("Selecione a forma de pagamento: Cartão de débito ou Cartão de Crédito")
+    
+        return cleaned_data
 
     class Meta:
         model = Pagamento
@@ -442,7 +458,8 @@ class PagamentoForm(forms.ModelForm):
                    'date_add',
                    'date_upd',
                    'user_add',
-                   'user_upd') 
+                   'user_upd',
+                   'taxa_cartao') 
 
 
     def save(self, *args, **kwargs):
