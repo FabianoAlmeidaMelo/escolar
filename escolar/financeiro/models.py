@@ -334,7 +334,7 @@ class BandeiraManager(models.Manager):
     def get_bandeiras_ativas(self, escola):
         """
         """
-        bandeiras_ids = BandeiraEscolaParametro.objects.filter(escola=escola).values_list('bandeira__id', flat=True)
+        bandeiras_ids = BandeiraEscolaParametro.objects.filter(escola=escola, ativa=True).values_list('bandeira__id', flat=True)
         return self.filter(id__in=bandeiras_ids)
 
 
