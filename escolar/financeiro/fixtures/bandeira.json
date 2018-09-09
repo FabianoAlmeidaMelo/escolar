@@ -46,5 +46,13 @@
         "nome": "Diners Club",
         "escola": null
     }
+},
+{
+    "model": "financeiro.bandeira",
+    "pk": 7,
+    "fields": {
+        "nome": "Hiper",
+        "escola": 1
+    }
 }
 ]

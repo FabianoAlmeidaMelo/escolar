@@ -5,15 +5,14 @@
   <div class="page-header">
   <!-- TODO erver esse br -->
   <br>
-    Bandeiras: <small> que a Escola aceita para recebimentos</small> 
+    Bandeiras dos cartões: <small>aceitos pela Escola</small> 
   </div>
 {% endblock page_title %}
 
 {% block content %}
 <div class="container">
   <div class="row-fluid span10">
-    {% if can_edit %}
-
+    {% if request.user.is_admin %}
       <a class="btn btn-success" href="{% url 'bandeira_form' escola.pk %}" class="btn btn-mini btn-success">Nova Bandeira</a>
       
     {% endif %}
