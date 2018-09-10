@@ -471,6 +471,8 @@ class PagamentoForm(forms.ModelForm):
         self.instance.escola = self.escola
         if self.contrato:
             self.instance.contrato = self.contrato
+        if self.instance.bandeira:
+            self.instance.taxa_cartao = self.instance.bandeira.get_taxa(self.escola, self.instance.forma_pgto)
         instance = super(PagamentoForm, self).save(*args, **kwargs)
         instance.save()
         # GUARDA no HISTORICO:

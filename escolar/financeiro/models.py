@@ -358,6 +358,15 @@ class Bandeira(models.Model):
             str_obj = '%s - %s ' % (self.escola, self.nome,)
         return str_obj
 
+    def get_taxa(self, escola, meio_pgto):
+        if meio_pgto == 2:
+            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_credito
+        elif meio_pgto == 3:
+            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_debito
+        else:
+            return 0
+
+
 
 class BandeiraEscolaParametro(models.Model):
     """

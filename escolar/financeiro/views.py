@@ -587,15 +587,16 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
+    is_diretor = user.is_diretor(escola.pk)
     contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ANO_CORRENTE).last()
     if not user.can_access_escola(escola.pk):
         raise Http404
 
     context = {}
     if contrato:
-        can_edit = all([user.is_diretor(escola.pk), contrato, not contrato.rescindido])
+        can_edit = all([is_diretor, contrato, not contrato.rescindido])
     else:
-        can_edit = all([user.is_diretor(escola.pk)])
+        can_edit = all([is_diretor])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
 
@@ -658,6 +659,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     # ### paginação ####
 
     context['total'] = total
+    context['is_diretor'] = is_diretor
     context['entradas'] = entradas
     context['saidas'] = saidas
     context['form'] = form
@@ -681,6 +683,7 @@ def pagamentos_list(request, escola_pk):
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
+    is_diretor = user.is_diretor(escola.pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
     context = {}
@@ -781,6 +784,7 @@ def pagamentos_list(request, escola_pk):
     context['permuta'] = int(permuta)
     context['transf_bancaria'] = int(transf_bancaria)
     context['indefinidos'] = int(indefinidos)
+    context['is_diretor'] = is_diretor
 
     context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
     context['saidas_cartao_credito'] = int(saidas_cartao_credito)
