@@ -1,6 +1,7 @@
 # coding: utf-8
 from django import template
 from escolar.escolas.models import Escola
+from escolar.financeiro.models import BandeiraEscolaParametro
 
 register = template.Library()
 
@@ -36,3 +37,7 @@ def get_logo(slug):
         if escola and escola.logo:
             return escola.logo.url
     return None
+
+@register.filter
+def get_bandeira_parametros(bandeira, escola):
+    return BandeiraEscolaParametro.objects.filter(escola=escola, bandeira=bandeira).first()

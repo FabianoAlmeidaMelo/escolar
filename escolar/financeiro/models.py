@@ -328,6 +328,73 @@ class CategoriaPagamento(models.Model):
     class Meta:
         ordering = ('nome',)
 
+
+class BandeiraManager(models.Manager):
+
+    def get_bandeiras_ativas(self, escola):
+        """
+        """
+        bandeiras_ids = BandeiraEscolaParametro.objects.filter(escola=escola, ativa=True).values_list('bandeira__id', flat=True)
+        return self.filter(id__in=bandeiras_ids)
+
+
+class Bandeira(models.Model):
+    """
+    Bandeira de cartões que as Escolas aceitam
+    para recebimentos
+    """
+    nome = models.CharField('Nome', max_length=20, null=False)
+    escola = models.ForeignKey('escolas.Escola', null=True)
+
+    objects = BandeiraManager()
+
+    class Meta:
+        ordering = ('nome',)
+
+    def __str__(self):
+        str_obj = '%s ' % self.nome
+        escola = self.escola
+        if escola:
+            str_obj = '%s - %s ' % (self.escola, self.nome,)
+        return str_obj
+
+    def get_taxa(self, escola, meio_pgto):
+        if meio_pgto == 2:
+            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_credito
+        elif meio_pgto == 3:
+            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_debito
+        else:
+            return 0
+
+
+
+class BandeiraEscolaParametro(models.Model):
+    """
+    parâmetros de cada Bandeira de Cartão, por escola
+    as bandeiras ativas, ficam disponíveis no cadastro dos
+    pagamentos
+    """
+    bandeira = models.ForeignKey(Bandeira)
+    escola = models.ForeignKey('escolas.Escola')
+    ativa = models.BooleanField(default=True)
+    taxa_debito = models.DecimalField('Taxa no débto', max_digits=5, decimal_places=2, default=Decimal('0'))
+    taxa_credito = models.DecimalField('Taxa no crédito', max_digits=5, decimal_places=2, default=Decimal('0'))
+    dias_debito = models.SmallIntegerField('Dia(s) para receber no débto', null=True, blank=True)
+    dias_credito = models.SmallIntegerField('Dia(s) para receber no crédito', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Bandeira Paraâmetros'
+        verbose_name_plural = 'Bandeiras Paraâmetros'
+        unique_together = ("escola", "bandeira")
+
+    def __str__(self):
+        str_obj = '%s - %s' % (self.bandeira.nome, self.taxa_debito)
+        escola = self.escola
+        if escola:
+            str_obj = '%s - %s - %s' % (self.escola.nome, self.bandeira.nome, self.taxa_debito)
+        return str_obj
+
+
 class PagamentoManager(models.Manager):
     # def get_recebimentos_pendentes(self):
     #     pass
@@ -370,7 +437,10 @@ class Pagamento(models.Model):
     categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
     forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
-
+    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
+    # taxa que a bandeira do cartão cobra da escola:
+    taxa_cartao = models.DecimalField('Taxa do cartão', max_digits=5, decimal_places=2, default=Decimal('0'))
+    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
 
     objects = PagamentoManager()
 

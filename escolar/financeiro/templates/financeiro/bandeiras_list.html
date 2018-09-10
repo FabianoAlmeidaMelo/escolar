@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load unica_escola %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    Bandeiras dos cartões: <small>aceitos pela Escola</small> 
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    {% if request.user.is_admin %}
+      <a class="btn btn-success" href="{% url 'bandeira_form' escola.pk %}" class="btn btn-mini btn-success">Nova Bandeira</a>
+      
+    {% endif %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Bandeira</th>
+            <th>Ativa</th>
+            <th>Taxa Débto (%)</th>
+            <th>Dias para receber<br>Débito</th>
+            <th>Taxa Crédito(%)</th>
+            <th>Dias para receber<br>Crédito</th>
+          </tr>
+        </thead>
+        {% for object in bandeiras %}
+          {% with object|get_bandeira_parametros:escola as params %}
+            <tr>
+            {% if object|get_bandeira_parametros:escola %}
+              <td><a href="{% url 'bandeira_param_edit' escola.pk object.pk  params.id %}">{{ object.nome }}</a></td>
+            {% else %}
+              {% if 1 > 0 %}
+                <td><a href="{% url 'bandeira_edit' escola.pk object.pk %}">{{ object.nome }}</a></td>
+              {% else %}
+                <td>{{ object.nome }}</td>
+              {% endif %}
+            {% endif %}
+            <td>{{ params.ativa|yesno:"Sim,Não" }}</td>
+            <td>{{ params.taxa_debito|default:'--' }}</td>
+            <td>{{ params.dias_debito|default:'--' }}</td>
+            <td>{{ params.taxa_credito|default:'--' }}</td>
+            <td>{{ params.dias_credito|default:'--' }}</td>
+
+            </tr>
+            {% endwith %}
+          {% empty %}
+            <tr><td colspan="100%">Nenhum item disponível</td></tr>
+        {% endfor %}
+      </table>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+{% endblock extra_js%}

@@ -100,7 +100,7 @@
           {% endif %}
         </td>
         <td>{{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>{{ pagamento.contrato.contratoaluno.aluno.nome }}</td>
-        <td>{{ pagamento.get_forma_pgto_display }}</td>
+        <td>{{ pagamento.get_forma_pgto_display }}{% if is_diretor and pagamento.taxa_cartao %}<br><small>taxa: {{ pagamento.taxa_cartao }} %</small>{% endif %}</td>
         <!-- <td>
           {% if pagamento.efet %}
               Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>

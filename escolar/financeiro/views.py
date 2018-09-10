@@ -17,6 +17,8 @@ from escolar.core.models import UserGrupos, User
 from escolar.financeiro.models import (
     CategoriaPagamento,
     ContratoAluno,
+    Bandeira,
+    BandeiraEscolaParametro,
     Pagamento,
     ParametrosContrato,
 )
@@ -24,6 +26,8 @@ from escolar.financeiro.models import (
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
     MES_CORRNETE,
+    BandeiraForm,
+    BandeiraEscolaParametroForm,
     CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
@@ -504,6 +508,76 @@ def categorias_list(request, escola_pk):
 
 
 @login_required
+def bandeira_form(request, escola_pk, bandeira_pk=None, parametros_pk=None):
+    user = request.user
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_create = any([user.is_admin(), user.is_diretor(escola.id)])
+
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    if bandeira_pk:
+        bandeira = get_object_or_404(Bandeira, pk=bandeira_pk)
+        msg = u'bandeira alterada com sucesso.'
+    else:
+        bandeira = None
+        msg = u'bandeira criada.'
+    parametros = None
+    if parametros_pk:
+        parametros = get_object_or_404(BandeiraEscolaParametro, pk=parametros_pk)
+
+    if bandeira_pk and not can_edit:
+        raise Http404
+    elif not bandeira_pk and not can_create:
+        raise Http404
+
+    form = BandeiraForm(request.POST or None, instance=bandeira, escola=escola, user=user)
+    form_param = BandeiraEscolaParametroForm(request.POST or None, instance=parametros, escola=escola, bandeira=bandeira)
+
+    if request.method == 'POST':
+        if form.is_valid() and form_param.is_valid():
+            bandeira = form.save()
+            form_param.bandeira = bandeira
+            form_param.save()
+            messages.success(request, msg)
+            return redirect(reverse('bandeiras_list', kwargs={'escola_pk': escola.pk}))
+        else:
+            messages.warning(request, u'Falha na edição dos parâmetros.')
+    context = {}
+    context['form'] = form
+    context['form_param'] = form_param
+    context['bandeira'] = bandeira
+    context['escola'] = escola
+    context['can_edit'] = can_edit
+
+    context['tab_sistema'] = "active"
+    context['tab_categorias'] = "active"
+
+    return render(request, 'financeiro/bandeira_form.html', context)
+
+
+@login_required
+def bandeiras_list(request, escola_pk):
+    '''
+    Lista todas as bandeiras de cartões de recebimentos
+    as básicas não são editáveis
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    bandeiras = Bandeira.objects.filter(Q(escola=None) | Q(escola=escola))
+
+    bandeiras = bandeiras.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
+
+    context = {}
+    context['bandeiras'] = bandeiras
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_sistema'] = "active"
+    context['tab_bandeiras'] = "active"
+    return render(request, 'financeiro/bandeiras_list.html', context)
+
+@login_required
 def pagamentos_aluno_list(request, aluno_pk):
     '''
     ref #35
@@ -513,15 +587,16 @@ def pagamentos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno =  get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
+    is_diretor = user.is_diretor(escola.pk)
     contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ANO_CORRENTE).last()
     if not user.can_access_escola(escola.pk):
         raise Http404
 
     context = {}
     if contrato:
-        can_edit = all([user.is_diretor(escola.pk), contrato, not contrato.rescindido])
+        can_edit = all([is_diretor, contrato, not contrato.rescindido])
     else:
-        can_edit = all([user.is_diretor(escola.pk)])
+        can_edit = all([is_diretor])
 
     form = PagamentoAlunoEscolaSearchForm(request.GET or None, escola=escola, aluno=aluno)
 
@@ -584,6 +659,7 @@ def pagamentos_aluno_list(request, aluno_pk):
     # ### paginação ####
 
     context['total'] = total
+    context['is_diretor'] = is_diretor
     context['entradas'] = entradas
     context['saidas'] = saidas
     context['form'] = form
@@ -607,6 +683,7 @@ def pagamentos_list(request, escola_pk):
     user = request.user
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
+    is_diretor = user.is_diretor(escola.pk)
     if not user.can_access_escola(escola.pk):
         raise Http404
     context = {}
@@ -707,6 +784,7 @@ def pagamentos_list(request, escola_pk):
     context['permuta'] = int(permuta)
     context['transf_bancaria'] = int(transf_bancaria)
     context['indefinidos'] = int(indefinidos)
+    context['is_diretor'] = is_diretor
 
     context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
     context['saidas_cartao_credito'] = int(saidas_cartao_credito)

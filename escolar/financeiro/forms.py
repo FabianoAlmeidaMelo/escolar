@@ -9,6 +9,8 @@ from django.forms.utils import ErrorList
 from escolar.financeiro.models import (
     ANO,
     FORMA_PGTO,
+    Bandeira,
+    BandeiraEscolaParametro,
     CategoriaPagamento,
     ContratoAluno,
     Pagamento,
@@ -358,6 +360,57 @@ class CategoriaPagamentoForm(forms.ModelForm):
         return instance
 
 
+class BandeiraForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(BandeiraForm, self).__init__(*args, **kwargs)
+        self.can_edit = True
+        if self.instance.pk and self.instance.pk in [1, 2, 3, 4, 5, 6, 7]:
+            self.can_edit = False
+            self.escola = None
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
+
+        if self.instance.id and self.instance.pagamento_set.count():
+            self.can_edit = False
+            self.fields['nome'].widget = forms.HiddenInput()
+            self.fields['nome'].required = False
+
+    class Meta:
+        model = Bandeira
+        exclude = ('escola', )
+
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(BandeiraForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+
+class BandeiraEscolaParametroForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        self.bandeira = kwargs.pop('bandeira', None)
+        self.escola = kwargs.pop('escola', None)
+        super(BandeiraEscolaParametroForm, self).__init__(*args, **kwargs)
+        self.can_edit = True
+
+    class Meta:
+        model = BandeiraEscolaParametro
+        exclude = ('escola', 'bandeira', )
+
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        self.instance.bandeira = self.bandeira
+        instance = super(BandeiraEscolaParametroForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance
+
+
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
     valor = BRDecimalField(label="Valor", required=True)
@@ -373,12 +426,28 @@ class PagamentoForm(forms.ModelForm):
         self.contrato = kwargs.pop('contrato', None)
         super(PagamentoForm, self).__init__(*args, **kwargs)
         self.old_instance = deepcopy(self.instance)
+
+        self.fields['bandeira'].queryset=Bandeira.objects.get_bandeiras_ativas(self.escola)
+
         if self.contrato:
             self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
         if self.instance.pk and self.instance.categoria:
             if self.instance.categoria.id in [1, 2, 9]:
                 self.fields['categoria'].widget = forms.HiddenInput()
-        
+    
+
+    def clean(self):
+        cleaned_data = super(PagamentoForm, self).clean()
+        forma_pgto = cleaned_data['forma_pgto']
+        bandeira = cleaned_data['bandeira']
+        # import pdb; pdb.set_trace()
+
+        if forma_pgto in [2, 3] and not bandeira:
+            raise forms.ValidationError("selecione a Bandeira do Cartão")
+        elif bandeira and not forma_pgto:
+            raise forms.ValidationError("Selecione a forma de pagamento: Cartão de débito ou Cartão de Crédito")
+    
+        return cleaned_data
 
     class Meta:
         model = Pagamento
@@ -389,7 +458,8 @@ class PagamentoForm(forms.ModelForm):
                    'date_add',
                    'date_upd',
                    'user_add',
-                   'user_upd') 
+                   'user_upd',
+                   'taxa_cartao') 
 
 
     def save(self, *args, **kwargs):
@@ -401,6 +471,8 @@ class PagamentoForm(forms.ModelForm):
         self.instance.escola = self.escola
         if self.contrato:
             self.instance.contrato = self.contrato
+        if self.instance.bandeira:
+            self.instance.taxa_cartao = self.instance.bandeira.get_taxa(self.escola, self.instance.forma_pgto)
         instance = super(PagamentoForm, self).save(*args, **kwargs)
         instance.save()
         # GUARDA no HISTORICO:
