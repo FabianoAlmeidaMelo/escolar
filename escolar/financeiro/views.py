@@ -920,9 +920,10 @@ def pagamentos_gera_xls(request):
         categoria = pagamento.categoria.nome if pagamento.categoria else ''
         responsavel = pagamento.contrato.contratoaluno.responsavel.nome if pagamento.contrato and pagamento.contrato.contratoaluno else ''
         cpf_resp = pagamento.contrato.contratoaluno.responsavel.cpf if pagamento.contrato and pagamento.contrato.contratoaluno else ''
+        valor = pagamento.get_valor_liquido() if pagamento.taxa_cartao else pagamento.valor
         values_list.append([data,
                             pagamento.get_tipo_display(),
-                            pagamento.valor,
+                            valor,
                             categoria,
                             responsavel,
                             cpf_resp,
