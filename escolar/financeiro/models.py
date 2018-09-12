@@ -450,6 +450,19 @@ class Pagamento(models.Model):
     def __str__(self):
         return self.titulo
 
+    def get_valor_liquido(self):
+        '''
+        SE tem taxa > 0
+        retorna o valor descontado a taxa
+        - listagem que vai para o contator XLS
+        '''
+        valor = self.valor
+        if self.taxa_cartao and self.efet:
+            tx = self.taxa_cartao / Decimal('100.0')
+            valor = self.valor - (tx * self.valor)
+        return valor
+
+
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
 

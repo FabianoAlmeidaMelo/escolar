@@ -119,6 +119,9 @@
 
           <td>
             <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
+            {% if pagamento.efet and pagamento.taxa_cartao %}
+              <br><small>R$ {{ pagamento.get_valor_liquido|numberformat_br }} (-{{ pagamento.taxa_cartao }} %)</small>
+            {% endif %}
             {% if pagamento.categoria.id == 1 and not pagamento.efet %}
               <br>
               <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
@@ -136,7 +139,7 @@
               {% endif %}
             </small>
           </td>
-          <td>{{ pagamento.get_forma_pgto_display }}{% if is_diretor and pagamento.taxa_cartao %}<br><small>taxa: {{ pagamento.taxa_cartao }} %</small>{% endif %}</td>
+          <td>{{ pagamento.get_forma_pgto_display }}{% if pagamento.taxa_cartao %}<br><small>taxa: {{ pagamento.taxa_cartao }} % </small>{% endif %}</td>
          <!--<td>
               {% if pagamento.efet %}
                   Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span>
