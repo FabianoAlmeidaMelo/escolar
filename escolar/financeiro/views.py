@@ -344,6 +344,27 @@ def contrato_cadastro(request, contrato_pk):
 
 
 @login_required
+def contrato_impressao(request, contrato_pk):
+    user = request.user
+
+    contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
+    escola = contrato.aluno.escola
+    if not user.can_access_escola(escola.pk):
+        raise Http404
+    aluno = contrato.aluno
+    can_edit = all([user.is_diretor(escola.id)])
+    context = {}
+    context["escola"] = escola
+    context["contrato"] = contrato
+    context["aluno"] = aluno
+    context['can_edit'] = can_edit
+    context['tab_alunos'] = "active"
+    context['tab_aluno_contratos'] = "active"
+    template = 'financeiro/contrato_%s.html' % escola.slug
+    return render(request, template, context)
+
+
+@login_required
 def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
     user = request.user
     Escola = apps.get_model(app_label='escolas', model_name='Escola')
