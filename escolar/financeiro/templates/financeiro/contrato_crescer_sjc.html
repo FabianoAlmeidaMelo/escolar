@@ -1,3 +1,4 @@
+{% load numberformat_br %}
 <style type="text/css">
   .error{
     color:red;
@@ -74,8 +75,7 @@
 
 <p>CLÁUSULA  7a - Como contraprestação pela prestação dos serviços educacionais oferecidos e a serem prestados, referentes ao período letivo de 2019, conforme previsto na CLÁUSULA 1a, o (s)contratante (s) pagará (ão) à contratada a anuidade mencionada na CLÁUSULA 8a e seus parágrafos.</p>
 
-<p>CLÁUSULA 8ª- O valor da anuidade é de R$ _________________ (________________________________________________________________
-_______________________________________), que deverá ser pago a tempo e modo neste instrumento convencionado e observará o seguinte:
+<p>CLÁUSULA 8ª- O valor da anuidade é de R$ {{ contrato.valor|numberformat_br }} ( {{ contrato.get_valor_extenso }} ), que deverá ser pago a tempo e modo neste instrumento convencionado e observará o seguinte:
 
 <p>Parágrafo 1°- O valor total da anuidade será distribuído da seguinte forma conforme firmado entre os pais/responsáveis:</p>
 <p>Matrícula:  ______________________________________________</p>

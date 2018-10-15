@@ -72,6 +72,7 @@
           {% endif %}
           <a href="{% url 'contratos_aluno_list' aluno.id %}" class="btn btn-secondary" title="Voltar para a listagem de contratos do aluno">Contratos do aluno</a>
           <a href="{% url 'contratos_list' escola.id %}" class="btn btn-secondary" title="Voltar para a listagem de Contratos">Listagem de todos contratos</a>
+          <a href="{% url 'contrato_impressao' contrato.id  %}" class="btn btn-secondary" title="Ler o contrato">Ler o contrato</a>
       </div>
   </div>
 </div>
