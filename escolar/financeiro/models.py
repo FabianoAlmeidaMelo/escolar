@@ -189,6 +189,14 @@ class ContratoAluno(Contrato):
     def __str__(self):
         return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
+    def parcelas_anuidade(self):
+        '''
+        para evitar alteração do valor das parcelas,
+        por juris e multas por atraso
+        '''
+        return self.valor / 12
+
+
     def date_list(self, nr_parcelas):
         datas = [self.data_assinatura or datetime.today()]
         if nr_parcelas > 1:
