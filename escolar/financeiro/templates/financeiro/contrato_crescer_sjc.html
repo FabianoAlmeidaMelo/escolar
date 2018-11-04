@@ -77,8 +77,17 @@
 
 <p>CLÁUSULA 8ª- O valor da anuidade é de R$ {{ contrato.valor|numberformat_br }} ( {{ contrato.get_valor_extenso }} ), que deverá ser pago a tempo e modo neste instrumento convencionado e observará o seguinte:
 
+
+
 <p>Parágrafo 1°- O valor total da anuidade será distribuído da seguinte forma conforme firmado entre os pais/responsáveis:</p>
-<p>Matrícula:  R$ {{ contrato.matricula_valor|numberformat_br }}</p>
+<ul> 
+  {% for pagamento in contrato.pagamento_set.all %}
+    {% if pagamento.nr_parcela >= 1 %}
+    <li>R$ {{ contrato.parcelas_anuidade }} - {{ contrato.vencimento }}/ {{ pagamento.data.month }}/ {{ pagamento.data.year }}</li>
+    {% endif %}
+  {% endfor %}
+</ul>
+<!-- <p>Matrícula:  R$ {{ contrato.matricula_valor|numberformat_br }}</p>
 <p>Janeiro: R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
 <p>Fevereiro: R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
 <p>Março: R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
@@ -91,16 +100,16 @@
 <p>Outubro:  R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
 <p>Novembro:  R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
 <p>Dezembro:  R$ {{ contrato.parcelas_anuidade|numberformat_br }}</p>
-<p>A 1ª mensalidade vencendo no dia ____/____/2019 e as demais, sucessivamente, vencendo a 2ª em ____/____/2019 e a última em dezembro de 2019.</p>
+<p>A 1ª mensalidade vencendo no dia ____/____/2019 e as demais, sucessivamente, vencendo a 2ª em ____/____/2019 e a última em dezembro de 2019.</p> -->
 
 <p>Parágrafo 2°- Em caso de não-aprovação da matrícula pela Tesouraria ou Departamento Jurídico do Colégio Crescer, os valores mencionados a título de taxa de matrícula serão imediatamente reembolsados mediante recibo;</p>
 
-<p>Parágrafo 3°- O pagamento da mensalidade até o 5º (quinto) dia útil de cada mês terá desconto de _____% (__________), previsto no próprio boleto de pagamento;</p>
+<p>Parágrafo 3°- O pagamento da mensalidade até o 5º (quinto) dia útil de cada mês terá desconto de {{ contrato.desconto }}% ({{ contrato.get_descconto_extenso }} por cento), previsto no próprio boleto de pagamento;</p>
 
 <p>Parágrafo 4°- A matrícula de mais de um dependente (alunos irmãos), dará direito de desconto de 10% (dez por cento) na anuidade/mensalidade. Será concedido 50% (cinquenta por cento) de desconto para irmãos na terceira matrícula.</p>
 
 
-<p>Parágrafo 5°- Considerando o número de vagas disponibilizadas para o ano letivo de 2019 e o custo para nova oferta pública da vaga reservada, caso o(s) contratante(s) desista(m) expressamente do contrato ou da matrícula até o dia _____ de ____________ de 2019, o Colégio Crescer ressarcirá 80% (oitenta por cento) do valor pago por ocasião do requerimento de matrícula, uma vez que 20% ficará para finalidades de custos administrativos, sendo justo e contratado que, após o decurso desse prazo, não haverá devolução de quaisquer valor.</p>
+<p>Parágrafo 5°- Considerando o número de vagas disponibilizadas para o ano letivo de 2019 e o custo para nova oferta pública da vaga reservada, caso o(s) contratante(s) desista(m) expressamente do contrato ou da matrícula até o dia _____ de ____________ de 20_____, o Colégio Crescer ressarcirá 80% (oitenta por cento) do valor pago por ocasião do requerimento de matrícula, uma vez que 20% ficará para finalidades de custos administrativos, sendo justo e contratado que, após o decurso desse prazo, não haverá devolução de quaisquer valor.</p>
 
 <h3>Do Material Didático e Pessoal</h3>
 
@@ -188,7 +197,7 @@
 <p>E, por estarem às partes de acordo com todos os termos e condições do presente contrato, assinam este instrumento em duas vias de igual teor e forma, na presença das testemunhas abaixo, para que se produzam todos os efeitos legais.</p>
 
     
-<p>São José dos Campos,____de___________de 201__.</p>
+<p>São José dos Campos, {{ contrato.data_assinatura.date }}.</p>
 
 <p>_____________________________________________</p>
 <p>CRESCER ESPAÇO DE CRESCIMENTO E APERFEIÇOAMENTO PSICOPEDAGÓGICO S/C LTDA (Contratada)</p>

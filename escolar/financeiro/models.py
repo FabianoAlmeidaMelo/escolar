@@ -14,7 +14,7 @@ from escolar.core.models import UserAdd, UserUpd
 from escolar.core.utils import add_email_embed_image
 from escolar.escolas.models import ANO
 from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
-from escolar.utils.numextenso import numero_extenso
+from escolar.utils.numextenso import numero_extenso, extenso
 
 
 ano_corrente = date.today().year
@@ -191,8 +191,9 @@ class ContratoAluno(Contrato):
 
     def parcelas_anuidade(self):
         '''
+        (na impressão do contrato)
         para evitar alteração do valor das parcelas,
-        por juris e multas por atraso
+        por jurus e multas por atraso
         '''
         return self.valor / 12
 
@@ -240,6 +241,9 @@ class ContratoAluno(Contrato):
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
+
+    def get_descconto_extenso(self):
+        return extenso(self.desconto)
 
     def get_datas_parcelas_material(self):
         parametros = ParametrosContrato.objects.filter(escola=self.aluno.escola, ano=self.ano).last() #, ano=self.ano)
