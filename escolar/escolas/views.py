@@ -368,7 +368,7 @@ def alunos_list(request, escola_pk):
         alunos = form.get_result_queryset()
         total_alunos = alunos.count()
     else:
-        alunos = form.get_result_queryset().filter(ano=ANO_CORRENTE)
+        alunos = form.get_result_queryset() #.filter(ano=ANO_CORRENTE)
         total_alunos = alunos.count()
 
     # ### PAGINAÇÃO ####

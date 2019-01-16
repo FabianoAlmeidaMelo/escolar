@@ -307,7 +307,7 @@ class PessoaSearchForm(forms.Form):
         self.contratos = apps.get_model('financeiro', 'ContratoAluno')
 
 
-    def get_result_queryset(self):
+    def get_result_queryset(self, ano=None):
         q = Q(escola=self.escola)
         # TODAS as PESSOA s que tem algum CONTRATO com a ESCOLA
         alunos_ativos_ids = self.contratos.objects.all().values_list('aluno__id', flat=True)
@@ -357,10 +357,16 @@ class AlunoSearchForm(forms.Form):
         cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
         self.fields['serie'].queryset = Serie.objects.filter(curso__id__in=cursos_ids)
         self.fields['curso'].queryset = self.escola.cursos.all()
+        self.contratos = apps.get_model('financeiro', 'ContratoAluno')
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
+        ano = ano_corrente
+        alunos_ativos_ids = list(self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True))
+
         if self.is_valid():
+            ano = self.cleaned_data['ano']
+
             # responsavel = self.cleaned_data['responsavel']
             # if responsavel:
             #     q = q & Q(responsavel__nome__icontains=responsavel)
@@ -379,7 +385,8 @@ class AlunoSearchForm(forms.Form):
             if curso and ano:
                 q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
-        return Aluno.objects.filter(q)
+            return Aluno.objects.filter(q)
+        return Aluno.objects.filter(id__in=alunos_ativos_ids)
 
 
 class ProfessorForm(forms.ModelForm):
