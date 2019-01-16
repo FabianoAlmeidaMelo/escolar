@@ -51,9 +51,13 @@ def get_date(value, formats=DATE_FTMS):
 
 def CONSULTA(ano, codigo_ibge):
     """
+    ex no terminal:
+    from escolar.utils.brasil_feriados import CONSULTA
+    CONSULTA(2019, '3549904')
+    
+    criará no BD os feriados de 2019 para SJC-SP
     ref #47
-    achar os dias úteis
-    ex: CONSULTA(2018, '3549904')
+    serve para achar os dias úteis
     """
     municipio = get_object_or_404(Municipio, id_ibge=int(codigo_ibge))
     uf_code = int(codigo_ibge[:2])
