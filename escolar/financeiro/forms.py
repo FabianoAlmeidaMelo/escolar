@@ -501,6 +501,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
     serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
     forma_pgto = forms.MultipleChoiceField(choices=FORMA_PGTO[1:], widget=forms.CheckboxSelectMultiple, required=False)
+    cpf_resp_fin = forms.CharField(label='CPF resp fin', required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -532,6 +533,9 @@ class PagamentoEscolaSearchForm(forms.Form):
     def get_result_queryset(self, mes=None):
         q = Q(escola=self.escola)
         if self.is_valid():
+            cpf_resp_fin = self.cleaned_data['cpf_resp_fin']
+            if cpf_resp_fin:
+                q = q & Q(contrato__contratoaluno__responsavel__cpf__icontains=cpf_resp_fin)
             ano = self.cleaned_data['ano']
             if ano:
                 q = q & Q(data__year=ano)
