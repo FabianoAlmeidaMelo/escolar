@@ -35,6 +35,7 @@ MES_CORRNETE = hoje.month
 PAGAMENTO_STATUS_CHOICES=( 
     (1,'Pago'),
     (0,'Em Aberto'),
+    (3, 'Previsto'),
 )
 
 CONTRATO_STATUS_CHOICES=( 

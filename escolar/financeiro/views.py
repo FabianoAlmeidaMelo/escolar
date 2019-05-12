@@ -711,14 +711,15 @@ def pagamentos_list(request, escola_pk):
 
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
-
+    efet = None
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         pagamentos = form.get_result_queryset()
+        efet = form.cleaned_data['efet']
     else:
         pagamentos = form.get_result_queryset().filter(data__gte=data_ini,
                                                        data__lte=data_fim )
-        # import pdb; pdb.set_trace()
+
     hj = date.today()
     # pgtos atrasados
     # tem Juros e Multa
@@ -787,6 +788,7 @@ def pagamentos_list(request, escola_pk):
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
+    situacao = {'3': 'Previsto', '1': 'Pago', '0': 'Em Aberto', None: 'Previsto' }
     context['lancamentos'] = lancamentos
     context['total'] = total
     context['entradas'] = entradas
@@ -795,6 +797,7 @@ def pagamentos_list(request, escola_pk):
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
+    context['situacao'] = situacao[efet]
 
     ## grafico meios de pgto:
     context['boleto_bancario'] = int(boleto_bancario)
