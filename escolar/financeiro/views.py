@@ -711,7 +711,7 @@ def pagamentos_list(request, escola_pk):
 
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
-    efet = None
+    efet = ''
     form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         pagamentos = form.get_result_queryset()
@@ -788,7 +788,7 @@ def pagamentos_list(request, escola_pk):
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
-    situacao = {'3': 'Previsto', '1': 'Pago', '0': 'Em Aberto', None: 'Previsto' }
+    situacao = {'3': 'Previsto', '1': 'Pago', '0': 'Em Aberto', '': 'Previsto' }
     context['lancamentos'] = lancamentos
     context['total'] = total
     context['entradas'] = entradas
