@@ -538,7 +538,7 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(contrato__contratoaluno__responsavel__cpf__icontains=cpf_resp_fin)
             ano = self.cleaned_data['ano']
             if ano:
-                q = q & Q(data__year=ano)
+                q = q & Q(data__year=ano)   
             serie = self.cleaned_data['serie']
             if serie:
                 q = q & Q(contrato__contratoaluno__serie=serie)
