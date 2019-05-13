@@ -7,6 +7,18 @@ from escolar.escolas.models import Escola, Pessoa
 
 
 class Command(BaseCommand):
+    """ref #30
+    cat /etc/cron.d/helper
+
+    sudo nano /etc/cron.d/helper
+    10 01 * * * ubuntu /var/www/projetos/escolar/escolar/escolar/scripts/alerta_aniversariantes_do_dia.sh 2>&1 > /tmp/email_tarefas_py.txt
+
+    # torna o arquivo executável:
+    chmod +x /var/www/projetos/helper/helper/helper/scripts/alerta_aniversariantes_do_dia.sh 
+
+    sudo systemctl status cron
+    sudo systemctl restart cron
+    """
 
     def handle(self, *args, **options):
         '''
@@ -18,7 +30,6 @@ class Command(BaseCommand):
         python manage.py alerta_aniversariantes_do_dia
         '''
         hoje = date.today()
-        print('\n----\n', hoje)
         escolas = Escola.objects.all()
         for escola in escolas:
             aniversariantes = Pessoa.objects.filter(
@@ -26,12 +37,12 @@ class Command(BaseCommand):
                 nascimento__month=hoje.month,
                 nascimento__day=hoje.day)
             if aniversariantes:
-                print(aniversariantes.count())
                 self.send_email_niver(escola, aniversariantes)
 
     def send_email_niver(self, escola, aniversariantes):
         nomes = '; \n'.join(aniversariantes.values_list('nome' , flat=True))
         emails = list(escola.usergrupos_set.filter(grupo__name='Diretor').values_list('user__email', flat=True))
+        emails.append('falmeidamelo@uol.com.br')
         msg = 'Essas pessoas fazem aniversário hoje:'
         url = 'https://smartiscool.online/escola/%s/aniversariantes_list/' % escola.id
         assinatura= 'Você pode lhes enviar um email\n%s' % url
@@ -40,10 +51,9 @@ class Command(BaseCommand):
             mensagem += '\n\n%s' % msg
             mensagem += '\n\n%s' % nomes
             mensagem += '\n\n%s' % assinatura
-
             
             send_mail(
-                'Feliz Aniversário',
+                'Aniversariasntes de Hoje/Crescer',
                 mensagem,
                 settings.DEFAULT_FROM_EMAIL,
                 emails,
