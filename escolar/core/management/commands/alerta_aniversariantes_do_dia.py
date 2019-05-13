@@ -33,10 +33,14 @@ class Command(BaseCommand):
         nomes = '; \n'.join(aniversariantes.values_list('nome' , flat=True))
         emails = list(escola.usergrupos_set.filter(grupo__name='Diretor').values_list('user__email', flat=True))
         msg = 'Essas pessoas fazem aniversário hoje:'
+        url = 'https://smartiscool.online/escola/%s/aniversariantes_list/' % escola.id
+        assinatura= 'Você pode lhes enviar um email\n %s' % url
         if emails:
             mensagem = 'Aniversariasntes de Hoje'
             mensagem += '\n\n%s' % msg
             mensagem += '\n\n%s' % nomes
+            mensagem += '\n\n%s' % assinatura
+
             
             send_mail(
                 'Feliz Aniversário',
