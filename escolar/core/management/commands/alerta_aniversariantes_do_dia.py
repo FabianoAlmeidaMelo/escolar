@@ -31,16 +31,16 @@ class Command(BaseCommand):
         hoje = date.today()
         escolas = Escola.objects.all()
         for escola in escolas:
-            aniversariantes = Pessoa.objects.filter(
+            nivers = Pessoa.objects.filter(
                 escola=escola,
                 nascimento__month=hoje.month,
                 nascimento__day=hoje.day)
-            if aniversariantes:
-                self.send_email_niver(escola, aniversariantes)
+            if nivers:
+                self.send_email_niver(escola, nivers)
             print("=============================================")
             print(escola.nome)
-            print(u'Envio de emails de Nivers do dia: %s Nivers: %s',
-                  hoje, aniversariantes.count())
+            msg = 'Envio de emails de Nivers do dia: %s Nivers: %s' % (hoje, nivers.count())
+            print(msg)
 
     def send_email_niver(self, escola, aniversariantes):
         nomes = '; \n'.join(aniversariantes.values_list('nome' , flat=True))
