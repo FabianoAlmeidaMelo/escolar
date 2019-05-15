@@ -9,12 +9,11 @@ from escolar.escolas.models import Escola, Pessoa
 class Command(BaseCommand):
     """ref #30
     cat /etc/cron.d/helper
-
     sudo nano /etc/cron.d/helper
-    10 01 * * * ubuntu /var/www/projetos/escolar/escolar/escolar/scripts/alerta_aniversariantes_do_dia.sh 2>&1 > /tmp/email_tarefas_py.txt
+    10 01 * * * ubuntu /var/www/projetos/escolar/escolar/scripts/alerta_aniversariantes_do_dia.sh 2>&1 > /tmp/email_nivres_py.txt
 
     # torna o arquivo executável:
-    chmod +x /var/www/projetos/helper/helper/helper/scripts/alerta_aniversariantes_do_dia.sh 
+    chmod +x /var/www/projetos/escolar/escolar/escolar/scripts/
 
     sudo systemctl status cron
     sudo systemctl restart cron
@@ -38,6 +37,10 @@ class Command(BaseCommand):
                 nascimento__day=hoje.day)
             if aniversariantes:
                 self.send_email_niver(escola, aniversariantes)
+            print("=============================================")
+            print(escola.nome)
+            print(u'Envio de emails de Nivers do dia: %s, nr: %s',
+                  hoje, aniversariantes.count())
 
     def send_email_niver(self, escola, aniversariantes):
         nomes = '; \n'.join(aniversariantes.values_list('nome' , flat=True))
