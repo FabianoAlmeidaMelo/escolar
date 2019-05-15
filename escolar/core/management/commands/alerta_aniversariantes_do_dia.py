@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 self.send_email_niver(escola, aniversariantes)
             print("=============================================")
             print(escola.nome)
-            print(u'Envio de emails de Nivers do dia: %s, nr: %s',
+            print(u'Envio de emails de Nivers do dia: %s Nivers: %s',
                   hoje, aniversariantes.count())
 
     def send_email_niver(self, escola, aniversariantes):

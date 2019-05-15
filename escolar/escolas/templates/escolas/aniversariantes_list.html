@@ -28,6 +28,7 @@
     {% if can_edit %}
       <form class="form-inline well" method="GET" >
         <div class="form-group">
+          {% bootstrap_field form.day %}
           {% bootstrap_field form.nome %}
           {% bootstrap_field form.month %}
           {% bootstrap_field form.ano %} 

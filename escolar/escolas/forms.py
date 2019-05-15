@@ -297,6 +297,7 @@ class PessoaSearchForm(forms.Form):
     nome = forms.CharField(label=u'Nome: ', required=False)
     month = forms.ChoiceField(label='mês: ', choices=CHOICE_MONTH, initial=INITIAL_MONTH, required=False)
     ano = forms.ChoiceField(label='ano: ', choices=ANO, initial=ano_corrente, required=False)
+    day = forms.IntegerField(label='dia: ', initial=date.today().day, required=False)
     # serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     # curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
 
@@ -329,6 +330,9 @@ class PessoaSearchForm(forms.Form):
             month = self.cleaned_data['month']
             if month:
                 q = q & Q(month=int(month))
+            day = self.cleaned_data['day']
+            if day:
+                q = q & Q(day=int(day))
             # serie = self.cleaned_data['serie']
             # if serie and ano:
             #     q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie=serie)
