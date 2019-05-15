@@ -297,7 +297,7 @@ class PessoaSearchForm(forms.Form):
     nome = forms.CharField(label=u'Nome: ', required=False)
     month = forms.ChoiceField(label='mês: ', choices=CHOICE_MONTH, initial=INITIAL_MONTH, required=False)
     ano = forms.ChoiceField(label='ano: ', choices=ANO, initial=ano_corrente, required=False)
-    day = forms.IntegerField(label='dia: ', initial=date.today().day, required=False)
+    day = forms.IntegerField(label='dia: ', required=False)
     # serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     # curso = forms.ModelChoiceField(label=u'Curso', queryset=Serie.objects.all(), required=False)
 
@@ -319,7 +319,7 @@ class PessoaSearchForm(forms.Form):
 
             ano = self.cleaned_data['ano']
             if ano:
-                # COM ANO só 'pega' as PESSOA s  que tem contrato naquele ano
+                # COM ANO só 'pega' as PESSOAs  que tem contrato naquele ano
                 alunos_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True)
                 resp_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('responsavel__id', flat=True)
                 q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)

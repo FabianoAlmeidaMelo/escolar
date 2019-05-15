@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from escolar.core.models import UserGrupos, User
 from django.contrib.auth.models import Group
+from datetime import date
 
 from escolar.core.forms import (
     EnderecoForm,
@@ -284,12 +285,12 @@ def aniversariantes_list(request, escola_pk):
 
     escola = get_object_or_404(Escola, pk=escola_pk)
     context = {}
-    
+    day = date.today().day
     form = PessoaSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
-        pessoas = form.get_result_queryset().filter(escola=escola)
+        pessoas = form.get_result_queryset()
     else:
-        pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH)
+        pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH, day=day)
     total = pessoas.count()
 
     # ### PAGINAÇÃO ####
