@@ -290,7 +290,9 @@ def aniversariantes_list(request, escola_pk):
     if form.is_valid():
         pessoas = form.get_result_queryset()
     else:
-        pessoas = form.get_result_queryset().filter(month=INITIAL_MONTH, day=day)
+        pessoas = form.get_result_queryset().filter(
+            month=INITIAL_MONTH, day=day
+        )
     total = pessoas.count()
 
     # ### PAGINAÇÃO ####
