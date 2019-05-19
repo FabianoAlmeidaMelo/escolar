@@ -45,7 +45,6 @@ class Command(BaseCommand):
     def send_email_niver(self, escola, aniversariantes):
         nomes = '; \n'.join(aniversariantes.values_list('nome' , flat=True))
         emails = list(escola.usergrupos_set.filter(grupo__name='Diretor').values_list('user__email', flat=True))
-        emails.append('falmeidamelo@uol.com.br')
         msg = 'Essas pessoas fazem aniversário hoje:'
         url = 'https://smartiscool.online/escola/%s/aniversariantes_list/' % escola.id
         assinatura= 'Você pode lhes enviar um email\n%s' % url

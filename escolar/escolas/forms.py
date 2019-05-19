@@ -309,6 +309,11 @@ class PessoaSearchForm(forms.Form):
 
 
     def get_result_queryset(self, ano=None):
+        pessoas = Pessoa.objects.filter(
+            escola=self.escola).annotate(
+            month=Extract('nascimento', 'month'),
+            day=Extract('nascimento', 'day')
+        )
         q = Q(escola=self.escola)
         # TODAS as PESSOA s que tem algum CONTRATO com a ESCOLA
         alunos_ativos_ids = self.contratos.objects.all().values_list('aluno__id', flat=True)
@@ -319,6 +324,7 @@ class PessoaSearchForm(forms.Form):
 
             ano = self.cleaned_data['ano']
             if ano:
+                ano = int(ano)
                 # COM ANO só 'pega' as PESSOAs  que tem contrato naquele ano
                 alunos_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True)
                 resp_ativos_ids = self.contratos.objects.filter(ano=ano).values_list('responsavel__id', flat=True)
@@ -341,9 +347,8 @@ class PessoaSearchForm(forms.Form):
             # if curso and ano:
             #     q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
 
-        # return Pessoa.objects.filter(q).order_by('nascimento')
-        return Pessoa.objects.annotate(month=Extract('nascimento', 'month'),
-                                       day=Extract('nascimento', 'day')).filter(q).order_by('month', 'day')
+            return pessoas.filter(q).order_by('month', 'day')
+        return pessoas.filter(q).order_by('month', 'day')
 
 
 class AlunoSearchForm(forms.Form):
