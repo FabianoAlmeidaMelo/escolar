@@ -316,8 +316,10 @@ class PessoaSearchForm(forms.Form):
         )
         q = Q(escola=self.escola)
         # TODAS as PESSOA s que tem algum CONTRATO com a ESCOLA
-        alunos_ativos_ids = self.contratos.objects.all().values_list('aluno__id', flat=True)
-        resp_ativos_ids = self.contratos.objects.all().values_list('responsavel__id', flat=True)
+        alunos_ativos_ids = self.contratos.objects.filter(
+            aluno__escola=self.escola).values_list('aluno__id', flat=True)
+        resp_ativos_ids = self.contratos.objects.filter(
+            aluno__escola=self.escola).values_list('responsavel__id', flat=True)
         q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)
         
         if self.is_valid():
