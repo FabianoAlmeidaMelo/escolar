@@ -788,7 +788,7 @@ def pagamentos_list(request, escola_pk):
     except EmptyPage:
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
-    situacao = {'3': 'Previsto', '1': 'Pago', '0': 'Em Aberto', '': 'Previsto' }
+    situacao = {'2': 'Previsto', '1': 'Pago', '0': 'Em Aberto', '': 'Previsto' }
     context['lancamentos'] = lancamentos
     context['total'] = total
     context['entradas'] = entradas

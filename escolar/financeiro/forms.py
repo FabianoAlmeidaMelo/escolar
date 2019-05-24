@@ -35,7 +35,7 @@ MES_CORRNETE = hoje.month
 PAGAMENTO_STATUS_CHOICES=( 
     (1,'Pago'),
     (0,'Em Aberto'),
-    (3, 'Previsto'),
+    (2, 'Previsto'),
 )
 
 CONTRATO_STATUS_CHOICES=( 
@@ -490,7 +490,7 @@ class PagamentoForm(forms.ModelForm):
 
 class PagamentoEscolaSearchForm(forms.Form):
     '''
-    #31
+    #31 pagamentos Administração
     '''
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
@@ -538,6 +538,7 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(contrato__contratoaluno__responsavel__cpf__icontains=cpf_resp_fin)
             ano = self.cleaned_data['ano']
             if ano:
+                ano = int(ano)
                 q = q & Q(data__year=ano)   
             serie = self.cleaned_data['serie']
             if serie:
@@ -546,14 +547,14 @@ class PagamentoEscolaSearchForm(forms.Form):
             mes = self.cleaned_data['mes']
             if mes and ano:
                 year = int(ano)
-                month = int(mes)
+                month = mes = int(mes)
                 data_ini = date(year, month, 1)
                 q = q & Q(data__gte=data_ini)
 
             mes_fim = self.cleaned_data['mes_fim']
             if mes_fim and ano:
                 year = int(ano)
-                month = int(mes_fim)
+                month =  mes_fim = int(mes_fim)
                 data_fim = date(year, month, monthrange(year, month)[1])
                 q = q & Q(data__lte=data_fim)
 
@@ -574,6 +575,17 @@ class PagamentoEscolaSearchForm(forms.Form):
                 q = q & Q(efet=True)
             if efet and efet == '0':
                 q = q & Q(efet=False)
+            '''
+            se não tem efet 0, 1 ou 2
+            E o mês é menor que mes corrente, ou o ano é menor
+            que o ano corrente
+            o default é 1 pago:
+            '''
+            mes_atual = date.today().month
+            if not efet:
+                if  mes < mes_atual or ano < ANO_CORRENTE:
+                    self.cleaned_data['efet'] = '1'
+                    q = q & Q(efet=True)
             tipo = self.cleaned_data['tipo']
             if tipo and tipo == '1':
                 q = q & Q(tipo=1)
