@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
         emails = list(escola.usergrupos_set.filter(
             grupo__name='Diretor').values_list('user__email', flat=True))
-        emails.append('falmeidamelo@uol.com.br')
+
         msg = 'Essas pessoas tem contrato em %s com sua escola e fazem aniversário hoje:' % self.ano
         url = 'https://smartiscool.online/escola/%s/aniversariantes_list/' % escola.id
         assinatura= 'Você pode lhes enviar um email\n%s' % url
