@@ -28,13 +28,17 @@ from escolar.financeiro.forms import (
     MES_CORRNETE,
     )
 
-def home(request):
-    escola_pk = None
+def home(request, escola_pk=None):
+    '''
+    Se o user tem vínculo com uma escola e
+    é do Grupo Diretor, a HOME mostra os Gráficos financeiros.
+
+    '''
     user = request.user
     context = {}
     escola = None
     context['diretor'] = False
-    if user.is_authenticated():
+    if user.is_authenticated() and not escola_pk:
         escola_pk = user.get_unica_escola()
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)

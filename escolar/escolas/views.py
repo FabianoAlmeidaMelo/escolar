@@ -160,7 +160,15 @@ def autorizados_aluno_list(request, aluno_pk):
 
 @login_required
 def escolas_list(request):
+    '''
+    o login coloca o user aqui,
+    se tem vínculo com 1 escola é redeirecionado
+    para home dessa escola.
+    Se tem vínculo com mais de uma escola fica na lista
+    '''
     user = request.user
+    if  user.get_unica_escola():
+        return redirect(reverse('home'))
     escolas_ids = user.usergrupos_set.all().values_list('escola__id', flat=True)
     if user.is_admin():
         escolas = Escola.objects.all()

@@ -62,7 +62,7 @@
       </div>
     {% endfor %}
   {% endif %}
-  <form method="POST" action="{% if not next %}?next=/{% endif %}">
+  <form method="POST" action="{% if not next %}?next={% url 'escolas_list' %}{% endif %}">
     {% csrf_token %}
     <div class="form-group">
       {% bootstrap_field form.username %}

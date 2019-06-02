@@ -19,6 +19,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^$', home, name='home'),
+    url(r'^(?P<escola_pk>\d+)/$', home, name='home'),
     url(r'^', include('escolar.core.urls')),
     url(r'^', include('escolar.escolas.urls')),
     url(r'^', include('escolar.financeiro.urls')),

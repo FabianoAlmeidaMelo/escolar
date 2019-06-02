@@ -118,6 +118,11 @@ class User(AbstractBaseUser):
         return can_access_escola
 
     def get_unica_escola(self):
+        '''
+        retorna a 'escola'
+        Quando o user está vinculado somente a uma escola.
+        ou 'None' quando está vinculado a mais de uma escola
+        '''
         if self.usergrupos_set.all().values_list('escola', flat=True).count() == 1:
             return self.usergrupos_set.all().values_list('escola', flat=True)[0]
         return None
