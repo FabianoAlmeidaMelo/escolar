@@ -7,13 +7,26 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'home' %}">Smart Is Cool</a>
+        {% if escola %}
+          <a class="navbar-brand" href="{% url 'home' escola.pk %}">
+            Smart Is Cool
+          </a>
+        {% else %}
+          <a class="navbar-brand" href="#">
+            Smart Is Cool
+          </a>
+        {% endif %}
       </div>
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <!-- <li class="{{ menu_home }}"><a href="/" title="{{ section.name }}"><i class="icon-home"></i>Home</a></li> -->
           {% if user.is_authenticated %}
+             {% if not user.get_unica_escola %}
+              <li class="dropdown {{ menu_administracao }}">
+                <li class="{{ escolas }}"><a href="{% url 'escolas_list' %}">Escolas</a></li>
+              </li>
+            {% endif %}
             {% if escola %}
             <!-- {# dropdown ADM INI #} -->
             <li class="dropdown {{ menu_administracao }}">
@@ -44,10 +57,6 @@
                 <!-- <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li> -->
                <!--  <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li> -->
             </li>
-            {% else %}
-              <li class="dropdown {{ menu_administracao }}">
-                <li class="{{ escolas }}"><a href="{% url 'escolas_list' %}">Escolas</a></li>
-              </li>
             {% endif %}
           {% endif %}
           <li class="{% if section.selected %}active{% endif %}"><a href="#"><i class="{{ section.icon }}"></i> {{ section.name }}</a></li>
