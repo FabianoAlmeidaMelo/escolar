@@ -37,9 +37,10 @@
                 <li class="dropdown {{ tab_administracao}}">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administração <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
-                    <li class="{{ tab_parcelas }}"><a href="{% url 'pagamentos_list' escola.id %}" id='id_movimentos'>Pagamentos</a></li>
                     <li class="{{ tab_aniversariantes }}"><a href="{% url 'aniversariantes_list' escola.id %}" id='id_movimentos'>Aniversariantes</a></li>
+                    <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
+                    <li class="{{ tab_inadimplentes }}"><a href="{% url 'inadimplentes_list' escola.id %}" id='contratos'>Inadimplentes</a></li>
+                    <li class="{{ tab_parcelas }}"><a href="{% url 'pagamentos_list' escola.id %}" id='id_movimentos'>Pagamentos</a></li>
                     <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
                   </ul>
                 </li>

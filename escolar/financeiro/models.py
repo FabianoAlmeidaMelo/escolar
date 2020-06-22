@@ -562,7 +562,6 @@ class Pagamento(models.Model):
         Destaca o pagamento com datas previstas ultrapassadas
         '''
         hoje = date.today()
-        # import pdb; pdb.set_trace()
         if self.efet:
             return "success"
         elif self.data <= hoje and self.tipo == 1:

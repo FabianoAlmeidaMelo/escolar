@@ -12,6 +12,7 @@ from escolar.financeiro.views import (
     contratos_aluno_list,
     contratos_list,
     grafico_contratos_pagamentos,
+    inadimplentes_list,
     pagamento_form,
     pagamentos_aluno_list,
     pagamentos_gera_xls,
@@ -43,6 +44,7 @@ urlpatterns = [
     url(r'^escola/contrato_imprimir/(?P<contrato_pk>\d+)/$', contrato_impressao, name='contrato_impressao'),
     url(r'^escola/contrato/(?P<contrato_pk>\d+)/set_assinado/$', set_contrato_assinado, name="set_contrato_assinado"),
     # Pagamentos
+    url(r'^escola/(?P<escola_pk>\d+)/inadimplentes_list/$', inadimplentes_list, name='inadimplentes_list'),
     url(r'^escola/(?P<escola_pk>\d+)/pagamentos_list/$', pagamentos_list, name='pagamentos_list'),
     url(r'^escola/pagamentos_aluno_list/(?P<aluno_pk>\d+)/$', pagamentos_aluno_list, name='pagamentos_aluno_list'),
     url(r'^escola/(?P<escola_pk>\d+)/pagamento_form/$', pagamento_form, name='pagamento_form'),

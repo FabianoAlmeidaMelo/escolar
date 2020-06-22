@@ -507,7 +507,10 @@ class PagamentoEscolaSearchForm(forms.Form):
         self.escola = kargs.pop('escola', None)
         super(PagamentoEscolaSearchForm, self).__init__(*args, **kargs)
 
-        self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(Q(escola=None)|Q(escola=self.escola))
+        self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(
+            Q(escola=None) |
+            Q(escola=self.escola)
+        )
 
         cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
 
