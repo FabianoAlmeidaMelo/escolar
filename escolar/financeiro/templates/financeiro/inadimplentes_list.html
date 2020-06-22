@@ -36,46 +36,30 @@
         {% bootstrap_field form.mes_fim %}
         {% bootstrap_field form.serie %}
         {% bootstrap_field form.cpf_resp_fin %}
-        {% bootstrap_field form.efet %}
       </div>
       <p></p>
 
       <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
       <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
    
-    {% if can_edit %}
-      <caption>
-       <div style="float:right; margin-right:10px">
-        <a href="{% url 'pagamento_form' escola.id %}" class="btn btn-mini btn-success">Novo Pagamento</a>
-          <!-- <input type="submit" name="gerar_planilha_xls" value="Gerar planilha" class="btn btn-primary"> -->
-
-          <input id="id_gera_xls"
-                 type="button"
-                 onclick="window.location.href='{% url 'pagamentos_gera_xls' %}?pagamentos_ids={{ pagamentos_ids }}'"
-                 style="margin-bottom: 5px; margin-top: 2px;"
-                 class="button"
-                 value="Gerar XLS">
-        </div>
-      </caption>
-    {% endif %}
     </form>
   </div>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Título</th>
+        <th>Responsável CPF <br>Série - aluno</th>
+        <th>celular</th>
         <th>Data</th>
         <th>Valor</th>
-        <th>Categoria</th>
-        <th>Responsável/<br>Aluno</th>
-        <th>Forma de <br>Pagamento</th>
-        <th>Pagar</th>
+        <th>Multa</th>
+        <th>Juros</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td><small>entradas <br>R$ {{ entradas|numberformat_br }}</small></td>
-        <td><small>saídas <br>R$ {{ saidas|numberformat_br }}</small></td>
+        <td></td>
+        <td></td>
         <td span="4" ><small>Total</small><br>
           {% if total > 0 %}
             <font color="blue">R$ {{ total|numberformat_br }}</font>
@@ -91,64 +75,32 @@
       {% for pagamento in object_list %}
         <tr class="{{ pagamento.get_context_alert }}">
           <td>
-            {% if can_edit %}
-            <a href="{% url 'pagamento_edit' escola.id pagamento.id %}">{{ pagamento.titulo|default:'--' }}</a>
-            {% else %}
-              {{ pagamento.titulo|default:'--' }}
-            {% endif %}
-            {% if  pagamento.atrasado %}
-              <br>
-              <small>Multa: R$ {{ pagamento.get_multa|numberformat_br }} </small>
-            {% endif%}
+            <small>
+                {{ pagamento.contrato.contratoaluno.responsavel.nome }} - {{ pagamento.contrato.contratoaluno.responsavel.cpf }}<br>
+                {{ pagamento.contrato.contratoaluno.serie }} - {{ pagamento.contrato.contratoaluno.aluno.nome }}</small>
+            </small>
+          </td>
+          <td>
+            {{ pagamento.contrato.contratoaluno.responsavel.celular }}<br>
+            <small>{{ pagamento.contrato.contratoaluno.responsavel.email }}</small>
           </td>
           <td>
             {{ pagamento.data|date:'d/m/Y' }}
-            {% if pagamento.atrasado %}
-              <br>
-              <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>
-            {% endif %}
           </td>
-
           <td>
             <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
-            {% if pagamento.efet and pagamento.taxa_cartao %}
-              <br><small>R$ {{ pagamento.get_valor_liquido|numberformat_br }} (-{{ pagamento.taxa_cartao }} %)</small>
-            {% endif %}
+          </td>
+          <td>
+            R$ {{ pagamento.get_multa|numberformat_br }}
+          </td>
+          <td>R$ {{ pagamento.get_juros|numberformat_br }}</td>
+          <td>
             {% if pagamento.categoria.id == 1 and not pagamento.efet %}
-              <br>
-              <small>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }} </small>
+              R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}
+            {% else %}
+              R$ {{ pagamento.valor|numberformat_br }}
             {% endif %}
           </td>
-          <td>{{ pagamento.categoria }}</td>
-          <td>
-            <small>
-              {% if pagamento.contrato %}
-                {{ pagamento.contrato.contratoaluno.responsavel.nome }}/<br>
-                {{ pagamento.contrato.contratoaluno.responsavel.cpf }}
-                <small>{{ pagamento.contrato.contratoaluno.aluno.nome }}/ {{ pagamento.contrato.contratoaluno.serie }}</small>
-              {% else %}
-                {{ pagamento.categoria }}
-              {% endif %}
-            </small>
-          </td>
-          <td>{{ pagamento.get_forma_pgto_display }}{% if pagamento.taxa_cartao %}<br><small>taxa: {{ pagamento.taxa_cartao }} % </small>{% endif %}</td>
-
-          <td>
-              {% if pagamento.can_pay %}
-                   <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pagamento_{{ pagamento.id }}">Pagar</button>
-              {% else %}
-                  {% if pagamento.efet %}
-                    Pago: <span class="glyphicon glyphicon-ok-circle" style="color:green"></span><br>
-                    <a href="{% url 'print_recibo' pagamento.id %}">Recibo</a>
-                  {% endif %}
-              {% endif %}
-          </td>
-          {% if pagamento.can_pay %}
-            <tr>
-              <!-- Modal -->
-              {% include "financeiro/pagamento_modal.html" %}
-            </tr>
-          {% endif %}
           {% empty %}
         <tr>
           <td>

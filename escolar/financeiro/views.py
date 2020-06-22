@@ -26,11 +26,12 @@ from escolar.financeiro.models import (
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
     MES_CORRNETE,
-    BandeiraForm,
     BandeiraEscolaParametroForm,
+    BandeiraForm,
     CategoriaPagamentoForm,
     ContratoAlunoForm,
     ContratoAlunoSearchForm,
+    InadimplentesSearchForm,
     PagamentoAlunoEscolaSearchForm,
     PagamentoEscolaSearchForm,
     PagamentoForm,
@@ -892,7 +893,8 @@ def inadimplentes_list(request, escola_pk):
 
     data_ini = date(ANO_CORRENTE, 1, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
-    form = PagamentoEscolaSearchForm(request.GET or None, escola=escola)
+
+    form = InadimplentesSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
         pagamentos = form.get_result_queryset().filter(efet=False)
     else:
@@ -926,7 +928,7 @@ def inadimplentes_list(request, escola_pk):
                                          efet=False,
                                          then=Value(True)), output_field=BooleanField()))
 
-    pagamentos = pagamentos.filter(invalido=None).order_by('contrato__contratoaluno__responsavel__nome')
+    pagamentos = pagamentos.filter(invalido=None, data__lt=hj).order_by('contrato__contratoaluno__responsavel__nome', 'data')
     lancamentos = pagamentos.count()
     pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 

@@ -598,6 +598,107 @@ class PagamentoEscolaSearchForm(forms.Form):
         return Pagamento.objects.filter(q)
 
 
+
+class InadimplentesSearchForm(forms.Form):
+    '''
+    #2 github
+    '''
+    efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
+    tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
+    titulo = forms.CharField(label=u'Título', required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ANO_CORRENTE, required=False)
+    mes = forms.ChoiceField(label='Mês', choices=MESES, initial=1, required=False)
+    mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=MES_CORRNETE, required=False)
+    categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
+    serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
+    # forma_pgto = forms.MultipleChoiceField(choices=FORMA_PGTO[1:], widget=forms.CheckboxSelectMultiple, required=False)
+    cpf_resp_fin = forms.CharField(label='CPF resp fin', required=False)
+
+    def __init__(self, *args, **kargs):
+        self.escola = kargs.pop('escola', None)
+        super(InadimplentesSearchForm, self).__init__(*args, **kargs)
+
+        self.fields['categoria'].queryset = CategoriaPagamento.objects.filter(
+            Q(escola=None) |
+            Q(escola=self.escola)
+        )
+
+        cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
+
+        self.fields['serie'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
+    
+    
+
+    def clean(self):
+        cleaned_data = super(InadimplentesSearchForm, self).clean()
+        ano = cleaned_data['ano']
+        mes = cleaned_data['mes']
+        mes_fim = cleaned_data['mes_fim']
+
+        if not ano and any([mes, mes_fim]):
+            raise forms.ValidationError("Ano é requerido para filtrar por mês")
+        elif mes and mes_fim:
+            if int(mes_fim) < int(mes):
+                raise forms.ValidationError("Mês inicial não pode ser maior que o mês final")
+
+ 
+        return cleaned_data
+
+    def get_result_queryset(self, mes=None):
+        q = Q(escola=self.escola)
+        if self.is_valid():
+            cpf_resp_fin = self.cleaned_data['cpf_resp_fin']
+            if cpf_resp_fin:
+                q = q & Q(contrato__contratoaluno__responsavel__cpf__icontains=cpf_resp_fin)
+            ano = self.cleaned_data['ano']
+            if ano:
+                ano = int(ano)
+                q = q & Q(data__year=ano)   
+            serie = self.cleaned_data['serie']
+            if serie:
+                q = q & Q(contrato__contratoaluno__serie=serie)
+
+            mes = self.cleaned_data['mes']
+            if mes and ano:
+                year = int(ano)
+                month = mes = int(mes)
+                data_ini = date(year, month, 1)
+                q = q & Q(data__gte=data_ini)
+
+            mes_fim = self.cleaned_data['mes_fim']
+            if mes_fim and ano:
+                year = int(ano)
+                month =  mes_fim = int(mes_fim)
+                data_fim = date(year, month, monthrange(year, month)[1])
+                q = q & Q(data__lte=data_fim)
+
+            titulo = self.cleaned_data['titulo']
+            if titulo:
+                q = q & Q(titulo__icontains=titulo)
+
+            categoria = self.cleaned_data['categoria']
+            if categoria:
+                q = q & Q(categoria=categoria)
+
+            efet = '0'
+            if efet and efet == '0':
+                q = q & Q(efet=False)
+
+            mes_atual = date.today().month
+            if not efet:
+                if  mes < mes_atual or ano < ANO_CORRENTE:
+                    self.cleaned_data['efet'] = '1'
+                    q = q & Q(efet=True)
+            tipo = self.cleaned_data['tipo']
+            if tipo and tipo == '1':
+                q = q & Q(tipo=1)
+            if tipo and tipo == '2':
+                q = q & Q(tipo=2)
+            return Pagamento.objects.filter(q).exclude(valor=Decimal('0'))
+        return Pagamento.objects.filter(q)
+
+
+
 class PagamentoAlunoEscolaSearchForm(forms.Form):
     '''
     #35
