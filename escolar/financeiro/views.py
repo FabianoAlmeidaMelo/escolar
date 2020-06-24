@@ -909,6 +909,7 @@ def inadimplentes_list(request, escola_pk):
     total = pagamentos.aggregate(Sum('valor'))['valor__sum'] or 0
     multa = pagamentos.aggregate(Sum('multa'))['multa__sum'] or 0
     juros = pagamentos.aggregate(Sum('juros'))['juros__sum'] or 0
+    tatal_final = total + multa + juros
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -927,6 +928,7 @@ def inadimplentes_list(request, escola_pk):
     context['total'] = total
     context['multa'] = multa
     context['juros'] = juros
+    context['tatal_final'] = tatal_final
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit

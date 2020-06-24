@@ -17,7 +17,7 @@
   <div class="page-header">
   <br>
     {% if escola %}
-      Inadimplentes / Escola: {{ escola.nome }} <small>Lançamentos: {{ lancamentos }}</small>
+      Inadimplentes / Escola: {{ escola.nome }} <small>Quantidade: {{ lancamentos }}</small>
     {% else %}
       Inadimplentes
     {% endif %}
@@ -75,7 +75,8 @@
         <td >
             R$ {{ juros|numberformat_br }}
         </td>
-        <td id="tatal_final">
+        <td>
+           R$ {{ tatal_final|numberformat_br }}
         </td>
       </tr>
     </tfoot>
@@ -131,20 +132,18 @@
       let multaFloat = parseFloat(multa.replace(',', '.'));
       let jurosFloat = parseFloat(juros.replace(',', '.'));
       let totalFloat = valorFloat + multaFloat + jurosFloat;
-      let total = totalFloat.toFixed(2);
-      document.getElementById("total_id_"+id).innerText = 'R$ ' + String(total);
+      let total = totalFloat.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+
+      document.getElementById("total_id_"+id).innerText = total;
       return totalFloat
 
     }
-    function callSum(){
-      let totalFinal = 0;
+    function callSumDebit(){
       for (const row of document.getElementById("inadimplentes").rows) {
         let pk = row.cells[0].id
-        totalFinal += sumDebitos(pk);
+        sumDebitos(pk);
       }
-      totalFinal = totalFinal.toFixed(2);
-      document.getElementById("tatal_final").innerText = 'R$ ' + String(totalFinal);
     }
-    callSum();
+    callSumDebit();
   </script>
 {% endblock extra_js%}
