@@ -896,48 +896,19 @@ def inadimplentes_list(request, escola_pk):
 
     form = InadimplentesSearchForm(request.GET or None, escola=escola)
     if form.is_valid():
-        pagamentos = form.get_result_queryset().filter(efet=False)
+        pagamentos = form.get_result_queryset()
     else:
-        pagamentos = form.get_result_queryset().filter(data__gte=data_ini,
-                                                       data__lte=data_fim,
-                                                       efet=False)
+        pagamentos = form.get_result_queryset()
     efet = '0'
 
     hj = date.today()
-    # pgtos atrasados
-    # tem Juros e Multa
-    pagamentos = pagamentos.filter(contrato__isnull=False).annotate(
-                    atrasado=Case(
-                        When(efet=False,
-                             data__lte=hj,
-                             categoria_id=1,
-                             then=Value(True)), output_field=BooleanField()))
 
-    pagamentos = pagamentos.annotate(
-                    can_pay=Case(
-                         When(efet=False,
-                              data__lte=data_fim,
-                              then=Value(True)), output_field=BooleanField()))
-
-
-    # SE Contrato Rescindido
-    pagamentos = pagamentos.annotate(
-                                invalido=Case(
-                                    When(contrato__isnull=False,
-                                         contrato__rescindido=True,
-                                         efet=False,
-                                         then=Value(True)), output_field=BooleanField()))
-
-    pagamentos = pagamentos.filter(invalido=None, data__lt=hj).order_by('contrato__contratoaluno__responsavel__nome', 'data')
+    pagamentos = pagamentos.filter(ano=hj.year).order_by('responsavel_nome')
     lancamentos = pagamentos.count()
-    pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 
-
-    total_pos = sum(pagamentos.filter(tipo=1).values_list('valor', flat=True))
-    total_neg = sum(pagamentos.filter(tipo=2).values_list('valor', flat=True))
-    total = total_pos - total_neg
-    entradas=int(total_pos)
-    saidas=int(total_neg)
+    total = pagamentos.aggregate(Sum('valor'))['valor__sum'] or 0
+    multa = pagamentos.aggregate(Sum('multa'))['multa__sum'] or 0
+    juros = pagamentos.aggregate(Sum('juros'))['juros__sum'] or 0
 
     # ### PAGINAÇÃO ####
     get_copy = request.GET.copy()
@@ -954,16 +925,14 @@ def inadimplentes_list(request, escola_pk):
     situacao = {'2': 'Previsto', '1': 'Pago', '0': 'Em Aberto', '': 'Previsto' }
     context['lancamentos'] = lancamentos
     context['total'] = total
-    context['entradas'] = entradas
-    context['saidas'] = saidas
+    context['multa'] = multa
+    context['juros'] = juros
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
     context['situacao'] = situacao[efet]
 
-
-    context['pagamentos_ids'] = pagamentos_ids
     context['tab_administracao'] = "active"
     context['tab_inadimplentes'] = "active"
 

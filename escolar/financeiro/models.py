@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.apps import apps
+from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Q
@@ -15,6 +16,7 @@ from escolar.core.utils import add_email_embed_image
 from escolar.escolas.models import ANO
 from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso, extenso
+
 
 
 ano_corrente = date.today().year
@@ -645,3 +647,25 @@ class Pagamento(models.Model):
             # add_email_embed_image(email, img_content_id, img_data)
             email.attach_alternative(html_content, 'text/html')
             return email.send()
+
+
+
+class InadimplenteDBView(models.Model):
+    ano = models.SmallIntegerField()
+    escola = models.ForeignKey('escolas.Escola')
+    contrato = models.ForeignKey(Contrato)
+    serie = models.ForeignKey('escolas.Serie')
+    pagamentos_atrasados = models.SmallIntegerField()
+    titulos = ArrayField(models.CharField(max_length=255), blank=True, null=True)
+    valor = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0'))
+    multa = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0'))
+    juros = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0'))
+    cpf_resp_fin = models.CharField(max_length=11)
+    responsavel_nome = models.CharField(max_length=100)
+    celular = models.CharField(max_length=11, null=True, blank=True)
+    email = models.EmailField('e-mail', null=True, blank=True)
+    aluno_nome = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'view_inadimplentes'

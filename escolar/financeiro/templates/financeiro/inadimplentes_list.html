@@ -32,10 +32,13 @@
      {{ form.errors }}
       <div class="form-group">
         {% bootstrap_field form.ano %}
-        {% bootstrap_field form.mes %} a
-        {% bootstrap_field form.mes_fim %}
         {% bootstrap_field form.serie %}
         {% bootstrap_field form.cpf_resp_fin %}
+        {% bootstrap_field form.responsavel_nome %}
+      </div>
+      <p></p>
+      <div>
+        {% bootstrap_field form.aluno_nome %}
       </div>
       <p></p>
 
@@ -49,7 +52,8 @@
       <tr>
         <th>Responsável CPF <br>Série - aluno</th>
         <th>celular</th>
-        <th>Data</th>
+        <th>Ano contrato</th>
+        <th>Pgto Atrasados</th>
         <th>Valor</th>
         <th>Multa</th>
         <th>Juros</th>
@@ -60,46 +64,47 @@
       <tr>
         <td></td>
         <td></td>
-        <td span="4" ><small>Total</small><br>
-          {% if total > 0 %}
-            <font color="blue">R$ {{ total|numberformat_br }}</font>
-          {% else %}
-            <font color="red">R$ {{ total|numberformat_br }}</font>
-          {% endif %}
+        <td></td>
+        <td></td>
+        <td span="4" >
+            R$ {{ total|numberformat_br }}
         </td>
-        <td></td>
-        <td></td>
+        <td >
+            R$ {{ multa|numberformat_br }}
+        </td>
+        <td >
+            R$ {{ juros|numberformat_br }}
+        </td>
+        <td id="tatal_final">
+        </td>
       </tr>
     </tfoot>
-    <tbody>
+    <tbody id="inadimplentes">
       {% for pagamento in object_list %}
-        <tr class="{{ pagamento.get_context_alert }}">
-          <td>
+        <tr>
+          <td id={{pagamento.id}}>
             <small>
-                {{ pagamento.contrato.contratoaluno.responsavel.nome }} - {{ pagamento.contrato.contratoaluno.responsavel.cpf }}<br>
-                {{ pagamento.contrato.contratoaluno.serie }} - {{ pagamento.contrato.contratoaluno.aluno.nome }}</small>
+                {{ pagamento.responsavel_nome }} - {{ pagamento.cpf_resp_fin }}<br>
+                {{ pagamento.serie }} - {{ pagamento.aluno_nome }}</small>
             </small>
           </td>
           <td>
-            {{ pagamento.contrato.contratoaluno.responsavel.celular }}<br>
-            <small>{{ pagamento.contrato.contratoaluno.responsavel.email }}</small>
+            {{ pagamento.celular }}<br>
+            <small>{{ pagamento.email }}</small>
           </td>
           <td>
-            {{ pagamento.data|date:'d/m/Y' }}
+            {{ pagamento.ano }}
           </td>
-          <td>
-            <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
+          <td>{{ pagamento.pagamentos_atrasados }}</td>
+          <td id='valor_id_{{pagamento.id}}'>
+            R$ {{ pagamento.valor|numberformat_br }}
           </td>
-          <td>
-            R$ {{ pagamento.get_multa|numberformat_br }}
+          <td id='multa_id_{{pagamento.id}}'>
+            R$ {{ pagamento.multa|numberformat_br }}
           </td>
-          <td>R$ {{ pagamento.get_juros|numberformat_br }}</td>
-          <td>
-            {% if pagamento.categoria.id == 1 and not pagamento.efet %}
-              R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}
-            {% else %}
-              R$ {{ pagamento.valor|numberformat_br }}
-            {% endif %}
+          <td id='juros_id_{{pagamento.id}}'>
+            R$ {{ pagamento.juros|numberformat_br }}
+          <td id='total_id_{{pagamento.id}}'>
           </td>
           {% empty %}
         <tr>
@@ -113,3 +118,33 @@
   {% include 'pagination.html' %}
 
 {% endblock content %}
+{% block extra_js %}
+  <script type="text/javascript">
+    function sumDebitos(pk){
+      let id = pk;
+      console.log("ID", id)
+      let valor = document.getElementById("valor_id_"+id).innerText.slice(2,).replace('.', '');
+      let multa = document.getElementById("multa_id_"+id).innerText.slice(2,).replace('.', '');
+      let juros = document.getElementById("juros_id_"+id).innerText.slice(2,).replace('.', '');
+
+      let valorFloat = parseFloat(valor.replace(',', '.'));
+      let multaFloat = parseFloat(multa.replace(',', '.'));
+      let jurosFloat = parseFloat(juros.replace(',', '.'));
+      let totalFloat = valorFloat + multaFloat + jurosFloat;
+      let total = totalFloat.toFixed(2);
+      document.getElementById("total_id_"+id).innerText = 'R$ ' + String(total);
+      return totalFloat
+
+    }
+    function callSum(){
+      let totalFinal = 0;
+      for (const row of document.getElementById("inadimplentes").rows) {
+        let pk = row.cells[0].id
+        totalFinal += sumDebitos(pk);
+      }
+      totalFinal = totalFinal.toFixed(2);
+      document.getElementById("tatal_final").innerText = 'R$ ' + String(totalFinal);
+    }
+    callSum();
+  </script>
+{% endblock extra_js%}
