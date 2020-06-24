@@ -90,8 +90,8 @@
             </small>
           </td>
           <td>
-            {{ pagamento.celular }}<br>
-            <small>{{ pagamento.email }}</small>
+            {{ pagamento.celular|default:"--" }}<br>
+            <small>{{ pagamento.email|default:"--" }}</small>
           </td>
           <td>
             {{ pagamento.ano }}
