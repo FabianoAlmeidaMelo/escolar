@@ -609,6 +609,7 @@ class InadimplentesSearchForm(forms.Form):
     cpf_resp_fin = forms.CharField(label='CPF resp fin', required=False)
     aluno_nome = forms.CharField(label='Aluno Nome', required=False)
     responsavel_nome = forms.CharField(label='resp fin Nome', required=False)
+    pagamentos_atrasados = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -648,6 +649,9 @@ class InadimplentesSearchForm(forms.Form):
             aluno_nome = self.cleaned_data['aluno_nome']
             if aluno_nome:
                 q = q & Q(aluno_nome__icontains=aluno_nome)
+            pagamentos_atrasados = self.cleaned_data['pagamentos_atrasados']
+            if pagamentos_atrasados:
+                q = q & Q(pagamentos_atrasados=pagamentos_atrasados)
 
             return InadimplenteDBView.objects.filter(q).exclude(valor=Decimal('0'))
         return InadimplenteDBView.objects.filter(q)

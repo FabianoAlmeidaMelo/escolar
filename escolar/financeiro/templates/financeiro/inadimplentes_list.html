@@ -39,6 +39,7 @@
       <p></p>
       <div>
         {% bootstrap_field form.aluno_nome %}
+        {% bootstrap_field form.pagamentos_atrasados %}
       </div>
       <p></p>
 
@@ -85,7 +86,7 @@
         <tr>
           <td id={{pagamento.id}}>
             <small>
-                {{ pagamento.responsavel_nome }} - {{ pagamento.cpf_resp_fin }}<br>
+                <a href="{% url 'pagamentos_aluno_list' pagamento.contrato.contratoaluno.aluno_id %}">{{ pagamento.responsavel_nome }}</a> - {{ pagamento.cpf_resp_fin }}<br>
                 {{ pagamento.serie }} - {{ pagamento.aluno_nome }}</small>
             </small>
           </td>
@@ -96,7 +97,14 @@
           <td>
             {{ pagamento.ano }}
           </td>
-          <td>{{ pagamento.pagamentos_atrasados }}</td>
+          <td>
+             <a href="#"
+                data-toggle="tooltip"
+                data-placement="bottom" 
+                title="{% for titulo in pagamento.titulos %}{{ titulo }}; {% endfor %}">
+              {{ pagamento.pagamentos_atrasados }}
+              </a>
+          </td>
           <td id='valor_id_{{pagamento.id}}'>
             R$ {{ pagamento.valor|numberformat_br }}
           </td>
@@ -146,4 +154,5 @@
     }
     callSumDebit();
   </script>
+
 {% endblock extra_js%}
