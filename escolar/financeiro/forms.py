@@ -598,7 +598,11 @@ class PagamentoEscolaSearchForm(forms.Form):
             return Pagamento.objects.filter(q).exclude(valor=Decimal('0'))
         return Pagamento.objects.filter(q)
 
-
+ORDER = (
+    ("responsavel_nome", "alfabética"),
+    ("pagamentos_atrasados", "Menos pgtos atrasados"),
+    ("-pagamentos_atrasados", "Mais pgtos atrasados"),
+)
 
 class InadimplentesSearchForm(forms.Form):
     '''
@@ -610,6 +614,7 @@ class InadimplentesSearchForm(forms.Form):
     aluno_nome = forms.CharField(label='Aluno Nome', required=False)
     responsavel_nome = forms.CharField(label='resp fin Nome', required=False)
     pagamentos_atrasados = forms.IntegerField(required=False)
+    order = forms.ChoiceField(label='Ordenação', choices=ORDER, initial="responsavel_nome", required=False) 
 
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
@@ -631,8 +636,10 @@ class InadimplentesSearchForm(forms.Form):
         return cleaned_data
 
     def get_result_queryset(self, mes=None):
+        order = "responsavel_nome"
         q = Q(escola=self.escola)
         if self.is_valid():
+            order = self.cleaned_data['order']
             cpf_resp_fin = self.cleaned_data['cpf_resp_fin']
             if cpf_resp_fin:
                 q = q & Q(cpf_resp_fin__icontains=cpf_resp_fin)
@@ -653,8 +660,8 @@ class InadimplentesSearchForm(forms.Form):
             if pagamentos_atrasados:
                 q = q & Q(pagamentos_atrasados=pagamentos_atrasados)
 
-            return InadimplenteDBView.objects.filter(q).exclude(valor=Decimal('0'))
-        return InadimplenteDBView.objects.filter(q)
+            return InadimplenteDBView.objects.filter(q).exclude(valor=Decimal('0')).order_by(order)
+        return InadimplenteDBView.objects.filter(q).order_by(order)
 
 
 

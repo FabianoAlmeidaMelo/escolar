@@ -903,7 +903,7 @@ def inadimplentes_list(request, escola_pk):
 
     hj = date.today()
 
-    pagamentos = pagamentos.filter(ano=hj.year).order_by('responsavel_nome')
+    pagamentos = pagamentos.filter(ano=hj.year)
     lancamentos = pagamentos.count()
 
     total = pagamentos.aggregate(Sum('valor'))['valor__sum'] or 0
