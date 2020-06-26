@@ -608,7 +608,7 @@ class InadimplentesSearchForm(forms.Form):
     '''
     #2 github
     '''
-    ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ANO_CORRENTE, required=False)
+    ano = forms.ChoiceField(label='Ano', choices=ANO[1:], initial=ANO_CORRENTE, required=False)
     serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
     cpf_resp_fin = forms.CharField(label='CPF resp fin', required=False)
     aluno_nome = forms.CharField(label='Aluno Nome', required=False)
@@ -626,18 +626,11 @@ class InadimplentesSearchForm(forms.Form):
     
     
 
-    def clean(self):
-        cleaned_data = super(InadimplentesSearchForm, self).clean()
-        ano = cleaned_data['ano']
-
-        if not ano:
-            raise forms.ValidationError("Ano é requerido para filtrar")
- 
-        return cleaned_data
-
     def get_result_queryset(self, mes=None):
         order = "responsavel_nome"
+        ano = ANO_CORRENTE
         q = Q(escola=self.escola)
+        q = q & Q(ano=ano)
         if self.is_valid():
             order = self.cleaned_data['order']
             cpf_resp_fin = self.cleaned_data['cpf_resp_fin']

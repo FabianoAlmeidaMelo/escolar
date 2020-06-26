@@ -19,6 +19,7 @@ from escolar.financeiro.models import (
     ContratoAluno,
     Bandeira,
     BandeiraEscolaParametro,
+    InadimplenteDBView,
     Pagamento,
     ParametrosContrato,
 )
@@ -903,7 +904,7 @@ def inadimplentes_list(request, escola_pk):
 
     hj = date.today()
 
-    pagamentos = pagamentos.filter(ano=hj.year)
+    pagamentos_ids = list(pagamentos.values_list('id', flat=True))
     lancamentos = pagamentos.count()
 
     total = pagamentos.aggregate(Sum('valor'))['valor__sum'] or 0
@@ -934,6 +935,7 @@ def inadimplentes_list(request, escola_pk):
     context['can_edit'] = can_edit
     context['object_list'] = pagamentos
     context['situacao'] = situacao[efet]
+    context['pagamentos_ids'] = pagamentos_ids
 
     context['tab_administracao'] = "active"
     context['tab_inadimplentes'] = "active"
@@ -1032,3 +1034,83 @@ def pagamentos_gera_xls(request):
     book.save(response)
     return response
 
+
+def inadimplentes_gera_xls(request):
+    '''
+    ref Github #3
+    '''
+    pagamentos_ids = request.GET['pagamentos_ids']
+    pagamentos_ids = pagamentos_ids.replace('[', '')
+    pagamentos_ids = pagamentos_ids.replace(']', '')
+    pagamentos_ids = pagamentos_ids.replace(',', '')
+    pagamentos_ids =[int(i) for i in pagamentos_ids.split()]
+    pagamentos = InadimplenteDBView.objects.filter(id__in=pagamentos_ids)
+
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    hoje = str(date.today())
+    doc_nome = 'attachment; filename= %s-inadimplentes.xls' % hoje
+    response['Content-Disposition'] = doc_nome
+
+    book = xlwt.Workbook(encoding='utf8')
+    sheet = book.add_sheet('untitled')
+    default_style = xlwt.Style.default_style
+    title_style = xlwt.easyxf('font: bold 1')
+    monetary_style = xlwt.easyxf(num_format_str='$#,##0.00')
+
+    # campos
+    values_list = [["Nome Resp",
+                    "CPF",
+                    "Série",
+                    "Nome Aluno",
+                    "Celular",
+                    "email",
+                    "Ano",
+                    "Pgtos Atrasdos",
+                    "titulos",
+                    "Valor",
+                    "Multa",
+                    "Juros",
+                    "Total"]]
+
+    for pagamento in pagamentos:
+        responsavel_nome = pagamento.responsavel_nome
+        cpf_resp_fin = pagamento.cpf_resp_fin or ''
+        serie = pagamento.serie.serie
+        aluno_nome = pagamento.aluno_nome
+        celular = pagamento.celular or ''
+        email = pagamento.email or ''
+        ano = pagamento.ano
+        pagamentos_atrasados = pagamento.pagamentos_atrasados
+        titulos = " ".join(titulo for titulo in pagamento.titulos)
+        valor = pagamento.valor or 0
+        multa = pagamento.multa or 0
+        juros = pagamento.juros or 0
+        total = valor + multa + juros 
+
+        values_list.append([responsavel_nome,
+                            cpf_resp_fin,
+                            serie,
+                            aluno_nome,
+                            celular,
+                            email,
+                            ano,
+                            pagamentos_atrasados,
+                            titulos,
+                            valor,
+                            juros,
+                            multa,
+                            total
+                            ])
+    for row, rowdata in enumerate(values_list):
+        for col, val in enumerate(rowdata):
+            if isinstance(val, Decimal):
+                style = monetary_style
+            else:
+                style = default_style
+            if row == 0:
+                style = title_style
+
+            sheet.write(row, col, val, style=style)
+
+    book.save(response)
+    return response

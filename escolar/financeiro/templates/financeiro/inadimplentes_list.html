@@ -46,6 +46,19 @@
 
       <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
       <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
+
+      {% if can_edit %}
+        <caption>
+         <div style="float:right; margin-right:10px">
+            <input id="id_gera_xls"
+                   type="button"
+                   onclick="window.location.href='{% url 'inadimplentes_gera_xls' %}?pagamentos_ids={{ pagamentos_ids }}'"
+                   style="margin-bottom: 5px; margin-top: 2px;"
+                   class="button"
+                   value="Gerar XLS">
+          </div>
+        </caption>
+      {% endif %}
    
     </form>
   </div>

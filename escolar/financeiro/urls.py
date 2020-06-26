@@ -13,6 +13,7 @@ from escolar.financeiro.views import (
     contratos_list,
     grafico_contratos_pagamentos,
     inadimplentes_list,
+    inadimplentes_gera_xls,
     pagamento_form,
     pagamentos_aluno_list,
     pagamentos_gera_xls,
@@ -64,5 +65,7 @@ urlpatterns = [
     url(r'^escola/(?P<escola_pk>\d+)/bandeira_edit/(?P<bandeira_pk>\d+)/$', bandeira_form, name="bandeira_edit"),
     url(r'^escola/(?P<escola_pk>\d+)/bandeira_edit/(?P<bandeira_pk>\d+)/parametros/(?P<parametros_pk>\d+)/$', bandeira_form, name="bandeira_param_edit"),
 
-    url(r'^escola/gera_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
+    # XLS
+    url(r'^escola/pgtos_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
+    url(r'^escola/inadimplentes_xls/$', inadimplentes_gera_xls, name='inadimplentes_gera_xls'),
 ]
