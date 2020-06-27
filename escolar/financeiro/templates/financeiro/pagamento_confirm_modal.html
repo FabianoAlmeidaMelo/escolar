@@ -1,0 +1,21 @@
+{% load numberformat_br %}
+<div class="modal fade" id="pagamento_{{ form.instance.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Confira os dados do Pagamento</h4>
+      </div>
+      <div class="modal-body">
+        <p id="linha_um"></p>
+        <p id="linha_dois"></p>
+        <h2 id="new_valor"></h2>
+        <p>Valor previsto: R$ {{ form.instance.get_valor_a_pagar }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <input type="submit" value="Salvar" class="btn btn-primary">
+      </div>
+    </div>
+  </div>
+</div>

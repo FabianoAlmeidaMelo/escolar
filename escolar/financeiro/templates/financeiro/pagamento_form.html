@@ -74,12 +74,26 @@
       <!-- glyphicon glyphicon-print -->
       <div class="form-actions">
         {% if can_edit %}
-          <input type="submit" value="Salvar" class="btn btn-primary">
+          {% if form.instance.id %}
+            <button 
+              type="button"
+              class="btn btn-primary"
+              data-toggle="modal"
+              data-target="#pagamento_{{ form.instance.id }}"
+              onclick="checkValor('{{ form.instance.get_valor_a_pagar }}')">Salvar</button>
+          {% else %}
+            <input type="submit" value="Salvar" class="btn btn-primary">
+          {% endif %}
+
         {% endif %}
         {% if contrato %}
           <a href="{% url 'pagamentos_aluno_list' contrato.contratoaluno.aluno.id %}" class="btn btn-secondary">Pagamentos do aluno {{ contrato.ano }}</a>
         {% endif %}
         <a href="{% url 'pagamentos_list' escola.id %}" class="btn btn-secondary">Lista de pagamentoss</a>
+        {% if form.instance.id %}
+          <!-- Modal -->
+          {% include "financeiro/pagamento_confirm_modal.html" %}
+        {% endif %}
       </div>
     </form>
   </div>
@@ -91,5 +105,36 @@
     <script type="text/javascript" src="/static/datetimepicker/js/moment.min.js"></script>
     <script type="text/javascript" src="/static/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript" src="/static/datetimepicker/js/locales/bootstrap-datetimepicker.pt-BR.js"></script>
+
+    <script type="text/javascript">
+      function checkValor(referenceValue){
+        let reference = referenceValue
+        let pTagColor = '<p>'
+        let preenchido = document.getElementById("id_valor").value
+        let efet = $("#id_efet").is(":checked");
+        let formaPagamento = $("#id_forma_pgto option:selected").text();
+        let pago = ' Pagamento não efetivado'
+        let valorPago = parseFloat(preenchido.replace(',', '.'));
+        valorPago = valorPago.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        if (efet) {
+          pago = ' Pagamento Efetivado'
+        }
+        if (formaPagamento === '--') {
+          formaPagamento = '<p style="color:red;"> Sem forma de Pagamento</p>'
+        } else {
+          formaPagamento = '<small> '+ formaPagamento +'</small>'
+        }
+        console.log('forma ', formaPagamento)
+        if (reference != preenchido) {
+          pTagColor = '<p style="color:red;">'
+        } else {
+          pTagColor = '<p style="color:green;">'
+        }
+
+        document.getElementById("linha_um").innerHTML  = '<small> '+ pago +'</small>' + '</p>'
+        document.getElementById("linha_dois").innerHTML  = formaPagamento
+        document.getElementById("new_valor").innerHTML  = pTagColor + valorPago
+      }
+    </script>
     {{ form.media.js }}
 {% endblock extra_js %}
