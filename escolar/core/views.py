@@ -249,6 +249,7 @@ def usuarios_list(request, escola_pk):
     context['escola'] = escola
     context['object_list'] = usuarios
     context['can_edit'] = admin
+    context['can_create'] = diretor or admin
     context['tab_usuarios'] = "active"
 
     return render(request, 'core/usuarios_list.html', context)
@@ -270,7 +271,11 @@ def usuario_form(request, escola_pk, pk=None):
         usuario = None
         msg = u'Usuário cadastrado.'
 
-    can_edit = user.is_admin() or user.id == usuario.id
+    diretor = user.is_diretor(escola_pk)
+    if usuario:
+        can_edit = user.is_admin() or user.id == usuario.id
+    else:
+        can_edit = user.is_admin() or diretor
     if not can_edit:
         raise Http404
 

@@ -6,9 +6,13 @@
 {% endblock css %}
 {% block page_title %}
   <div class="page-header">
-  <!-- TODO erver esse br -->
+  <!-- TODO rerver esse br -->
   <br>
-  Usuários
+    {% if escola %}
+        Usuários / Escola: {{ escola.nome }} <small></small>
+    {% else %}
+       Usuários
+    {% endif %}
   </div>
 {% endblock page_title %}
 
@@ -27,7 +31,7 @@
     </form>
   </div>
     <table class="table table-striped">
-      {% if can_edit %}
+      {% if can_create %}
         <caption>
            <div style="float:right; margin-right:10px">
               <a href="{% url 'usuario_form' escola.pk %}" class="btn btn-mini btn-success">Novo Usuário</a>

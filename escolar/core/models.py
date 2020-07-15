@@ -8,7 +8,8 @@ from django.contrib.auth.models import(
     BaseUserManager,
 )
 
-# from escolar.escolas.models import Escola, Classe
+# from escolar.escolas.models import Escola
+from django.apps import apps
 
 from django.contrib.auth.models import User, Group
 from django.conf import settings
@@ -18,7 +19,6 @@ SEXO = (
     (1, "M"),
     (2, "F"),
     )
-
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -194,6 +194,7 @@ class User(AbstractBaseUser):
         retorna um histórico de classes de uma
         escola do Aluno
         '''
+        from escolar.escolas.models import Classe
         ano = date.today().year
         classe_ids = self.classeprofessor_set.filter(classe__escola=escola, classe__ano=ano).values_list('classe__id', flat=True)
         return Classe.objects.filter(id__in=classe_ids)

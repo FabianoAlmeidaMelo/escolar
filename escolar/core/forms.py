@@ -111,10 +111,16 @@ class GrupoForm(forms.ModelForm):
         fields = ('name', )
 
 class UserForm(forms.ModelForm):
+    '''
+    group: 2: professor
+    '''
     email = forms.EmailField(label='email', required=True)
     nome = forms.CharField(label='nome', required=True)
     grupo = forms.ModelChoiceField(required=True,
-                                   queryset=Group.objects.exclude(name='Admin'))
+                                   queryset=Group.objects.exclude(
+                                        name__in=['Admin', 'Aluno', 'Responsável']
+                                        )
+                                   )
     escola = forms.ModelChoiceField(required=False,
                                     queryset=Escola.objects.all())
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput, required=False)
@@ -172,7 +178,8 @@ class UserForm(forms.ModelForm):
         if password2:
             self.instance.set_password(password2)
         self.instance.save()
-        if self.user.is_admin() and grupo:
+        can_add = self.user.is_diretor(self.escola.id) or elf.user.is_admin()
+        if can_add and grupo:
             UserGrupos.objects.get_or_create(escola=self.escola,
                                              grupo=grupo,
                                              user=self.instance,
