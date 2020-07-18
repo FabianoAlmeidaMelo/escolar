@@ -25,7 +25,7 @@
         <tbody>
         {% for professor in professores %}
           <tr>
-          {% if can_edit or user.id == professor.id %}
+          {% if can_edit %}
               <td><a href="{% url 'professor_form' escola.pk  professor.pk %}">{{ professor.nome }}</a></td>
           {% else %}
             <td>{{ professor.nome }}</td>

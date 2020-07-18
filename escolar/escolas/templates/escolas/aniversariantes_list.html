@@ -25,7 +25,6 @@
 <div class="container">
   {% include "base_adm.html" %}
   <div class="row-fluid span10">
-    {% if can_edit %}
       <form class="form-inline well" method="GET" >
         <div class="form-group">
           {% bootstrap_field form.day %}
@@ -36,7 +35,6 @@
         <button type="submit" class="btn btn-primary" title="Filtrar"><i class="glyphicon glyphicon-search"></i></button>
         <a class="btn btn-small btn-info" href="." title="Apagar o filtro e listar todos"><i class="glyphicon glyphicon-remove-circle"></i></a>
       </form>
-    {% endif%}
   </div>
     <table class="table table-striped">
         <thead>
@@ -51,7 +49,7 @@
         <tbody>
         {% for aluno in object_list %}
           <tr>
-            <td><a href="{% url 'parabens_form' aluno.id %}">{{ aluno.nome }}</a></td>
+            <td>{% if can_edit %}<a href="{% url 'parabens_form' aluno.id %}">{% endif %}{{ aluno.nome }}</a></td>
             <td>{{ aluno.email|default:"--" }}</td>
             <td>{{ aluno.celular|default:"--" }} <br>{{ aluno.telefone|default:"--" }}</td>
             <td>{{ aluno.get_modelo_filho }}</td>

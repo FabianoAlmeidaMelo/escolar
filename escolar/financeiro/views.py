@@ -97,7 +97,7 @@ def contratos_list(request, escola_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    if not user.can_access_escola(escola.pk):
+    if not user.is_diretor(escola.pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     context = {}
@@ -148,7 +148,7 @@ def contratos_aluno_list(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
-    if not user.can_access_escola(escola.pk):
+    if not user.is_diretor(escola.pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     page = request.GET.get('page', 1)
@@ -182,7 +182,7 @@ def grafico_contratos_pagamentos(request, aluno_pk):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
-    if not user.can_access_escola(escola.pk):
+    if not user.is_diretor(escola.pk):
         raise Http404
     can_edit = any([user.is_admin(), user.is_diretor(escola.pk)])
     page = request.GET.get('page', 1)
@@ -212,7 +212,7 @@ def grafico_contratos_pagamentos(request, aluno_pk):
 def parametros_contrato_form(request, escola_pk, parametro_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
     # no save do EscolaForm, já criou 1 parâmetro para Escola
     parametros = None
     if parametro_pk:
@@ -251,7 +251,7 @@ def parametro_cadastro(request, escola_pk, parametro_pk):
     if not user.can_access_escola(escola.pk):
         raise Http404
     parametros = escola.parametroscontrato_set.get(id=parametro_pk)
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
     context = {}
     context["escola"] = escola
     context["parametros"] = parametros
@@ -271,7 +271,7 @@ def parametros_contrato_list(request, escola_pk):
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
     parametros = ParametrosContrato.objects.filter(escola=escola)
     can_create = parametros.count() < 2
 
@@ -292,7 +292,7 @@ def contrato_form(request, aluno_pk, contrato_pk=None):
     Aluno = apps.get_model(app_label='escolas', model_name='Aluno')
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = aluno.escola
-    if not user.can_access_escola(escola.pk):
+    if not user.is_diretor(escola.pk):
         raise Http404
     if contrato_pk:
         contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
@@ -331,7 +331,7 @@ def contrato_cadastro(request, contrato_pk):
 
     contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
     escola = contrato.aluno.escola
-    if not user.can_access_escola(escola.pk):
+    if not user.is_diretor(escola.pk):
         raise Http404
     aluno = contrato.aluno
     can_edit = all([user.is_diretor(escola.id)])
@@ -351,10 +351,12 @@ def contrato_impressao(request, contrato_pk):
 
     contrato = get_object_or_404(ContratoAluno, pk=contrato_pk)
     escola = contrato.aluno.escola
-    if not user.can_access_escola(escola.pk):
+
+    # responsável financeiro também terá acesso
+    if not user.is_diretor(escola.pk):
         raise Http404
     aluno = contrato.aluno
-    can_edit = all([user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
     context = {}
     context["escola"] = escola
     context["contrato"] = contrato
@@ -371,7 +373,7 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
     user = request.user
     Escola = apps.get_model(app_label='escolas', model_name='Escola')
     escola = get_object_or_404(Escola, pk=escola_pk)
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
     contrato = None
     aluno = None
     if contrato_pk:
@@ -429,7 +431,9 @@ def print_recibo(request, pagamento_pk):
                                                  'contrato__contratoaluno__aluno',
                                                  'contrato__contratoaluno__responsavel').filter(pk=pagamento_pk).last()
     escola = pagamento.escola
-    if not user.can_access_escola(escola.pk):
+
+    # responsável financeiro terá acesso
+    if not user.is_diretor(escola.pk):
         raise Http404
     contrato = pagamento.contrato.contratoaluno
     aluno = pagamento.contrato.contratoaluno.aluno
@@ -516,7 +520,7 @@ def categorias_list(request, escola_pk):
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
     user = request.user
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)]) and CategoriaPagamento.objects.filter(escola=escola).count() < 10
+    can_edit = user.is_diretor(escola.id) and CategoriaPagamento.objects.filter(escola=escola).count() < 10
     categorias = CategoriaPagamento.objects.filter(Q(escola=None) | Q(escola=escola))
 
     categorias = categorias.annotate(can_edit=Case(When(escola=escola, then=Value(True)), output_field=BooleanField()))
@@ -534,10 +538,10 @@ def categorias_list(request, escola_pk):
 def bandeira_form(request, escola_pk, bandeira_pk=None, parametros_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
-    can_edit = any([user.is_admin(), user.is_diretor(escola.id)])
-    can_create = any([user.is_admin(), user.is_diretor(escola.id)])
+    can_edit = user.is_diretor(escola.id)
+    can_create = user.is_diretor(escola.id)
 
-    if not user.can_access_escola(escola.pk):
+    if not can_create:
         raise Http404
     if bandeira_pk:
         bandeira = get_object_or_404(Bandeira, pk=bandeira_pk)
@@ -612,7 +616,9 @@ def pagamentos_aluno_list(request, aluno_pk):
     escola = aluno.escola
     is_diretor = user.is_diretor(escola.pk)
     contrato = ContratoAluno.objects.filter(aluno=aluno, ano=ANO_CORRENTE).last()
-    if not user.can_access_escola(escola.pk):
+
+    # aqui o resp financeiro tb terá algum acesso
+    if not is_diretor:
         raise Http404
 
     context = {}
@@ -707,7 +713,7 @@ def pagamentos_list(request, escola_pk):
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
     is_diretor = user.is_diretor(escola.pk)
-    if not user.can_access_escola(escola.pk):
+    if not is_diretor:
         raise Http404
     context = {}
 

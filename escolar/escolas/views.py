@@ -231,7 +231,11 @@ def escola_cadastro(request, pk):
 def professores_list(request, escola_pk):
     user = request.user
     escola = Escola.objects.get(id=escola_pk)
-    professores_ids = UserGrupos.objects.filter(grupo__name='Professor',escola__pk=escola_pk).values_list('user__id', flat=True)
+    professores_ids = UserGrupos.objects.filter(
+        grupo__name='Professor',
+        escola__pk=escola_pk
+    ).values_list('user__id', flat=True)
+
     professores = User.objects.filter(id__in=professores_ids)
     for professor in professores:
         professor.classes = professor.get_professor_classes(escola)
@@ -240,7 +244,7 @@ def professores_list(request, escola_pk):
     context['escola'] = escola
     context['professores'] = professores
     context['escola'] = escola
-    context['can_edit'] = any([user.is_admin(), user.is_diretor(escola_pk)])
+    context['can_edit'] = user.is_diretor(escola_pk)
     context['user'] = user
     context['tab_professores'] = "active"
     return render(request, 'escolas/professores_list.html', context)
@@ -251,8 +255,13 @@ def professor_form(request, escola_pk, professor_pk=None):
     '''
     professor é user
     Não cria aqui, já foi definido no cadastro do user
+    aqui ativa e inativa
     '''
     escola = Escola.objects.get(id=escola_pk)
+    user = request.user
+    can_edit = user.is_diretor(escola_pk)
+    if not can_edit:
+        raise Http404
     grupo = Group.objects.filter(name='Professor')
     professor = None
     if professor_pk:
@@ -279,6 +288,7 @@ def professor_form(request, escola_pk, professor_pk=None):
     context['form'] = form
     context['escola'] = escola
     context['grupo_user'] = grupo_user
+    context['can_edit'] = can_edit
     context['tab_professores'] = "active"
     context['professor'] = professor
 
@@ -292,6 +302,7 @@ def aniversariantes_list(request, escola_pk):
         raise Http404
 
     escola = get_object_or_404(Escola, pk=escola_pk)
+    can_edit = user.is_diretor(escola.id)
     context = {}
     day = date.today().day
     form = PessoaSearchForm(request.GET or None, escola=escola)
@@ -319,7 +330,7 @@ def aniversariantes_list(request, escola_pk):
     context['form'] = form
     context['total'] = total
     context['escola'] = escola 
-    context['can_edit'] = can_edit = True
+    context['can_edit'] = can_edit
     context['object_list'] = pessoas
     context['user'] = user
     context['tab_administracao'] = "active"
@@ -611,6 +622,11 @@ def aluno_historico(request, aluno_pk):
     user = request.user
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     escola = get_object_or_404(Escola, pk=aluno.escola.pk)
+
+    # aqui o responsável financeiro terá acesso
+    # no momento só o grupo diretor
+    if not user.is_diretor(escola.pk):
+        raise Http404
     
     context = {}
     
