@@ -894,7 +894,7 @@ def inadimplentes_list(request, escola_pk):
     can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     escola = get_object_or_404(Escola, pk=escola_pk)
     is_diretor = user.is_diretor(escola.pk)
-    if not user.can_access_escola(escola.pk):
+    if not is_diretor:
         raise Http404
     context = {}
 
