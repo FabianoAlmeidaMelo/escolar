@@ -23,6 +23,18 @@ def get_grupos_escola(user, escola):
     return user.usergrupos_set.filter(escola=escola).exclude(grupo__name='Admin')
 
 @register.filter
+def is_diretor(user, escola):
+    return user.is_diretor(escola.id)
+
+@register.filter
+def is_professor(user, escola):
+    return user.is_professor(escola.id)
+
+@register.filter
+def is_aluno(user, escola):
+    return user.is_aluno(escola.id)
+
+@register.filter
 def get_logo(slug):
     """
     TODO

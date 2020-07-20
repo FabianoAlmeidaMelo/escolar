@@ -34,30 +34,32 @@
                 <li class="{{ tab_usuarios }}"><a href="{% url 'usuarios_list' escola.id %}" id='id_usuarios'>Usuários</a></li>
                 <li class="{{ tab_escola }}"><a href="{% url 'escola_cadastro' escola.pk %}" id='id_escola'>Instituição</a></li>
                 <li class="{{ tab_alunos }}"><a href="{% url 'alunos_list' escola.id %}" id='id_alunos'>Alunos</a></li>
-                <li class="dropdown {{ tab_administracao}}">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administração <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li class="{{ tab_aniversariantes }}"><a href="{% url 'aniversariantes_list' escola.id %}" id='id_movimentos'>Aniversariantes</a></li>
-                    <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
-                    <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
-                    <li class="{{ tab_inadimplentes }}"><a href="{% url 'inadimplentes_list' escola.id %}" id='contratos'>Inadimplentes</a></li>
-                    <li class="{{ tab_parcelas }}"><a href="{% url 'pagamentos_list' escola.id %}" id='id_movimentos'>Pagamentos</a></li>
-                    <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
-                  </ul>
-                </li>
-                <li class="dropdown {{ tab_sistema }}">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sistema<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li class="{{ tab_bandeiras }}"><a href="{% url 'bandeiras_list' escola.id %}" title="{{ section.name }}">Bandeiras Aceitas</a></li>
-                    <li class="{{ tab_categorias }}"><a href="{% url 'categorias_list' escola.id %}" title="{{ section.name }}">Categorias de Pagamentos</a></li>
-                    <li class="{{ tab_grupos }}"><a href="{% url 'grupos_list' escola.id %}" id='id_grupos'>Grupos</a></li>
-                    <li class="{{ tab_parametros }}"><a href="{% url 'parametros_contrato_list' escola.id %}" title="{{ section.name }}">Parâmetros dos Contratos</a></li>
-                    </li>
-                    <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
-                  </ul>
-                </li>
-                <!-- <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li> -->
-               <!--  <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li> -->
+                {% if user|is_diretor:escola %}
+                  <li class="dropdown {{ tab_administracao}}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administração <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li class="{{ tab_aniversariantes }}"><a href="{% url 'aniversariantes_list' escola.id %}" id='id_movimentos'>Aniversariantes</a></li>
+                      <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
+                      <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
+                      <li class="{{ tab_inadimplentes }}"><a href="{% url 'inadimplentes_list' escola.id %}" id='contratos'>Inadimplentes</a></li>
+                      <li class="{{ tab_parcelas }}"><a href="{% url 'pagamentos_list' escola.id %}" id='id_movimentos'>Pagamentos</a></li>
+                      <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
+                    </ul>
+                  </li>
+                  <li class="dropdown {{ tab_sistema }}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sistema<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li class="{{ tab_bandeiras }}"><a href="{% url 'bandeiras_list' escola.id %}" title="{{ section.name }}">Bandeiras Aceitas</a></li>
+                      <li class="{{ tab_categorias }}"><a href="{% url 'categorias_list' escola.id %}" title="{{ section.name }}">Categorias de Pagamentos</a></li>
+                      <li class="{{ tab_grupos }}"><a href="{% url 'grupos_list' escola.id %}" id='id_grupos'>Grupos</a></li>
+                      <li class="{{ tab_parametros }}"><a href="{% url 'parametros_contrato_list' escola.id %}" title="{{ section.name }}">Parâmetros dos Contratos</a></li>
+                      </li>
+                      <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
+                    </ul>
+                  </li>
+                  <!-- <li class="{{ tab_responsaveis }}"><a href="{% url 'responsaveis_list' escola.id %}">Responsáveis</a></li> -->
+                 <!--  <li class="{{ tab_autorizados }}"><a href="{% url 'autorizados_list' escola.id %}">Autorizados</a></li> -->
+                {% endif %}
             </li>
             {% endif %}
           {% endif %}
