@@ -1,0 +1,55 @@
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_mensagem{
+      height: 100px;
+    }
+   </style>
+{% endblock css %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        {{ escola.nome }} - <small> Email:</small>  <small>Quanto genérico isso deve ser?</small>
+    {% else %}
+        generico
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.errors }}
+      {% csrf_token %}
+        <div class="form-group center_div" >
+          <div class="row">
+            <!-- {# Celular, Tablet, Computador #} -->
+            <div class="col-xs-12 col-sm-9 col-md-6">
+              {% bootstrap_field form.email %}
+              {% bootstrap_field form.titulo %}
+              {% bootstrap_field form.mensagem %}
+              {% bootstrap_field form.assinatura %}
+            </div>
+        </div>
+      </div>
+      <!-- glyphicon glyphicon-print -->
+      <div class="form-actions">
+        {% if can_edit %}
+          <input type="submit" value="Enviar email" class="btn btn-primary">
+        {% endif %}
+        <a href="{% url 'aniversariantes_list' escola.id %}" class="btn btn-secondary">Voltar para lista de aniversariantes</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

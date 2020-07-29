@@ -690,3 +690,47 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
                 q = q & Q(efet=False)
 
         return Pagamento.objects.filter(q)
+
+
+class EmailMensagemForm(forms.ModelForm):
+    '''
+    #5
+    http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
+    '''
+    titulo = forms.CharField(label='Título da mensagem', initial='Verificar a situação do Contrato', required=True)
+    mensagem = forms.CharField(widget=forms.Textarea, required=True)
+    assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(EmailMensagemForm, self).__init__(*args, **kwargs)
+
+        # conta Azul
+        modelo = '''
+        Cidade, dia, mês e ano
+
+        Prezado ____________ (nome completo),
+
+        Notamos que não consta em nosso sistema o pagamento da prestação referente à compra de ____________ (produto),
+        no valor de _________________ (valor da parcela) com vencimento no dia ___________ (data do vencimento).
+
+        Por favor, efetue o pagamento até o dia __________ (data).
+
+        Se esse valor já foi quitado, por favor, desconsidere a mensagem.
+
+        '''
+
+        assinatura_initial = '''
+        Atenciosamente,
+
+        {nome}
+
+        {cargo}
+        Equipe {escola}
+        '''.format(nome='Anderson',cargo='Diretor', escola=self.instance.escola)
+
+        self.fields['mensagem'].initial = modelo
+        self.fields['assinatura'].initial = assinatura_initial
+
+    class Meta:
+        model = InadimplenteDBView
+        fields = ['email', 'contrato'] 

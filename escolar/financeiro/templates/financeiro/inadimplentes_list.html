@@ -106,7 +106,11 @@
           </td>
           <td>
             {{ pagamento.celular|default:"--" }}<br>
-            <small>{{ pagamento.email|default:"--" }}</small>
+            {% if pagamento.email %}
+              <small> <a href="{% url 'cobranca_form' pagamento.id %}">{{ pagamento.email|default:"--" }}</a></small>
+            {% else %}
+              --
+            {% endif %}
           </td>
           <td>
             {{ pagamento.ano }}

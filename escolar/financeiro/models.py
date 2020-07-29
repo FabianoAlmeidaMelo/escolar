@@ -669,3 +669,29 @@ class InadimplenteDBView(models.Model):
     class Meta:
         managed = False
         db_table = 'view_inadimplentes'
+
+
+    def send_email_cobranca(self, titulo, msg, assinatura):
+        '''
+        ref #5
+        Enviar uma msg de email para o responsável financeiro
+        cobrando
+        Os meses em atraso
+        '''
+
+        emails = [self.email]
+        if emails:
+            mensagem = titulo
+            mensagem += '\n\n%s' % self.nome
+            mensagem += '\n\n%s' % msg
+            mensagem += '\n\n%s' % assinatura
+            
+            send_mail(
+                'Situação do Contrato',
+                mensagem,
+                settings.DEFAULT_FROM_EMAIL,
+                emails,
+                fail_silently=False
+            )
+            return True
+        return False

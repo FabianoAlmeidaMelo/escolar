@@ -74,7 +74,7 @@ class Command(BaseCommand):
             mensagem += '\n\n%s' % assinatura
             
             send_mail(
-                'Aniversariasntes de Hoje/Crescer',
+                'Aniversariasntes de Hoje/%s' % escola.nome,
                 mensagem,
                 settings.DEFAULT_FROM_EMAIL,
                 emails,
