@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from django.apps import apps
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
@@ -682,7 +683,6 @@ class InadimplenteDBView(models.Model):
         emails = [self.email]
         if emails:
             mensagem = titulo
-            mensagem += '\n\n%s' % self.nome
             mensagem += '\n\n%s' % msg
             mensagem += '\n\n%s' % assinatura
             

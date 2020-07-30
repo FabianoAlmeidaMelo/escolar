@@ -1136,16 +1136,18 @@ def cobranca_form(request, pk):
     if not is_diretor:
         raise Http404
 
-    form = EmailMensagemForm(request.POST or None, instance=inadimplente)
+    form = EmailMensagemForm(request.POST or None, instance=inadimplente, user=user)
 
     if request.method == 'POST':
         if form.is_valid():
             titulo = form.cleaned_data['titulo']
             mensagem = form.cleaned_data['mensagem']
             assinatura = form.cleaned_data['assinatura']
-            form.save()
-            
-            enviado = inadimplente.send_email_cobranca(titulo, mensagem, assinatura)
+            enviado = inadimplente.send_email_cobranca(
+                titulo,
+                mensagem,
+                assinatura
+            )
 
             if enviado:
                 msg = 'Email de cobrança enviado com sucesso!'

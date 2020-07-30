@@ -699,38 +699,58 @@ class EmailMensagemForm(forms.ModelForm):
     '''
     titulo = forms.CharField(label='Título da mensagem', initial='Verificar a situação do Contrato', required=True)
     mensagem = forms.CharField(widget=forms.Textarea, required=True)
-    assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
+    assinatura = forms.CharField(widget=forms.Textarea, label='Assinatura da mensagem', required=True)
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(EmailMensagemForm, self).__init__(*args, **kwargs)
+
+        valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
 
         # conta Azul
         modelo = '''
-        Cidade, dia, mês e ano
+        {cidade}, {data}
 
-        Prezado ____________ (nome completo),
+        Prezado {nome_completo},
 
-        Notamos que não consta em nosso sistema o pagamento da prestação referente à compra de ____________ (produto),
-        no valor de _________________ (valor da parcela) com vencimento no dia ___________ (data do vencimento).
+        Notamos há um débto em aberto no nosso sistema,
+        no valor total de R$ {valor_divida}.
 
-        Por favor, efetue o pagamento até o dia __________ (data).
+        Referente a: {pagamentos_atrasados}
+
+        De nosso contrato de prestação de seriços educacionais.
+
+        Por favor, entre em contato comigo pelo email ou telefone indicado
 
         Se esse valor já foi quitado, por favor, desconsidere a mensagem.
 
-        '''
+        '''.format(
+            cidade='São José dos Campos - SP',
+            data=date.today().strftime("%d/%m/%Y"),
+            valor_divida=round(valor_divida, 2),
+            nome_completo=self.instance.responsavel_nome,
+            pagamentos_atrasados='; '.join(parcela for parcela in self.instance.titulos)
+        )
 
         assinatura_initial = '''
         Atenciosamente,
 
         {nome}
-
+        --------------------
         {cargo}
-        Equipe {escola}
-        '''.format(nome='Anderson',cargo='Diretor', escola=self.instance.escola)
+        {escola}
+        {diretor_email} {escola_telefone}
+        '''.format(
+            nome='Anderson',
+            cargo='Diretor',
+            escola=self.instance.escola,
+            escola_telefone=self.instance.escola.telefone,
+            diretor_email=self.user.username
+        )
 
         self.fields['mensagem'].initial = modelo
         self.fields['assinatura'].initial = assinatura_initial
 
     class Meta:
         model = InadimplenteDBView
-        fields = ['email', 'contrato'] 
+        fields = ['email',] 
