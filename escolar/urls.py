@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^', include('escolar.core.urls')),
     url(r'^', include('escolar.escolas.urls')),
     url(r'^', include('escolar.financeiro.urls')),
+    url(r'^', include('escolar.comunicacao.urls')),
 
     # Logins
     url(r'^logout/$', logout, {"next_page": None}, name="logout"),

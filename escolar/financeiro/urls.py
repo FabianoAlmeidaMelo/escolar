@@ -25,7 +25,6 @@ from escolar.financeiro.views import (
     responsaveis_list,
     set_contrato_assinado,
     set_pagamento_status,
-    cobranca_form,
 )
 
 urlpatterns = [
@@ -67,7 +66,6 @@ urlpatterns = [
 
     # INADIMPLENTES
     url(r'^escola/(?P<escola_pk>\d+)/inadimplentes_list/$', inadimplentes_list, name='inadimplentes_list'),
-    url(r'^escola/cobranca_form/(?P<pk>\d+)/$', cobranca_form, name='cobranca_form'),
 
     # XLS
     url(r'^escola/pgtos_xls/$', pagamentos_gera_xls, name='pagamentos_gera_xls'),
