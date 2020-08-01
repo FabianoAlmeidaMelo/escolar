@@ -26,28 +26,32 @@ from escolar.financeiro.models import (
 )
 
 @login_required
-def msg_default_form(request, escola_pk, msg_pk):
+def msg_default_form(request, escola_pk, msg_pk=None):
     user = request.user
     escola = get_object_or_404(Escola, pk=escola_pk)
 
-    escola = inadimplente.escola
     is_diretor = user.is_diretor(escola.pk)
     if not is_diretor:
         raise Http404
 
-    if bandeira_pk:
+    if msg_pk:
         msg_default = get_object_or_404(MensagemDefault, pk=msg_pk)
         msg = u'Mensagem alterada com sucesso.'
     else:
         msg_default = None
         msg = u'Mensagem criada.'
 
-    form = MensagemDefaultForm(request.POST or None, instance=inadimplente, user=user)
+    form = MensagemDefaultForm(
+        request.POST or None,
+        instance=msg_default,
+        user=user,
+        escola=escola
+    )
 
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            return redirect(reverse('inadimplentes_list', kwargs={'escola_pk': escola.pk}))
+            return redirect(reverse('msg_default_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha na edição da Mensagem.')
 

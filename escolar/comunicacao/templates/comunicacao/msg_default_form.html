@@ -1,0 +1,57 @@
+{% extends 'base.html'%}
+{% load bootstrap3 %}
+{% block css %}
+  <style type="text/css">
+    #id_mensagem{
+      height: 100px;
+    }
+   </style>
+{% endblock css %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    {% if escola %}
+        {{ escola.nome }} - <small>Mensagem</small>  <small></small>
+    {% else %}
+        generico
+    {% endif %}
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.errors }}
+      {% csrf_token %}
+        <div class="form-group center_div" >
+          <div class="row">
+            <!-- {# Celular, Tablet, Computador #} -->
+            <div class="col-xs-12 col-sm-9 col-md-6">
+              {% bootstrap_field form.tipo %}
+              {% bootstrap_field form.titulo %}
+              {% bootstrap_field form.cabecalho %}
+              {% bootstrap_field form.corpo %}
+              {% bootstrap_field form.assinatura %}
+            </div>
+        </div>
+      </div>
+      <!-- glyphicon glyphicon-print -->
+      <div class="form-actions">
+        {% if can_edit %}
+          <input type="submit" value="Salvar" class="btn btn-primary">
+        {% endif %}
+        <a href="{% url 'msg_default_list' escola.id %}" class="btn btn-secondary">Voltar para lista de Mensgens</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}

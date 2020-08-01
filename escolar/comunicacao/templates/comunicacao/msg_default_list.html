@@ -13,8 +13,11 @@
 <div class="container">
   <div class="row-fluid span10">
     {% if request.user.is_admin %}
-      <a class="btn btn-success" href="{% url 'bandeira_form' escola.pk %}" class="btn btn-mini btn-success">Nova Bandeira</a>
-      
+      <caption>
+        <div style="float:right; margin-right:10px">
+          <a href="{% url 'msg_default_form' escola.pk %}" class="btn btn-mini btn-success">Nova Mensagem</a>
+        </div>
+      </caption>
     {% endif %}
       <table class="table table-striped">
         <thead>
@@ -25,8 +28,8 @@
         </thead>
         {% for object in msg_default_qs %}
           <tr>
-            <td>{{ object.tipo }}</td>
-            <td>{{ params.titulo }}</td>
+            <td>{{ object.get_tipo_display }}</td>
+            <td>{{ object.titulo }}</td>
           </tr>
         {% empty %}
             <tr><td colspan="100%">Nenhum item disponível</td></tr>

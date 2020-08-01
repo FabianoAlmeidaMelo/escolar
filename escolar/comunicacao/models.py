@@ -34,7 +34,6 @@ class MensagemDefault(models.Model):
     escola = models.ForeignKey('escolas.Escola')
     tipo = models.SmallIntegerField('Tipo:', choices=MENSAGEM_CHOICES)
     titulo = models.CharField('Título: ', max_length=100)
-    # remover o cabeçalho:
     cabecalho = models.CharField('Cabeçalho: ', max_length=100)
     corpo = models.TextField('Corpo')
     assinatura = models.CharField('Assinatura:', max_length=300)
