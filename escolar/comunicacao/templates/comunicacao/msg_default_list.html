@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load unica_escola %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    Mensgens Default: <small>Usadas na comunicação escola membros</small> 
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+    {% if request.user.is_admin %}
+      <a class="btn btn-success" href="{% url 'bandeira_form' escola.pk %}" class="btn btn-mini btn-success">Nova Bandeira</a>
+      
+    {% endif %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Título</th>
+          </tr>
+        </thead>
+        {% for object in msg_default_qs %}
+          <tr>
+            <td>{{ object.tipo }}</td>
+            <td>{{ params.titulo }}</td>
+          </tr>
+        {% empty %}
+            <tr><td colspan="100%">Nenhum item disponível</td></tr>
+        {% endfor %}
+      </table>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+{% endblock extra_js%}
