@@ -699,8 +699,12 @@ class EmailMensagemForm(forms.ModelForm):
     http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
     '''
     titulo = forms.CharField(label='Título da mensagem', required=True)
-    mensagem = forms.CharField(widget=forms.Textarea, required=True)
-    assinatura = forms.CharField(widget=forms.Textarea, label='Assinatura da mensagem', required=True)
+    mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
+    assinatura = forms.CharField(
+        label='Assinatura da mensagem',
+        widget=forms.Textarea(attrs={'rows': 6}),
+        required=True
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

@@ -13,15 +13,20 @@ class MensagemDefaultForm(forms.ModelForm):
     #5
     '''
     tipo = forms.ChoiceField(
-    	label="Tipo:",
-    	choices=MENSAGEM_CHOICES,
-    	widget=forms.RadioSelect(),
-    	required=True
+        label="Tipo:",
+        choices=MENSAGEM_CHOICES,
+        widget=forms.RadioSelect(),
+        required=True
     )
     titulo = forms.CharField(label='Título da mensagem', required=True)
     cabecalho = forms.CharField(label='Cabeçalho', required=True)
     corpo = forms.CharField(label='Corpo', widget=forms.Textarea, required=True)
-    assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
+    assinatura = forms.CharField(
+        label='Assinatura da mensagem',
+        widget=forms.Textarea(attrs={'rows': 6}),
+        required=True
+    )
+
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
