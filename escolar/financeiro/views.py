@@ -37,7 +37,6 @@ from escolar.financeiro.forms import (
     PagamentoEscolaSearchForm,
     PagamentoForm,
     ParametrosContratoForm,
-    EmailMensagemForm
 )
 
 from escolar.escolas.models import Escola

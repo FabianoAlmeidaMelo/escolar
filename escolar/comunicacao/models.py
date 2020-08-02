@@ -5,7 +5,7 @@ from django.conf import settings
 
 MENSAGEM_CHOICES = (
     (1, 'cobrança'),
-    (2, 'saudação'),
+    (2, 'aniversário'),
     (3, 'avisos'),
     (4, 'conteúdo'),
     (5, 'outros'),

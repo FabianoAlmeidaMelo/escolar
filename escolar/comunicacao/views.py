@@ -99,7 +99,12 @@ def cobranca_form(request, pk):
     if not is_diretor:
         raise Http404
 
-    form = EmailMensagemForm(request.POST or None, instance=inadimplente, user=user)
+    form = EmailMensagemForm(
+        request.POST or None,
+        instance=inadimplente,
+        user=user,
+        escola=escola
+    )
 
     if request.method == 'POST':
         if form.is_valid():

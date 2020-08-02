@@ -13,7 +13,7 @@ class MensagemDefaultForm(forms.ModelForm):
     #5
     '''
     tipo = forms.ChoiceField(
-    	label="Pagamento",
+    	label="Tipo:",
     	choices=MENSAGEM_CHOICES,
     	widget=forms.RadioSelect(),
     	required=True

@@ -18,6 +18,7 @@ from escolar.financeiro.models import (
     ParametrosContrato,
 )
 from escolar.escolas.models import Curso, MembroFamilia, Serie
+from escolar.comunicacao.models import MensagemDefault
 from escolar.core.widgets import DateTimePicker
 
 from datetime import date
@@ -697,59 +698,32 @@ class EmailMensagemForm(forms.ModelForm):
     #5
     http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
     '''
-    titulo = forms.CharField(label='Título da mensagem', initial='Verificar a situação do Contrato', required=True)
+    titulo = forms.CharField(label='Título da mensagem', required=True)
     mensagem = forms.CharField(widget=forms.Textarea, required=True)
     assinatura = forms.CharField(widget=forms.Textarea, label='Assinatura da mensagem', required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
         super(EmailMensagemForm, self).__init__(*args, **kwargs)
-
+        
+        msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
         valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
 
-        # conta Azul
-        modelo = '''
-        {cidade}, {data}
+        self.fields['titulo'].initial = msg_default.titulo
 
-        Prezado {nome_completo},
+        modelo = msg_default.cabecalho
+        modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
 
-        Notamos há um débto em aberto no nosso sistema,
-        no valor total de R$ {valor_divida}.
-
-        Referente a: {pagamentos_atrasados}
-
-        De nosso contrato de prestação de seriços educacionais.
-
-        Por favor, entre em contato comigo pelo email ou telefone indicado
-
-        Se esse valor já foi quitado, por favor, desconsidere a mensagem.
-
-        '''.format(
-            cidade='São José dos Campos - SP',
+        modelo = modelo.format(
             data=date.today().strftime("%d/%m/%Y"),
             valor_divida=round(valor_divida, 2),
             nome_completo=self.instance.responsavel_nome,
             pagamentos_atrasados='; '.join(parcela for parcela in self.instance.titulos)
         )
 
-        assinatura_initial = '''
-        Atenciosamente,
-
-        {nome}
-        --------------------
-        {cargo}
-        {escola}
-        {diretor_email} {escola_telefone}
-        '''.format(
-            nome='Anderson',
-            cargo='Diretor',
-            escola=self.instance.escola,
-            escola_telefone=self.instance.escola.telefone,
-            diretor_email=self.user.username
-        )
-
         self.fields['mensagem'].initial = modelo
-        self.fields['assinatura'].initial = assinatura_initial
+        self.fields['assinatura'].initial = msg_default.assinatura
 
     class Meta:
         model = InadimplenteDBView

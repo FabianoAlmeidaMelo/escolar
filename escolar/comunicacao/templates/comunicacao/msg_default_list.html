@@ -28,7 +28,7 @@
         </thead>
         {% for object in msg_default_qs %}
           <tr>
-            <td>{{ object.get_tipo_display }}</td>
+            <td><a href="{% url 'msg_default_form' escola.pk object.id %}">{{ object.get_tipo_display }}</a></td>
             <td>{{ object.titulo }}</td>
           </tr>
         {% empty %}
