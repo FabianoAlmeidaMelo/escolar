@@ -119,6 +119,7 @@ def cobranca_form(request, pk):
 
             if enviado:
                 msg = 'Email de cobrança enviado com sucesso!'
+                inadimplente.set_mensagem_cobranca(mensagem, user)
                 messages.success(request, msg)
             return redirect(reverse('inadimplentes_list', kwargs={'escola_pk': escola.pk}))
         else:

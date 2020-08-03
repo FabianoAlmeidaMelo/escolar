@@ -17,6 +17,7 @@ from escolar.core.utils import add_email_embed_image
 from escolar.escolas.models import ANO
 from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso, extenso
+from escolar.comunicacao.models import Mensagem, PessoaMensagem
 
 
 
@@ -695,3 +696,35 @@ class InadimplenteDBView(models.Model):
             )
             return True
         return False
+
+    def set_mensagem_cobranca(self, mensagem, user):
+        '''
+        #5 chamado na views: 'cobranca_form'
+        Registra a msg enviada e para quem
+        '''
+        tipo_cobranca = 1
+        meio_email = 1
+        mensagem = Mensagem.objects.create(
+            escola=self.escola,
+            data=date.today(),
+            user=user,
+            texto=mensagem,
+            tipo=tipo_cobranca,
+            meio=meio_email,
+        )
+        pessoa_mensagem = PessoaMensagem.objects.create(
+            mensagem=mensagem,
+            contrato_id=self.contrato.id,
+            email=self.email,
+            pessoa=self.contrato.contratoaluno.responsavel.pessoa_ptr 
+        )
+
+    def get_data_ultima_cobranca(self):
+        data = None
+        cobranca = PessoaMensagem.objects.filter(
+            mensagem__escola=self.escola,
+            contrato_id=self.contrato.id
+        ).order_by('mensagem__data').last()
+        if cobranca:
+            data = cobranca.mensagem.data
+        return data

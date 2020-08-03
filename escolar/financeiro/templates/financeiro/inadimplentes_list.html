@@ -113,7 +113,8 @@
             {% endif %}
           </td>
           <td>
-            {{ pagamento.ano }}
+            {{ pagamento.ano }}<br>
+            <b>Cobrado:</b>{{ pagamento.get_data_ultima_cobranca|date:'d/m/Y'|default:"--"}}
           </td>
           <td>
              <a href="#"
@@ -149,7 +150,6 @@
   <script type="text/javascript">
     function sumDebitos(pk){
       let id = pk;
-      console.log("ID", id)
       let valor = document.getElementById("valor_id_"+id).innerText.slice(2,).replace('.', '');
       let multa = document.getElementById("multa_id_"+id).innerText.slice(2,).replace('.', '');
       let juros = document.getElementById("juros_id_"+id).innerText.slice(2,).replace('.', '');
