@@ -698,6 +698,7 @@ class EmailMensagemForm(forms.ModelForm):
     #5
     http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
     '''
+    email = forms.CharField(label='e-mail', required=True)
     titulo = forms.CharField(label='Título da mensagem', required=True)
     mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
     assinatura = forms.CharField(
@@ -710,6 +711,10 @@ class EmailMensagemForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
         super(EmailMensagemForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['titulo'].widget.attrs['readonly'] = True
+        self.fields['mensagem'].widget.attrs['readonly'] = True
+        self.fields['assinatura'].widget.attrs['readonly'] = True
         
         msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
         valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
