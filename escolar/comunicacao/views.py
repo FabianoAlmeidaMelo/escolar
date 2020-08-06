@@ -33,9 +33,10 @@ def msg_default_form(request, escola_pk, msg_pk=None):
     is_diretor = user.is_diretor(escola.pk)
     if not is_diretor:
         raise Http404
-
+    tipo = None
     if msg_pk:
         msg_default = get_object_or_404(MensagemDefault, pk=msg_pk)
+        tipo = msg_default.get_tipo_display()
         msg = u'Mensagem alterada com sucesso.'
     else:
         msg_default = None
@@ -58,6 +59,7 @@ def msg_default_form(request, escola_pk, msg_pk=None):
     context = {}
     context['form'] = form
     context['escola'] = escola
+    context['tipo'] = tipo
     context['msg_default'] = msg_default
     context['tab_sistema'] = "active"
     context['tab_mensagem_default'] = "active"

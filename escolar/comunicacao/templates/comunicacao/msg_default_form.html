@@ -13,7 +13,7 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        {{ escola.nome }} - <small>Mensagem</small>  <small></small>
+        {{ escola.nome }} - <small>Mensagem {{ tipo }}</small>
     {% else %}
         generico
     {% endif %}
@@ -26,6 +26,7 @@
     <br>
     <form method="POST" enctype="multipart/form-data">
       {{ form.errors }}
+      <h3>{{ tipo }}</h3>
       {% csrf_token %}
         <div class="form-group center_div" >
           <div class="row">
