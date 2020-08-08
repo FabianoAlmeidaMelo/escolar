@@ -7,7 +7,7 @@
   <style type="text/css">
     #id_tipo,
     /*#id_data,*/
-    #id_data_pag,
+    /*#id_data_pag,*/
     #id_valor,
     #id_valor_pag {
       width: 100px;
@@ -61,6 +61,7 @@
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.data %}
+             {% bootstrap_field form.data_pag %}
              {% bootstrap_field form.valor %}
              {% bootstrap_field form.tipo %}
              {% bootstrap_field form.efet %}

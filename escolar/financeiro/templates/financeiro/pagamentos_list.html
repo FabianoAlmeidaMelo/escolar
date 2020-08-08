@@ -111,7 +111,11 @@
             {% endif%}
           </td>
           <td>
-            {{ pagamento.data|date:'d/m/Y' }}
+            {% if pagamento.efet %}
+              {{ pagamento.data_pag|date:'d/m/Y' }}
+            {% else %}
+              {{ pagamento.data|date:'d/m/Y' }}
+            {% endif %}
             {% if pagamento.atrasado %}
               <br>
               <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>

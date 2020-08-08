@@ -419,9 +419,9 @@ class PagamentoForm(forms.ModelForm):
     valor = BRDecimalField(label="Valor", required=True)
     # valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
-    # data_pag = BRDateField(label="Pagamento efetivado em", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
     data = forms.DateField(label='Data', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_pag = forms.DateField(label="Pagamento efetivado em", widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -443,7 +443,6 @@ class PagamentoForm(forms.ModelForm):
         cleaned_data = super(PagamentoForm, self).clean()
         forma_pgto = cleaned_data['forma_pgto']
         bandeira = cleaned_data['bandeira']
-        # import pdb; pdb.set_trace()
 
         if forma_pgto in [2, 3] and not bandeira:
             raise forms.ValidationError("selecione a Bandeira do Cartão")
@@ -470,6 +469,9 @@ class PagamentoForm(forms.ModelForm):
             self.instance.user_add = self.user
         if self.instance.pk and self.instance.categoria.id in [1, 2]:
             self.instance.titulo = self.old_instance.titulo
+        if (self.old_instance.efet is False and
+            self.instance.efet is True and not self.instance.data_pag):
+            self.instance.data_pag = datetime.today()
         self.instance.user_upd = self.user
         self.instance.escola = self.escola
         if self.contrato:

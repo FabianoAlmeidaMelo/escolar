@@ -392,7 +392,14 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
         pagamento = None
         msg = u'Pagamento criado.' 
 
-    form = PagamentoForm(request.POST or None, request.FILES or None, instance=pagamento, escola=escola, contrato=contrato, user=user)
+    form = PagamentoForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=pagamento,
+        escola=escola,
+        contrato=contrato,
+        user=user
+    )
 
     if request.method == 'POST':
         if form.is_valid():
