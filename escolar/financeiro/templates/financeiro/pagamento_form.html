@@ -1,6 +1,6 @@
-
 {% extends 'base.html'%}
 {% load bootstrap3 %}
+{% load numberformat_br %}
 {% block css %}
    <link href="/static/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" media="all" rel="stylesheet" />
    {{ form.media.css }}
@@ -62,8 +62,9 @@
           <div class="col-xs-9 col-sm-6 col-md-3">
              {% bootstrap_field form.data %}
              {% bootstrap_field form.data_pag %}
-             {% bootstrap_field form.valor %}
              {% bootstrap_field form.tipo %}
+             {% bootstrap_field form.valor %}
+             <small>Valor previsto para data de hoje: R$ {{ form.instance.get_valor_a_pagar|numberformat_br }}</small>
              {% bootstrap_field form.efet %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
