@@ -13,6 +13,7 @@
       <div class="modal-body">
         Pagamento referente: <b>{{ pagamento.titulo }}</b><br>
         data prevista: <b>{{ pagamento.data|date:"d/m/Y" }}</b><br>
+        data efetivado: <b>Será registrado com data de hoje</b><br>
         no valor de: <b>R$ {{ pagamento.get_valor_a_pagar|numberformat_br }}</b><br>
         <label>Forma de Pagamento</label>
         <select id="select_id_{{ pagamento.id }}">

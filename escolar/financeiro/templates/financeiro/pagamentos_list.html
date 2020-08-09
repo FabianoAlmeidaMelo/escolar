@@ -73,7 +73,8 @@
     <thead>
       <tr>
         <th>Título</th>
-        <th>Data</th>
+        <th>Data Prevista</th>
+        <th>Data Efetivado</th>
         <th>Valor</th>
         <th>Categoria</th>
         <th>Responsável/<br>Aluno</th>
@@ -117,7 +118,9 @@
               <small>Juros R$ {{ pagamento.get_juros|numberformat_br }} </small>
             {% endif %}
           </td>
-
+          <td>
+            {{ pagamento.data_pag|date:'d/m/Y' }}
+          </td>
           <td>
             <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>
             {% if pagamento.efet and pagamento.taxa_cartao %}
