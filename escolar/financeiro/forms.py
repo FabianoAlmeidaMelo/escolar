@@ -70,6 +70,7 @@ PARCELAS_MATRICULA = (
     (6, 6),
 )
 
+COM_OU_SEM = (('1', 'Sem forma Pgto',), ('2', 'Todas formas Pgto',))
 
 
 class ParametrosContratoForm(forms.ModelForm):
@@ -496,6 +497,7 @@ class PagamentoEscolaSearchForm(forms.Form):
     '''
     #31 pagamentos Administração
     '''
+
     efet = forms.ChoiceField(label="Pagamento", choices=PAGAMENTO_STATUS_CHOICES, widget=forms.RadioSelect(), required=False)
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, widget=forms.RadioSelect(), required=False)
     titulo = forms.CharField(label=u'Título', required=False)
@@ -504,7 +506,12 @@ class PagamentoEscolaSearchForm(forms.Form):
     mes_fim = forms.ChoiceField(label='Mês fim', choices=MESES, initial=MES_CORRNETE, required=False)
     categoria = forms.ModelChoiceField(queryset=CategoriaPagamento.objects.all(), required=False)
     serie = forms.ModelChoiceField(label="Série", queryset=Serie.objects.all(), required=False)
-    forma_pgto = forms.MultipleChoiceField(choices=FORMA_PGTO[1:], widget=forms.CheckboxSelectMultiple, required=False)
+    forma_pgto = forms.MultipleChoiceField(
+        choices=FORMA_PGTO[1:],
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    todas_ou_sem = forms.ChoiceField(widget=forms.RadioSelect, choices=COM_OU_SEM, required=False)
     cpf_resp_fin = forms.CharField(label='CPF resp fin', required=False)
 
     def __init__(self, *args, **kargs):
@@ -577,6 +584,12 @@ class PagamentoEscolaSearchForm(forms.Form):
             if forma_pgto:
                 q = q & Q(forma_pgto__in=forma_pgto)
 
+            todas_ou_sem = self.cleaned_data['todas_ou_sem']
+            if todas_ou_sem == '2':
+                q = q & Q(forma_pgto__in=[1, 2, 3, 4, 5, 6, 7])
+            elif todas_ou_sem == '1':
+                q = q & Q(forma_pgto=None)
+
             efet = self.cleaned_data['efet']
             if efet and efet == '1':
                 q = q & Q(efet=True)
@@ -588,11 +601,11 @@ class PagamentoEscolaSearchForm(forms.Form):
             que o ano corrente
             o default é 1 pago:
             '''
-            mes_atual = date.today().month
-            if not efet:
-                if  mes < mes_atual or ano < ANO_CORRENTE:
-                    self.cleaned_data['efet'] = '1'
-                    q = q & Q(efet=True)
+            # mes_atual = date.today().month
+            # if not efet:
+            #     if  mes < mes_atual or ano < ANO_CORRENTE:
+            #         self.cleaned_data['efet'] = '1'
+            #         q = q & Q(efet=True)
             tipo = self.cleaned_data['tipo']
             if tipo and tipo == '1':
                 q = q & Q(tipo=1)
