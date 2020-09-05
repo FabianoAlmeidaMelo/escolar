@@ -10,7 +10,7 @@
         <p id="linha_um"></p>
         <p id="linha_dois"></p>
         <h2 id="new_valor"></h2>
-        <p>Valor previsto: R$ {{ form.instance.get_valor_a_pagar }}</p>
+        <p>Valor previsto: R$ {{ form.instance.get_valor_a_pagar|numberformat_br }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
