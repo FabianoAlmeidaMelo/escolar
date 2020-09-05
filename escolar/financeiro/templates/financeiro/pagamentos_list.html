@@ -107,7 +107,7 @@
         <tr class="{{ pagamento.get_context_alert }}">
           <td>
             {% if can_edit %}
-            <a href="{% url 'pagamento_edit' escola.id pagamento.id %}">{{ pagamento.titulo|default:'--' }}</a>
+            <a href="{% url 'pagamento_edit' escola.id pagamento.id %}?list">{{ pagamento.titulo|default:'--' }}</a>
             {% else %}
               {{ pagamento.titulo|default:'--' }}
             {% endif %}
@@ -124,7 +124,9 @@
             {% endif %}
           </td>
           <td>
+            {% if pagamento.efet %}
             {{ pagamento.data_pag|date:'d/m/Y' }}
+            {% endif %}
           </td>
           <td>
             <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>

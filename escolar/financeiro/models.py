@@ -4,14 +4,17 @@ from datetime import date
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
+
 from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
+from django.db.models import DateTimeField, Case, When
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
+
 from escolar.core.models import UserAdd, UserUpd
 from escolar.core.utils import add_email_embed_image
 from escolar.escolas.models import ANO
@@ -279,17 +282,16 @@ class ContratoAluno(Contrato):
             count = 0
             for data in datas:
                 count += 1
-                Pagamento.objects.update_or_create(titulo='Material %d/ %d' % (count, self.material_parcelas) ,
-                                                   data=data,
-                                                   contrato=self,
-                                                   escola=self.aluno.escola,
-                                                   categoria=categoria,
-                                                   observacao='',
-                                                   nr_parcela=None,
-                                                   tipo=1, defaults={
-                                                   'valor':valor})
-
-        # print(datas)
+                Pagamento.objects.update_or_create(
+                    titulo='Material %d/ %d' % (count, self.material_parcelas) ,
+                    data=data,
+                    data_pag=data,
+                    contrato=self,
+                    escola=self.aluno.escola,
+                    categoria=categoria,
+                    observacao='',
+                    nr_parcela=None,
+                    tipo=1, defaults={'valor':valor})
 
 
     def set_parcelas(self, parcelas_matricula):
@@ -314,17 +316,17 @@ class ContratoAluno(Contrato):
                 n = 1
                 for p in range(mes_ini, 12 + 1):
                     data =  date(self.ano, p, self.vencimento)
-                    Pagamento.objects.update_or_create(titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
-                                                       contrato=self,
-                                                       escola=self.aluno.escola,
-                                                       data=data,
-                                                       observacao='',
-                                                       nr_parcela=p,
-                                                       categoria=categoria,
-                                                       tipo=1, 
-                                                       defaults={
-                                                       'valor': valor,
-                                                       })
+                    Pagamento.objects.update_or_create(
+                        titulo='Parcela %s / %s' % (n, self.nr_parcela) ,
+                        contrato=self,
+                        escola=self.aluno.escola,
+                        data=data,
+                        data_pag=data,
+                        observacao='',
+                        nr_parcela=p,
+                        categoria=categoria,
+                        tipo=1, 
+                        defaults={'valor': valor,})
                     n += 1
 
 
@@ -462,7 +464,7 @@ class Pagamento(models.Model):
     objects = PagamentoManager()
 
     class Meta:
-        ordering = ('data',)
+        ordering = ('data_pag',)
 
     def __str__(self):
         return self.titulo

@@ -94,7 +94,9 @@
           {% endif %}
         </td>
         <td>
-          {{ pagamento.data_pag|date:'d/m/Y' }}
+          {% if pagamento.efet %}
+            {{ pagamento.data_pag|date:'d/m/Y' }}
+          {% endif %}
         </td>
         <td>
           <font color="{{ pagamento.get_color_display }}">R$ {{ pagamento.valor|numberformat_br }}</font>

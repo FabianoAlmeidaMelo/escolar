@@ -405,7 +405,7 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
         if form.is_valid():
             pagamento = form.save()
             messages.success(request, msg)
-            if contrato:
+            if contrato and not 'list' in str(request):
                 return redirect(reverse('pagamentos_aluno_list', kwargs={'aluno_pk': aluno.pk}))
             else:
                 return redirect(reverse('pagamentos_list', kwargs={'escola_pk': escola.pk}))
@@ -653,14 +653,6 @@ def pagamentos_aluno_list(request, aluno_pk):
                              then=Value(True)), output_field=BooleanField()))
 
     pagamentos_qs = pagamentos_qs.all().annotate(
-                    order_date=Case(
-                        When(efet=False, 
-                             then='data'),
-                        When(efet=True, 
-                             then='data_pag'),
-                             output_field=DateTimeField()))
-
-    pagamentos_qs = pagamentos_qs.all().annotate(
                     can_pay=Case(
                              When(efet=False,
                                   data__lte=data_fim,
@@ -693,7 +685,8 @@ def pagamentos_aluno_list(request, aluno_pk):
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
     
     page = request.GET.get('page', 1)
-    paginator = Paginator(pagamentos_qs.order_by('order_date'), 20)
+
+    paginator = Paginator(pagamentos_qs, 20)
     try:
         pagamentos = paginator.page(page)
     except PageNotAnInteger:
@@ -741,7 +734,7 @@ def pagamentos_list(request, escola_pk):
         efet = form.cleaned_data['efet']
     else:
         pagamentos_qs = form.get_result_queryset().filter(
-            data__gte=data_ini, data__lte=data_fim)
+            data_pag__gte=data_ini, data_pag__lte=data_fim)
 
     hj = date.today()
     # pgtos atrasados
@@ -752,14 +745,6 @@ def pagamentos_list(request, escola_pk):
                              data__lte=hj,
                              categoria_id=1,
                              then=Value(True)), output_field=BooleanField()))
-
-    pagamentos_qs = pagamentos_qs.all().annotate(
-                    order_date=Case(
-                        When(efet=False, 
-                             then='data'),
-                        When(efet=True, 
-                             then='data_pag'),
-                             output_field=DateTimeField()))
 
     pagamentos_qs = pagamentos_qs.all().annotate(
                     can_pay=Case(
@@ -811,7 +796,8 @@ def pagamentos_list(request, escola_pk):
     get_copy = request.GET.copy()
     context['parameters'] = get_copy.pop('page', True) and get_copy.urlencode()
     page = request.GET.get('page', 1)
-    paginator = Paginator(pagamentos_qs.order_by('order_date'), 15)
+
+    paginator = Paginator(pagamentos_qs, 15)
     try:
         pagamentos = paginator.page(page)
     except PageNotAnInteger:
