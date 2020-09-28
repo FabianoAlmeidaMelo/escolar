@@ -13,6 +13,12 @@
       width: 100px;
       height: 35px;
     }
+    .icon-success {
+        color: #5CB85C;
+    }
+    .icon-error {
+        color: #cc0000;
+    }
    </style>
 {% endblock css %}
 {% block page_title %}
@@ -117,26 +123,30 @@
         valorPrevisto = parseFloat(valorPrevisto.replace(',', '.'));
         let efet = $("#id_efet").is(":checked");
         let formaPagamento = $("#id_forma_pgto option:selected").text();
-        let pago = ' Pagamento não efetivado'
+        let pago = '<spam class="glyphicon glyphicon-remove icon-error"></spam>  Pagamento não efetivado'
         let valorPago = parseFloat(preenchido.replace(',', '.'));
         
         let diferenca = valorPrevisto - valorPago
         
         valorPago = valorPago.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
         if (efet) {
-          pago = ' Pagamento Efetivado'
+          pago = '<spam class="glyphicon glyphicon-ok icon-success"></spam> Pagamento Efetivado'
         }
+
         if (formaPagamento === '--') {
-          formaPagamento = '<p style="color:red;"> Sem forma de Pagamento</p>'
+          formaPagamento = '<spam class="glyphicon glyphicon-remove icon-error"></spam> Sem forma de Pagamento'
         } else {
-          formaPagamento = '<small> '+ formaPagamento +'</small>'
+          formaPagamento = '<spam class="glyphicon glyphicon-ok icon-success"></spam><small> '+ formaPagamento +'</small>'
         }
+
         hoje = new Date();
         let gerarParcela = ''
+
         if (diferenca > 0) {
-          console.log('Date: ', new Date())
-          gerarParcela = '<input type="checkbox" id="Parcela_extra" name="parcelaAdicioanl"><label for="horns">Deseja gerar parcela complementar para: </label>'
+          gerarParcela = '<input type="checkbox" id="Parcela_extra" name="parcelaAdicioanl">\
+                            <label for="horns"> Gerar parcela complementar para: </label>'
           gerarParcela += '<input id="date_id" type="date" value=new Date()>'
+          gerarParcela += '<input id="parcela_adicional_id" type=number step=any />Parcela adicioanal<br />'
         }
 
         if (reference != preenchido) {
@@ -144,12 +154,13 @@
         } else {
           pTagColor = '<p style="color:green;">'
         }
-        console.log('PARCELA???: ', gerarParcela)
-        document.getElementById("efetivado_ou_nao").innerHTML  = '<small> '+ pago +'</small>' + '</p>'
-        document.getElementById("forma_pagto").innerHTML  = formaPagamento
-        document.getElementById("new_valor").innerHTML  = pTagColor + valorPago
-        document.getElementById("gerar_parcela").innerHTML = gerarParcela
-        document.getElementById("date_id").defaultValue = hoje.toISOString().split('T')[0]
+
+        document.getElementById("efetivado_ou_nao").innerHTML  = '<small> '+ pago +'</small>' + '</p>';
+        document.getElementById("forma_pagto").innerHTML  = formaPagamento;
+        document.getElementById("new_valor").innerHTML  = pTagColor + valorPago;
+        document.getElementById("gerar_parcela").innerHTML = gerarParcela;
+        document.getElementById("date_id").defaultValue = hoje.toISOString().split('T')[0];
+        document.getElementById("parcela_adicional_id").defaultValue = diferenca.toFixed(2);
       }
     </script>
     {{ form.media.js }}
