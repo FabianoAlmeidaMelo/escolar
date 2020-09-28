@@ -64,7 +64,7 @@
              {% bootstrap_field form.data_pag %}
              {% bootstrap_field form.tipo %}
              {% bootstrap_field form.valor %}
-             <small>Valor previsto para data de hoje: R$ {{ form.instance.get_valor_a_pagar|numberformat_br }}</small>
+             <small>Valor previsto para data de hoje: R$ <b id='valor_previsto_id'>{{ form.instance.get_valor_a_pagar|numberformat_br }}</b></small>
              {% bootstrap_field form.efet %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
@@ -113,10 +113,15 @@
         let reference = referenceValue
         let pTagColor = '<p>'
         let preenchido = document.getElementById("id_valor").value
+        let valorPrevisto = document.getElementById("valor_previsto_id").innerHTML
+        valorPrevisto = parseFloat(valorPrevisto.replace(',', '.'));
         let efet = $("#id_efet").is(":checked");
         let formaPagamento = $("#id_forma_pgto option:selected").text();
         let pago = ' Pagamento não efetivado'
         let valorPago = parseFloat(preenchido.replace(',', '.'));
+        
+        let diferenca = valorPrevisto - valorPago
+        
         valorPago = valorPago.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
         if (efet) {
           pago = ' Pagamento Efetivado'
@@ -126,16 +131,25 @@
         } else {
           formaPagamento = '<small> '+ formaPagamento +'</small>'
         }
-        console.log('forma ', formaPagamento)
+        hoje = new Date();
+        let gerarParcela = ''
+        if (diferenca > 0) {
+          console.log('Date: ', new Date())
+          gerarParcela = '<input type="checkbox" id="Parcela_extra" name="parcelaAdicioanl"><label for="horns">Deseja gerar parcela complementar para: </label>'
+          gerarParcela += '<input id="date_id" type="date" value=new Date()>'
+        }
+
         if (reference != preenchido) {
           pTagColor = '<p style="color:red;">'
         } else {
           pTagColor = '<p style="color:green;">'
         }
-
-        document.getElementById("linha_um").innerHTML  = '<small> '+ pago +'</small>' + '</p>'
-        document.getElementById("linha_dois").innerHTML  = formaPagamento
+        console.log('PARCELA???: ', gerarParcela)
+        document.getElementById("efetivado_ou_nao").innerHTML  = '<small> '+ pago +'</small>' + '</p>'
+        document.getElementById("forma_pagto").innerHTML  = formaPagamento
         document.getElementById("new_valor").innerHTML  = pTagColor + valorPago
+        document.getElementById("gerar_parcela").innerHTML = gerarParcela
+        document.getElementById("date_id").defaultValue = hoje.toISOString().split('T')[0]
       }
     </script>
     {{ form.media.js }}

@@ -7,10 +7,12 @@
         <h4 class="modal-title">Confira os dados do Pagamento</h4>
       </div>
       <div class="modal-body">
-        <p id="linha_um"></p>
-        <p id="linha_dois"></p>
+        <p id="efetivado_ou_nao"></p>
+        <p id="forma_pagto"></p>
         <h2 id="new_valor"></h2>
         <p>Valor previsto: R$ {{ form.instance.get_valor_a_pagar|numberformat_br }}</p>
+        {% csrf_token %}
+        <p id="gerar_parcela"></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
