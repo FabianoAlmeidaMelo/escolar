@@ -404,6 +404,17 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
     if request.method == 'POST':
         if form.is_valid():
             pagamento = form.save()
+            gerar_parcela = request.POST.get('gerar_complementar')
+            efet = pagamento.efet
+            if efet and gerar_parcela is not None:
+                previsto = request.POST.get('valor_previsto')
+                data = request.POST.get('data_parcela_adicional')
+                valor = request.POST.get('parcela_adicional')
+                obs = ' Parcela complementar gerada para: {0} no valor de: {1}'.format(data, valor)
+                msg += obs
+                obs += ' O valor previsto era de: R$ {0}'.format(previsto)
+                pagamento.gerar_complementar(previsto, data, valor, obs)
+
             messages.success(request, msg)
             if contrato and not 'list' in str(request):
                 return redirect(reverse('pagamentos_aluno_list', kwargs={'aluno_pk': aluno.pk}))

@@ -529,7 +529,7 @@ class Pagamento(models.Model):
     def get_valor_a_pagar(self):
         # calcular por dias úteis ou data específica
         # time5 = (self.data - date.today()).days
-        if self.contrato and not self.contrato.contratoaluno.rescindido:
+        if self.contrato and not self.contrato.contratoaluno.rescindido and self.efet is False:
             if self.categoria and self.categoria.id == 1 and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
                 if date.today() <= self.get_bizday():
                     desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
@@ -653,6 +653,20 @@ class Pagamento(models.Model):
             email.attach_alternative(html_content, 'text/html')
             return email.send()
 
+    def gerar_complementar(self, previsto, data, valor, obs):
+        '''
+        Uma parcela foi paga parcialmente e o user quiz grar uma
+        outra parcela para complementa-la
+        '''
+        pagamento = self
+        pagamento.id = None
+        pagamento.titulo = self.titulo + ': Complementar'
+        pagamento.efet = False
+        pagamento.observacao = obs
+        pagamento.valor = valor
+        pagamento.data = data
+        pagamento.data_pag = data
+        pagamento.save()
 
 
 class InadimplenteDBView(models.Model):

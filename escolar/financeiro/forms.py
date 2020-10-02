@@ -418,11 +418,12 @@ class BandeiraEscolaParametroForm(forms.ModelForm):
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
     valor = BRDecimalField(label="Valor", required=True)
-    # valor_pag = BRDecimalField(label="Valor pago", required=False)
     efet = forms.BooleanField(label="Pago", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
     data = forms.DateField(label='Data', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     data_pag = forms.DateField(label="Pagamento efetivado em", widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+
+    valor_previsto = BRDecimalField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -432,8 +433,11 @@ class PagamentoForm(forms.ModelForm):
         self.old_instance = deepcopy(self.instance)
 
         self.fields['bandeira'].queryset=Bandeira.objects.get_bandeiras_ativas(self.escola)
+        self.fields['valor_previsto'].widget = forms.HiddenInput()
+        self.fields['valor_previsto'].initial = self.instance.get_valor_a_pagar()
 
         if self.contrato:
+
             self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
         if self.instance.pk and self.instance.categoria:
             if self.instance.categoria.id in [1, 2, 9]:

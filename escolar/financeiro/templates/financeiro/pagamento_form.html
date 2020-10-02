@@ -70,11 +70,17 @@
              {% bootstrap_field form.data_pag %}
              {% bootstrap_field form.tipo %}
              {% bootstrap_field form.valor %}
-             <small>Valor previsto para data de hoje: R$ <b id='valor_previsto_id'>{{ form.instance.get_valor_a_pagar|numberformat_br }}</b></small>
+             {% if not form.isntance.efet %}
+                <small>Valor previsto para data de hoje: R$ <b id='valor_previsto_id'>{{ form.instance.get_valor_a_pagar|numberformat_br }}</b></small>
+             {% endif %}
              {% bootstrap_field form.efet %}
           </div>
           <div class="col-xs-9 col-sm-6 col-md-3">
             {% bootstrap_field form.observacao %}
+          </div>
+          <div class="col-xs-9 col-sm-6 col-md-3">
+            
+             {% bootstrap_field form.valor_previsto %}
           </div>
          </div>
       </div>
@@ -143,10 +149,10 @@
         let gerarParcela = ''
 
         if (diferenca > 0) {
-          gerarParcela = '<input class="messageCheckbox" type="checkbox" id="id_parcela_extra_bool" name="parcelaAdicioanl">\
+          gerarParcela = '<input type="checkbox" id="id_parcela_extra_bool"   name="gerar_complementar" >\
                             <label for="horns"> Gerar parcela complementar para: </label>'
-          gerarParcela += '<input id="date_id" type="date" value=new Date() required >'
-          gerarParcela += '<input id="parcela_adicional_id" type=number step=any required >Parcela adicioanal<br />'
+          gerarParcela += '<input id="id_data_parcela_adicional" type="date" value=new Date() required name="data_parcela_adicional">'
+          gerarParcela += '<input id="id_parcela_adicional" type=number step=any required name="parcela_adicional">Parcela adicioanal<br />'
         }
 
         if (reference != preenchido) {
@@ -154,33 +160,29 @@
         } else {
           pTagColor = '<p style="color:green;">'
         }
-        
 
         document.getElementById("efetivado_ou_nao").innerHTML  = '<small> '+ pago +'</small>' + '</p>';
         document.getElementById("forma_pagto").innerHTML  = formaPagamento;
         document.getElementById("new_valor").innerHTML  = pTagColor + valorPago;
         document.getElementById("gerar_parcela").innerHTML = gerarParcela;
-        document.getElementById("date_id").defaultValue = hoje.toISOString().split('T')[0];
-        document.getElementById("parcela_adicional_id").defaultValue = diferenca.toFixed(2);
+        document.getElementById("id_data_parcela_adicional").defaultValue = hoje.toISOString().split('T')[0];
+        document.getElementById("id_parcela_adicional").defaultValue = diferenca.toFixed(2);
 
       };
       function gerarParcelaAdicional(){
-        let gerarParcela =  document.querySelector('.messageCheckbox:checked');
-        let dataParcela = $('#date_id').val();
-        let valorParcela = $('#parcela_adicional_id').val();
+        let dataParcela = $('#id_data_parcela_adicional').val();
+        let valorParcela = $('#id_parcela_adicional').val();
+        let gerarParcela = document.getElementById("id_parcela_extra_bool");
 
-        if (gerarParcela != null) {
-          console.log("gerar sim", dataParcela, valorParcela);
-          /*
-          DESCOBRIR o id da parcela Atual, que está sendo fracionada
-          chamar uma viwes passando:
-          parcela_data:dataParcela, parcela_valor:valorParcela
-
-          */
+        if (gerarParcela.checked) {
+          document.getElementById("id_parcela_adicional").value = valorParcela
+          document.getElementById("id_parcela_extra_bool").value = gerarParcela.value
         } else {
-          console.log("NULL");
+          document.getElementById("id_parcela_adicional").value = valorParcela
+          document.getElementById("id_parcela_extra_bool").value = 'off'
         }        
       }
     </script>
     {{ form.media.js }}
+
 {% endblock extra_js %}
