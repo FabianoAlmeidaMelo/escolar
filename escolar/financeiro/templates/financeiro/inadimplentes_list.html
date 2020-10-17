@@ -114,7 +114,14 @@
           </td>
           <td>
             {{ pagamento.ano }}<br>
-            <b>Cobrado:</b>{{ pagamento.get_data_ultima_cobranca|date:'d/m/Y'|default:"--"}}
+            <b>Cobrado:</b>
+              {% if pagamento.get_data_ultima_cobranca %}
+                <a href="{% url 'msg_list' pagamento.escola_id pagamento.contrato_id %}">
+                 {{ pagamento.get_data_ultima_cobranca|date:'d/m/Y'|default:"--"}}
+                </a>
+              {% else %}
+                --
+              {% endif %}
           </td>
           <td>
              <a href="#"

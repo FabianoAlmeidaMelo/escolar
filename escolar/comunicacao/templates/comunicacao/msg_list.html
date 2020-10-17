@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load unica_escola %}
+
+{% block css %}
+  <style type="text/css">
+   textarea {
+    width: 800px;
+    height: 300px;  
+  }
+   </style>
+{% endblock css %}
+
+{% block page_title %}
+  <div class="page-header">
+  <!-- TODO erver esse br -->
+  <br>
+    Mensgens: <small>Resp. Financeiro: {{ contrato.responsavel.nome }}, Tel: {{ contrato.responsavel.celular|default:"--" }}</small><br>
+    <small>Voltar para: <a href="{% url 'inadimplentes_list' escola.id %}" id='contratos'>Inadimplentes</a></small>
+  </div>
+{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+  <div class="row-fluid span10">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Remetente</th>
+            <th>Data</th>
+            <th>Meio</th>
+          </tr>
+        </thead>
+        {% for object in msg_qs %}
+          <tr>
+            <td>
+              <a href="#" class="panel-showhide">{{ object.mensagem.get_tipo_display }}</a>
+              <div class="panel-showhide">
+                <textarea disabled width: 500px; height: 400px;>
+                {{ object.mensagem.texto }}
+               </textarea>
+              </div>
+             </td>
+             <td>{{ object.mensagem.user.nome }}</td>
+            <td>{{ object.mensagem.data|date:"d/m/Y" }}</td>
+            <td>{{ object.mensagem.get_meio_display }}</td>
+          </tr>
+        {% empty %}
+            <tr><td colspan="100%">Nenhum item disponível</td></tr>
+        {% endfor %}
+      </table>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+  <script type="text/javascript">
+    jQuery(document).ready( function() {
+      /*
+      Show / Hide qualquer div com a class="panel-showhide"
+      O objeto que recebe a funcao para show/hide deve ser um LINK com a mesma classe.
+      Ambos devem estar dentro de um container (fieldset, div ...)
+      */
+      jQuery('div.panel-showhide').hide();
+      jQuery('a.panel-showhide').click( function() {
+          jQuery(this).parent().parent().find('div.panel-showhide').toggle();
+      });
+
+    });
+  </script>
+{% endblock extra_js%}

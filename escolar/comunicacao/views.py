@@ -10,7 +10,8 @@ from django.shortcuts import (
 	resolve_url,
 )
 from escolar.comunicacao.models import(
-    MensagemDefault
+    MensagemDefault,
+    PessoaMensagem
 )
 from escolar.comunicacao.forms import (
     MensagemDefaultForm,
@@ -22,7 +23,8 @@ from escolar.financeiro.forms import (
     EmailMensagemForm,
 )
 from escolar.financeiro.models import (
-    InadimplenteDBView,
+    ContratoAluno,
+    InadimplenteDBView
 )
 
 @login_required
@@ -87,6 +89,38 @@ def msg_default_list(request, escola_pk):
     context['tab_sistema'] = "active"
     context['tab_mensagem_default'] = "active"
     return render(request, 'comunicacao/msg_default_list.html', context)
+
+
+@login_required
+def msg_list(request, escola_pk, contrato_id, tipo=None):
+    '''
+    Lista as Mensagens de cobrança a partir do Cobrado
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = user.is_diretor(escola.id)
+    if tipo:
+        msg_qs = PessoaMensagem.objects.filter(
+            mensagem__escola=escola,
+            contrato_id=contrato_id,
+            tipo=tipo
+        )
+    else:
+        msg_qs = PessoaMensagem.objects.filter(
+            mensagem__escola=escola,
+            contrato_id=contrato_id
+        )
+    contrato = ContratoAluno.objects.get(
+        id=contrato_id
+    )
+    context = {}
+    context['msg_qs'] = msg_qs.order_by('-mensagem__data')
+    context['can_edit'] = can_edit
+    context['contrato'] = contrato
+    context['escola'] = escola
+    context['tab_administracao'] = "active"
+    context['tab_inadimplentes'] = "active"
+    return render(request, 'comunicacao/msg_list.html', context)
 
 
 @login_required
