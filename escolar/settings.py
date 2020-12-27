@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'escolar.escolas.apps.EscolasConfig',
     'escolar.financeiro', # .apps.FinanceiroConfig',
     'escolar.comunicacao',
+    'escolar.sites',
 ]
 
 MIDDLEWARE_CLASSES = [
