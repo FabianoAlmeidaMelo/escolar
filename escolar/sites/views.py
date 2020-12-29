@@ -29,7 +29,7 @@ def conteudo_form(request, escola_pk, conteudo_pk=None):
     if not user.is_diretor(escola.pk):
         raise Http404
     if conteudo_pk:
-        contrato = get_object_or_404(Conteudo, pk=conteudo_pk)
+        conteudo = get_object_or_404(Conteudo, pk=conteudo_pk)
         msg = u'Conteúdo alterado com sucesso.'
     else:
         conteudo = None
