@@ -50,15 +50,36 @@ def conteudo_form(request, escola_pk, conteudo_pk=None):
     context['conteudo'] = conteudo
     context['escola'] = escola
     context['can_edit'] = can_edit
-    context['tab_alunos'] = "active"
-    context['tab_aluno_contratos'] = "active"
+    context['tab_sistema'] = "active"
+    context['tab_site'] = "active"
 
     if request.method == 'POST':
         if form.is_valid():
             conteudo = form.save()
             messages.success(request, msg)
-            # return redirect(reverse('contrato_cadastro', kwargs={'conteudo_pk': conteudo.pk}))
+            return redirect(reverse('conteudo_list', kwargs={'escola_pk': escola.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do conteúdo.')
 
     return render(request, 'sites/conteudo_form.html', context)
+
+
+@login_required
+def conteudo_list(request, escola_pk):
+    '''
+    Lista todo as Conteúdos do site da escola escola
+    '''
+    escola = get_object_or_404(Escola, pk=escola_pk)
+    user = request.user
+    can_edit = user.is_diretor(escola.id)
+    can_create = user.is_admin()
+    conteudo_qs = Conteudo.objects.filter(escola=escola)
+
+    context = {}
+    context['conteudo_qs'] = conteudo_qs
+    context['can_create'] = can_create
+    context['can_edit'] = can_edit
+    context['escola'] = escola
+    context['tab_sistema'] = "active"
+    context['tab_site'] = "active"
+    return render(request, 'sites/conteudo_list.html', context)
