@@ -1,5 +1,7 @@
-from django.shortcuts import render
+# coding: utf-8
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from django.shortcuts import (
     render,
@@ -55,7 +57,7 @@ def conteudo_form(request, escola_pk, conteudo_pk=None):
         if form.is_valid():
             conteudo = form.save()
             messages.success(request, msg)
-            return redirect(reverse('contrato_cadastro', kwargs={'conteudo_pk': conteudo.pk}))
+            # return redirect(reverse('contrato_cadastro', kwargs={'conteudo_pk': conteudo.pk}))
         else:
             messages.warning(request, u'Falha no cadastro do conteúdo.')
 

@@ -15,7 +15,7 @@ class ConteudoForm(forms.ModelForm):
 
     class Meta:
         model = Conteudo
-        fields = ['escola', 'chave', 'titulo', 'texto', 'foto', 'link']
+        fields = ['chave', 'titulo', 'texto', 'foto', 'link']
  
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -25,3 +25,9 @@ class ConteudoForm(forms.ModelForm):
         if self.user.is_admin() is False:
             # self.fields['escola'].widget = forms.HiddenInput()
             self.fields['chave'].widget = forms.HiddenInput()
+
+    def save(self, *args, **kwargs):
+        self.instance.escola = self.escola
+        instance = super(ConteudoForm, self).save(*args, **kwargs)
+        instance.save()
+        return instance

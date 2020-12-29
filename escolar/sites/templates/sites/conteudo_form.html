@@ -13,7 +13,7 @@
   <!-- TODO erver esse br -->
   <br>
     {% if escola %}
-        {{ escola.nome }} - <small>Conteúdo {{ tipo }}</small>
+        {{ escola.nome }} - <small>Conteúdo do site: {{ form.instance.chave }} </small>
     {% else %}
         generico
     {% endif %}
@@ -32,7 +32,11 @@
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-12 col-sm-9 col-md-6">
-
+              {% bootstrap_field form.chave %}
+              {% bootstrap_field form.titulo %}
+              {% bootstrap_field form.texto %}
+              {% bootstrap_field form.foto %}
+              {% bootstrap_field form.link %}
             </div>
         </div>
       </div>
