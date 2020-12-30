@@ -3,7 +3,6 @@ from django.db import models
 
 def escola_site_directory_path(instance, documento):
     escola = instance.escola.nome
-    nome = instance.nome
 
     path = 'escola_{0}/foto_site/{1}'.format(escola, documento)
 
