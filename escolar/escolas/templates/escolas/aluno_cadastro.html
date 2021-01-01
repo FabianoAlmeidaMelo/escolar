@@ -40,7 +40,14 @@
           <p><b>RG</b>: {{ aluno.rg|default:"--" }} </p>
           
           <p><b>RG e ou CPF</b>:{% if aluno.documento %}<a href="{{ aluno.documento.url }}">{{ aluno.get_docs_name }}</a>{% endif %}</p>
-          <p><b>Foto</b>:{% if aluno.foto %}<a href="{{ aluno.foto.url }}">{{ aluno.get_foto_name }}</a>{% endif %}</p>
+          <p>
+            <b>Foto</b>:
+            {% if aluno.foto %}
+              <a href="{{ aluno.foto.url }}">
+                <img src="{{ aluno.foto.url }}" alt="Forest" style="width:150px">
+              </a>
+             {% endif %}
+          </p>
        
         </div>
         <div class="col-md-4">

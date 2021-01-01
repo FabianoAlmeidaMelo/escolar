@@ -22,6 +22,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>Ordem</th>
             <th>Chave</th>
             <th>Título</th>
             <th>Texto</th>
@@ -31,11 +32,16 @@
         </thead>
         {% for object in conteudo_qs %}
           <tr>
+            <td>{{ object.ordem|default:'-' }}</td>
             <td><a href="{% url 'conteudo_edit' escola.pk object.id %}">{{ object.chave }}</a></td>
             <td>{{ object.titulo }}</td>
             <td>{{ object.texto }}</td>
             <td>{{ object.link }}</td>
-            <td>{{ object.foto }}</td>
+            <td>
+              {% if object.foto %}
+                <img src="{{ object.foto.url }}" alt="Forest" style="width:150px">
+              {% endif %}
+            </td>
           </tr>
         {% empty %}
             <tr><td colspan="100%">Nenhum item disponível</td></tr>

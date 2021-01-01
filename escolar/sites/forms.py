@@ -12,10 +12,11 @@ class ConteudoForm(forms.ModelForm):
     texto = forms.CharField(label='Texto', widget=forms.Textarea, required=False)
     foto = forms.ImageField(label='Foto', required=False)
     link = forms.CharField(label='Link', required=False)
+    ordem = forms.CharField(label='Ordem', required=False)
 
     class Meta:
         model = Conteudo
-        fields = ['chave', 'titulo', 'texto', 'foto', 'link']
+        fields = ['ordem', 'chave', 'titulo', 'texto', 'foto', 'link']
  
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -23,7 +24,7 @@ class ConteudoForm(forms.ModelForm):
         super(ConteudoForm, self).__init__(*args, **kwargs)
 
         if self.user.is_admin() is False:
-            # self.fields['escola'].widget = forms.HiddenInput()
+            self.fields['ordem'].widget = forms.HiddenInput()
             self.fields['chave'].widget = forms.HiddenInput()
 
     def save(self, *args, **kwargs):

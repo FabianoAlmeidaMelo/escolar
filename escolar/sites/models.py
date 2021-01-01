@@ -21,3 +21,7 @@ class Conteudo(models.Model):
 	texto = models.TextField('Texto', null=True, blank=True)
 	foto = models.ImageField('Foto', upload_to=escola_site_directory_path, null=True, blank=True)
 	link = models.URLField('link', blank=True, null=True)
+	ordem = models.SmallIntegerField('Ordem', null=True, blank=True)
+
+	class Meta:
+	   ordering = ('ordem',)
