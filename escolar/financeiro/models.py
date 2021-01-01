@@ -94,7 +94,7 @@ class ParametrosContrato(models.Model):
     '''
     # ANO corrente e o posterior:
     ano = models.SmallIntegerField('Ano', choices=ANO[2:]) # pelo ano valida as datas
-    escola = models.ForeignKey('escolas.Escola')
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
     tem_desconto = models.BooleanField('tem desconto', default=False)
     condicao_desconto = models.SmallIntegerField('condição desconto', choices=CONDICAO_DESCONTO, null=True, blank=True)
     dia_util =  models.SmallIntegerField('dia útil', choices=DIA_UTIL, null=True, blank=True)
@@ -173,9 +173,9 @@ class ContratoAluno(Contrato):
     juros = models.DecimalField('Juros por atraso mensalidade (%)', max_digits=4, decimal_places=2, null=True, blank=True)
     condicao_juros = models.SmallIntegerField('condição juros', choices=JUROS_EXPECIFICACAO, null=True, blank=True)
 
-    responsavel = models.ForeignKey('escolas.MembroFamilia')
-    aluno = models.ForeignKey('escolas.Aluno', related_name='contrato_aluno')
-    serie = models.ForeignKey('escolas.Serie', null=True, blank=True,)
+    responsavel = models.ForeignKey('escolas.MembroFamilia', models.CASCADE)
+    aluno = models.ForeignKey('escolas.Aluno', models.CASCADE, related_name='contrato_aluno')
+    serie = models.ForeignKey('escolas.Serie', models.SET_NULL, null=True, blank=True,)
     matricula_nr = models.CharField('Nr da Matrícula', null=True, blank=True, max_length=20)
     desconto = models.DecimalField('Desconto por pontualidade (%)',
         max_digits=7,
@@ -334,7 +334,7 @@ class CategoriaPagamento(models.Model):
     # Categorias default para os Contratos, serve para todas Escolas
     # Prestação de Serviços
     # Matrícula
-    escola = models.ForeignKey('escolas.Escola', null=True, blank=True)
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE, null=True, blank=True)
     nome = models.CharField('Categoria', max_length=50)
     descricao = models.CharField('Descrição', max_length=150)
 
@@ -362,7 +362,7 @@ class Bandeira(models.Model):
     para recebimentos
     """
     nome = models.CharField('Nome', max_length=20, null=False)
-    escola = models.ForeignKey('escolas.Escola', null=True)
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE, null=True)
 
     objects = BandeiraManager()
 
@@ -392,8 +392,8 @@ class BandeiraEscolaParametro(models.Model):
     as bandeiras ativas, ficam disponíveis no cadastro dos
     pagamentos
     """
-    bandeira = models.ForeignKey(Bandeira)
-    escola = models.ForeignKey('escolas.Escola')
+    bandeira = models.ForeignKey(Bandeira, models.CASCADE)
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
     ativa = models.BooleanField(default=True)
     taxa_debito = models.DecimalField('Taxa no débto', max_digits=5, decimal_places=2, default=Decimal('0'))
     taxa_credito = models.DecimalField('Taxa no crédito', max_digits=5, decimal_places=2, default=Decimal('0'))
@@ -433,9 +433,9 @@ class PagamentoManager(models.Manager):
 
 
 class Pagamento(models.Model):
-    escola = models.ForeignKey('escolas.Escola')
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
     titulo = models.CharField(verbose_name=u'Título', max_length=255)
-    contrato = models.ForeignKey(Contrato, null=True, blank=True)
+    contrato = models.ForeignKey(Contrato, models.SET_NULL, null=True, blank=True)
     data = models.DateField("data prevista:", blank=True, null=True)
     valor = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     data_pag = models.DateTimeField("data pago:", blank=True, null=True)
@@ -444,6 +444,7 @@ class Pagamento(models.Model):
     tipo = models.SmallIntegerField(u"Tipo", null=True, blank=True) # (+ -)
     parcela = models.ForeignKey( # ID do Pagamento 'Pai'
         'Pagamento',  # SE tem É parcela
+        models.SET_NULL,
         null=True,
         blank=True
     )
@@ -453,13 +454,16 @@ class Pagamento(models.Model):
         blank=True
     )
     nr_documento = models.CharField(verbose_name=u'Nr Documento', max_length=20, null=True, blank=True)
-    categoria = models.ForeignKey(CategoriaPagamento, null=True, blank=True)
+    categoria = models.ForeignKey(
+        CategoriaPagamento,
+        models.SET_NULL,
+        null=True, blank=True)
     forma_pgto = models.SmallIntegerField('Forma de pagamento', choices=FORMA_PGTO, null=True, blank=True)
     # cartao = models.ForeignKey(CartaoCredito, null=True, blank=True)
-    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
+    bandeira = models.ForeignKey(Bandeira, models.SET_NULL, null=True, blank=True)
     # taxa que a bandeira do cartão cobra da escola:
     taxa_cartao = models.DecimalField('Taxa do cartão', max_digits=5, decimal_places=2, default=Decimal('0'))
-    bandeira = models.ForeignKey(Bandeira, null=True, blank=True)
+    bandeira = models.ForeignKey(Bandeira, models.SET_NULL, null=True, blank=True)
 
     objects = PagamentoManager()
 
@@ -671,9 +675,9 @@ class Pagamento(models.Model):
 
 class InadimplenteDBView(models.Model):
     ano = models.SmallIntegerField()
-    escola = models.ForeignKey('escolas.Escola')
-    contrato = models.ForeignKey(Contrato)
-    serie = models.ForeignKey('escolas.Serie')
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
+    contrato = models.ForeignKey(Contrato, models.CASCADE)
+    serie = models.ForeignKey('escolas.Serie', models.CASCADE)
     pagamentos_atrasados = models.SmallIntegerField()
     titulos = ArrayField(models.CharField(max_length=255), blank=True, null=True)
     valor = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0'))

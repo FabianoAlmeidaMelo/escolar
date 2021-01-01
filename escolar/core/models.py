@@ -49,8 +49,8 @@ class Endereco(models.Model):
     numero = models.CharField(verbose_name=u'Número', max_length=50)
     complemento = models.CharField(max_length=100, null=True, blank=True)
     bairro = models.CharField(max_length=100)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True)
-    perfil = models.ForeignKey('Perfil', null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, models.SET_NULL, null=True, blank=True)
+    perfil = models.ForeignKey('Perfil', models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return u"%s - %s" % (self.cep, self.numero)
@@ -79,7 +79,7 @@ class Perfil(models.Model):
     sexo = models.SmallIntegerField(u'Sexo', null=True, blank=True)
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     email = models.EmailField('e-mail', null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = u'Perfil Escola'
@@ -202,9 +202,9 @@ class User(AbstractBaseUser):
         return Classe.objects.filter(id__in=classe_ids)
 
 class UserGrupos(models.Model):
-    escola = models.ForeignKey('escolas.Escola')
-    user = models.ForeignKey(User)
-    grupo = models.ForeignKey(Group)
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
+    user = models.ForeignKey(User, models.CASCADE)
+    grupo = models.ForeignKey(Group, models.CASCADE)
     date_joined = models.DateTimeField(
         'data de cadastro', default=timezone.now
         )
@@ -232,7 +232,10 @@ class Pais(models.Model):
 
 
 class UserAdd(models.Model):
-    user_add = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_created_by")
+    user_add = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        models.CASCADE,
+        related_name="%(app_label)s_%(class)s_created_by")
     date_add = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -240,7 +243,10 @@ class UserAdd(models.Model):
 
 
 class UserUpd(models.Model):
-    user_upd = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="%(app_label)s_%(class)s_modified_by")
+    user_upd = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        models.CASCADE,
+        related_name="%(app_label)s_%(class)s_modified_by")
     date_upd = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -261,7 +267,7 @@ class Feriado(models.Model):
     type_name = models.CharField(max_length=80)
     type_code = models.SmallIntegerField('tipo')
     uf_ibge_code = models.SmallIntegerField('uf ibge', null=True, blank=True)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return u"%s - %s" % (self.date, self.type_name)

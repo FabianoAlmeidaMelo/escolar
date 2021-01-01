@@ -2,9 +2,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, include
 from django.contrib import admin
+
 from django.contrib.auth.views import (
             logout,
-            login,
+            LoginView,
             password_reset,
             password_reset_complete,
             password_reset_confirm,
@@ -29,8 +30,9 @@ urlpatterns = [
     # Logins
     url(r'^logout/$', logout, {"next_page": None}, name="logout"),
     url(r'^logout/(?P<next_page>.*)/$', logout, name='auth_logout_next'),
-    url(r'^login/$', login,
-        {"template_name": 'login.html', "authentication_form": AuthenticationForm,},
+    # path('login/', LoginView.as_view(template_name='login.html'),
+
+    url(r'^login/$', LoginView.as_view(template_name='login.html'),
         name="login"),
 
     # password Reset

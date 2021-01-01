@@ -31,7 +31,7 @@ class MensagemDefault(models.Model):
     e o diretor pode editar a seu critério
 
     '''
-    escola = models.ForeignKey('escolas.Escola')
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
     tipo = models.SmallIntegerField('Tipo:', choices=MENSAGEM_CHOICES)
     titulo = models.CharField('Título: ', max_length=100)
     cabecalho = models.CharField('Cabeçalho: ', max_length=100)
@@ -52,9 +52,9 @@ class Mensagem(models.Model):
 
     do contrato da para extrair: email, cel, user resp $ , resp didatico
     '''
-    escola = models.ForeignKey('escolas.Escola')
+    escola = models.ForeignKey('escolas.Escola', models.CASCADE)
     data = models.DateField('data')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
     texto = models.TextField('Texto')
     tipo = models.SmallIntegerField(choices=MENSAGEM_CHOICES)
     meio = models.SmallIntegerField(choices=MEIO_CHOICES)
@@ -74,9 +74,12 @@ class PessoaMensagem(models.Model):
         as pessoas destinatárias das Mensagens
         a data hora que o destinatário abriu a mensagem
     '''
-    mensagem = models.ForeignKey(Mensagem)
-    pessoa = models.ForeignKey('escolas.Pessoa')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    mensagem = models.ForeignKey(Mensagem, models.CASCADE)
+    pessoa = models.ForeignKey('escolas.Pessoa', models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        models.SET_NULL,
+        null=True, blank=True)
     # por causa do erro na migração
     # acho que é por que esse BD local não tem algumas migraçõs já aplicadas em prod
     contrato_id = models.IntegerField('ID do contrato', null=True, blank=True)

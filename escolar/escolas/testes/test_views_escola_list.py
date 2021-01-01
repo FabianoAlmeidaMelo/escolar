@@ -32,7 +32,7 @@ class EscolaTest(TestCase):
                                       'password2':'bar' } )
 
         user = User.objects.get(username='email@usuario.com')
-        assert user.is_authenticated()
+        assert user.is_authenticated
 
 
     # def test_profile(self):

@@ -56,11 +56,11 @@ def escola_directory_path(instance, logo):
 class Escola(models.Model):
     '''
     '''
-    pais = models.ForeignKey('core.Pais')  # País, Country
+    pais = models.ForeignKey('core.Pais', models.PROTECT)  # País, Country
     nome = models.CharField('nome', max_length=200)
     razao_social = models.CharField('razão social', max_length=200)
     cnpj = models.CharField('cnpj', max_length=14)
-    municipio = models.ForeignKey(Municipio)
+    municipio = models.ForeignKey(Municipio, models.PROTECT)
     endereco = models.CharField('endereço', max_length=200)
     numero = models.CharField('número', max_length=10)
     telefone = models.CharField('telefone', max_length=14, null=True, blank=True)
@@ -115,7 +115,7 @@ class Serie(models.Model):
     séries default, para todos os cursos e
     possibilidade de Escola criar uma 'série' especial
     '''
-    curso = models.ForeignKey(Curso)
+    curso = models.ForeignKey(Curso, models.PROTECT)
     serie = models.CharField(max_length=30)
 
     def __str__(self):
@@ -151,17 +151,17 @@ class Pessoa(UserAdd, UserUpd):
     cpf = models.CharField(verbose_name=u'CPF', max_length=14, null=True, blank=True)
     documento = models.FileField('RG e ou CPF', upload_to=escola_aluno_directory_path, null=True, blank=True)
     email = models.EmailField('e-mail', null=True, blank=True)
-    endereco = models.ForeignKey('core.Endereco', null=True, blank=True)
-    escola = models.ForeignKey(Escola)
+    endereco = models.ForeignKey('core.Endereco', models.SET_NULL, null=True, blank=True)
+    escola = models.ForeignKey(Escola, models.CASCADE)
     nacionalidade = models.CharField(max_length=50)
     nascimento = models.DateField(u'Data Nascimento', null=True, blank=True)
-    natural_municipio = models.ForeignKey(Municipio, null=True, blank=True)
+    natural_municipio = models.ForeignKey(Municipio, models.SET_NULL, null=True, blank=True)
     nome = models.CharField(max_length=100)
     profissao = models.CharField(u'Profissão', max_length=100, null=True, blank=True)
     rg = models.CharField(verbose_name=u'RG', max_length=14, null=True, blank=True)
     sexo = models.SmallIntegerField(u'Sexo')
     telefone = models.CharField(max_length=11, null=True, blank=True)
-    user = models.ForeignKey('core.User', null=True, blank=True)
+    user = models.ForeignKey('core.User', models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = 'pessoa'
@@ -216,7 +216,7 @@ class Aluno(Pessoa):
     no aluno e membro, assim p último é o perfil
     '''
     ano = models.SmallIntegerField(default=ano_corrente)
-    curso = models.ForeignKey('Curso', null=True, blank=True)
+    curso = models.ForeignKey('Curso', models.SET_NULL, null=True, blank=True)
     foto = models.ImageField('Foto', upload_to=escola_aluno_directory_path, null=True, blank=True)
     observacao = models.CharField(max_length=200, null=True, blank=True)
     ra = models.CharField('RA', max_length=20, null=True, blank=True)
@@ -315,8 +315,8 @@ class MembroFamilia(Pessoa):
 
 
 class Responsavel(models.Model):
-    aluno = models.ForeignKey('Aluno')
-    membro = models.ForeignKey('MembroFamilia')
+    aluno = models.ForeignKey('Aluno', models.CASCADE)
+    membro = models.ForeignKey('MembroFamilia',models.CASCADE)
     parentesco = models.CharField(max_length=100, null=True, blank=True)
     responsavel_financeiro = models.BooleanField(default=False)
     responsavel_pedagogico = models.BooleanField(default=False)
@@ -331,8 +331,8 @@ class Responsavel(models.Model):
 
 
 class AlunoHistorico(models.Model):
-    aluno = models.ForeignKey(Aluno)
-    usuario = models.ForeignKey('core.User', blank=True, null=True)
+    aluno = models.ForeignKey(Aluno, models.CASCADE)
+    usuario = models.ForeignKey('core.User', models.SET_NULL, blank=True, null=True)
     data = models.DateTimeField(auto_now_add=True)
     descricao = models.CharField(max_length=500)
 
@@ -347,7 +347,7 @@ class AlunoHistorico(models.Model):
 
 
 class Classe(models.Model):
-    escola = models.ForeignKey(Escola)
+    escola = models.ForeignKey(Escola, models.CASCADE)
     ano = models.SmallIntegerField('Ano', choices=ANO)
     curso = models.CharField(max_length=50) # ex: 5º ano A; 5º ano ensino fundamental B; ...
     periodo = models.SmallIntegerField(choices=PERIODO, null=True, blank=True)
@@ -359,8 +359,8 @@ class Classe(models.Model):
         return "%s - %s "% (self.curso, str(self.ano))
 
 class ClasseAluno(models.Model):
-    classe = models.ForeignKey(Classe)
-    aluno = models.ForeignKey('core.User')
+    classe = models.ForeignKey(Classe, models.CASCADE)
+    aluno = models.ForeignKey('core.User', models.CASCADE)
 
     class Meta:
         unique_together = ("classe", "aluno")
@@ -370,8 +370,8 @@ class ClasseAluno(models.Model):
         return '%s-%s' % (self.classe, self.aluno)
 
 class ClasseProfessor(models.Model):
-    classe = models.ForeignKey(Classe)
-    professor = models.ForeignKey('core.User')
+    classe = models.ForeignKey(Classe, models.CASCADE)
+    professor = models.ForeignKey('core.User', models.CASCADE)
     materia = models.CharField(max_length=80)
 
     class Meta:
@@ -403,10 +403,10 @@ class AutorizadoAluno(models.Model):
     #22
     pessoas autorizadas a buscar alunos na escola
     '''
-    escola = models.ForeignKey(Escola)
-    aluno = models.ForeignKey(Aluno)
-    autorizado = models.ForeignKey(Autorizado)
-    responsavel = models.ForeignKey('core.User')
+    escola = models.ForeignKey(Escola, models.CASCADE)
+    aluno = models.ForeignKey(Aluno, models.CASCADE)
+    autorizado = models.ForeignKey(Autorizado, models.CASCADE)
+    responsavel = models.ForeignKey('core.User', models.CASCADE)
     data = models.DateTimeField('data de cadastro', default=timezone.now)
     status = models.BooleanField('Ativo', default=False)
 

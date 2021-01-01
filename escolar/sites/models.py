@@ -15,7 +15,7 @@ class Conteudo(models.Model):
 	que são conteudo dos sites dos clientes
 	- Só admini edita escola e chave
 	'''
-	escola = models.ForeignKey('escolas.Escola')
+	escola = models.ForeignKey('escolas.Escola', models.CASCADE)
 	chave = models.CharField('Chave', max_length=30)
 	titulo = models.CharField('Título', max_length=150, null=True, blank=True)
 	texto = models.TextField('Texto', null=True, blank=True)

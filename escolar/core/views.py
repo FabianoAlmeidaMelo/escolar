@@ -38,13 +38,13 @@ def home(request, escola_pk=None):
     context = {}
     escola = None
     context['diretor'] = False
-    if user.is_authenticated() and not escola_pk:
+    if user.is_authenticated and not escola_pk:
         escola_pk = user.get_unica_escola()
     if escola_pk:
         escola = get_object_or_404(Escola, pk=escola_pk)
         context['escola'] = escola
         context['diretor'] = user.is_admin() or user.is_diretor(escola_pk)
-    if user.is_authenticated() and escola_pk and not user.can_access_escola(escola_pk):
+    if user.is_authenticated and escola_pk and not user.can_access_escola(escola_pk):
         raise Http404
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
