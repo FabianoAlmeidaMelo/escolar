@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import resolve_url
 from django.test import TestCase
 from escolar.core.models import User

@@ -2,16 +2,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import logout
 
 from django.contrib.auth.views import (
-            logout,
             LoginView,
             password_reset,
             password_reset_complete,
             password_reset_confirm,
             password_reset_done,
         )
-from escolar.core.forms import AuthenticationForm
+# from escolar.core.forms import AuthenticationForm
 
 from escolar.core.views import home
 
@@ -42,6 +42,7 @@ urlpatterns = [
         {'post_reset_redirect': '/user/password/reset/done/'},
         name="password_reset"
     ),
+
     url(r'^user/password/reset/done/$', password_reset_done),
     url(
         r'^user/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$',
@@ -50,5 +51,4 @@ urlpatterns = [
     url(r'^user/password/done/$', password_reset_complete),
     url(r'^admin/', admin.site.urls),
     url(r'^municipios_app/', include('municipios.urls')),
-    # url(r'^childcrud/', include('childcrud.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
