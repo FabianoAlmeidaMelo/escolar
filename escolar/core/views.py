@@ -5,7 +5,7 @@ from calendar import monthrange
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
