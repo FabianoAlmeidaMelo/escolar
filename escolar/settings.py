@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'escolar.financeiro', # .apps.FinanceiroConfig',
     'escolar.comunicacao',
     'escolar.sites',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^', include('escolar.financeiro.urls')),
     url(r'^', include('escolar.comunicacao.urls')),
     url(r'^', include('escolar.sites.urls')),
+    url(r'^', include('escolar.sites.api.urls')),
 
     # Logins
     url(r'^logout/$', logout, {"next_page": None}, name="logout"),
