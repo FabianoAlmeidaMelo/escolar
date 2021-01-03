@@ -18,4 +18,4 @@ Pillow==3.4.2
 pytz
 -e git://github.com/znc-sistemas/django-localbr.git#egg=localbr-dev
 django-municipios==1.2.1
-	
+django-cors-headers==3.2.1

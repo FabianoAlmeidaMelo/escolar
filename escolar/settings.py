@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'test_without_migrations',
     'bootstrap3',
-    # 'childcrud',
     'localbr',
     'municipios',
     'escolar.core.apps.CoreConfig',
@@ -54,18 +53,27 @@ INSTALLED_APPS = [
     'escolar.financeiro', # .apps.FinanceiroConfig',
     'escolar.comunicacao',
     'escolar.sites',
-    'rest_framework'
+    'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', default=[], cast=Csv())
+
+CORS_ALLOW_METHODS = [
+    'GET',
 ]
 
 ROOT_URLCONF = 'escolar.urls'
