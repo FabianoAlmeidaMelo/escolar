@@ -1,3 +1,4 @@
+import os
 from django.db import models
 
 
@@ -25,3 +26,6 @@ class Conteudo(models.Model):
 
 	class Meta:
 	   ordering = ('ordem',)
+
+	def get_foto_name(self):
+	    return os.path.basename(self.foto.name)
