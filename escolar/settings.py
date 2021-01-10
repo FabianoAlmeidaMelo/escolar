@@ -69,11 +69,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-CORS_ORIGIN_WHITELIST = [
-    'https://colegiocrescersjc.com.br',
-    'https://fabianoalmeidamelo.github.io',
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     'http://127.0.0.1:5500',  
+#     'https://colegiocrescersjc.com.br',
+#     'https://fabianoalmeidamelo.github.io/pilates_monica',
+# ]
 
 CORS_ALLOW_METHODS = [
     'GET',
