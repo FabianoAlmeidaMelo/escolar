@@ -70,12 +70,10 @@ MIDDLEWARE = [
 ]
 
 
-# CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', default=[], cast=Csv())
-
-# CORS_ORIGIN_WHITELIST = [
-#     'https://colegiocrescersjc.com.br/',
-#     'https://fabianoalmeidamelo.github.io/pilates_monica/'
-# ]
+CORS_ORIGIN_WHITELIST = [
+    'https://colegiocrescersjc.com.br',
+    'https://fabianoalmeidamelo.github.io',
+]
 
 CORS_ALLOW_METHODS = [
     'GET',
