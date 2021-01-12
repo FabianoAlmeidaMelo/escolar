@@ -76,7 +76,7 @@
               <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' request.user.get_unica_escola request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
             {% else %}
               {% if escola %}
-                <li><a href="{% url 'escola_cadastro' escola.id %}">{{ escola }}</a></li>
+                <li><a href="{% url 'home' escola.id %}">{{ escola }}</a></li>
                 <li{% if active_perfil %} class="active"{% endif %}><a href="{% url 'usuario_form' escola.pk request.user.id %}"><i class="glyphicon glyphicon-user"></i> {{ request.user.email }}</a></li>
               {% endif %}
             {% endif %}

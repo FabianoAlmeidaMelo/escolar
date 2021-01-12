@@ -62,20 +62,51 @@
       </div>
     {% endfor %}
   {% endif %}
-  <form method="POST" action="{% if not next %}?next={% url 'escolas_list' %}{% endif %}">
-    {% csrf_token %}
-    <div class="form-group">
-      {% bootstrap_field form.username %}
-    </div>
-    <div class="form-group">
-      {% bootstrap_field form.password %}
-    </div>
-   <button class="btn btn-default btn-small btn-primary" type="submit">Login</button>
-    <a href="{% url 'password_reset' %}" class="btn btn-default">Esqueci minha Senha</a>
-  </form>
-  <br>
-  {% if request.GET.slug %}
+  {% if not request.GET.slug %}
+    <form method="POST" action="{% if not next %}?next={% url 'escolas_list' %}{% endif %}">
+      {% csrf_token %}
+      <div class="form-group">
+        {% bootstrap_field form.username %}
+      </div>
+      <div class="form-group">
+        {% bootstrap_field form.password %}
+      </div>
+     <button class="btn btn-default btn-small btn-primary" type="submit">Login</button>
+      <!-- <a href="{% url 'password_reset' %}" class="btn btn-default">Esqueci minha Senha</a> -->
+    </form>
+    <br>
+
+  {% else %}
+    <form id="slug_form_id" method="POST" action="?next={% url 'home' %}?slug=" >
+      {% csrf_token %}
+      <div class="form-group">
+        {% bootstrap_field form.username %}
+      </div>
+      <div class="form-group">
+        {% bootstrap_field form.password %}
+      </div>
+     <button id="btn_slug_id" class="btn btn-default btn-small btn-primary" type="submit">Login</button>
+      <!-- <a href="{% url 'password_reset' %}" class="btn btn-default">Esqueci minha Senha</a> -->
+    </form>
+    <br>
     <img src="{{ request.GET.slug|get_logo }}" height="80" />
   {% endif %}
 </div>
 {% endblock content %}
+{% block extra_js %}
+  <script type="text/javascript">
+
+    function getSlug() {
+      let params = window.location.search.substring(1).split('&');
+      params[0].split('=')
+      return params[0].split('=')[1]
+    };
+  
+    document.getElementById('btn_slug_id').onclick = function() {
+      let next = getSlug()
+      document.getElementById('slug_form_id').action += next;
+      
+    };
+
+  </script>
+{% endblock extra_js %}

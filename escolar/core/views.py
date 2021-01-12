@@ -28,30 +28,44 @@ from escolar.financeiro.forms import (
     MES_CORRNETE,
     )
 
+
 def home(request, escola_pk=None):
     '''
     Se o user tem vínculo com uma escola e
     é do Grupo Diretor, a HOME mostra os Gráficos financeiros.
-
     '''
     user = request.user
     context = {}
     escola = None
     context['diretor'] = False
-    if user.is_authenticated and not escola_pk:
+
+    slug = None
+    if 'slug' in request.GET.keys():
+        slug = request.GET.get('slug')
+
+    if (escola_pk or slug) and user.is_anonymous():
+        raise Http404
+
+    if user.is_authenticated() and not escola_pk:
         escola_pk = user.get_unica_escola()
-    if escola_pk:
-        escola = get_object_or_404(Escola, pk=escola_pk)
+
+    if escola_pk or slug:
+        escola = get_object_or_404(Escola, Q(pk=escola_pk) | Q(slug=slug))
+        escola_pk = escola.id
         context['escola'] = escola
         context['diretor'] = user.is_admin() or user.is_diretor(escola_pk)
-    if user.is_authenticated and escola_pk and not user.can_access_escola(escola_pk):
+
+    if user.is_authenticated() and escola_pk and not user.can_access_escola(escola_pk):
         raise Http404
+
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
-    pagamentos = Pagamento.objects.filter(escola=escola,
-                                          data__gte=data_ini,
-                                          data__lte=data_fim)
-
+    
+    pagamentos = Pagamento.objects.filter(
+        escola=escola,
+        data__gte=data_ini,
+        data__lte=data_fim
+    )
 
     # SE Contrato Rescindido
     pagamentos = pagamentos.all().annotate(
