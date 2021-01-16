@@ -420,8 +420,9 @@ class PagamentoForm(forms.ModelForm):
     valor = BRDecimalField(label="Valor", required=True)
     efet = forms.BooleanField(label="Pago", required=False)
     categoria =forms.ModelChoiceField(queryset=CategoriaPagamento.objects.exclude(id__in=[1, 2, 9]), required=True)
-    data = forms.DateField(label='Data', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
-    data_pag = forms.DateField(label="Pagamento efetivado em", widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data = forms.DateField(label='Data prevista', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
+    data_pag = forms.DateField(label="Data pagamento efetivado",
+        widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}), required=False)
 
     valor_previsto = BRDecimalField(required=False)
 
@@ -477,12 +478,15 @@ class PagamentoForm(forms.ModelForm):
         if (self.old_instance.efet is False and
             self.instance.efet is True and not self.instance.data_pag):
             self.instance.data_pag = datetime.today()
+        if self.instance.data_pag is None:
+            self.instance.data_pag = self.instance.data
         self.instance.user_upd = self.user
         self.instance.escola = self.escola
         if self.contrato:
             self.instance.contrato = self.contrato
         if self.instance.bandeira:
             self.instance.taxa_cartao = self.instance.bandeira.get_taxa(self.escola, self.instance.forma_pgto)
+
         instance = super(PagamentoForm, self).save(*args, **kwargs)
         instance.save()
         # GUARDA no HISTORICO:
