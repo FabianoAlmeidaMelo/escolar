@@ -46,6 +46,10 @@ def home(request, escola_pk=None):
     if (escola_pk or slug) and user.is_anonymous():
         raise Http404
 
+    can_edit = False
+    if not user.is_anonymous():
+        can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+
     if user.is_authenticated() and not escola_pk:
         escola_pk = user.get_unica_escola()
 
@@ -61,7 +65,7 @@ def home(request, escola_pk=None):
     hoje = date.today()
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
-    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
+
     
     pagamentos = Pagamento.objects.filter(
         escola=escola,
