@@ -58,6 +58,7 @@ def home(request, escola_pk=None):
     if user.is_authenticated() and escola_pk and not user.can_access_escola(escola_pk):
         raise Http404
 
+    hoje = date.today()
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
     
@@ -98,6 +99,7 @@ def home(request, escola_pk=None):
 
     entradas_realizadas = pagamentos.filter(tipo=1, efet=True).aggregate(Sum('valor'))['valor__sum'] or 0
     entradas_pendentes = pagamentos.filter(tipo=1, efet=False).aggregate(Sum('valor'))['valor__sum'] or 0
+    entradas_pendentes_qs = pagamentos.filter(tipo=1, efet=False, data__lte=hoje)
 
     # saidas_boleto_bancario = pagamentos.filter(tipo=2, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
     # saidas_cartao_credito = pagamentos.filter(tipo=2, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
@@ -108,6 +110,7 @@ def home(request, escola_pk=None):
     # saidas_transf_bancaria = pagamentos.filter(tipo=2, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
     # saidas_indefinidos = pagamentos.filter(tipo=2, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
 
+    saidas_pendentes_qs = pagamentos.filter(tipo=2, efet=False, data__lte=hoje)
     saidas_realizadas = pagamentos.filter(tipo=2, efet=True).aggregate(Sum('valor'))['valor__sum'] or 0
     saidas_pendentes = pagamentos.filter(tipo=2, efet=False).aggregate(Sum('valor'))['valor__sum'] or 0
 
@@ -129,11 +132,13 @@ def home(request, escola_pk=None):
     # context['saidas_permuta'] = int(saidas_permuta)
     # context['saidas_transf_bancaria'] = int(saidas_transf_bancaria)
     # context['saidas_indefinidos'] = int(saidas_indefinidos)
- 
+
+    context['entradas_pendentes_qs'] = entradas_pendentes_qs
     context['entradas_realizadas'] = entradas_realizadas
     context['entradas_pendentes'] = entradas_pendentes   
     context['saidas_realizadas'] = saidas_realizadas
     context['saidas_pendentes'] = saidas_pendentes
+    context['saidas_pendentes_qs'] = saidas_pendentes_qs
     context['entradas'] = entradas
     context['saidas'] = saidas
 
@@ -142,6 +147,7 @@ def home(request, escola_pk=None):
     context['saldo_pendente'] = entradas_pendentes - saidas_pendentes
     context['ano_corrente'] = ANO_CORRENTE
     context['mes_corrente'] = MES_CORRNETE
+    context['hoje'] = hoje
     return render(request, 'index.html', context)
 
 
