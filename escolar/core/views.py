@@ -61,13 +61,13 @@ def home(request, escola_pk=None):
     hoje = date.today()
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
+    can_edit = any([user.is_admin(), user.is_diretor(escola_pk)])
     
     pagamentos = Pagamento.objects.filter(
         escola=escola,
         data__gte=data_ini,
         data__lte=data_fim
     )
-
     # SE Contrato Rescindido
     pagamentos = pagamentos.all().annotate(
                                 invalido=Case(
@@ -148,6 +148,7 @@ def home(request, escola_pk=None):
     context['ano_corrente'] = ANO_CORRENTE
     context['mes_corrente'] = MES_CORRNETE
     context['hoje'] = hoje
+    context['can_edit'] = can_edit
     return render(request, 'index.html', context)
 
 

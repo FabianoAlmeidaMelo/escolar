@@ -7,136 +7,147 @@
           <br>
         {% endblock page_title %}
         {% if diretor %}
-          
-            <div class="row">
-              <div class="panel panel-success">
-                <div class="panel-heading">Entradas {{ mes_corrente }} / {{ ano_corrente }}</div>
-                <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
-
+          <div class="row">
+            <div class="panel panel-success">
+              <div class="panel-heading">Pendentes a receber nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
+              <div class="panel-body"> <small>Valor sem multa</small> </div>
                 <!-- Table -->
-                <table class="table" >
-                  <thead>
-                    <tr>
-                      <th style="text-align:center">Previsto</th>
-                      <th style="text-align:center">Realizado</th>
-                      <th style="text-align:center">Pendente</th>
-                    </tr>
-                  </thead>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:center">Valor</th>
+                    <th style="text-align:center">Data</th>
+                    <th style="text-align:center">Categoria</th>
+                  </tr>
+                </thead>
                  <tbody>
+                  {% for entrada in entradas_pendentes_qs %}
                    <tr>
-                     <td style="text-align:center">{{ entradas|numberformat_br }}</td>
-                     <td style="text-align:center">{{ entradas_realizadas|numberformat_br }}</td>
-                     <td style="text-align:center">{{ entradas_pendentes|numberformat_br }}</td>
-                   </tr>
-                 </tbody>
-                  
-                </table>
-              </div>
-
-              <div class="panel panel-danger">
-                <div class="panel-heading">Saídas {{ mes_corrente }} / {{ ano_corrente }}</div>
-                <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
-
-                <!-- Table -->
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th style="text-align:center">Previsto</th>
-                      <th style="text-align:center">Realizado</th>
-                      <th style="text-align:center">Pendente</th>
-                    </tr>
-                  </thead>
-                 <tbody>
-                   <tr>
-                     <td style="text-align:center">{{ saidas|numberformat_br }}</td>
-                     <td style="text-align:center">{{ saidas_realizadas|numberformat_br }}</td>
-                     <td style="text-align:center">{{ saidas_pendentes|numberformat_br }}</td>
-                   </tr>
-                 </tbody>
-                  
-                </table>
-              </div>
-            
-              <div class="panel panel-warning">
-                <div class="panel-heading">Saldo {{ mes_corrente }} / {{ ano_corrente }}</div>
-                <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
-
-                <!-- Table -->
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th style="text-align:center">Previsto</th>
-                      <th style="text-align:center">Realizado</th>
-                      <th style="text-align:center">Pendente</th>
-                    </tr>
-                  </thead>
-                 <tbody>
-                   <tr>
-                     <td style="text-align:center">{{ saldo_previsto|numberformat_br }}</td>
-                     <td style="text-align:center">{{ saldo_realizado|numberformat_br }}</td>
-                     <td style="text-align:center">{{ saldo_pendente|numberformat_br }}</td>
-                   </tr>
-                 </tbody>
-                  
-                </table>
-              </div>
-            
-            </div>
-            <div class="row">
-              <div class="panel panel-success">
-                <div class="panel-heading">Pendentes a receber nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
-                <div class="panel-body"><small>Valor sem multa</small> </div>
-
-                <!-- Table -->
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th style="text-align:center">Valor</th>
-                      <th style="text-align:center">Data</th>
-                      <th style="text-align:center">obs</th>
-                    </tr>
-                  </thead>
-                 <tbody>
-                  {% for entradas in entradas_pendentes_qs %}
-                   <tr>
-                     <td style="text-align:center">{{ entradas.valor|numberformat_br }}</td>
-                     <td style="text-align:center">{{ entradas.data|date:'d/m/Y' }}</td>
-                     <td style="text-align:center">{{ entradas.categoria.nome }}</td>
+                    {% if can_edit %}
+                       <td style="text-align:center">
+                        <a href="{% url 'pagamento_edit' escola.id entrada.id %}?list">
+                          {{ entrada.valor|numberformat_br }}</a>
+                       </td>
+                    {% else %}
+                      {{ entrada.valor|numberformat_br }}
+                    {% endif %}
+                     <td style="text-align:center">{{ entrada.data|date:'d/m/Y' }}</td>
+                     <td style="text-align:center">{{ entrada.categoria.nome }}</td>
                    </tr>
                    {% empty %}
                       Não há recebimentos pendentes
                   {% endfor %}
                  </tbody>
-                </table>
-              </div>
-
-              <div class="panel panel-danger">
-                <div class="panel-heading">Pendentes a pagar nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
-                <div class="panel-body"><small>Contas da empresa</small> </div>
-
-                <!-- Table -->
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th style="text-align:center">Valor</th>
-                      <th style="text-align:center">Data</th>
-                      <th style="text-align:center">obs</th>
-                    </tr>
-                  </thead>
-                 <tbody>
-                  {% for saida in saidas_pendentes_qs %}
-                   <tr>
-                     <td style="text-align:center">{{ saida.valor|numberformat_br }}</td>
-                     <td style="text-align:center">{{ saida.data|date:'d/m/Y' }}</td>
-                     <td style="text-align:center">{{ saida.categoria.nome }}</td>
-                   </tr>
-                   {% empty %}
-                      Não há pagamento pendente, parabéns
-                  {% endfor %}
-                 </tbody>
-                </table>
-              </div>
+              </table>
             </div>
+            <div class="panel panel-danger">
+              <div class="panel-heading">Pendentes a pagar nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
+              <div class="panel-body"><small>Contas da empresa</small> </div>
+
+              <!-- Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:center">Valor</th>
+                    <th style="text-align:center">Data</th>
+                    <th style="text-align:center">Categoria</th>
+                  </tr>
+                </thead>
+               <tbody>
+                {% for saida in saidas_pendentes_qs %}
+                 <tr>
+                  {% if can_edit %}
+                     <td style="text-align:center">
+                      <a href="{% url 'pagamento_edit' escola.id saida.id %}?list">
+                        {{ saida.valor|numberformat_br }}</a>
+                     </td>
+                  {% else %}
+                    {{ saida.valor|numberformat_br }}
+                  {% endif %}
+                   <td style="text-align:center">{{ saida.data|date:'d/m/Y' }}</td>
+                   <td style="text-align:center">{{ saida.categoria.nome }}</td>
+                 </tr>
+                 {% empty %}
+                    Não há pagamentos pendentes
+                {% endfor %}
+               </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="panel panel-success">
+              <div class="panel-heading">Entradas {{ mes_corrente }} / {{ ano_corrente }}</div>
+              <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
+
+              <!-- Table -->
+              <table class="table" >
+                <thead>
+                  <tr>
+                    <th style="text-align:center">Previsto</th>
+                    <th style="text-align:center">Realizado</th>
+                    <th style="text-align:center">Pendente</th>
+                  </tr>
+                </thead>
+               <tbody>
+                 <tr>
+                   <td style="text-align:center">{{ entradas|numberformat_br }}</td>
+                   <td style="text-align:center">{{ entradas_realizadas|numberformat_br }}</td>
+                   <td style="text-align:center">{{ entradas_pendentes|numberformat_br }}</td>
+                 </tr>
+               </tbody>
+                
+              </table>
+            </div>
+
+            <div class="panel panel-danger">
+              <div class="panel-heading">Saídas {{ mes_corrente }} / {{ ano_corrente }}</div>
+              <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
+
+              <!-- Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:center">Previsto</th>
+                    <th style="text-align:center">Realizado</th>
+                    <th style="text-align:center">Pendente</th>
+                  </tr>
+                </thead>
+               <tbody>
+                 <tr>
+                   <td style="text-align:center">{{ saidas|numberformat_br }}</td>
+                   <td style="text-align:center">{{ saidas_realizadas|numberformat_br }}</td>
+                   <td style="text-align:center">{{ saidas_pendentes|numberformat_br }}</td>
+                 </tr>
+               </tbody>
+                
+              </table>
+            </div>
+          
+            <div class="panel panel-warning">
+              <div class="panel-heading">Saldo {{ mes_corrente }} / {{ ano_corrente }}</div>
+              <div class="panel-body"><small>Previsto, realizado e pendente no mês.</small> </div>
+
+              <!-- Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:center">Previsto</th>
+                    <th style="text-align:center">Realizado</th>
+                    <th style="text-align:center">Pendente</th>
+                  </tr>
+                </thead>
+               <tbody>
+                 <tr>
+                   <td style="text-align:center">{{ saldo_previsto|numberformat_br }}</td>
+                   <td style="text-align:center">{{ saldo_realizado|numberformat_br }}</td>
+                   <td style="text-align:center">{{ saldo_pendente|numberformat_br }}</td>
+                 </tr>
+               </tbody>
+              </table>
+            </div>
+          </div>
+
+ 
 <!--             <div class="row">
 
                   <div class="panel panel-success">
