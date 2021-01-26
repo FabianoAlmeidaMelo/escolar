@@ -233,19 +233,23 @@ class ContratoAluno(Contrato):
             datas = self.date_list(nr_parcelas)
             for data in datas:
                 categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
-                Pagamento.objects.update_or_create(titulo='Matrícula %s' % (self.ano) ,
-                                                   contrato=self,
-                                                   escola=self.aluno.escola,
-                                                   data=data,
-                                                   data_pag=data,
-                                                   observacao='',
-                                                   nr_parcela=None,
-                                                   categoria=categoria,
-                                                   tipo=1,
-                                                   defaults={'valor': valor})
+                Pagamento.objects.update_or_create(
+                    titulo='Matrícula %s' % (self.ano) ,
+                    contrato=self,
+                    escola=self.aluno.escola,
+                    data=data,
+                    data_pag=data,
+                    observacao='',
+                    nr_parcela=None,
+                    categoria=categoria,
+                    tipo=1,
+                    defaults={'valor': valor}
+                )
 
     def get_resp(self):
-        return self.responsavel.responsavel_set.filter(aluno=self.aluno).first()
+        return self.responsavel.responsavel_set.filter(
+            aluno=self.aluno
+        ).first()
 
     def get_valor_extenso(self):
         return numero_extenso(self.valor)
@@ -258,7 +262,7 @@ class ContratoAluno(Contrato):
             parametros = ParametrosContrato.objects.filter(
                 escola=self.aluno.escola,
                 ano=self.ano
-            ).last() #, ano=self.ano)
+            ).last()
 
             dates = [parametros.data_um_material,
                      parametros.data_dois_material,
@@ -359,7 +363,10 @@ class BandeiraManager(models.Manager):
     def get_bandeiras_ativas(self, escola):
         """
         """
-        bandeiras_ids = BandeiraEscolaParametro.objects.filter(escola=escola, ativa=True).values_list('bandeira__id', flat=True)
+        bandeiras_ids = BandeiraEscolaParametro.objects.filter(
+            escola=escola,
+            ativa=True
+        ).values_list('bandeira__id', flat=True)
         return self.filter(id__in=bandeiras_ids)
 
 
@@ -377,17 +384,21 @@ class Bandeira(models.Model):
         ordering = ('nome',)
 
     def __str__(self):
-        str_obj = '%s ' % self.nome
+        str_obj = '%s' % self.nome
         escola = self.escola
         if escola:
-            str_obj = '%s - %s ' % (self.escola, self.nome,)
+            str_obj = '%s - %s' % (self.escola, self.nome,)
         return str_obj
 
     def get_taxa(self, escola, meio_pgto):
         if meio_pgto == 2:
-            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_credito
+            return self.bandeiraescolaparametro_set.filter(
+                escola_id=1
+            ).first().taxa_credito
         elif meio_pgto == 3:
-            return self.bandeiraescolaparametro_set.filter(escola_id=1).first().taxa_debito
+            return self.bandeiraescolaparametro_set.filter(
+                escola_id=1
+            ).first().taxa_debito
         else:
             return 0
 
@@ -518,10 +529,12 @@ class Pagamento(models.Model):
         return feriados
 
     def get_bizday(self):
-        # Retorna o dia útil expecificado;
-        # numero ex: 5
-        # significa  o 5º dia útil
-        # numero = self.escola.parametroscontrato_set.last().dia_util
+        """
+        Retorna o dia útil expecificado;
+        numero ex: 5
+        significa  o 5º dia útil
+        numero = self.escola.parametroscontrato_set.last().dia_util
+        """
         dias_uteis = []
         if self.contrato and self.contrato.contratoaluno.dia_util:
             numero = self.contrato.contratoaluno.dia_util if self.contrato.contratoaluno.dia_util else 1
@@ -538,8 +551,10 @@ class Pagamento(models.Model):
             return self.data
 
     def get_valor_a_pagar(self):
-        # calcular por dias úteis ou data específica
-        # time5 = (self.data - date.today()).days
+        """
+        calcular por dias úteis ou data específica
+        time5 = (self.data - date.today()).days
+        """
         if self.contrato and not self.contrato.contratoaluno.rescindido and self.efet is False:
             if self.categoria and self.categoria.id == 1 and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
                 if date.today() <= self.get_bizday():
@@ -655,9 +670,9 @@ class Pagamento(models.Model):
             email_kwargs['from_email'] = DEFAULT_FROM_EMAIL
             email_kwargs['to'] = emails
             email = EmailMultiAlternatives(**email_kwargs)
-            # Imagem anexada embebida no e-mail
+            # Imagem anexada embedada no e-mail
             # instância do e-mail, precisa do img_data para ler o logo e
-            # colocálo como anexo no e-mail.
+            # colocá-lo como anexo no e-mail.
             # img_data = open(LOGO_ESCOLA, 'rb').read()
             # img_content_id = 'main_image'  # content id para add o logo sos
             # add_email_embed_image(email, img_content_id, img_data)

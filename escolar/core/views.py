@@ -153,6 +153,7 @@ def home(request, escola_pk=None):
     context['mes_corrente'] = MES_CORRNETE
     context['hoje'] = hoje
     context['can_edit'] = can_edit
+
     return render(request, 'index.html', context)
 
 
