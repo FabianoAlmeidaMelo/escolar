@@ -82,7 +82,7 @@ class Command(BaseCommand):
         receb_qs = pgtos_qs.filter(tipo=1, efet=False)
         if receb_qs:
             for p in receb_qs:
-                recebimentos += '%s, R$ %s; \n' % (str(p.data_pag), str(p.valor))
+                recebimentos += '%s, R$ %s; \n' % (str(p.data_pag.date()), str(p.valor))
         else:
             recebimentos = 'Não há recebimentos em aberto'
 
