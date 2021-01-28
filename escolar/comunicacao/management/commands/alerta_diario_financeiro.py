@@ -86,7 +86,7 @@ class Command(BaseCommand):
         else:
             recebimentos = 'Não há recebimentos em aberto'
 
-        divida_qs = pgtos_qs.filter(tipo=2, efet=False):
+        divida_qs = pgtos_qs.filter(tipo=2, efet=False)
         if divida_qs:
             for p in divida_qs:
                 dividas += '%s, R$ %s; \n' % (str(p.data_pag.date()), str(p.valor))
@@ -96,7 +96,7 @@ class Command(BaseCommand):
         emails = self.emails_dict.get(escola.id, [])
         msg = 'Esses pagamentos do mês corrente ainda estão em aberto.' 
         msg += '\nApurados até a data de hoje: %s' % self.hoje
-        url = 'https://smartiscool.online/5s/' % escola.id
+        url = 'https://smartiscool.online/%s/' % escola.id
         assinatura= 'Pode conferir mais detalhes em:\n%s' % url
         if emails:
 
