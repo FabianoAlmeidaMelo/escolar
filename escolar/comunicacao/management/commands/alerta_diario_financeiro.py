@@ -26,8 +26,8 @@ class Command(BaseCommand):
     pagamentos = apps.get_model('financeiro', 'Pagamento')
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     hoje = date.today()
-    # 'travelho.castro@gmail.com',
-    emails_dict = {1: ['fabianoalmeidasjc@gmail.com'],
+
+    emails_dict = {1: ['travelho.castro@gmail.com'],
     2: [],
     3: [],
     4: []
