@@ -80,9 +80,9 @@ def home(request, escola_pk=None):
                                          efet=False,
                                          then=Value(True)), output_field=BooleanField()))
 
-    pagamentos = pagamentos.all().filter(invalido=None)
+    pagamentos = pagamentos.filter(invalido=None)
     lancamentos = pagamentos.count()
-    pagamentos_ids = list(pagamentos.values_list('id', flat=True))
+    # pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 
 
     total_pos = pagamentos.filter(tipo=1).aggregate(Sum('valor'))['valor__sum'] or 0

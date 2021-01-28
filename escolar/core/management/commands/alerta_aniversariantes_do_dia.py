@@ -34,27 +34,33 @@ class Command(BaseCommand):
         '''
         hoje = date.today()
         escolas = Escola.objects.all()
-        ano = date.today().year
+
         for escola in escolas:
-            q = Q(escola=escola)
-            pessoas = Pessoa.objects.filter(escola=escola)
-            alunos_ativos_ids = self.contratos.objects.filter(
-                ano=self.ano,
-                aluno__escola=escola).values_list('aluno__id', flat=True)
-            resp_ativos_ids = self.contratos.objects.filter(
-                ano=self.ano,
-                aluno__escola=escola).values_list('responsavel__id', flat=True)
-            q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)
-            pessoas = pessoas.filter(q)
-            nivers = pessoas.filter(
-                nascimento__month=hoje.month,
-                nascimento__day=hoje.day).filter(q)
+            nivers = self.check_nivers(escola, hoje)
             if nivers:
                 self.send_email_niver(escola, nivers)
             print("=============================================")
             print(escola.nome)
-            msg = 'Envio de emails de Nivers do dia: %s Nivers: %s' % (hoje, nivers.count())
+            msg = 'Envio de emails de Nivers do dia: %s Nivers: %s' % (
+                hoje, nivers.count()
+            )
             print(msg)
+
+    def check_nivers(self, escola, hoje):
+        q = Q(escola=escola)
+        pessoas = Pessoa.objects.filter(escola=escola)
+        alunos_ativos_ids = self.contratos.objects.filter(
+            ano=self.ano,
+            aluno__escola=escola).values_list('aluno__id', flat=True)
+        resp_ativos_ids = self.contratos.objects.filter(
+            ano=self.ano,
+            aluno__escola=escola).values_list('responsavel__id', flat=True)
+        q = q & Q(id__in=alunos_ativos_ids) | Q(id__in=resp_ativos_ids)
+        pessoas = pessoas.filter(q)
+        nivers = pessoas.filter(
+            nascimento__month=hoje.month,
+            nascimento__day=hoje.day).filter(q)
+        return nivers
 
     def send_email_niver(self, escola, aniversariantes):
         nomes = ''' '''
