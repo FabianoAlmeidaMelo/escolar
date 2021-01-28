@@ -79,23 +79,31 @@ class Command(BaseCommand):
     def send_email_pgto_pendentes(self, escola, pgtos_qs):
         dividas = ''' '''
         recebimentos = ''' '''
-        for p in pgtos_qs.filter(tipo=1, efet=False):
-            recebimentos += '%s R$ %s; \n' % (str(p.data_pag), str(p.valor))
+        receb_qs = pgtos_qs.filter(tipo=1, efet=False)
+        if receb_qs:
+            for p in receb_qs:
+                recebimentos += '%s, R$ %s; \n' % (str(p.data_pag), str(p.valor))
+        else:
+            recebimentos = 'Não há recebimentos em aberto'
 
-        for p in pgtos_qs.filter(tipo=2, efet=False):
-            dividas += '%s R$ %s; \n' % (str(p.data_pag), str(p.valor))
+        divida_qs = pgtos_qs.filter(tipo=2, efet=False):
+        if divida_qs:
+            for p in divida_qs:
+                dividas += '%s, R$ %s; \n' % (str(p.data_pag.date()), str(p.valor))
+        else:
+            dividas = 'Não há pagamentos em aberto'
 
         emails = self.emails_dict.get(escola.id, [])
         msg = 'Esses pagamentos do mês corrente ainda estão em aberto.' 
         msg += '\nApurados até a data de hoje: %s' % self.hoje
-        url = 'https://smartiscool.online/%s/' % escola.id
+        url = 'https://smartiscool.online/5s/' % escola.id
         assinatura= 'Pode conferir mais detalhes em:\n%s' % url
         if emails:
 
             mensagem = '\n\n%s' % msg
             mensagem += '\nPagamentos Pendentes:' 
             mensagem += '\n\n%s' % dividas
-            mensagem += '\nRecebimentos Pendenetss'
+            mensagem += '\nRecebimentos Pendentes:'
             mensagem += '\n\n%s' % recebimentos
             mensagem += '\n\n%s' % assinatura
             
