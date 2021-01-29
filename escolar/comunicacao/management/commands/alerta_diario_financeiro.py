@@ -15,7 +15,7 @@ class Command(BaseCommand):
     """ref #14 github
     cat /etc/cron.d/helper
     sudo nano /etc/cron.d/helper
-    08 01 * * * ubuntu /var/www/projetos/escolar/escolar/scripts/alerta_diario_financeiro.sh 2>&1 > /tmp/email_nivres_py.txt
+    00 08 * * * ubuntu /var/www/projetos/escolar/escolar/scripts/alerta_diario_financeiro.sh 2>&1 > /tmp/email_financ.txt
 
     # torna o arquivo executável:
     chmod +x /var/www/projetos/escolar/escolar/escolar/scripts/
@@ -27,7 +27,7 @@ class Command(BaseCommand):
     data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
     hoje = date.today()
 
-    emails_dict = {1: ['travelho.castro@gmail.com'],
+    emails_dict = {1: ['travelho.castro@gmail.com', 'fabianoalmeidasjc@gmail.com'],
     2: [],
     3: [],
     4: []
