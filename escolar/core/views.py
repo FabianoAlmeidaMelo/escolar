@@ -63,7 +63,7 @@ def home(request, escola_pk=None):
         raise Http404
 
     hoje = date.today()
-    data_ini = date(ANO_CORRENTE, MES_CORRNETE, 1)
+    data_ini = date(ANO_CORRENTE, 1, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
 
     

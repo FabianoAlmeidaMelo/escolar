@@ -9,15 +9,24 @@
         {% if diretor %}
           <div class="row">
             <div class="panel panel-success">
-              <div class="panel-heading">Pendentes a receber nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
-              <div class="panel-body"> <small>Valor sem multa</small> </div>
+              <div class="panel-heading">Pendentes a receber do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
+              <div class="panel-body"> 
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:left"><a href="{% url 'pagamentos_list' escola.id %}" >Pagamentos</a></th>
+                    <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}">Inadimplentes</a></th>
+                  </tr>
+                </thead>
+              </table>
+              </div>
                 <!-- Table -->
               <table class="table">
                 <thead>
                   <tr>
                     <th style="text-align:center">Valor</th>
                     <th style="text-align:center">Data</th>
-                    <th style="text-align:center">Categoria</th>
+                    <th style="text-align:center">Responsável</th>
                   </tr>
                 </thead>
                  <tbody>
@@ -32,7 +41,13 @@
                       {{ entrada.valor|numberformat_br }}
                     {% endif %}
                      <td style="text-align:center">{{ entrada.data|date:'d/m/Y' }}</td>
-                     <td style="text-align:center">{{ entrada.categoria.nome }}</td>
+                     <td style="text-align:center"> 
+                      {% if entrada.contrato %}
+                        {{ entrada.contrato.contratoaluno.responsavel.nome }}<br>
+                      {% else %}
+                        --
+                      {% endif %}
+                    </td>
                    </tr>
                    {% empty %}
                       Não há recebimentos pendentes
@@ -41,8 +56,17 @@
               </table>
             </div>
             <div class="panel panel-danger">
-              <div class="panel-heading">Pendentes a pagar nesse mês, do dia 1ª a {{ hoje|date:'d/m/Y' }}</div>
-              <div class="panel-body"><small>Contas da empresa</small> </div>
+              <div class="panel-heading">Pendentes a pagar do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
+              <div class="panel-body">
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:left"><a href="{% url 'pagamentos_list' escola.id %}" >Pagamentos</a></th>
+                    <th style="text-align:right"></th>
+                  </tr>
+                </thead>
+              </table>
+              </div>
 
               <!-- Table -->
               <table class="table">
