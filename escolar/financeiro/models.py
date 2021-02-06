@@ -2,7 +2,7 @@
 from calendar import monthrange
 from datetime import date
 from datetime import datetime, timedelta, date
-import pandas as pd
+# import pandas as pd
 from decimal import Decimal
 from django.forms import ValidationError
 from django.apps import apps
@@ -210,7 +210,7 @@ class ContratoAluno(Contrato):
         '''
         return self.valor / self.nr_parcela
 
-    def date_list(self, nr_parcelas, matricula=False):
+    def _date_list(self, nr_parcelas, matricula=False):
         '''
         Controla a data das parcelas do: Contrato
         e da Matrícula
@@ -222,11 +222,41 @@ class ContratoAluno(Contrato):
         if self.data_assinatura.year < self.ano and matricula is False:
             data_base = date(self.ano, 1, self.vencimento)
 
-        sequencia = pd.date_range(start=data_base, periods=nr_parcelas, freq='M')
+        # sequencia = pd.date_range(start=data_base, periods=nr_parcelas, freq='M')
+
         datas = [data_base or datetime.today()]
 
         for seq in sequencia[1:]:
             data = date(seq.year, seq.month, self.vencimento) 
+            datas.append(data) 
+
+        return datas
+
+    def date_list(self, nr_parcelas, matricula=False):
+        '''
+        Controla a data das parcelas do: Contrato
+        e da Matrícula
+        lista um nr de datas = nr parcelas
+        no mesmo ano com Base no Ano do contrato
+
+        '''
+        sequencia = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 12: 12, 13: 1, 14: 2,  15: 3,  16: 4,  17: 5,  18: 6, 19: 7, 20: 8, 21: 9, 22: 10, 23: 11, 24: 12}
+
+        data_base = self.data_assinatura.date()
+        if self.data_assinatura.year < self.ano and matricula is False:
+            data_base = date(self.ano, 1, self.vencimento)
+
+        datas = [data_base or datetime.today()]
+
+        ref = data_base.month
+        for i in list(range(1, nr_parcelas)):
+            ref += 1
+            if ref <= 12:
+                data = date(data_base.year, ref, self.vencimento)
+            elif ref > 12 and ref <= 24:
+                data = date(data_base.year +1, sequencia[ref], self.vencimento)
+            else:
+                data = date(data_base.year +2, sequencia[ref], self.vencimento)
             datas.append(data) 
 
         return datas
