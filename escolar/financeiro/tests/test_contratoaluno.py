@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.test import TestCase
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -9,20 +9,21 @@ from escolar.escolas.models import (
     Curso,
     Escola,
     MembroFamilia,
-    Responsavel,
     Pessoa,
+    Responsavel,
     Serie,
 )
 
 from escolar.financeiro.models import (
     CONDICAO_DESCONTO,
+    CategoriaPagamento,
     Contrato,
     ContratoAluno,
     DIA_UTIL,
     FORMA_PGTO,
     JUROS_EXPECIFICACAO,
     Pagamento,
-    CategoriaPagamento,
+    ParametrosContrato,
 )
 
 from escolar.core.models import (
@@ -94,6 +95,11 @@ class ContratoTest(TestCase):
             nome='Matrícula',
             descricao='x',
             id=2
+        )
+        self.categoria_mat_didatico = CategoriaPagamento.objects.create(
+            nome='Material Didático',
+            descricao='x',
+            id=9
         )
         self.curso = Curso.objects.create(
             nome='Primário'
@@ -299,4 +305,49 @@ class ContratoTest(TestCase):
         self.assertEqual(
             self.contrato_aluno.get_descconto_extenso(),
             'dez'
+        )
+
+    def test_get_datas_parcelas_material(self):
+        '''
+        4 parcelas sem ParamentosContrato
+        '''
+        date_list = self.contrato_aluno.get_datas_parcelas_material()
+        date_str = [str(data) for data in date_list]
+
+        self.assertEqual(
+            len(date_str),
+            4
+        )
+        self.assertEqual(
+            date_str,
+            ['2021-01-10', '2021-02-10', '2021-03-10', '2021-04-10' ]
+        )
+
+    def test_get_datas_parcelas_material_parametros(self):
+        '''
+        5 parcelas com ParamentosContrato
+        '''
+        ParametrosContrato.objects.create(
+            escola=self.contrato_aluno.aluno.escola,
+            ano=self.contrato_aluno.ano,
+            material_parcelas=5,
+            data_um_material=date(2021, 2, 15),
+            data_dois_material=date(2021, 4, 15),
+            data_tres_material=date(2021, 6, 15),
+            data_quatro_material=date(2021, 8, 15),
+            data_cinco_material=date(2021, 10, 15),
+            vencimento=10,
+            matricula_valor=Decimal('500')
+
+        )
+        date_list = self.contrato_aluno.get_datas_parcelas_material()
+        date_str = [str(data) for data in date_list]
+
+        self.assertEqual(
+            len(date_str),
+            5
+        )
+        self.assertEqual(
+            date_str,
+            ['2021-02-15', '2021-04-15', '2021-06-15', '2021-08-15', '2021-10-15']
         )

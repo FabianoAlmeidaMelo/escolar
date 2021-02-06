@@ -271,20 +271,23 @@ class ContratoAluno(Contrato):
         return extenso(self.desconto)
 
     def get_datas_parcelas_material(self):
-        parametros = ParametrosContrato.objects.filter(
-            escola=self.aluno.escola,
-            ano=self.ano
-        ).last()
-        if parametros:
-            dates = [parametros.data_um_material,
-                     parametros.data_dois_material,
-                     parametros.data_tres_material,
-                     parametros.data_quatro_material,
-                     parametros.data_cinco_material,
-                     parametros.data_seis_material]
+        if not self.pagamento_set.filter(categoria_id=9, tipo=1).exists():
+            parametros = ParametrosContrato.objects.filter(
+                escola=self.aluno.escola,
+                ano=self.ano
+            ).last()
+            if parametros:
+                dates = [parametros.data_um_material,
+                         parametros.data_dois_material,
+                         parametros.data_tres_material,
+                         parametros.data_quatro_material,
+                         parametros.data_cinco_material,
+                         parametros.data_seis_material]
+            else:
+                dates = self.date_list(self.material_parcelas)
         else:
             dates = []
-        
+    
         return [data for data in dates if data]
         
 
