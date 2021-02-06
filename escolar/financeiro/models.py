@@ -2,9 +2,9 @@
 from calendar import monthrange
 from datetime import date
 from datetime import datetime, timedelta, date
-from dateutil.relativedelta import relativedelta
+import pandas as pd
 from decimal import Decimal
-
+from django.forms import ValidationError
 from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
@@ -17,10 +17,16 @@ from django.template.loader import render_to_string
 
 from escolar.core.models import UserAdd, UserUpd
 from escolar.core.utils import add_email_embed_image
+
 from escolar.escolas.models import ANO
+
 from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso, extenso
-from escolar.comunicacao.models import Mensagem, PessoaMensagem
+from escolar.comunicacao.models import (
+    Mensagem,
+    PessoaMensagem,
+    MensagemDefault,
+)
 
 
 
@@ -194,7 +200,7 @@ class ContratoAluno(Contrato):
         ordering = ('aluno__nome',)
 
     def __str__(self):
-        return "Contrato %d:  %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
+        return "Contrato %d: %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
     def parcelas_anuidade(self):
         '''
@@ -202,25 +208,27 @@ class ContratoAluno(Contrato):
         para evitar alteração do valor das parcelas,
         por jurus e multas por atraso
         '''
-        return self.valor / 12
+        return self.valor / self.nr_parcela
 
+    def date_list(self, nr_parcelas, matricula=False):
+        '''
+        Controla a data das parcelas do: Contrato
+        e da Matrícula
+        lista um nr de datas = nr parcelas
+        no mesmo ano com Base no Ano do contrato
 
-    def date_list(self, nr_parcelas):
-        datas = [self.data_assinatura or datetime.today()]
-        if nr_parcelas > 1:
-            dia = self.data_assinatura.day
-            mes = self.data_assinatura.month
-            year = ano = self.data_assinatura.year
-            meses = range(1, nr_parcelas)
-            mes_list = list(range(13, 18))
-            months = list(range(13, 20))  # máxino 6
-            for m in meses:
-                mes = self.data_assinatura.month + m
-                if mes in months:
-                    mes = months.index(mes) + 1
-                    year = ano + 1
-                data = date(year, mes, dia)
-                datas.append(data)
+        '''
+        data_base = self.data_assinatura.date()
+        if self.data_assinatura.year < self.ano and matricula is False:
+            data_base = date(self.ano, 1, self.vencimento)
+
+        sequencia = pd.date_range(start=data_base, periods=nr_parcelas, freq='M')
+        datas = [data_base or datetime.today()]
+
+        for seq in sequencia[1:]:
+            data = date(seq.year, seq.month, self.vencimento) 
+            datas.append(data) 
+
         return datas
 
 
@@ -230,8 +238,13 @@ class ContratoAluno(Contrato):
             valor = self.matricula_valor
             if nr_parcelas > 1:
                 valor = self.matricula_valor / nr_parcelas
-            datas = self.date_list(nr_parcelas)
+            datas = self.date_list(nr_parcelas, True)
+            nr_parcela = 0
             for data in datas:
+                if nr_parcelas > 1:
+                    nr_parcela += 1
+                else:
+                    nr_parcela = None
                 categoria = CategoriaPagamento.objects.get(id=2)  # Matrícula
                 Pagamento.objects.update_or_create(
                     titulo='Matrícula %s' % (self.ano) ,
@@ -240,7 +253,7 @@ class ContratoAluno(Contrato):
                     data=data,
                     data_pag=data,
                     observacao='',
-                    nr_parcela=None,
+                    nr_parcela=nr_parcela,
                     categoria=categoria,
                     tipo=1,
                     defaults={'valor': valor}
@@ -258,12 +271,11 @@ class ContratoAluno(Contrato):
         return extenso(self.desconto)
 
     def get_datas_parcelas_material(self):
-        if not self.id:
-            parametros = ParametrosContrato.objects.filter(
-                escola=self.aluno.escola,
-                ano=self.ano
-            ).last()
-
+        parametros = ParametrosContrato.objects.filter(
+            escola=self.aluno.escola,
+            ano=self.ano
+        ).last()
+        if parametros:
             dates = [parametros.data_um_material,
                      parametros.data_dois_material,
                      parametros.data_tres_material,
@@ -739,6 +751,48 @@ class InadimplenteDBView(models.Model):
             )
             return True
         return False
+
+    def get_whats_app_link_cobranca(self):
+        link = "não possui celular cadastrado"
+        if self.celular:
+            tipo_cobranca = 1
+            msg = MensagemDefault.objects.filter(
+                escola=self.escola,
+                tipo=tipo_cobranca
+            ).first()
+
+            meio_whats = 3
+            mensagem = msg.titulo
+            mensagem += "\n{cabecalho}".format(cabecalho=msg.cabecalho)
+            mensagem += "\n{corpo}".format(corpo=msg.corpo)
+            mensagem += "\n{assinatura}".format(assinatura=msg.assinatura)
+
+
+            #https://api.whatsapp.com/send?phone=5512988043675&text=Ol%C3%A1%2C%20testando%20gerador%20de%20link
+            '''
+            https://api.whatsapp.com/send?phone=5512988043675&text=Situação do Contrato de Serviços Educacionais
+            São josé dos campos - SP {data}
+            Prezado  {nome_completo} ,
+            Notamos há um debito em aberto no nosso sistema,
+            no valor total de R$ {valor_divida}.
+            Referente a: {pagamentos_atrasados}
+
+            De nosso contrato de prestação de serviços educacionais.
+            Por favor, entre em contato comigo pelo e-mail ou telefone indicado
+            Se esse valor já foi quitado, por favor, desconsidere a mensagem.
+            Atenciosamente
+
+            Anderson Diretor
+            12 9899 3212
+            anderson@gmail.com
+
+            '''
+            link = "https://api.whatsapp.com/send?phone=55{cel}&text={msg}".format(
+                cel=self.celular,
+                msg=mensagem
+            )
+        return link
+
 
     def set_mensagem_cobranca(self, mensagem, user):
         '''

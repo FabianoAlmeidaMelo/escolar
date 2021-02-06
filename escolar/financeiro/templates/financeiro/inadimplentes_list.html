@@ -105,7 +105,12 @@
             </small>
           </td>
           <td>
-            {{ pagamento.celular|default:"--" }}<br>
+            {% if pagamento.celular %}
+              <a href="https://api.whatsapp.com/send?phone=5512988043675&text=Ol%C3%A1%2C%20testando%20gerador%20de%20link %}">{{ pagamento.celular|default:"--" }}
+            </a><br>
+            {% else %}
+              --
+            {% endif %}
             {% if pagamento.email %}
               <small> <a href="{% url 'cobranca_form' pagamento.id %}">{{ pagamento.email|default:"--" }}</a></small>
             {% else %}

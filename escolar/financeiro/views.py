@@ -919,7 +919,11 @@ def inadimplentes_list(request, escola_pk):
     context = {}
 
     data_ini = date(ANO_CORRENTE, 1, 1)
-    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
+    data_fim = date(
+        ANO_CORRENTE,
+        MES_CORRNETE,
+        monthrange(ANO_CORRENTE, MES_CORRNETE)[1]
+    )
 
     form = InadimplentesSearchForm(request.GET or None, escola=escola)
     if form.is_valid():

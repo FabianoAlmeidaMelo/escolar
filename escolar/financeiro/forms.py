@@ -178,6 +178,7 @@ class ContratoAlunoForm(forms.ModelForm):
     data_assinatura = forms.DateField(label='Data da Matrícula', required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     parcelas = forms.ChoiceField(label='Nr de Parcelas da Matrícula', choices=PARCELAS_MATRICULA, required=False)
     observacao = forms.CharField(label='Motivo da rescisão', required=False)
+    vencimento = forms.IntegerField(label='Dia de Pagar', required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -647,7 +648,8 @@ class InadimplentesSearchForm(forms.Form):
         cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
 
         self.fields['serie'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
-    
+        #https://api.whatsapp.com/send?phone=5512988043675&text=SuaMensagem
+        #https://api.whatsapp.com/send?phone=5512988043675&text=Ol%C3%A1%2C%20testando%20gerador%20de%20link
     
 
     def get_result_queryset(self, mes=None):
