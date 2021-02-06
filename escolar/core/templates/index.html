@@ -21,20 +21,27 @@
               </table>
               </div>
                 <!-- Table -->
-              <table class="table">
+              <table id="tabela_entradas" class="table">
                 <thead>
                   <tr>
                     <th style="text-align:center">Valor</th>
                     <th style="text-align:center">Data</th>
                     <th style="text-align:center">Responsável</th>
+                    <th style="text-align:center">Aluno</th>
                   </tr>
+                  <tr id="tabela_entradas input">
+                    <th style="text-align:center"><input type="text" id="txtColuna0"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna1"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna2"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna3"/></th>
+                  </tr>    
                 </thead>
                  <tbody>
                   {% for entrada in entradas_pendentes_qs %}
                    <tr>
                     {% if can_edit %}
                        <td style="text-align:center">
-                        <a href="{% url 'pagamento_edit' escola.id entrada.id %}?list">
+                        <a href="{% url 'pagamentos_aluno_list' entrada.contrato.contratoaluno.aluno.id %}">
                           {{ entrada.valor|numberformat_br }}</a>
                        </td>
                     {% else %}
@@ -43,7 +50,14 @@
                      <td style="text-align:center">{{ entrada.data|date:'d/m/Y' }}</td>
                      <td style="text-align:center"> 
                       {% if entrada.contrato %}
-                        {{ entrada.contrato.contratoaluno.responsavel.nome }}<br>
+                        <small>{{ entrada.contrato.contratoaluno.responsavel.nome }}</small>
+                      {% else %}
+                        --
+                      {% endif %}
+                    </td>
+                    <td style="text-align:center"> 
+                      {% if entrada.contrato %}
+                        <small>{{ entrada.contrato.contratoaluno.aluno.nome }}</small>
                       {% else %}
                         --
                       {% endif %}
@@ -69,13 +83,20 @@
               </div>
 
               <!-- Table -->
-              <table class="table">
+              <table id="tabela_saidas" class="table">
                 <thead>
                   <tr>
                     <th style="text-align:center">Valor</th>
                     <th style="text-align:center">Data</th>
                     <th style="text-align:center">Categoria</th>
+                    <th style="text-align:center">Título</th>
                   </tr>
+                  <tr id="tabela_saidas_input">
+                    <th style="text-align:center"><input type="text" id="txtColuna4"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna5"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna6"/></th>
+                    <th style="text-align:center"><input type="text" id="txtColuna7"/></th>
+                  </tr> 
                 </thead>
                <tbody>
                 {% for saida in saidas_pendentes_qs %}
@@ -90,6 +111,7 @@
                   {% endif %}
                    <td style="text-align:center">{{ saida.data|date:'d/m/Y' }}</td>
                    <td style="text-align:center">{{ saida.categoria.nome }}</td>
+                   <td style="text-align:center">{{ saida.titulo }}</td>
                  </tr>
                  {% empty %}
                     Não há pagamentos pendentes
@@ -170,29 +192,6 @@
               </table>
             </div>
           </div>
-
- 
-<!--             <div class="row">
-
-                  <div class="panel panel-success">
-                    <div class="panel-heading">
-                      Recebimentos mês {{ mes_corrente }} / {{ ano_corrente }} : meio usado para receber
-                    </div>
-                    <div class="panel-body">
-                      <div id="chart_div_1"></div>
-                    </div>
-                  </div>
-
-                  <div class="panel panel-danger">
-                    <div class="panel-heading">
-                      Pagamentos mês {{ mes_corrente }} / {{ ano_corrente }} : meio usado para pagar
-                    </div>
-                    <div class="panel-body">
-                      <div id="chart_div_2"></div>
-                    </div>
-                  </div>
-             </div>
-          </div> -->
         {% endif %}
     {% else %}
         <div class="container">
@@ -276,85 +275,56 @@
       </div> 
     {% endif %}
 {% endblock content %}
+
+{% block css %}
+  <style type="text/css">
+    input[type=text], select, textarea{
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+  </style>
+{% endblock css %}
 {% block extra_js %}
+  <script type="text/javascript">
+    $(function(){
+        $("#tabela_entradas input").keyup(function(){       
+            var index = $(this).parent().index();
+            var nth = "#tabela_entradas td:nth-child("+(index+1).toString()+")";
+            var valor = $(this).val().toUpperCase();
+            $("#tabela_entradas tbody tr").show();
+            $(nth).each(function(){
+                if($(this).text().toUpperCase().indexOf(valor) < 0){
+                    $(this).parent().hide();
+                }
+            });
+        });
+     
+        $("#tabela_entradas input").blur(function(){
+            $(this).val("");
+        });
+    });
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-      <script type="text/javascript">
-        google.charts.load('current', {packages: ['corechart', 'bar']});
-        google.charts.setOnLoadCallback(drawBasic);
-
-          function drawBasic() {
-
-            var data = google.visualization.arrayToDataTable([
-              ['Meios de pgamento', 'R$',],
-              ['Boleto bancário', {{ boleto_bancario }}],
-              ['Cartão de crédito', {{ cartao_credito }} ],
-              ['Cartão de débito', {{ cartao_debto }}],
-              ['Cheque', {{ cheque }}],
-              ['Dinheiro', {{ dinheiro }}],
-              ['Permuta', {{ permuta }}],
-              ['Transferência bancária', {{ transf_bancaria }}],
-              ['Indefinidos', {{ indefinidos }}],
-              ['Entradas', {{ entradas }}]
-            ]);
-
-            var options = {
-              title: 'Entradas',
-              chartArea: {width: '40%'},
-              hAxis: {
-                title: 'Movimentação',
-                minValue: 0.0
-              },
-              vAxis: {
-                title: 'Recebimentos'
-              }
-
-            };
-
-            var chart = new google.visualization.BarChart(document.getElementById('chart_div_1'));
-
-            chart.draw(data, options);
-          }  
-      </script>
-
-      <script type="text/javascript">
-        google.charts.load('current', {packages: ['corechart', 'bar']});
-        google.charts.setOnLoadCallback(drawBasic);
-
-          function drawBasic() {
-
-            var data = google.visualization.arrayToDataTable([
-              ['Meios de pgamento', 'R$',],
-              ['Boleto bancário', {{ saidas_boleto_bancario }}],
-              ['Cartão de crédito', {{ saidas_cartao_credito }}],
-              ['Cartão de débito', {{ saidas_cartao_debto }}],
-              ['Cheque', {{ saidas_cheque }}],
-              ['Dinheiro', {{ saidas_dinheiro }}],
-              ['Permuta', {{ saidas_permuta }}],
-              ['Transferência bancária', {{ saidas_transf_bancaria }}],
-              ['Indefinidos', {{ saidas_indefinidos }}],
-              ['Saídas', {{ saidas }}],
-            ]);
-
-            var options = {
-              title: 'Saídas',
-              chartArea: {width: '40%'},
-              hAxis: {
-                title: 'Movimentação',
-                minValue: 0.0
-              },
-              vAxis: {
-                title: 'Pagamentos'
-              },
-              colors: ['#e0440e']
-
-            };
-
-            var chart = new google.visualization.BarChart(document.getElementById('chart_div_2'));
-
-            chart.draw(data, options);
-          }  
-      </script>
-
+    $(function(){
+        $("#tabela_saidas input").keyup(function(){       
+            var index = $(this).parent().index();
+            var nth = "#tabela_saidas td:nth-child("+(index+1).toString()+")";
+            var valor = $(this).val().toUpperCase();
+            $("#tabela_saidas tbody tr").show();
+            $(nth).each(function(){
+                if($(this).text().toUpperCase().indexOf(valor) < 0){
+                    $(this).parent().hide();
+                }
+            });
+        });
+     
+        $("#tabela_saidas input").blur(function(){
+            $(this).val("");
+        });
+    });
+  </script>
 {% endblock extra_js%}
  
