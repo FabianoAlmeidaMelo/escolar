@@ -680,11 +680,9 @@ def pagamentos_aluno_list(request, aluno_pk):
  
     ano_valido = list(set(pagamentos_qs.values_list('contrato__ano', flat=True)))
 
-    total_pos = sum(pagamentos_qs.filter(tipo=1).values_list('valor', flat=True))
-    total_neg = sum(pagamentos_qs.filter(tipo=2).values_list('valor', flat=True))
-    total = total_pos - total_neg
-    entradas = int(total_pos)
-    saidas = int(total_neg)
+    total_previsto = sum(pagamentos_qs.filter(tipo=1).values_list('valor', flat=True))
+    total_realizado = sum(pagamentos_qs.filter(tipo=1, efet=True).values_list('valor', flat=True))
+
 
     # o pgto tem de estar vinculado a um contrato
     # o default para isso é o contrato do ano corrente,
@@ -706,10 +704,10 @@ def pagamentos_aluno_list(request, aluno_pk):
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
 
-    context['total'] = total
+    context['total_previsto'] = total_previsto
+    context['total_realizado'] = total_realizado
     context['is_diretor'] = is_diretor
-    context['entradas'] = entradas
-    context['saidas'] = saidas
+
     context['form'] = form
     context['can_create'] = can_create
     context['escola'] = escola

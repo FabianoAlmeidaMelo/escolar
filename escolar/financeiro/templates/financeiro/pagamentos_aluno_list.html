@@ -58,13 +58,12 @@
     </thead>
     <tfoot>
       <tr>
-        <td><small>entradas <br>R$ {{ entradas|numberformat_br }}</small></td>
-        <td><small>saídas <br>R$ {{ saidas|numberformat_br }}</small></td>
-        <td span="4" ><small>Total</small><br>
-          {% if total > 0 %}
-            <font color="blue">R$ {{ total|numberformat_br }}</font>
+        <td><small>Total Previsto <br>R$ {{ total_previsto|numberformat_br }}</small></td>
+        <td span="4" ><small>Total Realizado</small><br>
+          {% if total_realizado > 0 %}
+            <font color="blue">R$ {{ total_realizado|numberformat_br }}</font>
           {% else %}
-            <font color="red">R$ {{ total|numberformat_br }}</font>
+            <font color="red">R$ {{ total_realizado|numberformat_br }}</font>
           {% endif %}
         </td>
         <td></td>
