@@ -21,6 +21,7 @@ from escolar.escolas.models import (
 )
 from escolar.financeiro.forms import (
     EmailMensagemForm,
+    WhatsAppMensagemForm,
 )
 from escolar.financeiro.models import (
     ContratoAluno,
@@ -124,7 +125,7 @@ def msg_list(request, escola_pk, contrato_id, tipo=None):
 
 
 @login_required
-def cobranca_form(request, pk):
+def cobranca_email_form(request, pk):
     user = request.user
     inadimplente = get_object_or_404(
         InadimplenteDBView,
@@ -171,3 +172,32 @@ def cobranca_form(request, pk):
     context['can_edit'] = is_diretor
 
     return render(request, 'comunicacao/email_cobranca.html', context)
+
+@login_required
+def cobranca_whats_form(request, pk):
+    user = request.user
+    inadimplente = get_object_or_404(
+        InadimplenteDBView,
+        pk=pk
+    )
+    escola = inadimplente.escola
+    is_diretor = user.is_diretor(escola.pk)
+    if not is_diretor:
+        raise Http404
+
+    form = WhatsAppMensagemForm(
+        request.POST or None,
+        instance=inadimplente,
+        user=user,
+        escola=escola
+    )
+
+    context = {}
+    context['form'] = form
+    context['escola'] = escola
+    context['inadimplente'] = inadimplente
+    context['tab_administracao'] = "active"
+    context['tab_inadimplentes'] = "active"
+    context['can_edit'] = is_diretor
+
+    return render(request, 'comunicacao/cobranca_whats_form.html', context)

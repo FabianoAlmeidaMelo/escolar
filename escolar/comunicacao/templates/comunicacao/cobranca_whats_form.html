@@ -1,4 +1,4 @@
-cobranca_whats_form{% extends 'base.html'%}
+{% extends 'base.html'%}
 {% load bootstrap3 %}
 {% block css %}
   <style type="text/css">
@@ -31,18 +31,13 @@ cobranca_whats_form{% extends 'base.html'%}
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-12 col-sm-9 col-md-6">
-              {% bootstrap_field form.email %}
-              {% bootstrap_field form.titulo %}
+              <a href="{{ form.instance.get_whats_app_link_cobranca }}">WhtasApp</a>
               {% bootstrap_field form.mensagem %}
-              {% bootstrap_field form.assinatura %}
             </div>
         </div>
       </div>
       <!-- glyphicon glyphicon-print -->
       <div class="form-actions">
-        {% if can_edit %}
-          <input type="submit" value="Enviar email" class="btn btn-primary">
-        {% endif %}
         <a href="{% url 'inadimplentes_list' escola.id %}" class="btn btn-secondary">Voltar para lista de inadimplentes</a>
       </div>
     </form>

@@ -762,3 +762,37 @@ class EmailMensagemForm(forms.ModelForm):
     class Meta:
         model = InadimplenteDBView
         fields = ['email',] 
+
+class WhatsAppMensagemForm(forms.ModelForm):
+    '''
+    #5
+    http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
+    '''
+    mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
+
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.escola = kwargs.pop('escola', None)
+        super(WhatsAppMensagemForm, self).__init__(*args, **kwargs)
+        self.fields['mensagem'].widget.attrs['readonly'] = True
+
+        
+        msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
+        valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
+
+        modelo = msg_default.titulo
+        modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
+        modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
+        modelo = modelo.format(
+            data=date.today().strftime("%d/%m/%Y"),
+            valor_divida=round(valor_divida, 2),
+            nome_completo=self.instance.responsavel_nome,
+            pagamentos_atrasados='; '.join(parcela for parcela in self.instance.titulos)
+        )
+        modelo += msg_default.assinatura
+        self.fields['mensagem'].initial = modelo
+
+    class Meta:
+        model = InadimplenteDBView
+        fields = ['mensagem',] 

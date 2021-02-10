@@ -106,13 +106,14 @@
           </td>
           <td>
             {% if pagamento.celular %}
-              {{ pagamento.celular|default:"--" }}
-            <br>
+              <!-- <a href="https://api.whatsapp.com/send?phone={{ pagamento.celular}} %}">{{ pagamento.celular|default:"--" }} -->
+              <a href="{% url 'cobranca_whats_form' pagamento.id %}">{{ pagamento.celular|default:"--" }}
+            </a><br>
             {% else %}
               --
             {% endif %}
             {% if pagamento.email %}
-              <small> <a href="{% url 'cobranca_form' pagamento.id %}">{{ pagamento.email|default:"--" }}</a></small>
+              <small> <a href="{% url 'cobranca_email_form' pagamento.id %}">{{ pagamento.email|default:"--" }}</a></small>
             {% else %}
               --
             {% endif %}

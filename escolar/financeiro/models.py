@@ -789,40 +789,28 @@ class InadimplenteDBView(models.Model):
         link = "não possui celular cadastrado"
         if self.celular:
             tipo_cobranca = 1
-            msg = MensagemDefault.objects.filter(
+            msg_default = MensagemDefault.objects.filter(
                 escola=self.escola,
                 tipo=tipo_cobranca
             ).first()
+            msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
+            valor_divida = self.valor + self.multa + self.juros
 
             meio_whats = 3
-            mensagem = msg.titulo
-            mensagem += "\n{cabecalho}".format(cabecalho=msg.cabecalho)
-            mensagem += "\n{corpo}".format(corpo=msg.corpo)
-            mensagem += "\n{assinatura}".format(assinatura=msg.assinatura)
+            modelo = msg_default.titulo
+            modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
+            modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
+            modelo = modelo.format(
+                data=date.today().strftime("%d/%m/%Y"),
+                valor_divida=round(valor_divida, 2),
+                nome_completo=self.responsavel_nome,
+                pagamentos_atrasados='; '.join(parcela for parcela in self.titulos)
+            )
+            modelo += msg_default.assinatura
 
-
-            #https://api.whatsapp.com/send?phone=5512988043675&text=Ol%C3%A1%2C%20testando%20gerador%20de%20link
-            '''
-            https://api.whatsapp.com/send?phone=5512988043675&text=Situação do Contrato de Serviços Educacionais
-            São josé dos campos - SP {data}
-            Prezado  {nome_completo} ,
-            Notamos há um debito em aberto no nosso sistema,
-            no valor total de R$ {valor_divida}.
-            Referente a: {pagamentos_atrasados}
-
-            De nosso contrato de prestação de serviços educacionais.
-            Por favor, entre em contato comigo pelo e-mail ou telefone indicado
-            Se esse valor já foi quitado, por favor, desconsidere a mensagem.
-            Atenciosamente
-
-            Anderson Diretor
-            12 9899 3212
-            anderson@gmail.com
-
-            '''
             link = "https://api.whatsapp.com/send?phone=55{cel}&text={msg}".format(
                 cel=self.celular,
-                msg=mensagem
+                msg=modelo
             )
         return link
 
