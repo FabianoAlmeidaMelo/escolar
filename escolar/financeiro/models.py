@@ -761,7 +761,7 @@ class InadimplenteDBView(models.Model):
         db_table = 'view_inadimplentes'
 
 
-    def send_email_cobranca(self, titulo, msg, assinatura):
+    def send_email_cobranca(self, mensagem):
         '''
         ref #5
         Enviar uma msg de email para o responsável financeiro
@@ -771,12 +771,13 @@ class InadimplenteDBView(models.Model):
 
         emails = [self.email]
         if emails:
-            mensagem = titulo
-            mensagem += '\n\n%s' % msg
-            mensagem += '\n\n%s' % assinatura
-            
+            tipo_cobranca = 1
+            msg_default = MensagemDefault.objects.filter(
+               escola=self.escola,
+               tipo=tipo_cobranca
+            ).first()
             send_mail(
-                'Situação do Contrato',
+                msg_default.titulo,
                 mensagem,
                 settings.DEFAULT_FROM_EMAIL,
                 emails,
@@ -787,30 +788,28 @@ class InadimplenteDBView(models.Model):
 
     def get_whats_app_link_cobranca(self):
         link = "não possui celular cadastrado"
-        if self.celular:
-            tipo_cobranca = 1
-            msg_default = MensagemDefault.objects.filter(
-                escola=self.escola,
-                tipo=tipo_cobranca
-            ).first()
-            msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
-            valor_divida = self.valor + self.multa + self.juros
+        if self.celular and len(self.celular) >= 10:
+            # tipo_cobranca = 1
+            # msg_default = MensagemDefault.objects.filter(
+            #     escola=self.escola,
+            #     tipo=tipo_cobranca
+            # ).first()
+            # msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
+            # valor_divida = self.valor + self.multa + self.juros
 
-            meio_whats = 3
-            modelo = msg_default.titulo
-            modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
-            modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
-            modelo = modelo.format(
-                data=date.today().strftime("%d/%m/%Y"),
-                valor_divida=round(valor_divida, 2),
-                nome_completo=self.responsavel_nome,
-                pagamentos_atrasados='; '.join(parcela for parcela in self.titulos)
-            )
-            modelo += msg_default.assinatura
+            # modelo = msg_default.titulo
+            # modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
+            # modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
+            # modelo = modelo.format(
+            #     data=date.today().strftime("%d/%m/%Y"),
+            #     valor_divida=round(valor_divida, 2),
+            #     nome_completo=self.responsavel_nome,
+            #     pagamentos_atrasados='; '.join(parcela for parcela in self.titulos)
+            # )
+            # modelo += msg_default.assinatura
 
-            link = "https://api.whatsapp.com/send?phone=55{cel}&text={msg}".format(
+            link = "https://api.whatsapp.com/send?phone=55{cel}".format(
                 cel=self.celular,
-                msg=modelo
             )
         return link
 

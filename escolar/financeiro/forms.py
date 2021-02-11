@@ -648,8 +648,6 @@ class InadimplentesSearchForm(forms.Form):
         cursos_ids = self.escola.cursos.all().values_list('id', flat=True)
 
         self.fields['serie'].queryset = Serie.objects.filter(curso_id__in=cursos_ids)
-        #https://api.whatsapp.com/send?phone=5512988043675&text=SuaMensagem
-        #https://api.whatsapp.com/send?phone=5512988043675&text=Ol%C3%A1%2C%20testando%20gerador%20de%20link
     
 
     def get_result_queryset(self, mes=None):
@@ -718,71 +716,24 @@ class PagamentoAlunoEscolaSearchForm(forms.Form):
         return Pagamento.objects.filter(q)
 
 
-class EmailMensagemForm(forms.ModelForm):
+class CobrancaMensagemForm(forms.ModelForm):
     '''
-    #5
-    http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
+    #14
     '''
     email = forms.CharField(label='e-mail', required=True)
-    titulo = forms.CharField(label='Título da mensagem', required=True)
     mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
-    assinatura = forms.CharField(
-        label='Assinatura da mensagem',
-        widget=forms.Textarea(attrs={'rows': 6}),
-        required=True
-    )
+
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.escola = kwargs.pop('escola', None)
-        super(EmailMensagemForm, self).__init__(*args, **kwargs)
+        super(CobrancaMensagemForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['readonly'] = True
-        self.fields['titulo'].widget.attrs['readonly'] = True
-        self.fields['mensagem'].widget.attrs['readonly'] = True
-        self.fields['assinatura'].widget.attrs['readonly'] = True
         
         msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
         valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
 
-        self.fields['titulo'].initial = msg_default.titulo
-
-        modelo = msg_default.cabecalho
-        modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
-
-        modelo = modelo.format(
-            data=date.today().strftime("%d/%m/%Y"),
-            valor_divida=round(valor_divida, 2),
-            nome_completo=self.instance.responsavel_nome,
-            pagamentos_atrasados='; '.join(parcela for parcela in self.instance.titulos)
-        )
-
-        self.fields['mensagem'].initial = modelo
-        self.fields['assinatura'].initial = msg_default.assinatura
-
-    class Meta:
-        model = InadimplenteDBView
-        fields = ['email',] 
-
-class WhatsAppMensagemForm(forms.ModelForm):
-    '''
-    #5
-    http://www.proesc.com/blog/escolas-particulares-como-cobrar-mensalidades-atrasadas/
-    '''
-    mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
-
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.escola = kwargs.pop('escola', None)
-        super(WhatsAppMensagemForm, self).__init__(*args, **kwargs)
-        self.fields['mensagem'].widget.attrs['readonly'] = True
-
-        
-        msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
-        valor_divida = self.instance.valor + self.instance.multa + self.instance.juros
-
-        modelo = msg_default.titulo
-        modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
+        modelo = "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
         modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
         modelo = modelo.format(
             data=date.today().strftime("%d/%m/%Y"),
@@ -795,4 +746,4 @@ class WhatsAppMensagemForm(forms.ModelForm):
 
     class Meta:
         model = InadimplenteDBView
-        fields = ['mensagem',] 
+        fields = ['email', 'mensagem',] 
