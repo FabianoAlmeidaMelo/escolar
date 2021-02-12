@@ -202,6 +202,25 @@ class ContratoAluno(Contrato):
     def __str__(self):
         return "Contrato %d: %s - %s" % (self.ano, self.aluno.nome, self.aluno.escola.nome)
 
+    def recalcula_parcelas(self):
+        '''
+        Verifica se o valor médio das parcelas
+        não pagas, está de acordo com o valor
+        previsto:
+        contrato valor 12000, 12 parcelas de 1000
+        contrato valoe 12000 matrícula 600, 12 parcelas de 1000 1 de 600
+        Não envolve as Apostilas
+        '''
+        valor_bolsa = 0
+        if self.bolsa:
+            valor_bolsa = self.valor  * (self.bolsa / Decimal('100'))
+
+        valor_medio = (self.valor - self.matricula_valor - valor_bolsa) / self.nr_parcela
+
+        self.pagamento_set.filter(efet=False, categoria_id=1).update(valor=valor_medio)
+
+
+
     def parcelas_anuidade(self):
         '''
         (na impressão do contrato)
