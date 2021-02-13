@@ -51,6 +51,12 @@ SEXO_CHOICES = (
 )
 
 
+COM_SEM_CONTRATO =( 
+    (1,'Com Contrato'),
+    (2,'Sem Contrato'),
+)
+
+
 CHOICE_MONTH = (
     (None, '--'),
     (1, 'Jan'),
@@ -364,6 +370,11 @@ class AlunoSearchForm(forms.Form):
     ano = forms.ChoiceField(label='Ano', choices=ANO, initial=ano_corrente, required=False)
     serie = forms.ModelChoiceField(label=u'Série', queryset=Serie.objects.all(), required=False)
     curso = forms.ModelChoiceField(label=u'Curso', queryset=Curso.objects.all(), required=False)
+    situacao =  forms.ChoiceField(
+        choices=COM_SEM_CONTRATO,
+        widget=forms.RadioSelect(), required=False
+    )
+
     def __init__(self, *args, **kargs):
         self.escola = kargs.pop('escola', None)
         super(AlunoSearchForm, self).__init__(*args, **kargs)
@@ -374,32 +385,41 @@ class AlunoSearchForm(forms.Form):
 
     def get_result_queryset(self):
         q = Q(escola=self.escola)
-        ano = ano_corrente
-        alunos_ativos_ids = list(self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True))
+
+        exclude_ids = []
 
         if self.is_valid():
             ano = self.cleaned_data['ano']
+            if ano:
+                ano = int(ano)
+                q = q & Q(ano=ano)
+                alunos_com_contrato_ids = list(
+                    self.contratos.objects.filter(ano=ano).values_list('aluno__id', flat=True)
+                )
+                q = q | Q(id__in=alunos_com_contrato_ids)
 
-            # responsavel = self.cleaned_data['responsavel']
-            # if responsavel:
-            #     q = q & Q(responsavel__nome__icontains=responsavel)
             nome = self.cleaned_data['nome']
             if nome:
                 q = q & Q(nome__icontains=nome)
-            ano = self.cleaned_data['ano']
-            if ano:
-                q = q & Q(ano=int(ano))
 
             serie = self.cleaned_data['serie']
             if serie and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), contrato_aluno__serie=serie)
+                q = q & Q(contrato_aluno__ano=ano, contrato_aluno__serie=serie)
 
             curso = self.cleaned_data['curso']
             if curso and ano:
-                q = q & Q(contrato_aluno__ano=int(ano), curso=curso)
+                q = q & Q(contrato_aluno__ano=ano, curso=curso)
 
-            return Aluno.objects.filter(q)
-        return Aluno.objects.filter(id__in=alunos_ativos_ids)
+            situacao = self.cleaned_data['situacao']
+            if situacao and ano:
+                if situacao == '1':
+                    q = q & Q(id__in=alunos_com_contrato_ids)
+                elif situacao == '2':
+                    exclude_ids = alunos_com_contrato_ids
+
+
+            return Aluno.objects.filter(q).exclude(id__in=exclude_ids)
+        return Aluno.objects.filter(q)
 
 
 class ProfessorForm(forms.ModelForm):
