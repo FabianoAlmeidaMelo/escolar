@@ -806,26 +806,8 @@ class InadimplenteDBView(models.Model):
         return False
 
     def get_whats_app_link_cobranca(self):
-        link = "não possui celular cadastrado"
+        link = None
         if self.celular and len(self.celular) >= 10:
-            # tipo_cobranca = 1
-            # msg_default = MensagemDefault.objects.filter(
-            #     escola=self.escola,
-            #     tipo=tipo_cobranca
-            # ).first()
-            # msg_default = MensagemDefault.objects.get(tipo=1, escola=self.escola)
-            # valor_divida = self.valor + self.multa + self.juros
-
-            # modelo = msg_default.titulo
-            # modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
-            # modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
-            # modelo = modelo.format(
-            #     data=date.today().strftime("%d/%m/%Y"),
-            #     valor_divida=round(valor_divida, 2),
-            #     nome_completo=self.responsavel_nome,
-            #     pagamentos_atrasados='; '.join(parcela for parcela in self.titulos)
-            # )
-            # modelo += msg_default.assinatura
 
             link = "https://api.whatsapp.com/send?phone=55{cel}".format(
                 cel=self.celular,

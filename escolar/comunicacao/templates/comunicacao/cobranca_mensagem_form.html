@@ -22,8 +22,24 @@ cobranca_whats_form{% extends 'base.html'%}
 
 {% block content %}
 <div class="container">
+  {% if form.instance.get_whats_app_link_cobranca %}
+    <p>
+      <button type="button" class="btn btn-default btn-lg" aria-label="Left Align" onclick="copiarTexto()">
+        <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+      </button>
+    </p>
+    <p>
+       {{ form.instance.get_whats_app_link_cobranca }}
+    </p>       
+    <p>
+      <a href="{{ form.instance.get_whats_app_link_cobranca }}" aligin="right">WhtasApp</a>
+    </p>
+  {% else %}
+    <p>
+      Não possui celular cadastrado ou pode estar faltando os dígitos do DDD
+    </p>
+  {% endif %}
   <div class="row-fluid span10">
-    <br>
     <form method="POST" enctype="multipart/form-data">
       {{ form.errors }}
       {% csrf_token %}
@@ -31,8 +47,6 @@ cobranca_whats_form{% extends 'base.html'%}
           <div class="row">
             <!-- {# Celular, Tablet, Computador #} -->
             <div class="col-xs-12 col-sm-9 col-md-6">
-              <a href="{{ form.instance.get_whats_app_link_cobranca }}">WhtasApp</a><br>
-              {{ form.instance.get_whats_app_link_cobranca }}
               
               {% bootstrap_field form.email %}
               {% bootstrap_field form.mensagem %}
@@ -55,4 +69,14 @@ cobranca_whats_form{% extends 'base.html'%}
 
 {% block extra_js %}
     {{ form.media }}
+  <script type="text/javascript">
+    let copiarTexto = () =>{
+
+        const inputText = document.querySelector("#id_mensagem");
+        
+        inputText.select();
+
+        document.execCommand('copy');
+    };
+  </script>
 {% endblock extra_js %}
