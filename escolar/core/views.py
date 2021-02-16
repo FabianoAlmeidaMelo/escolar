@@ -91,51 +91,13 @@ def home(request, escola_pk=None):
     entradas= total_pos
     saidas= total_neg
 
-    # ## gráfico Meios de pgto
-    # boleto_bancario = pagamentos.filter(tipo=1, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
-    # cartao_credito = pagamentos.filter(tipo=1, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
-    # cartao_debto = pagamentos.filter(tipo=1, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
-    # cheque = pagamentos.filter(tipo=1, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
-    # dinheiro = pagamentos.filter(tipo=1, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
-    # permuta = pagamentos.filter(tipo=1, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
-    # transf_bancaria = pagamentos.filter(tipo=1, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
-    # indefinidos = pagamentos.filter(tipo=1, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
-
     entradas_realizadas = pagamentos.filter(tipo=1, efet=True).aggregate(Sum('valor'))['valor__sum'] or 0
     entradas_pendentes = pagamentos.filter(tipo=1, efet=False).aggregate(Sum('valor'))['valor__sum'] or 0
     entradas_pendentes_qs = pagamentos.filter(tipo=1, efet=False, data__lte=hoje)
 
-    # saidas_boleto_bancario = pagamentos.filter(tipo=2, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_cartao_credito = pagamentos.filter(tipo=2, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_cartao_debto = pagamentos.filter(tipo=2, forma_pgto=3).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_cheque = pagamentos.filter(tipo=2, forma_pgto=4).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_dinheiro = pagamentos.filter(tipo=2, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_permuta = pagamentos.filter(tipo=2, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_transf_bancaria = pagamentos.filter(tipo=2, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
-    # saidas_indefinidos = pagamentos.filter(tipo=2, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
-
     saidas_pendentes_qs = pagamentos.filter(tipo=2, efet=False, data__lte=hoje)
     saidas_realizadas = pagamentos.filter(tipo=2, efet=True).aggregate(Sum('valor'))['valor__sum'] or 0
     saidas_pendentes = pagamentos.filter(tipo=2, efet=False).aggregate(Sum('valor'))['valor__sum'] or 0
-
-    ## grafico meios de pgto:
-    # context['boleto_bancario'] = int(boleto_bancario)
-    # context['cartao_credito'] = int(cartao_credito)
-    # context['cartao_debto'] = int(cartao_debto)
-    # context['cheque'] = int(cheque)
-    # context['dinheiro'] = int(dinheiro)
-    # context['permuta'] = int(permuta)
-    # context['transf_bancaria'] = int(transf_bancaria)
-    # context['indefinidos'] = int(indefinidos)
-
-    # context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
-    # context['saidas_cartao_credito'] = int(saidas_cartao_credito)
-    # context['saidas_cartao_debto'] = int(saidas_cartao_debto)
-    # context['saidas_cheque'] = int(saidas_cheque)
-    # context['saidas_dinheiro'] = int(saidas_dinheiro)
-    # context['saidas_permuta'] = int(saidas_permuta)
-    # context['saidas_transf_bancaria'] = int(saidas_transf_bancaria)
-    # context['saidas_indefinidos'] = int(saidas_indefinidos)
 
     context['entradas_pendentes_qs'] = entradas_pendentes_qs
     context['entradas_realizadas'] = entradas_realizadas

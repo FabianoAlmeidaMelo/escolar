@@ -14,7 +14,9 @@
                 <table class="table">
                 <thead>
                   <tr>
-                    <th style="text-align:left"><a href="{% url 'pagamentos_list' escola.id %}" >Pagamentos</a></th>
+                    <th style="text-align:left">
+                      <a href="{% url 'pagamentos_list' escola.id %}?ano={{ano_corrente}}&mes={{mes_corrente}}&mes_fim={{mes_corrente}}&serie=&cpf_resp_fin=&categoria=&titulo=" >Pagamentos</a>
+                    </th>
                     <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}">Inadimplentes</a></th>
                   </tr>
                 </thead>
