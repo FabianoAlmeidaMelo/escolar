@@ -17,7 +17,7 @@
                     <th style="text-align:left">
                       <a href="{% url 'pagamentos_list' escola.id %}?ano={{ano_corrente}}&mes={{mes_corrente}}&mes_fim={{mes_corrente}}&serie=&cpf_resp_fin=&categoria=&titulo=" >Pagamentos</a>
                     </th>
-                    <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}">Inadimplentes</a></th>
+                    <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}?ano={{ano_corrente}}&serie=&cpf_resp_fin=&responsavel_nome=&aluno_nome=&pagamentos_atrasados=&order=responsavel_nome">Inadimplentes</a></th>
                   </tr>
                 </thead>
               </table>

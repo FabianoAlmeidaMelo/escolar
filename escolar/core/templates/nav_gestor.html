@@ -38,10 +38,10 @@
                   <li class="dropdown {{ tab_administracao}}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administração <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li class="{{ tab_aniversariantes }}"><a href="{% url 'aniversariantes_list' escola.id %}" id='id_movimentos'>Aniversariantes</a></li>
+                      <li class="{{ tab_aniversariantes }}"><a href="{% url 'aniversariantes_list' escola.id %}" id='id_birthday'>Aniversariantes</a></li>
                       <li class="{{ tab_professores }}"><a href="{% url 'professores_list' escola.pk %}" id='id_professores'>Professores</a></li>
                       <li class="{{ tab_contratos }}"><a href="{% url 'contratos_list' escola.id %}" id='contratos'>Contratos</a></li>
-                      <li class="{{ tab_inadimplentes }}"><a href="{% url 'inadimplentes_list' escola.id %}" id='contratos'>Inadimplentes</a></li>
+                      <li class="{{ tab_inadimplentes }}"><a href="{% url 'inadimplentes_list' escola.id %}" id='id_inadimplentes'>Inadimplentes</a></li>
                       <li class="{{ tab_parcelas }}"><a href="{% url 'pagamentos_list' escola.id %}" id='id_movimentos'>Pagamentos</a></li>
                       <!-- <li><a href="" title="{{ section.name }}">Cartões</a></li> -->
                     </ul>
@@ -92,4 +92,29 @@
           {% endif %}
         </ul>
       </div><!-- /.navbar-collapse -->
+
+      <script type="text/javascript">
+        let hoje =  new Date()
+        let ano = hoje.getFullYear()
+
+        let mes = hoje.getMonth() + 1
+        let urlPagamentos = "?ano=" + hoje.getFullYear();
+        urlPagamentos += "&mes=" + mes;
+        urlPagamentos += "&mes_fim=" + mes;
+        urlPagamentos += "&serie=&cpf_resp_fin=&categoria=&titulo=";
+
+        document.getElementById("id_movimentos").href += urlPagamentos
+       
+        let urlAlunos = "?nome=&ano=";
+        urlAlunos += ano;
+        urlAlunos += "&serie=&curso=";
+
+        document.getElementById("id_alunos").href += urlAlunos
+
+        let urlInadimplentes = "?ano=" + ano;
+        urlInadimplentes += "&serie=&cpf_resp_fin=&responsavel_nome=&aluno_nome=&pagamentos_atrasados=&order=responsavel_nome"
+
+        document.getElementById("id_inadimplentes").href += urlInadimplentes
+
+      </script>
       
