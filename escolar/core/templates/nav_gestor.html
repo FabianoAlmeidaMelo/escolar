@@ -116,5 +116,14 @@
 
         document.getElementById("id_inadimplentes").href += urlInadimplentes
 
+        let dia = hoje.getDate()
+        let urlBirthday = "?day=" + dia
+        urlBirthday += "&nome=&month="
+        urlBirthday += mes 
+        urlBirthday += "&ano=" + ano
+
+        document.getElementById("id_birthday").href += urlBirthday
+
+
       </script>
       

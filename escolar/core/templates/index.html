@@ -8,120 +8,171 @@
         {% endblock page_title %}
         {% if diretor %}
           <div class="row">
-            <div class="panel panel-success">
-              <div class="panel-heading">Pendentes a receber do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
-              <div class="panel-body"> 
-                <table class="table">
-                <thead>
-                  <tr>
-                    <th style="text-align:left">
-                      <a href="{% url 'pagamentos_list' escola.id %}?ano={{ano_corrente}}&mes={{mes_corrente}}&mes_fim={{mes_corrente}}&serie=&cpf_resp_fin=&categoria=&titulo=" >Pagamentos</a>
-                    </th>
-                    <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}?ano={{ano_corrente}}&serie=&cpf_resp_fin=&responsavel_nome=&aluno_nome=&pagamentos_atrasados=&order=responsavel_nome">Inadimplentes</a></th>
-                  </tr>
-                </thead>
-              </table>
+            {% if nivers_exixts %}
+              <div class="panel panel-info">
+                <div class="panel-heading">Aniversariantes de Hoje {{ hoje|date:'d/m/Y' }}</div>
+                <div class="panel-body"> 
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left">
+                        <a href="{% url 'aniversariantes_list' escola.id %}?day={{dia_corrente}}&nome=&month={{mes_corrente}}&ano={{ano_corrente}}" >Aniversariantes</a>
+                      </th>
+                      <th style="text-align:right"></th>
+                    </tr>
+                  </thead>
+                </table>
+                </div>
+                  <!-- Table -->
+                <table id="tabela_aniversariantes" class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center">Nome</th>
+                      <th style="text-align:center">Perfil</th>
+                    </tr>
+                  </thead>
+                  <tfoot></tfoot>
+                   <tbody>
+                    {% for pessoa in aniversariantes_qs %}
+                     <tr>
+                        <td style="text-align:center">
+                          {% if can_edit %}
+                            <a href="{% url 'parabens_form' pessoa.id %}">
+                            {{ pessoa.nome }}</a>
+                          {% else %}
+                            {{ pessoa.nome }}
+                          {% endif %}
+                        </td>
+                        <td style="text-align:center">{{ pessoa.get_modelo_filho }}</td>
+
+                     </tr>
+                     {% empty %}
+                        Não há aniversariantes hoje
+                    {% endfor %}
+                   </tb ody>
+                </table>
               </div>
+            {% endif %}
+            <!-- Other: -->
+            {% if entradas_pendentes_exists %}
+              <div class="panel panel-success">
+                <div class="panel-heading">Pendentes a receber do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
+                  <div class="panel-body"> 
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th style="text-align:left">
+                            <a href="{% url 'pagamentos_list' escola.id %}?ano={{ano_corrente}}&mes={{mes_corrente}}&mes_fim={{mes_corrente}}&serie=&cpf_resp_fin=&categoria=&titulo=" >Pagamentos</a>
+                          </th>
+                          <th style="text-align:right"><a href="{% url 'inadimplentes_list' escola.id %}?ano={{ano_corrente}}&serie=&cpf_resp_fin=&responsavel_nome=&aluno_nome=&pagamentos_atrasados=&order=responsavel_nome">Inadimplentes</a></th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
+                  <!-- Table -->
+                  <table id="tabela_entradas" class="table">
+                    <thead>
+                      <tr>
+                        <th style="text-align:center">Valor</th>
+                        <th style="text-align:center">Data</th>
+                        <th style="text-align:center">Responsável</th>
+                        <th style="text-align:center">Aluno</th>
+                      </tr>
+                      <tr id="tabela_entradas input">
+                        <th style="text-align:center"><input type="text" id="txtColuna0"/></th>
+                        <th style="text-align:center"><input type="text" id="txtColuna1"/></th>
+                        <th style="text-align:center"><input type="text" id="txtColuna2"/></th>
+                        <th style="text-align:center"><input type="text" id="txtColuna3"/></th>
+                      </tr>    
+                    </thead>
+                    <tfoot></tfoot>
+                   <tbody>
+                      {% for entrada in entradas_pendentes_qs %}
+                       <tr>
+                          <td style="text-align:center">
+                            {% if can_edit %}
+                              <a href="{% url 'pagamentos_aluno_list' entrada.contrato.contratoaluno.aluno.id %}">
+                              {{ entrada.valor|numberformat_br }}</a>
+                            {% else %}
+                              {{ entrada.valor|numberformat_br }}
+                            {% endif %}
+                          </td>
+                          <td style="text-align:center">{{ entrada.data|date:'d/m/Y' }}</td>
+                          <td style="text-align:center"> 
+                            {% if entrada.contrato %}
+                              <small>{{ entrada.contrato.contratoaluno.responsavel.nome }}</small>
+                            {% else %}
+                              --
+                            {% endif %}
+                          </td>
+                          <td style="text-align:center"> 
+                            {% if entrada.contrato %}
+                              <small>{{ entrada.contrato.contratoaluno.aluno.nome }}</small>
+                            {% else %}
+                              --
+                            {% endif %}
+                          </td>
+                       </tr>
+                       {% empty %}
+                          Não há recebimentos pendentes
+                      {% endfor %}
+                   </tbbody>
+                  </table>
+              </div>
+            {% endif %}
+            <!-- Other: -->
+            {% if saidas_pendentes_exists%}
+              <div class="panel panel-danger">
+                <div class="panel-heading">Pendentes a pagar do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
+                <div class="panel-body">
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left"><a href="{% url 'pagamentos_list' escola.id %}" >Pagamentos</a></th>
+                      <th style="text-align:right"></th>
+                    </tr>
+                  </thead>
+                </table>
+                </div>
+
                 <!-- Table -->
-              <table id="tabela_entradas" class="table">
-                <thead>
-                  <tr>
-                    <th style="text-align:center">Valor</th>
-                    <th style="text-align:center">Data</th>
-                    <th style="text-align:center">Responsável</th>
-                    <th style="text-align:center">Aluno</th>
-                  </tr>
-                  <tr id="tabela_entradas input">
-                    <th style="text-align:center"><input type="text" id="txtColuna0"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna1"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna2"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna3"/></th>
-                  </tr>    
-                </thead>
-                <tfoot></tfoot>
+                <table id="tabela_saidas" class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center">Valor</th>
+                      <th style="text-align:center">Data</th>
+                      <th style="text-align:center">Categoria</th>
+                      <th style="text-align:center">Título</th>
+                    </tr>
+                    <tr id="tabela_saidas_input">
+                      <th style="text-align:center"><input type="text" id="txtColuna4"/></th>
+                      <th style="text-align:center"><input type="text" id="txtColuna5"/></th>
+                      <th style="text-align:center"><input type="text" id="txtColuna6"/></th>
+                      <th style="text-align:center"><input type="text" id="txtColuna7"/></th>
+                    </tr> 
+                  </thead>
                  <tbody>
-                  {% for entrada in entradas_pendentes_qs %}
+                  {% for saida in saidas_pendentes_qs %}
                    <tr>
                       <td style="text-align:center">
                         {% if can_edit %}
-                          <a href="{% url 'pagamentos_aluno_list' entrada.contrato.contratoaluno.aluno.id %}">
-                          {{ entrada.valor|numberformat_br }}</a>
+                          <a href="{% url 'pagamento_edit' escola.id saida.id %}?list">
+                            {{ saida.valor|numberformat_br }}</a>
                         {% else %}
-                          {{ entrada.valor|numberformat_br }}
+                            {{ saida.valor|numberformat_br }}
                         {% endif %}
                       </td>
-                      <td style="text-align:center">{{ entrada.data|date:'d/m/Y' }}</td>
-                      <td style="text-align:center"> 
-                        {% if entrada.contrato %}
-                          <small>{{ entrada.contrato.contratoaluno.responsavel.nome }}</small>
-                        {% else %}
-                          --
-                        {% endif %}
-                      </td>
-                      <td style="text-align:center"> 
-                        {% if entrada.contrato %}
-                          <small>{{ entrada.contrato.contratoaluno.aluno.nome }}</small>
-                        {% else %}
-                          --
-                        {% endif %}
-                      </td>
+                      <td style="text-align:center">{{ saida.data|date:'d/m/Y' }}</td>
+                      <td style="text-align:center">{{ saida.categoria.nome }}</td>
+                      <td style="text-align:center">{{ saida.titulo }}</td>
                    </tr>
                    {% empty %}
-                      Não há recebimentos pendentes
+                      Não há pagamentos pendentes
                   {% endfor %}
-                 </tb ody>
-              </table>
-            </div>
-            <div class="panel panel-danger">
-              <div class="panel-heading">Pendentes a pagar do dia 1ª de Jan a {{ hoje|date:'d/m/Y' }}</div>
-              <div class="panel-body">
-                <table class="table">
-                <thead>
-                  <tr>
-                    <th style="text-align:left"><a href="{% url 'pagamentos_list' escola.id %}" >Pagamentos</a></th>
-                    <th style="text-align:right"></th>
-                  </tr>
-                </thead>
-              </table>
+                 </tbody>
+                </table>
               </div>
-
-              <!-- Table -->
-              <table id="tabela_saidas" class="table">
-                <thead>
-                  <tr>
-                    <th style="text-align:center">Valor</th>
-                    <th style="text-align:center">Data</th>
-                    <th style="text-align:center">Categoria</th>
-                    <th style="text-align:center">Título</th>
-                  </tr>
-                  <tr id="tabela_saidas_input">
-                    <th style="text-align:center"><input type="text" id="txtColuna4"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna5"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna6"/></th>
-                    <th style="text-align:center"><input type="text" id="txtColuna7"/></th>
-                  </tr> 
-                </thead>
-               <tbody>
-                {% for saida in saidas_pendentes_qs %}
-                 <tr>
-                    <td style="text-align:center">
-                      {% if can_edit %}
-                        <a href="{% url 'pagamento_edit' escola.id saida.id %}?list">
-                          {{ saida.valor|numberformat_br }}</a>
-                      {% else %}
-                          {{ saida.valor|numberformat_br }}
-                      {% endif %}
-                    </td>
-                    <td style="text-align:center">{{ saida.data|date:'d/m/Y' }}</td>
-                    <td style="text-align:center">{{ saida.categoria.nome }}</td>
-                    <td style="text-align:center">{{ saida.titulo }}</td>
-                 </tr>
-                 {% empty %}
-                    Não há pagamentos pendentes
-                {% endfor %}
-               </tbody>
-              </table>
-            </div>
+            {% endif %}
           </div>
           <div class="row">
             <div class="panel panel-success">

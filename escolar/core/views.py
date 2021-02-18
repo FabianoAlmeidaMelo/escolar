@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from django.db.models import BooleanField, Case, Value, When, Q, Sum
+from django.db.models.functions import Extract
 
 from escolar.core.models import Perfil, Endereco, User, UserGrupos
 from escolar.core.forms import (
@@ -21,7 +22,7 @@ from escolar.core.forms import (
     UserSearchForm,
 )
 
-from escolar.escolas.models import Escola
+from escolar.escolas.models import Escola, Pessoa
 from escolar.financeiro.models import Pagamento
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
@@ -64,8 +65,18 @@ def home(request, escola_pk=None):
 
     hoje = date.today()
     data_ini = date(ANO_CORRENTE, 1, 1)
-    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1]) 
+    data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
 
+
+    pessoas_qs = Pessoa.objects.filter(
+        escola=escola).annotate(
+        month=Extract('nascimento', 'month'),
+        day=Extract('nascimento', 'day')
+    )
+    aniversariantes_qs = pessoas_qs.filter(
+        month=hoje.month,
+        day=hoje.day
+    )
     
     pagamentos = Pagamento.objects.filter(
         escola=escola,
@@ -100,11 +111,15 @@ def home(request, escola_pk=None):
     saidas_pendentes = pagamentos.filter(tipo=2, efet=False).aggregate(Sum('valor'))['valor__sum'] or 0
 
     context['entradas_pendentes_qs'] = entradas_pendentes_qs
+    context['entradas_pendentes_exists'] = entradas_pendentes_qs.exists()
     context['entradas_realizadas'] = entradas_realizadas
-    context['entradas_pendentes'] = entradas_pendentes   
+    context['entradas_pendentes'] = entradas_pendentes
+
     context['saidas_realizadas'] = saidas_realizadas
     context['saidas_pendentes'] = saidas_pendentes
     context['saidas_pendentes_qs'] = saidas_pendentes_qs
+    context['saidas_pendentes_exists'] = saidas_pendentes_qs.exists()
+
     context['entradas'] = entradas
     context['saidas'] = saidas
 
@@ -115,6 +130,10 @@ def home(request, escola_pk=None):
     context['mes_corrente'] = MES_CORRNETE
     context['hoje'] = hoje
     context['can_edit'] = can_edit
+    context['dia_corrente'] = hoje.day
+
+    context['aniversariantes_qs'] = aniversariantes_qs
+    context['nivers_exixts'] = aniversariantes_qs.exists()
 
     return render(request, 'index.html', context)
 
