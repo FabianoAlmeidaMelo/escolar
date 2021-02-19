@@ -187,14 +187,14 @@ class Pessoa(UserAdd, UserUpd):
         return artigo
 
 
-    def send_email_niver(self, titulo, msg, assinatura):
+    def send_email_niver(self, mensagem):
 
         emails = [self.email]
         if emails:
-            mensagem = titulo
-            mensagem += '\n\n%s' % self.nome
-            mensagem += '\n\n%s' % msg
-            mensagem += '\n\n%s' % assinatura
+            # mensagem = titulo
+            # mensagem += '\n\n%s' % self.nome
+            # mensagem += '\n\n%s' % msg
+            # mensagem += '\n\n%s' % assinatura
             
             send_mail(
                 'Feliz Aniversário',

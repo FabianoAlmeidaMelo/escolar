@@ -345,17 +345,16 @@ def parabens_form(request, pessoa_pk):
     pessoa = get_object_or_404(Pessoa, pk=pessoa_pk)
     escola = pessoa.escola
 
-    form = EmailPessoaForm(request.POST or None, instance=pessoa)
+    form = EmailPessoaForm(request.POST or None, instance=pessoa, escola=escola)
 
     #  ## VERIFICA E MANADA EMAIL COM O RECIBO
     if request.method == 'POST':
         if form.is_valid():
-            titulo = form.cleaned_data['titulo']
+
             mensagem = form.cleaned_data['mensagem']
-            assinatura = form.cleaned_data['assinatura']
             form.save()
             
-            enviado = pessoa.send_email_niver(titulo, mensagem, assinatura)
+            enviado = pessoa.send_email_niver(mensagem)
 
             if enviado:
                 msg = 'Email de aniversário enviado com sucesso!'

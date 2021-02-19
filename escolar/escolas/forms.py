@@ -9,9 +9,10 @@ from municipios.widgets import SelectMunicipioWidget
 from django.db.models.functions import Extract
 
 from localbr.formfields import BRCPFField, BRCNPJField, BRPhoneNumberField
-from escolar.financeiro.models import ParametrosContrato
-from escolar.core.widgets import DateTimePicker
 
+from escolar.comunicacao.models import MensagemDefault
+from escolar.core.widgets import DateTimePicker
+from escolar.financeiro.models import ParametrosContrato
 from escolar.escolas.models import (
     Aluno,
     ANO,
@@ -206,18 +207,28 @@ class EmailRespensavelForm(forms.ModelForm):
 
 class EmailPessoaForm(forms.ModelForm):
     email = forms.EmailField(label='Email', required=True)
-    titulo = forms.CharField(label='Título da mensagem', initial='Parabéns pelo seu aniversário', required=True)
+    # titulo = forms.CharField(label='Título da mensagem', initial='Parabéns pelo seu aniversário', required=True)
     mensagem = forms.CharField(widget=forms.Textarea, required=True)
-    assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
+    # assinatura = forms.CharField(label='Assinatura da mensagem', required=True)
 
     def __init__(self, *args, **kwargs):
+        self.pessoa = kwargs.pop('pessoa', None)
+        self.escola = kwargs.pop('escola', None)
         super(EmailPessoaForm, self).__init__(*args, **kwargs)
 
         self.fields['email'].label = 'Email do(a) aniversariante:'
-        msg_initial ='Em meu nome e em nome da equipe de nossa escola, desejo muita saúde e muitas alegrias em uma longa vida.'        
-        ass_initial = 'Equipe %s' % self.instance.escola
-        self.fields['mensagem'].initial = msg_initial
-        self.fields['assinatura'].initial = ass_initial
+        
+        msg_default = MensagemDefault.objects.get(tipo=2, escola=self.escola)
+
+        modelo = "{titulo}".format(titulo=msg_default.titulo)
+        modelo += "\n{cabecalho}".format(cabecalho=msg_default.cabecalho)
+        modelo += "\n\n{corpo}".format(corpo=msg_default.corpo)
+        modelo = modelo.format(
+            data=date.today().strftime("%d/%m/%Y"),
+            nome_completo=self.instance.nome
+        )
+        modelo += "\n\n{assinatura}".format(assinatura=msg_default.assinatura)
+        self.fields['mensagem'].initial = modelo
 
     class Meta:
         model = Pessoa

@@ -721,7 +721,11 @@ class CobrancaMensagemForm(forms.ModelForm):
     #14
     '''
     email = forms.CharField(label='e-mail', required=True)
-    mensagem = forms.CharField(label='Mensagem', widget=forms.Textarea, required=True)
+    mensagem = forms.CharField(
+        label='Mensagem',
+        widget=forms.Textarea,
+        required=True
+    )
 
 
     def __init__(self, *args, **kwargs):
