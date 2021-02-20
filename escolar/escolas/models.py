@@ -175,6 +175,15 @@ class Pessoa(UserAdd, UserUpd):
 
         return os.path.basename(self.documento.name)
 
+    def get_whats_app_link(self):
+        link = None
+        if self.celular and len(self.celular) >= 10:
+
+            link = "https://api.whatsapp.com/send?phone=55{cel}".format(
+                cel=self.celular,
+            )
+        return link
+
     def get_modelo_filho(self):
         if hasattr(self, 'aluno'):
             return "Aluno"

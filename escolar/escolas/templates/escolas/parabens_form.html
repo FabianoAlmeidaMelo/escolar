@@ -22,6 +22,23 @@
 
 {% block content %}
 <div class="container">
+  {% if form.instance.get_whats_app_link %}
+    <p>
+      <button type="button" class="btn btn-default btn-lg" aria-label="Left Align" onclick="copiarTexto()">
+        <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+      </button>
+    </p>
+    <p>
+       {{ form.instance.get_whats_app_link }}
+    </p>       
+    <p>
+      <a href="{{ form.instance.get_whats_app_link }}" aligin="right">WhtasApp</a>
+    </p>
+  {% else %}
+    <p>
+      Não possui celular cadastrado ou pode estar faltando os dígitos do DDD
+    </p>
+  {% endif %}
   <div class="row-fluid span10">
     <br>
     <form method="POST" enctype="multipart/form-data">
@@ -52,4 +69,12 @@
 
 {% block extra_js %}
     {{ form.media }}
+    <script type="text/javascript">
+      let copiarTexto = () =>{
+
+          const inputText = document.querySelector("#id_mensagem");
+          inputText.select();
+          document.execCommand('copy');
+      };
+    </script>
 {% endblock extra_js %}
