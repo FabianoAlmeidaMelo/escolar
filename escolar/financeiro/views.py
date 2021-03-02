@@ -781,6 +781,10 @@ def pagamentos_list(request, escola_pk):
     entradas=int(total_pos)
     saidas=int(total_neg)
 
+    entradas_real = sum(pagamentos_qs.filter(tipo=1, efet=True).values_list('valor', flat=True))
+    saidas_real = sum(pagamentos_qs.filter(tipo=2, efet=True).values_list('valor', flat=True))
+    total_real = entradas_real - entradas_real
+
     # ## gráfico Meios de pgto
     boleto_bancario = pagamentos_qs.filter(tipo=1, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
     cartao_credito = pagamentos_qs.filter(tipo=1, forma_pgto=2).aggregate(Sum('valor'))['valor__sum'] or 0
@@ -848,6 +852,10 @@ def pagamentos_list(request, escola_pk):
     context['pagamentos_ids'] = pagamentos_ids
     context['tab_administracao'] = "active"
     context['tab_parcelas'] = "active"
+
+    context['entradas_real'] = entradas_real
+    context['saidas_real'] = saidas_real
+    context['total_real'] = total_real
 
     return render(request, 'financeiro/pagamentos_list.html', context)
 

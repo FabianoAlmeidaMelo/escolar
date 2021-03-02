@@ -89,9 +89,9 @@
     </thead>
     <tfoot>
       <tr>
-        <td><small>entradas <br>R$ {{ entradas|numberformat_br }}</small></td>
-        <td><small>saídas <br>R$ {{ saidas|numberformat_br }}</small></td>
-        <td span="4" ><small>Total</small><br>
+        <td><small>Entradas previstas <br>R$ {{ entradas|numberformat_br }}</small></td>
+        <td><small>Saídas previstas<br>R$ {{ saidas|numberformat_br }}</small></td>
+        <td span="4" ><small>Saldo Previsto</small><br>
           {% if total > 0 %}
             <font color="blue">R$ {{ total|numberformat_br }}</font>
           {% else %}
@@ -99,7 +99,15 @@
           {% endif %}
         </td>
         <td></td>
-        <td></td>
+        <td><small>Entradas relizadas <br>R$ {{ entradas_real|numberformat_br }}</small></td>
+        <td><small>Saídas realizadas<br>R$ {{ saidas_real|numberformat_br }}</small></td>
+        <td span="4" ><small>Saldo</small><br>
+          {% if total > 0 %}
+            <font color="blue">R$ {{ total_real|numberformat_br }}</font>
+          {% else %}
+            <font color="red">R$ {{ total_real|numberformat_br }}</font>
+          {% endif %}
+        </td>
       </tr>
     </tfoot>
     <tbody>
