@@ -80,8 +80,7 @@ def home(request, escola_pk=None):
     
     pagamentos = Pagamento.objects.filter(
         escola=escola,
-        data__gte=data_ini,
-        data__lte=data_fim
+        data__month=MES_CORRNETE, data__year=ANO_CORRENTE
     )
     # SE Contrato Rescindido
     pagamentos = pagamentos.all().annotate(
@@ -91,7 +90,7 @@ def home(request, escola_pk=None):
                                          efet=False,
                                          then=Value(True)), output_field=BooleanField()))
 
-    pagamentos = pagamentos.filter(invalido=None)
+    pagamentos = pagamentos.filter(invalido=None, data__month=3, data__year=2021)
     lancamentos = pagamentos.count()
     # pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 
