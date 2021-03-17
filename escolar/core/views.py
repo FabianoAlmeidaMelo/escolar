@@ -22,7 +22,7 @@ from escolar.core.forms import (
     UserSearchForm,
 )
 
-from escolar.escolas.models import Escola, Pessoa
+from escolar.escolas.models import Aluno, Escola, Pessoa, Responsavel
 from escolar.financeiro.models import Pagamento
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
@@ -67,11 +67,22 @@ def home(request, escola_pk=None):
     data_ini = date(ANO_CORRENTE, 1, 1)
     data_fim = date(ANO_CORRENTE, MES_CORRNETE, monthrange(ANO_CORRENTE, MES_CORRNETE)[1])
 
+    alunos_qs =  Aluno.objects.filter(escola=escola, pessoa_ptr__nascimento__month=MES_CORRNETE, ano=ANO_CORRENTE)
+
+    alunos_ids = list(alunos_qs.values_list('id', flat=True))
+
+    responsavel_qs = Responsavel.objects.filter(aluno__id__in=alunos_ids)
+
+    responsavel_ids = list(responsavel_qs.values_list('membro_id', flat=True))
+
+    pessoas_ids = alunos_ids + responsavel_ids
 
     pessoas_qs = Pessoa.objects.filter(
-        escola=escola).annotate(
+        escola=escola,
+        id__in=pessoas_ids
+    ).annotate(
         month=Extract('nascimento', 'month'),
-        day=Extract('nascimento', 'day')
+        day=Extract('nascimento', 'day'),
     )
     aniversariantes_qs = pessoas_qs.filter(
         month=hoje.month,
@@ -90,7 +101,7 @@ def home(request, escola_pk=None):
                                          efet=False,
                                          then=Value(True)), output_field=BooleanField()))
 
-    pagamentos = pagamentos.filter(invalido=None, data__month=3, data__year=2021)
+    pagamentos = pagamentos.filter(invalido=None)
     lancamentos = pagamentos.count()
     # pagamentos_ids = list(pagamentos.values_list('id', flat=True))
 

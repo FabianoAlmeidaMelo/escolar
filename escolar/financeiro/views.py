@@ -743,7 +743,7 @@ def pagamentos_list(request, escola_pk):
         efet = form.cleaned_data['efet']
     else:
         pagamentos_qs = form.get_result_queryset().filter(
-            data_pag__gte=data_ini, data_pag__lte=data_fim)
+            data__month=MES_CORRNETE, data__year=ANO_CORRENTE)
 
     hj = date.today()
     # pgtos atrasados
