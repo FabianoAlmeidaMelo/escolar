@@ -50,6 +50,7 @@ FORMA_PGTO = (
     (5, 'dinheiro'),
     (6, 'permuta'),
     (7, 'transferência bancária'),
+    (8, 'pix'),
 )
 
 def escola_contrato_path(instance, logo):

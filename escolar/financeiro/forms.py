@@ -595,7 +595,7 @@ class PagamentoEscolaSearchForm(forms.Form):
 
             todas_ou_sem = self.cleaned_data['todas_ou_sem']
             if todas_ou_sem == '2':
-                q = q & Q(forma_pgto__in=[1, 2, 3, 4, 5, 6, 7])
+                q = q & Q(forma_pgto__in=[1, 2, 3, 4, 5, 6, 7, 8])
             elif todas_ou_sem == '1':
                 q = q & Q(forma_pgto=None)
 
