@@ -89,16 +89,6 @@
     </thead>
     <tfoot>
       <tr>
-        <td><small>Entradas previstas <br>R$ {{ entradas|numberformat_br }}</small></td>
-        <td><small>Saídas previstas<br>R$ {{ saidas|numberformat_br }}</small></td>
-        <td span="4" ><small>Saldo Previsto</small><br>
-          {% if total > 0 %}
-            <font color="blue">R$ {{ total|numberformat_br }}</font>
-          {% else %}
-            <font color="red">R$ {{ total|numberformat_br }}</font>
-          {% endif %}
-        </td>
-        <td></td>
         <td><small>Entradas relizadas <br>R$ {{ entradas_real|numberformat_br }}</small></td>
         <td><small>Saídas realizadas<br>R$ {{ saidas_real|numberformat_br }}</small></td>
         <td span="4" ><small>Saldo realizado</small><br>
@@ -108,6 +98,10 @@
             <font color="red">R$ {{ total_real|numberformat_br }}</font>
           {% endif %}
         </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td ></td>
       </tr>
     </tfoot>
     <tbody>
@@ -205,7 +199,7 @@
         <div class="row ">
           <div class="col-md-6">
               <div class="panel panel-default" style="height:350px;width:500px;">
-                <div class="panel-heading">Comparativo entre Entradas e Saídas ({{ situacao }})</div>
+                <div class="panel-heading">Comparativo entre Entradas e Saídas (Realizado)</div>
                   <div class="panel-body">
                     <div id="piechart_3d"></div>
                   </div>

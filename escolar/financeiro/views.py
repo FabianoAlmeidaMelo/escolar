@@ -793,6 +793,7 @@ def pagamentos_list(request, escola_pk):
     dinheiro = pagamentos_qs.filter(tipo=1, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
     permuta = pagamentos_qs.filter(tipo=1, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
     transf_bancaria = pagamentos_qs.filter(tipo=1, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    pix = pagamentos_qs.filter(tipo=1, forma_pgto=8).aggregate(Sum('valor'))['valor__sum'] or 0
     indefinidos = pagamentos_qs.filter(tipo=1, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
 
     saidas_boleto_bancario = pagamentos_qs.filter(tipo=2, forma_pgto=1).aggregate(Sum('valor'))['valor__sum'] or 0
@@ -802,6 +803,7 @@ def pagamentos_list(request, escola_pk):
     saidas_dinheiro = pagamentos_qs.filter(tipo=2, forma_pgto=5).aggregate(Sum('valor'))['valor__sum'] or 0
     saidas_permuta = pagamentos_qs.filter(tipo=2, forma_pgto=6).aggregate(Sum('valor'))['valor__sum'] or 0
     saidas_transf_bancaria = pagamentos_qs.filter(tipo=2, forma_pgto=7).aggregate(Sum('valor'))['valor__sum'] or 0
+    saidas_pix = pagamentos_qs.filter(tipo=2, forma_pgto=8).aggregate(Sum('valor'))['valor__sum'] or 0
     saidas_indefinidos = pagamentos_qs.filter(tipo=2, forma_pgto=None).aggregate(Sum('valor'))['valor__sum'] or 0
 
 
@@ -819,13 +821,16 @@ def pagamentos_list(request, escola_pk):
         pagamentos = paginator.page(paginator.num_pages)
     # ### paginação ####
     situacao = {'2': 'Previsto', '1': 'Pago', '0': 'Em Aberto', '': 'Previsto' }
+
     context['lancamentos'] = lancamentos
     context['total'] = total
-    context['entradas'] = entradas
-    context['saidas'] = saidas
+    context['entradas'] = int(entradas_real)
+    context['saidas'] = int(saidas_real)
+
     context['form'] = form
     context['escola'] = escola
     context['can_edit'] = can_edit
+    context['is_diretor'] = is_diretor
     context['object_list'] = pagamentos
     context['situacao'] = situacao[efet]
 
@@ -837,8 +842,8 @@ def pagamentos_list(request, escola_pk):
     context['dinheiro'] = int(dinheiro)
     context['permuta'] = int(permuta)
     context['transf_bancaria'] = int(transf_bancaria)
+    context['pix'] = int(pix)
     context['indefinidos'] = int(indefinidos)
-    context['is_diretor'] = is_diretor
 
     context['saidas_boleto_bancario'] = int(saidas_boleto_bancario)
     context['saidas_cartao_credito'] = int(saidas_cartao_credito)
@@ -847,6 +852,7 @@ def pagamentos_list(request, escola_pk):
     context['saidas_dinheiro'] = int(saidas_dinheiro)
     context['saidas_permuta'] = int(saidas_permuta)
     context['saidas_transf_bancaria'] = int(saidas_transf_bancaria)
+    context['saidas_pix'] = int(saidas_pix)
     context['saidas_indefinidos'] = int(saidas_indefinidos)
 
     context['pagamentos_ids'] = pagamentos_ids
