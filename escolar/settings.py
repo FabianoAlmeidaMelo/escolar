@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ADMINS = (
-    ('Admin Smart Is Cool', 'falmeidamelo@uol.com.br'),
+    ('Admin Smart Is Cool', 'fabianoalmeidasjc@gmail.com'),
 )
 
 
