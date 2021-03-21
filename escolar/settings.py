@@ -33,7 +33,8 @@ ADMINS = (
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
-DEFAULT_FROM_EMAIL = u'contato@smartiscool.online'
+SENDER = 'contato.smartiscool@gmail.com'
+SENDERNAME = 'Smart Is Cool'
 
 # Application definition
 
@@ -195,12 +196,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+HOST = config('HOST')
+PORT = config('PORT', cast=int)
+USERNAME_SMTP = config('USERNAME_SMTP')
+PASSWORD_SMTP = config('PASSWORD_SMTP')
 
+#EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 # ######### DEFINE CHILDCRUD UI
 CHILDCRUD_UI = 'bootstrap'
 # ######### END CHILDCRUD UI

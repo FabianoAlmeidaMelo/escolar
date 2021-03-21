@@ -71,7 +71,7 @@ class BandeiraTest(TestCase):
         self.assertEqual(str(bandeira), 'Visa')
 
     def test_FORMA_PGTO(self):
-        self.assertEqual(len(FORMA_PGTO), 8)
+        self.assertEqual(len(FORMA_PGTO), 9)
         opcoes = [
             '--',
             'boleto bancário',
@@ -80,7 +80,8 @@ class BandeiraTest(TestCase):
             'cheque',
             'dinheiro',
             'permuta',
-            'transferência bancária'
+            'transferência bancária',
+            'pix'
         ]
         for forma in FORMA_PGTO:
             self.assertTrue(

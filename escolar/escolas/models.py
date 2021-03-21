@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 from django.core.mail import send_mail
+from escolar.comunicacao.utils.aws_ses import send_email
 from django.db import models
 from django.utils import timezone
 # from django.contrib.auth.models import User
@@ -198,19 +199,18 @@ class Pessoa(UserAdd, UserUpd):
 
     def send_email_niver(self, mensagem):
 
-        emails = [self.email]
-        if emails:
-            # mensagem = titulo
-            # mensagem += '\n\n%s' % self.nome
-            # mensagem += '\n\n%s' % msg
-            # mensagem += '\n\n%s' % assinatura
-            
-            send_mail(
-                'Feliz Aniversário',
-                mensagem,
-                settings.DEFAULT_FROM_EMAIL,
-                emails,
-                fail_silently=False
+        recipient = self.email
+        if recipient:
+            subject = 'Feliz Aniversário'
+            txt_message = mensagem
+            html_message = """<textarea>{msg}</textarea>""".format(msg=mensagem)
+
+            send_email(
+                recipient,
+                subject,
+                txt_message,
+                html_message,
+                self.escola.nome
             )
             return True
 
