@@ -9,6 +9,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail, EmailMultiAlternatives
+from escolar.comunicacao.utils.aws_ses import send_email
 from django.db import models
 from django.db.models import DateTimeField, Case, When
 from django.db.models import Q
@@ -789,19 +790,23 @@ class InadimplenteDBView(models.Model):
         Os meses em atraso
         '''
 
-        emails = [self.email]
-        if emails:
+        recipient = self.email
+        if recipient:
             tipo_cobranca = 1
             msg_default = MensagemDefault.objects.filter(
                escola=self.escola,
                tipo=tipo_cobranca
             ).first()
-            send_mail(
+
+            txt_message = mensagem
+            html_message = """<p>{msg}</p>""".format(msg=mensagem)
+
+            send_email(
+                recipient,
                 msg_default.titulo,
-                mensagem,
-                settings.SENDER,
-                emails,
-                fail_silently=False
+                txt_message,
+                html_message,
+                self.escola.nome
             )
             return True
         return False
