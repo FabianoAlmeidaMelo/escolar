@@ -24,7 +24,7 @@ def send_email(recipient, subject, txt_message='', html_message='', sendername=N
     BODY_TEXT = (
         "{message}"
         "Smart Is Cool\r\n"
-        "Não responda esse email, ele foi enviado pelo sistema de gestão escolar"
+        "sistema de gestão escolar"
     ).format(message=txt_message)
 
 
@@ -33,8 +33,8 @@ def send_email(recipient, subject, txt_message='', html_message='', sendername=N
     <head></head>
     <body>
       {html_message}  
-      <h3>Smart Is Cool</h3>
-      <p><small>Não responda esse email, ele foi enviado pelo sistema de gestão escolar</small></p>
+      <h5>Smart Is Cool</h5>
+      <p><small>Sistema de Gestão Escolar</small></p>
     </body>
     </html>
     """).format(html_message=html_message)

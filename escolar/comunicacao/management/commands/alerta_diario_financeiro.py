@@ -4,7 +4,8 @@ from django.db.models import BooleanField, Case, Value, When, Q, Sum
 from django.apps import apps
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.core.mail import send_mail
+
+from escolar.comunicacao.utils.aws_ses import send_email
 from escolar.escolas.models import Escola
 from escolar.financeiro.forms import (
     ANO_CORRENTE,
@@ -106,13 +107,17 @@ class Command(BaseCommand):
             mensagem += '\nRecebimentos Pendentes:'
             mensagem += '\n\n%s' % recebimentos
             mensagem += '\n\n%s' % assinatura
+
+            txt_message = mensagem
+            html_message = """<p>{msg}</p>""".format(msg=mensagem)
             
-            send_mail(
-                'Pendencias no financeiro /%s' % escola.nome,
-                mensagem,
-                settings.SENDER,
-                emails,
-                fail_silently=False
-            )
+           for recipient in emails:
+                send_email(
+                    recipient,
+                    'Pagamentos Pendentes',
+                    txt_message,
+                    html_message,
+                    escola.nome
+                )
             return True
  

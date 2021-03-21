@@ -4,7 +4,8 @@ from django.db.models import Q
 from django.apps import apps
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.core.mail import send_mail
+
+from escolar.comunicacao.utils.aws_ses import send_email
 from escolar.escolas.models import Escola, Pessoa
 
 
@@ -78,14 +79,17 @@ class Command(BaseCommand):
             mensagem += '\n\n%s' % msg
             mensagem += '\n\n%s' % nomes
             mensagem += '\n\n%s' % assinatura
-            
-            send_mail(
-                'Aniversariasntes de Hoje/%s' % escola.nome,
-                mensagem,
-                settings.SENDER,
-                emails,
-                fail_silently=False
-            )
-            return True
+            txt_message = mensagem
+            html_message = """<p>{msg}</p>""".format(msg=mensagem)
+
+            for recipient in emails:
+                send_email(
+                    recipient,
+                    'Aniversariantes de Hoje',
+                    txt_message,
+                    html_message,
+                    escola.nome
+                )
+                return True
 
  

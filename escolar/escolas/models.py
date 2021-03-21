@@ -1,6 +1,6 @@
 # coding: utf-8
 import os
-from django.core.mail import send_mail
+
 from escolar.comunicacao.utils.aws_ses import send_email
 from django.db import models
 from django.utils import timezone
@@ -203,7 +203,7 @@ class Pessoa(UserAdd, UserUpd):
         if recipient:
             subject = 'Feliz Aniversário'
             txt_message = mensagem
-            html_message = """<textarea>{msg}</textarea>""".format(msg=mensagem)
+            html_message = """<p>{msg}</p>""".format(msg=mensagem)
 
             send_email(
                 recipient,
