@@ -110,7 +110,7 @@ class Command(BaseCommand):
             send_mail(
                 'Pendencias no financeiro /%s' % escola.nome,
                 mensagem,
-                settings.DEFAULT_FROM_EMAIL,
+                settings.SENDER,
                 emails,
                 fail_silently=False
             )

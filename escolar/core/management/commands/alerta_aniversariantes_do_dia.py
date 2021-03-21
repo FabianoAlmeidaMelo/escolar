@@ -82,7 +82,7 @@ class Command(BaseCommand):
             send_mail(
                 'Aniversariasntes de Hoje/%s' % escola.nome,
                 mensagem,
-                settings.DEFAULT_FROM_EMAIL,
+                settings.SENDER,
                 emails,
                 fail_silently=False
             )

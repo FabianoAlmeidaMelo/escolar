@@ -20,7 +20,7 @@ from escolar.core.utils import add_email_embed_image
 
 from escolar.escolas.models import ANO
 
-from escolar.settings import DEBUG, DEFAULT_FROM_EMAIL, MEDIA_URL, MEDIA_ROOT
+from escolar.settings import DEBUG, SENDER, MEDIA_URL, MEDIA_ROOT
 from escolar.utils.numextenso import numero_extenso, extenso
 from escolar.comunicacao.models import (
     Mensagem,
@@ -732,7 +732,7 @@ class Pagamento(models.Model):
             email_kwargs = {}
             email_kwargs['subject'] = assunto
             email_kwargs['body'] = text_content
-            email_kwargs['from_email'] = DEFAULT_FROM_EMAIL
+            email_kwargs['from_email'] = SENDER
             email_kwargs['to'] = emails
             email = EmailMultiAlternatives(**email_kwargs)
             # Imagem anexada embedada no e-mail
@@ -799,7 +799,7 @@ class InadimplenteDBView(models.Model):
             send_mail(
                 msg_default.titulo,
                 mensagem,
-                settings.DEFAULT_FROM_EMAIL,
+                settings.SENDER,
                 emails,
                 fail_silently=False
             )
