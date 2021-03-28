@@ -2,13 +2,13 @@
 from calendar import monthrange
 from datetime import date
 from datetime import datetime, timedelta, date
-# import pandas as pd
+
 from decimal import Decimal
 from django.forms import ValidationError
 from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-# from django.core.mail import send_mail, EmailMultiAlternatives
+
 from escolar.comunicacao.utils.aws_ses import send_email
 from django.db import models
 from django.db.models import DateTimeField, Case, When
@@ -729,51 +729,7 @@ class Pagamento(models.Model):
                 self.escola.nome
             )
 
-
-    def _send_email_recibo(self, user=None):
-        '''
-        #64 envia email com recibo
-
-        Sò pode chegar aqui, se o responsavel.user Tiver email.
-      
-        '''
-        LOGO_ESCOLA = ''
-        # if DEBUG:
-        #     LOGO_ESCOLA = '%s/%s' % (MEDIA_ROOT, self.escola.logo.name)
-        # else:
-        #     LOGO_ESCOLA = '%s/%s' %  (MEDIA_URL[:-1], self.escola.logo.name)
-
-        emails = [self.contrato.contratoaluno.responsavel.email]
-        if emails and self.efet:
-            url = ''
-            # context (body) vars
-            context = {}
-            context['escola'] = self.escola
-            context['contrato'] = self.contrato.contratoaluno
-            context['url'] = url
-            context['pagamento'] = self
-            context['data'] = date.today()
-            context['user'] = user
-            # context['usuario'] = user
-            
-            # conteúdo txt:
-            template = 'financeiro/email_recibo.txt'
-            text_content = render_to_string(template, context)
-            # conteúdo html:
-            html_template = 'financeiro/email_recibo.html'
-            html_content = render_to_string(html_template, context)
-            # email instance:
-            assunto = u'Recibo de pagamento/ %s ' % self.escola
-            email_kwargs = {}
-            email_kwargs['subject'] = assunto
-            email_kwargs['body'] = text_content
-            email_kwargs['from_email'] = SENDER
-            email_kwargs['to'] = emails
-            email = EmailMultiAlternatives(**email_kwargs)
-
-            email.attach_alternative(html_content, 'text/html')
-            return email.send()
-
+ 
     def gerar_complementar(self, previsto, data, valor, obs):
         '''
         Uma parcela foi paga parcialmente e o user quiz grar uma
