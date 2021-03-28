@@ -8,7 +8,7 @@ from django.forms import ValidationError
 from django.apps import apps
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.mail import send_mail, EmailMultiAlternatives
+# from django.core.mail import send_mail, EmailMultiAlternatives
 from escolar.comunicacao.utils.aws_ses import send_email
 from django.db import models
 from django.db.models import DateTimeField, Case, When
@@ -695,8 +695,42 @@ class Pagamento(models.Model):
 
         return ' '.join(dados_alterados)
 
-
     def send_email_recibo(self, user=None):
+        '''
+        #22 troca do envio pelo sendigrid pelo aws ses
+      
+        '''
+        LOGO_ESCOLA = ''
+
+        recipient = self.contrato.contratoaluno.responsavel.email
+        if recipient and self.efet:
+            url = ''
+            context = {}
+            context['escola'] = self.escola
+            context['contrato'] = self.contrato.contratoaluno
+            context['url'] = url
+            context['pagamento'] = self
+            context['data'] = date.today()
+            context['user'] = user
+            
+            # conteúdo txt:
+            template = 'financeiro/email_recibo.txt'
+            txt_message = render_to_string(template, context)
+
+            # conteúdo html:
+            html_template = 'financeiro/email_recibo.html'
+            html_message = render_to_string(html_template, context)
+            
+            send_email(
+                recipient,
+                'Recibo de pagamento',
+                txt_message,
+                html_message,
+                self.escola.nome
+            )
+
+
+    def _send_email_recibo(self, user=None):
         '''
         #64 envia email com recibo
 
@@ -736,12 +770,7 @@ class Pagamento(models.Model):
             email_kwargs['from_email'] = SENDER
             email_kwargs['to'] = emails
             email = EmailMultiAlternatives(**email_kwargs)
-            # Imagem anexada embedada no e-mail
-            # instância do e-mail, precisa do img_data para ler o logo e
-            # colocá-lo como anexo no e-mail.
-            # img_data = open(LOGO_ESCOLA, 'rb').read()
-            # img_content_id = 'main_image'  # content id para add o logo sos
-            # add_email_embed_image(email, img_content_id, img_data)
+
             email.attach_alternative(html_content, 'text/html')
             return email.send()
 
