@@ -621,14 +621,15 @@ class Pagamento(models.Model):
         calcular por dias úteis ou data específica
         time5 = (self.data - date.today()).days
         """
+        valor = self.valor
         if self.contrato and not self.contrato.contratoaluno.rescindido and self.efet is False:
             if self.categoria and self.categoria.id == 1 and self.contrato.contratoaluno.desconto or self.contrato.contratoaluno.bolsa: # só Prestação de Serviços
                 if date.today() <= self.get_bizday():
                     desconto = self.valor * (self.contrato.contratoaluno.desconto / 100)
-                    return self.valor - desconto
+                    valor = self.valor - desconto
                 else:
-                    return self.valor + self.get_multa() + self.get_juros()
-        return self.valor
+                    valor = self.valor + self.get_multa() + self.get_juros()
+        return valor
 
     def get_multa(self):
         if self.contrato and self.contrato.contratoaluno:
@@ -732,7 +733,7 @@ class Pagamento(models.Model):
  
     def gerar_complementar(self, previsto, data, valor, obs):
         '''
-        Uma parcela foi paga parcialmente e o user quiz grar uma
+        Uma parcela foi paga parcialmente e o user quis gerar uma
         outra parcela para complementa-la
         '''
         pagamento = self

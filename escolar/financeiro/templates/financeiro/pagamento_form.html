@@ -94,7 +94,7 @@
               class="btn btn-primary"
               data-toggle="modal"
               data-target="#pagamento_{{ form.instance.id }}"
-              onclick="checkValor('{{ form.instance.get_valor_a_pagar }}')">Salvar</button>
+              onclick="checkValor('{{ form.instance.get_valor_a_pagar }}')">Salvarrr</button>
           {% else %}
             <input type="submit" value="Salvar" class="btn btn-primary">
           {% endif %}
@@ -122,18 +122,18 @@
 
     <script type="text/javascript">
       function checkValor(referenceValue){
+
         let reference = referenceValue
         let pTagColor = '<p>'
         let preenchido = document.getElementById("id_valor").value
-        let valorPrevisto = document.getElementById("valor_previsto_id").innerHTML
+        let valorPrevisto = referenceValue //document.getElementById("valor_previsto_id").innerHTML
         valorPrevisto = parseFloat(valorPrevisto.replace(',', '.'));
         let efet = $("#id_efet").is(":checked");
         let formaPagamento = $("#id_forma_pgto option:selected").text();
         let pago = '<spam class="glyphicon glyphicon-remove icon-error"></spam>  Pagamento não efetivado'
         let valorPago = parseFloat(preenchido.replace(',', '.'));
-        
         let diferenca = valorPrevisto - valorPago
-        
+
         valorPago = valorPago.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
         if (efet) {
           pago = '<spam class="glyphicon glyphicon-ok icon-success"></spam> Pagamento Efetivado'
@@ -160,7 +160,7 @@
         } else {
           pTagColor = '<p style="color:green;">'
         }
-
+        console.log("AAA: ", reference)
         document.getElementById("efetivado_ou_nao").innerHTML  = '<small> '+ pago +'</small>' + '</p>';
         document.getElementById("forma_pagto").innerHTML  = formaPagamento;
         document.getElementById("new_valor").innerHTML  = pTagColor + valorPago;

@@ -454,7 +454,9 @@ class PagamentoForm(forms.ModelForm):
         if forma_pgto in [2, 3] and not bandeira:
             raise forms.ValidationError("selecione a Bandeira do Cartão")
         elif bandeira and not forma_pgto:
-            raise forms.ValidationError("Selecione a forma de pagamento: Cartão de débito ou Cartão de Crédito")
+            raise forms.ValidationError(
+                "Selecione a forma de pagamento: Cartão de débito ou Cartão de Crédito"
+            )
     
         return cleaned_data
 
