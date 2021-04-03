@@ -532,6 +532,7 @@ class Pagamento(models.Model):
         null=True,
         blank=True
     )
+    # com parcela, mas sem nr_parcela, é pagamento recorrente.
     nr_parcela = models.PositiveSmallIntegerField(
         u'Nr de Parcelas',
         null=True,
@@ -676,7 +677,6 @@ class Pagamento(models.Model):
                 return "danger"
         return ""
 
-
     def get_alteracao(self, old_instance, instance):
         '''
         ref #69
@@ -736,15 +736,43 @@ class Pagamento(models.Model):
         Uma parcela foi paga parcialmente e o user quis gerar uma
         outra parcela para complementa-la
         '''
+        parcela_id = self.id
         pagamento = self
         pagamento.id = None
         pagamento.titulo = self.titulo + ': Complementar'
         pagamento.efet = False
         pagamento.observacao = obs
+        pagamento.parcela_id = parcela_id
         pagamento.valor = valor
         pagamento.data = data
         pagamento.data_pag = data
         pagamento.save()
+
+    def gerar_replicas(self, nr_replicas):
+        '''
+        Pode repetir o lançamento dentro do ano corrente
+        '''
+        dia = self.data.day
+        mes = self.data.month + 1
+        ano = self.data.year
+        parcela_id = self.id
+        criadas = 1
+        while criadas <= nr_replicas and mes < 13:
+            pagamento = self
+            pagamento.id = None
+            pagamento.titulo = self.titulo
+            pagamento.efet = False
+            pagamento.observacao = self.observacao
+            pagamento.parcela_id = parcela_id
+            pagamento.valor = self.valor
+            pagamento.data = date(ano, mes, dia)
+            pagamento.data_pag = date(ano, mes, dia)
+            pagamento.save()
+            if mes == 12:
+                break
+            criadas += 1
+            mes += 1
+        return criadas
 
 
 class InadimplenteDBView(models.Model):

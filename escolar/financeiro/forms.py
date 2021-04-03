@@ -415,6 +415,20 @@ class BandeiraEscolaParametroForm(forms.ModelForm):
         instance.save()
         return instance
 
+NR_PARCELAS_CHOICES = (
+    (None, '--'),
+    (1, "Essa mais 1"),
+    (2, "Essa mais 2"),
+    (3, "Essa mais 3"),
+    (4, "Essa mais 4"),
+    (5, "Essa mais 5"),
+    (6, "Essa mais 6"),
+    (7, "Essa mais 7"),
+    (8, "Essa mais 8"),
+    (9, "Essa mais 9"),
+    (10, "Essa mais 10"),
+    (11, "Essa mais 11"),
+)
 
 class PagamentoForm(forms.ModelForm):
     tipo = forms.ChoiceField(label="Tipo", choices=TIPO_CHOICES, required=True)
@@ -424,8 +438,12 @@ class PagamentoForm(forms.ModelForm):
     data = forms.DateField(label='Data prevista', required=True, widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}))
     data_pag = forms.DateField(label="Data pagamento efetivado",
         widget=DateTimePicker(options={"format": "DD/MM/YYYY", "pickTime": False}), required=False)
-
     valor_previsto = BRDecimalField(required=False)
+    nr_replicas = forms.ChoiceField(
+        label="Deseja repetir esse lançamento dentro de {ano}?".format(ano=ANO_CORRENTE),
+        choices=NR_PARCELAS_CHOICES,
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -439,12 +457,14 @@ class PagamentoForm(forms.ModelForm):
         self.fields['valor_previsto'].initial = self.instance.get_valor_a_pagar()
 
         if self.contrato:
-
             self.fields['categoria'].queryset=CategoriaPagamento.objects.filter(id__in=[1, 2, 9])
+
         if self.instance.pk and self.instance.categoria:
             if self.instance.categoria.id in [1, 2, 9]:
                 self.fields['categoria'].widget = forms.HiddenInput()
-    
+        if self.instance.pk:
+            self.fields['nr_replicas'].widget = forms.HiddenInput()
+
 
     def clean(self):
         cleaned_data = super(PagamentoForm, self).clean()

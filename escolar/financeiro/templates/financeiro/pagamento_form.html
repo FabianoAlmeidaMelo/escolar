@@ -70,7 +70,9 @@
              {% bootstrap_field form.data_pag %}
              {% bootstrap_field form.tipo %}
              {% bootstrap_field form.valor %}
+
              {% if not form.isntance.efet %}
+               {% bootstrap_field form.nr_replicas %}
                 <small>Valor previsto para data de hoje: R$ <b id='valor_previsto_id'>{{ form.instance.get_valor_a_pagar|numberformat_br }}</b></small>
              {% endif %}
              {% bootstrap_field form.efet %}

@@ -405,6 +405,11 @@ def pagamento_form(request, escola_pk, contrato_pk=None, pagamento_pk=None):
         if form.is_valid():
             pagamento = form.save()
             gerar_parcela = request.POST.get('gerar_complementar')
+            nr_replicas = request.POST.get('nr_replicas')
+            if nr_replicas:
+                replicas = pagamento.gerar_replicas(int(nr_replicas))
+                msg += '{replicas} réplicas criadas'.format(replicas=replicas)
+
             efet = pagamento.efet
             if efet and gerar_parcela is not None:
                 previsto = request.POST.get('valor_previsto')
